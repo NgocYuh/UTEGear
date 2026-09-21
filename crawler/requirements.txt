@@ -1,0 +1,1 @@
+# Dependencies will be added only when the crawler design is implemented.

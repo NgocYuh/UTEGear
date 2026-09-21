@@ -1,0 +1,5 @@
+sources:
+  - name: example-store
+    enabled: false
+    base_url: https://example.com
+    # TODO: Add reviewed paths, selectors, rate limits, and usage constraints.
