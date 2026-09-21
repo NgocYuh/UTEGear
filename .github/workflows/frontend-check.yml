@@ -1,0 +1,14 @@
+name: Frontend Check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pending-tooling:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Frontend tooling status
+        run: echo "TODO Enable checks after adding HTMLHint, ESLint, or Stylelint."
