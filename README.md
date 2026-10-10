@@ -1,5 +1,7 @@
 # UTEGear
 
+[![Backend CI](https://github.com/NgocYuh/UTEGear/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/NgocYuh/UTEGear/actions/workflows/backend-ci.yml)
+
 > Đồ án cuối kỳ môn Lập trình Web — hiện đang khởi tạo.
 
 ## Đề tài
