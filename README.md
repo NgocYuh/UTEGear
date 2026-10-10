@@ -41,13 +41,18 @@ mẫu để làm giao diện song song; việc nối API thật được thực 
    `src/main/resources/application-local.properties` và điền cấu hình phát triển cục bộ.
 3. Tuyệt đối không commit các tệp chứa mật khẩu, URL database thật, JWT secret hoặc API secret.
 
-Các biến ứng dụng cần có: `DATABASE_URL`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`,
-`JWT_SECRET`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` và `CLOUDINARY_API_SECRET`.
+Các biến ứng dụng cần có: `SPRING_PROFILES_ACTIVE`, `DATABASE_URL`, `DATABASE_USERNAME`,
+`DATABASE_PASSWORD`, `JWT_SECRET`, `JWT_EXPIRATION`, `CLOUDINARY_CLOUD_NAME`,
+`CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` và `CLOUDINARY_FOLDER`.
+
+Spring Boot không tự đọc file `.env`. Hãy nạp biến bằng IDE, terminal hoặc dùng file
+`application-local.properties` đã được Git bỏ qua. Profile `prod` chỉ lấy credential từ biến
+môi trường; profile `test` luôn dùng H2 trong bộ nhớ.
 
 ## Chạy ứng dụng và kiểm thử
 
 ```bash
-./mvnw spring-boot:run
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ./mvnw -B clean verify
 ```
 

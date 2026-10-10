@@ -34,12 +34,17 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Đã làm:
   - Rà soát cấu hình chung, profile test, file ví dụ local và hướng dẫn phát triển cục bộ.
   - Tạo branch từ `origin/main` sau khi cập nhật remote và giữ nguyên các thay đổi tài liệu đã duyệt.
+  - Tách cấu hình dùng chung khỏi credential của profile `local` và `prod`.
+  - Cấu hình `prod` chỉ đọc Supabase, JWT và Cloudinary từ biến môi trường.
+  - Thêm kiểm thử xác nhận profile `test` khởi động với H2 trong bộ nhớ.
 - Kết quả kiểm thử:
-  - `mvnw.cmd -B clean verify`: `CHƯA CHẠY`.
+  - `mvnw.cmd -B clean verify`: `PASS` với 1 test, 0 failure, 0 error, 0 skipped.
+  - `ApplicationProfilesTest`: `PASS`; profile `test` dùng JDBC H2 trong bộ nhớ.
+  - Môi trường kiểm thử dùng JDK 26 và Maven biên dịch với `release 21`.
 - Vướng mắc hoặc phần còn thiếu:
   - Không có blocker hiện tại.
 - Bước tiếp theo:
-  - Tách cấu hình `local`, `test`, `prod`, thêm kiểm thử profile test và cập nhật tài liệu.
+  - Kiểm tra diff/secret lần cuối, commit, push và mở Pull Request để Frontend review.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới

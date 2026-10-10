@@ -8,7 +8,6 @@ target/
 !crawler/.env.example
 
 src/main/resources/application-local.properties
-src/main/resources/application-prod.properties
 
 .idea/
 .vscode/
