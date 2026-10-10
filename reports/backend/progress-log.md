@@ -29,7 +29,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 - Trạng thái: `IN PROGRESS`
 - Branch: `chore/application-profiles`
-- Pull Request: `Chưa mở`
+- Pull Request: [Chưa mở - tạo PR từ branch đã push](https://github.com/NgocYuh/UTEGear/compare/main...chore/application-profiles?expand=1)
 - Ngày cập nhật: 2026-10-10
 - Đã làm:
   - Rà soát cấu hình chung, profile test, file ví dụ local và hướng dẫn phát triển cục bộ.
@@ -37,6 +37,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Tách cấu hình dùng chung khỏi credential của profile `local` và `prod`.
   - Cấu hình `prod` chỉ đọc Supabase, JWT và Cloudinary từ biến môi trường.
   - Thêm kiểm thử xác nhận profile `test` khởi động với H2 trong bộ nhớ.
+  - Đã push branch lên `origin/chore/application-profiles`; commit triển khai: `ee658f2`.
 - Kết quả kiểm thử:
   - `mvnw.cmd -B clean verify`: `PASS` với 1 test, 0 failure, 0 error, 0 skipped.
   - `ApplicationProfilesTest`: `PASS`; profile `test` dùng JDBC H2 trong bộ nhớ.
@@ -44,7 +45,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc hoặc phần còn thiếu:
   - Không có blocker hiện tại.
 - Bước tiếp theo:
-  - Kiểm tra diff/secret lần cuối, commit, push và mở Pull Request để Frontend review.
+  - Mở Pull Request bằng link trên, chờ Backend CI pass và `@trongsonho` review.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
