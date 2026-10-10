@@ -12,6 +12,33 @@ git switch -c feat/ten-ngan-gon
 
 Dùng tiền tố `feat/`, `fix/`, `test/`, `docs/` hoặc `chore/`.
 
+Không dùng nhánh `backend` hoặc `frontend` cố định. Mỗi task vẫn có branch và Pull Request
+riêng. Task chạm cả hai phía phải được tách thành task Backend và task Frontend có liên kết.
+
+## Phạm vi sở hữu
+
+- Backend (`@NgocYuh`): database/Flyway, Java backend, API, security, Cloudinary/WebSocket
+  phía server, crawler/import và backend test.
+- Frontend (`@trongsonho`): Thymeleaf, fragments, Bootstrap, CSS/JavaScript, gọi API,
+  validation phía client, WebSocket client, responsive và frontend test.
+- Backend viết hoặc cập nhật model contract, endpoint contract và JSON mẫu trước khi triển
+  khai endpoint. Frontend có thể bắt đầu bằng mock data ngay khi contract được review.
+
+## Nhật ký tiến độ
+
+- Backend cập nhật `reports/backend/progress-log.md`; Frontend cập nhật
+  `reports/frontend/progress-log.md`.
+- Khi bắt đầu task, thêm một mục với trạng thái `IN PROGRESS`. Cập nhật chính mục đó khi task
+  chuyển sang `IN REVIEW`, `BLOCKED` hoặc `DONE`; không tạo nhiều mục trùng Task ID.
+- Mỗi mục phải có Task ID, branch, Pull Request, việc đã làm, kết quả kiểm thử, vướng mắc hoặc
+  phần còn thiếu và bước tiếp theo.
+- Nếu task bị chặn, dùng `BLOCKED` và ghi rõ dependency, quyền truy cập, contract hoặc thông tin
+  còn thiếu. Nếu đang chờ review, dùng `IN REVIEW`.
+- Chỉ ghi `DONE` khi không còn phần việc thuộc phạm vi task, CI hoặc kiểm thử liên quan đã pass
+  và PR đã được duyệt. Commit cập nhật `DONE` phải nằm trong chính PR của task ngay trước khi merge.
+- Nhật ký tiến độ là tài liệu Markdown. Không đưa application log, log debug hoặc credential vào
+  các file này.
+
 ## Commit
 
 Commit nhỏ, rõ nghĩa và ở dạng mệnh lệnh. Ví dụ: `feat: add public product endpoint`,
@@ -34,6 +61,9 @@ Trên Windows dùng `mvnw.cmd -B clean verify`.
 - Không có secret, dữ liệu production hoặc file sinh tự động không cần thiết.
 - PR mô tả phạm vi, cách kiểm thử và ảnh giao diện nếu có.
 - Có review của thành viên còn lại và CI pass trước khi merge.
+- Nếu là task Backend có API/model mới, contract và JSON mẫu đã được cập nhật.
+- Nếu là task Frontend, dữ liệu mock khớp contract và không tự suy đoán field chưa được duyệt.
+- Nhật ký tiến độ của vai trò đã cập nhật đúng trạng thái, kết quả kiểm thử và vướng mắc.
 
 ## Bảo mật
 
