@@ -989,8 +989,8 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | Task | Người phụ trách | Branch | Trạng thái | PR | Ngày merge |
 |---|---|---|---|---|---|
 | FND-01 | BE | `chore/project-scaffold` | DONE | [PR #1](https://github.com/NgocYuh/UTEGear/pull/1) | 2026-09-21 |
-| FND-02 | BE | `chore/application-profiles` | IN PROGRESS | [Tạo PR](https://github.com/NgocYuh/UTEGear/compare/main...chore/application-profiles?expand=1) |  |
-| FND-03 | BE | `ci/backend-quality-gate` | TODO |  |  |
+| FND-02 | BE | `chore/application-profiles` | DONE | [PR #2](https://github.com/NgocYuh/UTEGear/pull/2) | 2026-10-10 |
+| FND-03 | BE | `ci/backend-quality-gate` | IN PROGRESS |  |  |
 | FND-04 | FE | `ci/frontend-quality-gate` | TODO |  |  |
 | DB-01 | BE viết, FE review | `docs/database-model` | TODO |  |  |
 | API-01…03 | BE viết, FE review | Xem backlog | TODO |  |  |
