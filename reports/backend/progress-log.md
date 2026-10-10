@@ -54,11 +54,12 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 - Trạng thái: `IN PROGRESS`
 - Branch: `ci/backend-quality-gate`
-- Pull Request: `Chưa mở`
+- Pull Request: [Chưa mở - tạo PR từ branch đã push](https://github.com/NgocYuh/UTEGear/compare/main...ci/backend-quality-gate?expand=1)
 - Ngày cập nhật: 2026-10-10
 - Đã làm:
   - Xác nhận workflow hiện có đã chạy `clean verify` bằng Java 21 và Maven cache trên PR #2.
   - Bắt đầu bổ sung giới hạn thời gian, concurrency và quyền checkout chỉ đọc cho Backend CI.
+  - Đã push branch với commit CI `9469b9c` và commit tiến độ `a2b10d0`.
 - Kết quả kiểm thử:
   - `mvnw.cmd -B --no-transfer-progress clean verify`: `PASS` với 1 test, 0 failure, 0 error, 0 skipped.
   - Parse YAML cục bộ cho `backend-ci.yml`: `PASS`.
@@ -66,7 +67,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc hoặc phần còn thiếu:
   - Không có blocker hiện tại.
 - Bước tiếp theo:
-  - Kiểm tra diff, commit và push branch để mở Pull Request, sau đó xác nhận workflow trên GitHub.
+  - Mở Pull Request bằng link trên, xác nhận Backend CI xanh rồi tự merge theo cách làm của nhóm.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
