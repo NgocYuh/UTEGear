@@ -27,10 +27,12 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## FND-02: Cấu hình môi trường và profile
 
-- Trạng thái: `IN PROGRESS`
+- Trạng thái: `DONE`
 - Branch: `chore/application-profiles`
-- Pull Request: [Chưa mở - tạo PR từ branch đã push](https://github.com/NgocYuh/UTEGear/compare/main...chore/application-profiles?expand=1)
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/2
+- Merge commit: `0940e852745e8c3f63080dc2962f49a86780c874`
 - Ngày cập nhật: 2026-10-10
+- Ngày hoàn tất: 2026-10-10
 - Đã làm:
   - Rà soát cấu hình chung, profile test, file ví dụ local và hướng dẫn phát triển cục bộ.
   - Tạo branch từ `origin/main` sau khi cập nhật remote và giữ nguyên các thay đổi tài liệu đã duyệt.
@@ -42,10 +44,30 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - `mvnw.cmd -B clean verify`: `PASS` với 1 test, 0 failure, 0 error, 0 skipped.
   - `ApplicationProfilesTest`: `PASS`; profile `test` dùng JDBC H2 trong bộ nhớ.
   - Môi trường kiểm thử dùng JDK 26 và Maven biên dịch với `release 21`.
+  - [Backend CI của PR #2](https://github.com/NgocYuh/UTEGear/actions/runs/38065901846): `PASS` với Java 21.
+- Vướng mắc hoặc phần còn thiếu:
+  - Không có blocker trong phạm vi FND-02.
+- Bước tiếp theo:
+  - Backend thực hiện `FND-03`; Frontend có thể tiếp tục `FND-04` độc lập.
+
+## FND-03: CI và Pull Request workflow
+
+- Trạng thái: `IN PROGRESS`
+- Branch: `ci/backend-quality-gate`
+- Pull Request: [Chưa mở - tạo PR từ branch đã push](https://github.com/NgocYuh/UTEGear/compare/main...ci/backend-quality-gate?expand=1)
+- Ngày cập nhật: 2026-10-10
+- Đã làm:
+  - Xác nhận workflow hiện có đã chạy `clean verify` bằng Java 21 và Maven cache trên PR #2.
+  - Bắt đầu bổ sung giới hạn thời gian, concurrency và quyền checkout chỉ đọc cho Backend CI.
+  - Đã push branch với commit CI `9469b9c` và commit tiến độ `a2b10d0`.
+- Kết quả kiểm thử:
+  - `mvnw.cmd -B --no-transfer-progress clean verify`: `PASS` với 1 test, 0 failure, 0 error, 0 skipped.
+  - Parse YAML cục bộ cho `backend-ci.yml`: `PASS`.
+  - Workflow FND-03: `CHƯA CHẠY`; chỉ có thể xác nhận sau khi mở Pull Request.
 - Vướng mắc hoặc phần còn thiếu:
   - Không có blocker hiện tại.
 - Bước tiếp theo:
-  - Mở Pull Request bằng link trên, chờ Backend CI pass và `@trongsonho` review.
+  - Mở Pull Request bằng link trên, xác nhận Backend CI xanh rồi tự merge theo cách làm của nhóm.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
