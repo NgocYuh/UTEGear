@@ -1,1 +1,27 @@
-# TODO: Add both team members' GitHub usernames before enforcing code-owner review.
+# Backend ownership
+/pom.xml                                      @NgocYuh
+/src/main/java/                               @NgocYuh
+/src/test/java/                               @NgocYuh
+/src/main/resources/application*.properties  @NgocYuh
+/src/main/resources/db/migration/             @NgocYuh
+/crawler/                                     @NgocYuh
+/scripts/                                     @NgocYuh
+/reports/backend/                             @NgocYuh
+
+# Frontend ownership
+/src/main/resources/templates/                @trongsonho
+/src/main/resources/static/css/               @trongsonho
+/src/main/resources/static/js/                @trongsonho
+/src/main/resources/static/images/            @trongsonho
+/docs/frontend/                               @trongsonho
+/reports/frontend/                            @trongsonho
+
+# Contracts and shared workflow require both members
+/docs/api/                                    @NgocYuh @trongsonho
+/docs/architecture/                           @NgocYuh @trongsonho
+/.github/                                     @NgocYuh @trongsonho
+/AGENTS.md                                    @NgocYuh @trongsonho
+/CONTRIBUTING.md                              @NgocYuh @trongsonho
+/README.md                                    @NgocYuh @trongsonho
+/reports/README.md                            @NgocYuh @trongsonho
+/UTEGear_INCREMENTAL_DEVELOPMENT_PLAN.md      @NgocYuh @trongsonho

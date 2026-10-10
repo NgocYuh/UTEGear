@@ -21,8 +21,18 @@ Xây dựng website thương mại điện tử UTEGear theo mô hình chuỗi c
 - `crawler/`: công cụ hỗ trợ thu thập dữ liệu ban đầu; không phải dịch vụ chạy liên tục.
 - `docs/`: tài liệu kiến trúc, hợp đồng dữ liệu/API, giao diện và quy trình nhóm.
 - `scripts/`: hướng dẫn script cơ sở dữ liệu và nhập sản phẩm.
-- `reports/`: nơi lưu báo cáo theo từng mảng.
+- `reports/`: báo cáo theo từng mảng và nhật ký tiến độ riêng của Backend/Frontend.
 - `.github/`: CI, CODEOWNERS và mẫu Pull Request.
+
+## Phân công nhóm
+
+- Backend (`@NgocYuh`): database/Flyway, Java backend, API, security, tích hợp dịch vụ phía
+  server, crawler/import và backend test.
+- Frontend (`@trongsonho`): Thymeleaf, Bootstrap, CSS/JavaScript, gọi API, WebSocket client,
+  responsive, accessibility và frontend test.
+
+Backend công bố model contract, endpoint contract và JSON mẫu trước. Frontend dùng các JSON
+mẫu để làm giao diện song song; việc nối API thật được thực hiện ở task tích hợp riêng.
 
 ## Chuẩn bị môi trường
 
@@ -43,5 +53,8 @@ Các biến ứng dụng cần có: `DATABASE_URL`, `DATABASE_USERNAME`, `DATABA
 
 Trên Windows, thay `./mvnw` bằng `mvnw.cmd`.
 
-Xem [kế hoạch phát triển](PLAN.md), [quy trình nhóm](docs/team/workflow.md) và
+Xem [kế hoạch phát triển](UTEGear_INCREMENTAL_DEVELOPMENT_PLAN.md), [quy trình nhóm](docs/team/workflow.md) và
 [hướng dẫn đóng góp](CONTRIBUTING.md) trước khi bắt đầu một task.
+
+Backend cập nhật [nhật ký Backend](reports/backend/progress-log.md); Frontend cập nhật
+[nhật ký Frontend](reports/frontend/progress-log.md) mỗi khi task đổi trạng thái.
