@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UTEGear — CSS foundation preview</title>
+  <link rel="stylesheet" href="../../src/main/resources/static/css/app.css">
+</head>
+<body>
+  <main class="site-container">
+    <h1>UTEGear CSS foundation</h1>
+    <p>Preview tĩnh cho UI-01A. Layout và tương tác của ứng dụng thuộc UI-01B.</p>
+    <section aria-labelledby="buttons-heading">
+      <h2 id="buttons-heading">Buttons</h2>
+      <button id="primary-button" class="btn-primary-ute" type="button">Tiếp tục</button>
+      <button class="btn-secondary-ute" type="button">Xem thêm</button>
+      <button class="btn-ghost-ute" type="button">Quay lại</button>
+    </section>
+    <section aria-labelledby="form-heading">
+      <h2 id="form-heading">Form</h2>
+      <label class="form-label" for="preview-name">Tên hiển thị</label>
+      <input id="preview-name" class="form-control" type="text" autocomplete="name" placeholder="Nhập tên của bạn">
+      <label class="form-label" for="preview-size">Số mục mỗi trang</label>
+      <select id="preview-size" class="form-select"><option>20</option><option>40</option></select>
+    </section>
+    <section aria-labelledby="status-heading">
+      <h2 id="status-heading">Trạng thái</h2>
+      <span class="badge-status badge-status-in-stock">Còn hàng</span>
+      <span class="badge-status badge-status-out-stock">Hết hàng</span>
+      <span class="badge-status badge-status-low-stock">Sắp hết hàng</span>
+      <div class="empty-state">
+        <h3>Chưa có dữ liệu</h3>
+        <p>Nội dung sẽ xuất hiện khi có dữ liệu phù hợp.</p>
+      </div>
+      <div class="skeleton skeleton-text" aria-hidden="true"></div>
+      <span class="sr-only">Đang tải dữ liệu</span>
+    </section>
+    <nav aria-label="Phân trang preview">
+      <ul class="pagination">
+        <li class="page-item active"><a class="page-link" href="#buttons-heading" aria-current="page">1</a></li>
+        <li class="page-item"><a class="page-link" href="#form-heading">2</a></li>
+      </ul>
+    </nav>
+  </main>
+  <aside class="toast-area" aria-label="Thông báo mẫu">
+    <div class="toast-msg success" role="status">Đã lưu thông tin mẫu.</div>
+  </aside>
+</body>
+</html>

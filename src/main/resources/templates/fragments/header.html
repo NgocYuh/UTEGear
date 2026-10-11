@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="header" class="main-navbar">
+  <div class="site-container">
+    <div class="header-primary-row ui-header-row">
+      <a class="brand" th:href="@{/}" aria-label="UTEGear — Trang chủ">
+        <span class="brand-text"><span class="brand-name">UTE<span class="brand-accent">Gear</span></span>
+        <span class="brand-slogan">Gear up. Game on.</span></span>
+      </a>
+      <form class="ui-search" th:action="@{/search}" method="get" role="search">
+        <label class="sr-only" for="header-search">Tìm kiếm sản phẩm</label>
+        <div class="search-input-group">
+          <input id="header-search" class="search-input" type="search" name="q" placeholder="Tìm phụ kiện gaming…" maxlength="200">
+          <button class="search-submit-btn" type="submit">Tìm</button>
+        </div>
+      </form>
+      <a class="header-action-item" th:href="@{/login}" data-account-link>Đăng nhập</a>
+      <button class="btn-ghost-ute ui-menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation" data-menu-toggle>Menu</button>
+    </div>
+    <nav id="site-navigation" class="ui-navigation" aria-label="Điều hướng chính">
+      <ul class="ui-nav-links">
+        <li><a th:href="@{/products}">Sản phẩm</a></li>
+        <li><a th:href="@{/stores}">Cửa hàng</a></li>
+        <li><a th:href="@{/wishlist}">Yêu thích</a></li>
+        <li><a th:href="@{/cart}">Giỏ hàng</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+</body>
+</html>

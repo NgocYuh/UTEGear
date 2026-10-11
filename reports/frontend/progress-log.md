@@ -29,6 +29,36 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Push branch đã được xác nhận, mở PR và chuyển sang `IN REVIEW` để Backend review.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## UI-01: Layout và design foundation (A + B)
+
+- Trạng thái: `IN PROGRESS`
+- Branch: `feat/shared-ui-layout`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm:
+  - Người dùng yêu cầu gom phần A (CSS) và B (layout/components/mock) vào một PR UI-01, hẹn push 23:37 ngày 11/10/2026 (UTC+7); ghi phạm vi trong `docs/frontend/ui-foundation-plan.md`.
+  - Lấy CSS core và chín component chung từ ZIP tham khảo, dọn khoảng trắng và tạo `app.css` chỉ import phạm vi này.
+  - Thêm preview CSS và template preview Thymeleaf cho bộ khung dùng chung.
+  - Thêm layout/header/footer, skip link, menu mobile, toast, pagination và empty-state.
+  - Thêm fixture loader và bản sao JSON API-01 đã merge; không gọi endpoint nghiệp vụ hoặc lưu JWT.
+  - Tạo checkout riêng từ `origin/main` commit `4ff0d53`, giữ nguyên file cũ ở thư mục gốc.
+- Kết quả kiểm thử:
+  - `mvnw.cmd -B clean verify`: `PASS`, 21 tests, 0 failure/error/skipped; Java 26 biên dịch với release 21.
+  - CSS phần A: `PASS`, đủ 13 import từ ZIP; thêm `shell.css` cho layout phần B.
+  - Preview desktop 1440px và mobile 390px: `PASS`, không tràn chiều ngang; đã xem screenshot cục bộ.
+  - Keyboard focus button và chế độ reduced motion của skeleton: `PASS` trên preview.
+  - `node --test tests/frontend/mock-data.test.mjs`: `PASS`, 4 tests cho contract fixture, clone độc lập, chặn nguồn sai và xử lý lỗi tải.
+  - `node --check` cho JavaScript: `PASS`.
+  - Render layout và các fragment bằng SpringTemplateEngine/MockServletContext: `PASS`; không thêm controller hoặc dependency.
+  - `tests/frontend/browser-check.mjs` trên Edge với Bootstrap: `PASS` cho viewport 1440/390px, menu mobile/Escape/focus, toast dạng text, pagination biên, mock empty và reduced motion; đã xem screenshot.
+  - Bundle CSS cuối cùng: 14 import tải được, không tham chiếu custom property bị thiếu.
+  - GitHub Actions: `CHƯA CHẠY`; chưa đến thời gian push/mở PR.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa có PR/review; sẽ chuyển `IN REVIEW` khi PR được mở.
+- Bước tiếp theo:
+  - Hoàn tất kiểm tra, commit bản đã kiểm tra và lập lịch push một lần lúc 23:37; sau push mở PR để Backend review.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md

@@ -1,0 +1,64 @@
+/* =========================================================
+   UTEGEAR PAGINATION COMPONENT
+   Accessible, Compact, Mature Commercial Catalog Navigation
+   Catalog Pagination & Navigation Controls
+   ========================================================= */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-8);
+    list-style: none;
+    padding: 0;
+}
+
+.page-item {
+    display: inline-flex;
+}
+
+.page-item .page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-main);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.page-item .page-link:hover:not(.active) {
+    background-color: #F8FAFC;
+    border-color: #CBD5E1;
+    color: var(--color-primary);
+}
+
+.page-item.active .page-link {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #FFFFFF;
+    font-weight: 700;
+}
+
+.page-item.disabled .page-link {
+    background-color: #F8FAFC;
+    border-color: #E2E8F0;
+    color: #94A3B8;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.page-item .page-link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    z-index: 2;
+}
