@@ -268,6 +268,30 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Merge AUTH-01 rồi AUTH-02; triển khai AUTH-03 trên branch riêng.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## AUTH-03: JWT login và API security
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/jwt-authentication`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm:
+  - Thêm login trả `AuthSession` đúng contract, gồm access token Bearer, hạn token và `UserProfile`.
+  - Tạo/kiểm tra JWT HMAC, JWT filter và xác thực stateless bằng Spring Security.
+  - Phân tách endpoint auth/catalog public, API authenticated và `/api/admin/**` chỉ dành cho role `ADMIN`.
+  - Trả JSON lỗi thống nhất cho `UNAUTHORIZED`, `FORBIDDEN`, `INVALID_CREDENTIALS` và `ACCOUNT_DISABLED`.
+  - Thêm `GET /api/profile` và logout stateless; không sinh refresh token ngoài contract.
+- Kết quả kiểm thử:
+  - JWT hợp lệ, sai chữ ký và hết hạn: `PASS`.
+  - Login thành công, sai thông tin đăng nhập và tài khoản bị vô hiệu hóa: `PASS`.
+  - Public/authenticated/admin, thiếu token, token sai và token hết hạn qua MockMvc: `PASS`.
+  - `mvn -B --no-transfer-progress clean verify`: `PASS` với 21 test, 0 failure, 0 error, 0 skipped.
+  - `git diff --check`: `PASS`.
+- Vướng mắc hoặc phần còn thiếu:
+  - Branch xếp tầng trên AUTH-02; cần merge theo thứ tự AUTH-01, AUTH-02 rồi AUTH-03.
+- Bước tiếp theo:
+  - Sau khi ba PR merge, có thể triển khai các task phụ thuộc AUTH-03.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
