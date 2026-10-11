@@ -176,9 +176,9 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## DB-02: Flyway migration khởi tạo
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/initial-database-migration`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/9
 - Ngày cập nhật: 2026-10-11
 - Đã làm:
   - Đối chiếu 21 bảng trong ERD với entity nguồn và ba contract API đã merge.
@@ -195,9 +195,33 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - `mvnw.cmd -B --no-transfer-progress clean verify`: `PASS` với 1 test, 0 failure, 0 error, 0 skipped.
   - `git diff --check`: `PASS`.
 - Vướng mắc hoặc phần còn thiếu:
-  - Không có blocker trong phạm vi DB-02.
+  - Không còn blocker; PR #9 đã merge vào `main`.
 - Bước tiếp theo:
-  - Mở PR DB-02; sau khi merge thì thực hiện DB-03 bằng migration mới, không sửa V1.
+  - Thực hiện DB-03 bằng migration mới, không sửa V1.
+- Ngày hoàn tất: 2026-10-11
+
+## DB-03: Seed dữ liệu tham chiếu tối thiểu
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/reference-data-migration`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm:
+  - Tạo `V2__seed_reference_data.sql` nối tiếp V1.
+  - Chỉ seed hai role theo contract: `ADMIN` và `CUSTOMER`.
+  - Dùng `ON CONFLICT (name) DO NOTHING` để không tạo role trùng.
+  - Không tạo tài khoản admin, mật khẩu, category hoặc dữ liệu sản phẩm giả.
+- Kết quả kiểm thử:
+  - Migration V1 + V2 trên PostgreSQL 16.15 trống: `PASS`; Flyway áp dụng tuần tự version `1` và `2`.
+  - Khởi động lần hai: `PASS`; Flyway báo schema ở version `2`, không chạy lại migration và không tạo role trùng.
+  - Dữ liệu tham chiếu: `PASS`; bảng `roles` có đúng `ADMIN` và `CUSTOMER`, tổng cộng 2 dòng.
+  - `flyway_schema_history`: `PASS`; có hai version thành công là `1` và `2`.
+  - `mvnw.cmd -B --no-transfer-progress clean verify`: `PASS` với 1 test, 0 failure, 0 error, 0 skipped.
+  - `git diff --check`: `PASS`.
+- Vướng mắc hoặc phần còn thiếu:
+  - Không còn blocker; DB-02 đã merge qua PR #9.
+- Bước tiếp theo:
+  - Mở PR DB-03; sau khi merge có thể bắt đầu AUTH-01 và CAT-01 trên các branch riêng.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
