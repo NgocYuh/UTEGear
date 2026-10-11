@@ -1,0 +1,13 @@
+{
+  "stores": [
+    {"id": 11, "name": "UTEGear Thủ Đức", "address": "01 Võ Văn Ngân", "province": "TP. Hồ Chí Minh", "district": "Thủ Đức", "phone": "02830000011", "email": "thuduc@example.test", "imageUrl": null, "openingTime": "08:00", "closingTime": "21:00", "active": true}
+  ],
+  "storeDetail": {"id": 11, "name": "UTEGear Thủ Đức", "address": "01 Võ Văn Ngân", "province": "TP. Hồ Chí Minh", "district": "Thủ Đức", "phone": "02830000011", "email": "thuduc@example.test", "imageUrl": null, "openingTime": "08:00", "closingTime": "21:00", "active": true, "description": "Cửa hàng trải nghiệm và nhận hàng.", "latitude": 10.8506, "longitude": 106.7719},
+  "defaultVariantInStock": {"store": {"id": 11, "name": "UTEGear Thủ Đức", "active": true}, "variantId": 1001, "sku": "M1-DEFAULT", "optionValues": {}, "quantity": 8, "available": true, "updatedAt": "2026-10-11T08:00:00Z"},
+  "selectedVariantOutOfStock": {"store": {"id": 11, "name": "UTEGear Thủ Đức", "active": true}, "variantId": 1003, "sku": "K87-WHITE-BROWN", "optionValues": {"color": "white", "switch": "brown", "layout": "ANSI"}, "quantity": 0, "available": false, "updatedAt": "2026-10-11T08:00:00Z"},
+  "inactiveStoreError": {"timestamp": "2026-10-11T08:30:00Z", "status": 409, "code": "STORE_INACTIVE", "message": "Cửa hàng đang ngừng hoạt động", "path": "/api/stores/12/availability"},
+  "inventoryPage": {"content": [{"storeId": 11, "storeName": "UTEGear Thủ Đức", "variantId": 1002, "sku": "K87-BLACK-RED", "productId": 102, "productName": "Bàn phím cơ UTE K87", "optionValues": {"color": "black", "switch": "red", "layout": "ANSI"}, "quantity": 6, "updatedAt": "2026-10-11T08:00:00Z"}], "page": 0, "size": 20, "totalElements": 1, "totalPages": 1, "first": true, "last": true, "empty": false},
+  "mediaUploadSuccess": {"id": 501, "productId": 102, "secureUrl": "https://res.cloudinary.com/demo/image/upload/utegear/keyboard-k87.jpg", "publicId": "utegear/keyboard-k87", "altText": "Bàn phím cơ UTE K87", "primary": true, "sortOrder": 0},
+  "mediaUploadError": {"timestamp": "2026-10-11T08:30:00Z", "status": 502, "code": "MEDIA_UPLOAD_FAILED", "message": "Không thể tải ảnh lên", "path": "/api/admin/products/102/images"},
+  "forbidden": {"timestamp": "2026-10-11T08:30:00Z", "status": 403, "code": "FORBIDDEN", "message": "Bạn không có quyền thực hiện thao tác này", "path": "/api/admin/inventory"}
+}
