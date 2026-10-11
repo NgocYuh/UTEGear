@@ -202,9 +202,9 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## DB-03: Seed dữ liệu tham chiếu tối thiểu
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/reference-data-migration`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/10
 - Ngày cập nhật: 2026-10-11
 - Đã làm:
   - Tạo `V2__seed_reference_data.sql` nối tiếp V1.
@@ -219,9 +219,31 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - `mvnw.cmd -B --no-transfer-progress clean verify`: `PASS` với 1 test, 0 failure, 0 error, 0 skipped.
   - `git diff --check`: `PASS`.
 - Vướng mắc hoặc phần còn thiếu:
-  - Không còn blocker; DB-02 đã merge qua PR #9.
+  - Không còn blocker; PR #10 đã merge vào `main`.
 - Bước tiếp theo:
-  - Mở PR DB-03; sau khi merge có thể bắt đầu AUTH-01 và CAT-01 trên các branch riêng.
+  - AUTH-01 và CAT-01 có thể bắt đầu trên các branch riêng.
+- Ngày hoàn tất: 2026-10-11
+
+## AUTH-01: User, Role và repository
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/user-role-domain`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm:
+  - Tạo entity `User` và `Role` khớp các bảng `users`, `roles` và `user_roles` của Flyway V1.
+  - Dùng đúng role `ADMIN` và `CUSTOMER` đã seed trong V2.
+  - Tạo repository tra cứu email không phân biệt hoa thường và kiểm tra email/phone trùng.
+  - Không chuyển các quan hệ cart, order hoặc address từ dự án cũ vào trước task tương ứng.
+- Kết quả kiểm thử:
+  - Mapping User-Role và audit timestamp: `PASS`.
+  - Unique constraint email và phone: `PASS`.
+  - `mvn -B --no-transfer-progress clean verify`: `PASS` với 4 test, 0 failure, 0 error, 0 skipped.
+  - `git diff --check`: `PASS`.
+- Vướng mắc hoặc phần còn thiếu:
+  - Không có blocker trong phạm vi AUTH-01.
+- Bước tiếp theo:
+  - Merge AUTH-01, sau đó triển khai AUTH-02 trên branch riêng.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
