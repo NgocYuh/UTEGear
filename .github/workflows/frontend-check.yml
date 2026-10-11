@@ -1,5 +1,6 @@
 name: Frontend Check
 
+# Enable pull_request only when real frontend checks are implemented.
 on:
   workflow_dispatch:
 
@@ -8,7 +9,13 @@ permissions:
 
 jobs:
   pending-tooling:
+    name: Frontend checks awaiting tooling
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - name: Frontend tooling status
-        run: echo "TODO Enable checks after adding HTMLHint, ESLint, or Stylelint."
+      - name: Report missing frontend checks
+        shell: bash
+        run: |
+          echo "::error::Frontend checks are not implemented. See docs/frontend/quality-checks.md."
+          echo "This manual workflow does not validate templates, CSS, JavaScript, or accessibility."
+          exit 1
