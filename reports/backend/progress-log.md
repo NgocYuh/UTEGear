@@ -74,7 +74,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## DB-01: Chốt ERD và model contract
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `docs/database-model`
 - Pull Request: https://github.com/NgocYuh/UTEGear/pull/4
 - Ngày cập nhật: 2026-10-11
@@ -99,17 +99,16 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
     0 skipped.
   - `git diff --check`: `PASS`.
 - Vướng mắc hoặc phần còn thiếu:
-  - Chờ `@trongsonho` review `optionValues`, biến thể mặc định, tồn kho theo cửa hàng và snapshot đơn
-    hàng trước khi DB-01 được ghi `DONE`.
+  - Không còn blocker; PR #4 đã merge vào `main`.
 - Bước tiếp theo:
-  - Chờ `@trongsonho` review tài liệu và CI của PR #4; cập nhật `DONE` trước khi merge.
-- Ngày hoàn tất: `Chưa hoàn tất`
+  - Thực hiện DB-02 từ ERD đã duyệt.
+- Ngày hoàn tất: 2026-10-11
 
 ## API-01: Contract nền, Auth và Catalog
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `docs/api-contract-baseline`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/6
 - Ngày cập nhật: 2026-10-11
 - Đã làm:
   - Chốt quy ước HTTP, lỗi, JWT, thời gian, tiền và phân trang dùng chung.
@@ -124,16 +123,16 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
     xác nhận vì lần gọi đầu tiên chạy sai working directory và đã được dừng.
   - `git diff --check`: `PASS`.
 - Vướng mắc hoặc phần còn thiếu:
-  - Chờ `@trongsonho` review field và state cần cho UI Auth/Catalog.
+  - Không còn blocker; PR #6 đã merge vào `main`.
 - Bước tiếp theo:
-  - Mở PR API-01; sau khi contract merge, Frontend có thể bắt đầu UI-01, FE-AUTH-01 và FE-CAT-01.
-- Ngày hoàn tất: `Chưa hoàn tất`
+  - Frontend có thể làm UI-01, FE-AUTH-01 và FE-CAT-01 từ mock API-01.
+- Ngày hoàn tất: 2026-10-11
 
 ## API-02: Contract Store, Inventory và media admin
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `docs/store-inventory-contract`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/7
 - Ngày cập nhật: 2026-10-11
 - Đã làm:
   - Chốt API store public, availability theo `storeId + variantId` và tổng tồn cấp product.
@@ -145,18 +144,18 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Parse toàn bộ JSON trong `docs/api/mock`: `PASS`.
   - Kiểm tra link Markdown tương đối: `PASS`.
   - `git diff --check`: `PASS`.
-  - Backend CI: `CHỜ PUSH`.
+  - Backend CI: xem kết quả kiểm tra của PR #7.
 - Vướng mắc hoặc phần còn thiếu:
-  - Phụ thuộc API-01; chờ `@trongsonho` review field/state cho FE-STORE-01 và UI-02.
+  - Không còn blocker; PR #7 đã merge vào `main`.
 - Bước tiếp theo:
-  - Review/merge sau API-01, rồi Frontend có thể dùng mock API-02 mà không chờ endpoint thật.
-- Ngày hoàn tất: `Chưa hoàn tất`
+  - Frontend có thể dùng mock API-02 cho FE-STORE-01 và UI-02.
+- Ngày hoàn tất: 2026-10-11
 
 ## API-03: Contract Cart, Wishlist, Order và realtime
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `docs/customer-transaction-contract`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/8
 - Ngày cập nhật: 2026-10-11
 - Đã làm:
   - Chốt API cart, wishlist, address, coupon, checkout, order, admin order, review và notification.
@@ -168,11 +167,37 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Parse toàn bộ JSON trong `docs/api/mock`: `PASS`.
   - Kiểm tra link Markdown tương đối: `PASS`.
   - `git diff --check`: `PASS`.
-  - Backend CI: `CHỜ PUSH`.
+  - Backend CI: xem kết quả kiểm tra của PR #8.
 - Vướng mắc hoặc phần còn thiếu:
-  - Phụ thuộc API-02; chờ `@trongsonho` review field/state cho các trang giao dịch và WebSocket client.
+  - Không còn blocker; PR #8 đã merge vào `main`.
 - Bước tiếp theo:
-  - Review/merge sau API-02; sau đó các luồng BE/FE phụ thuộc API-03 có thể bắt đầu song song.
+  - Các luồng BE/FE phụ thuộc API-03 có thể bắt đầu song song.
+- Ngày hoàn tất: 2026-10-11
+
+## DB-02: Flyway migration khởi tạo
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/initial-database-migration`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm:
+  - Đối chiếu 21 bảng trong ERD với entity nguồn và ba contract API đã merge.
+  - Tạo `V1__create_core_schema.sql` cho PostgreSQL với khóa, ràng buộc, index và JSONB.
+  - Chỉ lưu tồn kho tại `store_inventory` theo unique `store_id + variant_id`.
+  - Không tạo SKU hoặc tồn kho trên Product; cart item và order item bắt buộc tham chiếu variant.
+  - Lưu `secure_url` và `public_id` cho product/review image do Cloudinary quản lý.
+- Kết quả kiểm thử:
+  - Kiểm tra tĩnh: `PASS` với đúng 21 bảng và đủ invariant chính của DB-01.
+  - Flyway trên PostgreSQL 16.15 trống: `PASS`, áp dụng đúng một migration và ghi version `1` thành công.
+  - Khởi động lần hai trên cùng database: `PASS`, Flyway báo schema ở version 1 và không cần migration.
+  - Metadata PostgreSQL: `PASS`; `store_inventory` chỉ có `store_id + variant_id`, cart/order item có
+    `variant_id NOT NULL`, và 5 index trọng yếu đã tồn tại.
+  - `mvnw.cmd -B --no-transfer-progress clean verify`: `PASS` với 1 test, 0 failure, 0 error, 0 skipped.
+  - `git diff --check`: `PASS`.
+- Vướng mắc hoặc phần còn thiếu:
+  - Không có blocker trong phạm vi DB-02.
+- Bước tiếp theo:
+  - Mở PR DB-02; sau khi merge thì thực hiện DB-03 bằng migration mới, không sửa V1.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới

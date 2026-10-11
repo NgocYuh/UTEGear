@@ -993,10 +993,11 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | FND-03 | BE | `ci/backend-quality-gate` | DONE | [PR #3](https://github.com/NgocYuh/UTEGear/pull/3) | 2026-10-11 |
 | FND-04 | FE | `ci/frontend-quality-gate` | DONE | [PR #5](https://github.com/NgocYuh/UTEGear/pull/5) | 2026-10-11 |
 | DB-01 | BE viết, FE review | `docs/database-model` | DONE | [PR #4](https://github.com/NgocYuh/UTEGear/pull/4) | 2026-10-11 |
-| API-01 | BE viết, FE review | `docs/api-contract-baseline` | IN REVIEW | Chưa mở |  |
-| API-02 | BE viết, FE review | `docs/store-inventory-contract` | IN REVIEW | Chưa mở |  |
-| API-03 | BE viết, FE review | `docs/customer-transaction-contract` | IN REVIEW | Chưa mở |  |
-| DB-02…03 | BE | Xem backlog | TODO |  |  |
+| API-01 | BE viết, FE review | `docs/api-contract-baseline` | DONE | [PR #6](https://github.com/NgocYuh/UTEGear/pull/6) | 2026-10-11 |
+| API-02 | BE viết, FE review | `docs/store-inventory-contract` | DONE | [PR #7](https://github.com/NgocYuh/UTEGear/pull/7) | 2026-10-11 |
+| API-03 | BE viết, FE review | `docs/customer-transaction-contract` | DONE | [PR #8](https://github.com/NgocYuh/UTEGear/pull/8) | 2026-10-11 |
+| DB-02 | BE | `feat/initial-database-migration` | IN REVIEW | Chưa mở |  |
+| DB-03 | BE | `feat/reference-data-migration` | TODO |  |  |
 | AUTH-01…03 | BE | Xem backlog | TODO |  |  |
 | CAT-01…03 | BE | Xem backlog | TODO |  |  |
 | INV-01…03 | BE | Xem backlog | TODO |  |  |
