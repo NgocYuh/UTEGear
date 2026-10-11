@@ -1000,7 +1000,7 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | DB-03 | BE | `feat/reference-data-migration` | DONE | [PR #10](https://github.com/NgocYuh/UTEGear/pull/10) | 2026-10-11 |
 | AUTH-01 | BE | `feat/user-role-domain` | IN REVIEW | Chưa mở |  |
 | AUTH-02 | BE | `feat/user-registration` | IN REVIEW | Chưa mở |  |
-| AUTH-03 | BE | `feat/jwt-authentication` | TODO |  |  |
+| AUTH-03 | BE | `feat/jwt-authentication` | IN REVIEW | Chưa mở |  |
 | CAT-01…03 | BE | Xem backlog | TODO |  |  |
 | INV-01…03 | BE | Xem backlog | TODO |  |  |
 | MED-01, DATA-01…02 | BE | Xem backlog | TODO |  |  |
