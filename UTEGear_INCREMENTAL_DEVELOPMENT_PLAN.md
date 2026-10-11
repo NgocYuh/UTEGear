@@ -995,7 +995,7 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | DB-01 | BE viết, FE review | `docs/database-model` | DONE | [PR #4](https://github.com/NgocYuh/UTEGear/pull/4) | 2026-10-11 |
 | API-01 | BE viết, FE review | `docs/api-contract-baseline` | IN REVIEW | Chưa mở |  |
 | API-02 | BE viết, FE review | `docs/store-inventory-contract` | IN REVIEW | Chưa mở |  |
-| API-03 | BE viết, FE review | `docs/customer-transaction-contract` | TODO |  |  |
+| API-03 | BE viết, FE review | `docs/customer-transaction-contract` | IN REVIEW | Chưa mở |  |
 | DB-02…03 | BE | Xem backlog | TODO |  |  |
 | AUTH-01…03 | BE | Xem backlog | TODO |  |  |
 | CAT-01…03 | BE | Xem backlog | TODO |  |  |

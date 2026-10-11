@@ -152,6 +152,29 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Review/merge sau API-01, rồi Frontend có thể dùng mock API-02 mà không chờ endpoint thật.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## API-03: Contract Cart, Wishlist, Order và realtime
+
+- Trạng thái: `IN REVIEW`
+- Branch: `docs/customer-transaction-contract`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm:
+  - Chốt API cart, wishlist, address, coupon, checkout, order, admin order, review và notification.
+  - Mọi cart/checkout/order item dùng `variantId`; order response giữ snapshot biến thể và giá.
+  - Chốt enum và transition order/payment, quyền sở hữu tài nguyên và nhóm mã lỗi giao dịch.
+  - Chốt STOMP endpoint, destination theo user/admin, envelope event, reconnect và khử trùng event.
+  - Thêm JSON mock cho full/empty, validation, thiếu hàng, coupon lỗi, unauthorized/forbidden và realtime.
+- Kết quả kiểm thử:
+  - Parse toàn bộ JSON trong `docs/api/mock`: `PASS`.
+  - Kiểm tra link Markdown tương đối: `PASS`.
+  - `git diff --check`: `PASS`.
+  - Backend CI: `CHỜ PUSH`.
+- Vướng mắc hoặc phần còn thiếu:
+  - Phụ thuộc API-02; chờ `@trongsonho` review field/state cho các trang giao dịch và WebSocket client.
+- Bước tiếp theo:
+  - Review/merge sau API-02; sau đó các luồng BE/FE phụ thuộc API-03 có thể bắt đầu song song.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
