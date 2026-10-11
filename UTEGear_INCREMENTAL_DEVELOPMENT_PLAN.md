@@ -991,9 +991,11 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | FND-01 | BE | `chore/project-scaffold` | DONE | [PR #1](https://github.com/NgocYuh/UTEGear/pull/1) | 2026-09-21 |
 | FND-02 | BE | `chore/application-profiles` | DONE | [PR #2](https://github.com/NgocYuh/UTEGear/pull/2) | 2026-10-10 |
 | FND-03 | BE | `ci/backend-quality-gate` | DONE | [PR #3](https://github.com/NgocYuh/UTEGear/pull/3) | 2026-10-11 |
-| FND-04 | FE | `ci/frontend-quality-gate` | TODO |  |  |
-| DB-01 | BE viết, FE review | `docs/database-model` | IN REVIEW | [PR #4](https://github.com/NgocYuh/UTEGear/pull/4) |  |
-| API-01…03 | BE viết, FE review | Xem backlog | TODO |  |  |
+| FND-04 | FE | `ci/frontend-quality-gate` | DONE | [PR #5](https://github.com/NgocYuh/UTEGear/pull/5) | 2026-10-11 |
+| DB-01 | BE viết, FE review | `docs/database-model` | DONE | [PR #4](https://github.com/NgocYuh/UTEGear/pull/4) | 2026-10-11 |
+| API-01 | BE viết, FE review | `docs/api-contract-baseline` | IN REVIEW | Chưa mở |  |
+| API-02 | BE viết, FE review | `docs/store-inventory-contract` | TODO |  |  |
+| API-03 | BE viết, FE review | `docs/customer-transaction-contract` | TODO |  |  |
 | DB-02…03 | BE | Xem backlog | TODO |  |  |
 | AUTH-01…03 | BE | Xem backlog | TODO |  |  |
 | CAT-01…03 | BE | Xem backlog | TODO |  |  |
