@@ -15,6 +15,9 @@ Lưu tài liệu báo cáo theo khu vực `backend/`, `frontend/`, `crawler/`, `
 Mỗi mục phải ghi Task ID, branch, Pull Request, việc đã làm, kết quả kiểm thử, vướng mắc hoặc
 phần còn thiếu, bước tiếp theo và ngày cập nhật. Nếu chưa có vướng mắc, ghi `Không có`.
 
+Nhật ký là nguồn báo cáo duy nhất của task. Mô tả Pull Request chỉ ghi Task ID và đường dẫn đến mục
+nhật ký; không tạo checklist riêng và không chép lại nội dung kiểm thử, migration hoặc cấu hình.
+
 Người thực hiện cập nhật `DONE` trong commit cuối của chính branch task, ngay trước khi merge.
 Nhờ vậy, `main` chỉ nhận trạng thái `DONE` cùng lúc với mã nguồn của task.
 

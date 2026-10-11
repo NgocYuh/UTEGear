@@ -74,9 +74,9 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## DB-01: Chốt ERD và model contract
 
-- Trạng thái: `IN PROGRESS`
+- Trạng thái: `IN REVIEW`
 - Branch: `docs/database-model`
-- Pull Request: [Chưa mở - tạo PR từ branch đã push](https://github.com/NgocYuh/UTEGear/compare/main...docs/database-model?expand=1)
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/4
 - Ngày cập nhật: 2026-10-11
 - Đã làm:
   - Đối chiếu toàn bộ entity của dự án cũ, tập trung vào user, catalog, variant, store, inventory,
@@ -89,6 +89,8 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
     `optionValues = {}`.
   - Chốt cart item và order item bắt buộc dùng `variantId`; order item giữ snapshot lịch sử.
   - Cập nhật model contract để Frontend review field và hành vi trước API-01.
+  - Theo quyết định của nhóm, bỏ Pull Request template và dùng progress log làm nơi báo cáo duy nhất
+    cho cả Backend và Frontend.
 - Kết quả kiểm thử:
   - Kiểm tra 2 liên kết Markdown tương đối: `PASS`.
   - Kiểm tra ERD: `PASS` với 21 bảng dự kiến và đủ invariant cho variant, inventory, cart, order,
@@ -100,7 +102,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Chờ `@trongsonho` review `optionValues`, biến thể mặc định, tồn kho theo cửa hàng và snapshot đơn
     hàng trước khi DB-01 được ghi `DONE`.
 - Bước tiếp theo:
-  - Chạy kiểm tra, push branch, mở Pull Request và yêu cầu Frontend review tài liệu.
+  - Chờ `@trongsonho` review tài liệu và CI của PR #4; cập nhật `DONE` trước khi merge.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới

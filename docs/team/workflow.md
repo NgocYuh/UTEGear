@@ -8,6 +8,8 @@
   `feat/...`, `fix/...`, `test/...`, `docs/...` hoặc `chore/...`.
 - Một branch chỉ xử lý một mục tiêu. Commit nhỏ, rõ nghĩa.
 - Push branch, mở Pull Request và để thành viên còn lại review.
+- Mô tả Pull Request chỉ ghi Task ID và đường dẫn đến mục nhật ký của task. Không dùng checklist PR
+  và không chép lại nội dung đã có trong nhật ký.
 - Chỉ merge khi CI pass; ưu tiên **Squash and Merge**, sau đó xóa branch.
 
 ## Phân công chính thức
@@ -67,7 +69,7 @@ config phải được thông báo trước khi chỉnh sửa để tránh xung 
 2. Tạo branch ngắn hạn, ghi task là `IN PROGRESS` trong nhật ký của vai trò và thực hiện commit nhỏ.
 3. Chạy `git diff --check` và `./mvnw -B clean verify`.
 4. Cập nhật việc đã làm, kết quả kiểm thử và vướng mắc; chuyển trạng thái sang `IN REVIEW`.
-5. Push branch, mở PR theo template và yêu cầu thành viên còn lại review.
+5. Push branch, mở PR với Task ID và đường dẫn nhật ký, rồi yêu cầu thành viên còn lại review.
 6. Nếu không thể tiếp tục, chuyển sang `BLOCKED` và ghi rõ phần còn thiếu.
 7. Sửa phản hồi, chờ CI pass và thành viên còn lại duyệt PR.
 8. Cập nhật `DONE`, PR và ngày hoàn tất trong commit cuối của cùng branch; reviewer kiểm tra lại,

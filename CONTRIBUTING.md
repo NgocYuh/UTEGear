@@ -38,6 +38,8 @@ riêng. Task chạm cả hai phía phải được tách thành task Backend và
   và PR đã được duyệt. Commit cập nhật `DONE` phải nằm trong chính PR của task ngay trước khi merge.
 - Nhật ký tiến độ là tài liệu Markdown. Không đưa application log, log debug hoặc credential vào
   các file này.
+- Nhật ký là nơi duy nhất ghi phạm vi thay đổi, việc đã làm, kết quả kiểm thử, migration, cấu hình,
+  ảnh giao diện và phần còn thiếu. Không lặp lại các nội dung này trong mô tả Pull Request.
 
 ## Commit
 
@@ -59,7 +61,7 @@ Trên Windows dùng `mvnw.cmd -B clean verify`.
 - Build và toàn bộ test liên quan pass.
 - Tài liệu và file `.example` đã cập nhật nếu cấu hình thay đổi.
 - Không có secret, dữ liệu production hoặc file sinh tự động không cần thiết.
-- PR mô tả phạm vi, cách kiểm thử và ảnh giao diện nếu có.
+- Mô tả PR chỉ ghi Task ID và đường dẫn đến đúng mục trong nhật ký tiến độ.
 - Có review của thành viên còn lại và CI pass trước khi merge.
 - Nếu là task Backend có API/model mới, contract và JSON mẫu đã được cập nhật.
 - Nếu là task Frontend, dữ liệu mock khớp contract và không tự suy đoán field chưa được duyệt.

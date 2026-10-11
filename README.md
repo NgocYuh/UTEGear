@@ -24,7 +24,7 @@ Xây dựng website thương mại điện tử UTEGear theo mô hình chuỗi c
 - `docs/`: tài liệu kiến trúc, hợp đồng dữ liệu/API, giao diện và quy trình nhóm.
 - `scripts/`: hướng dẫn script cơ sở dữ liệu và nhập sản phẩm.
 - `reports/`: báo cáo theo từng mảng và nhật ký tiến độ riêng của Backend/Frontend.
-- `.github/`: CI, CODEOWNERS và mẫu Pull Request.
+- `.github/`: CI và CODEOWNERS.
 
 ## Phân công nhóm
 
