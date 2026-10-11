@@ -316,6 +316,18 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Bước tiếp theo: Merge CAT-01 rồi CAT-02; triển khai CAT-03.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## CAT-03: Public catalog API
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/public-product-api`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm: API public category/brand/product; tìm kiếm, filter, khoảng giá, pagination, sort và DTO summary/detail có variants.
+- Kết quả kiểm thử: MockMvc empty/pagination, filter lỗi và 404 PASS; `mvn -B --no-transfer-progress clean verify` PASS với 29 test; `git diff --check` PASS.
+- Vướng mắc hoặc phần còn thiếu: Tổng tồn kho giữ 0 cho tới INV-02; branch xếp tầng trên CAT-02.
+- Bước tiếp theo: Merge CAT-01, CAT-02 rồi CAT-03.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
