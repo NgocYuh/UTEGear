@@ -226,9 +226,10 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## AUTH-01: User, Role và repository
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/user-role-domain`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/11
+- Merge commit: `94fcabc545642d601ad37c55a79fa450439da35e`
 - Ngày cập nhật: 2026-10-11
 - Đã làm:
   - Tạo entity `User` và `Role` khớp các bảng `users`, `roles` và `user_roles` của Flyway V1.
@@ -241,16 +242,17 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - `mvn -B --no-transfer-progress clean verify`: `PASS` với 4 test, 0 failure, 0 error, 0 skipped.
   - `git diff --check`: `PASS`.
 - Vướng mắc hoặc phần còn thiếu:
-  - Không có blocker trong phạm vi AUTH-01.
+  - Không có blocker; PR #11 đã merge vào `main`.
 - Bước tiếp theo:
-  - Merge AUTH-01, sau đó triển khai AUTH-02 trên branch riêng.
-- Ngày hoàn tất: `Chưa hoàn tất`
+  - AUTH-02 đã hoàn tất.
+- Ngày hoàn tất: 2026-10-11
 
 ## AUTH-02: Đăng ký và mã hóa mật khẩu
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/user-registration`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/12
+- Merge commit: `3050bbe278f415dffdb48466d9f74ca402ddf5db`
 - Ngày cập nhật: 2026-10-11
 - Đã làm:
   - Thêm `POST /api/auth/register` với DTO validation đúng API-01.
@@ -263,16 +265,17 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Toàn bộ regression test: `PASS` với 7 test, 0 failure, 0 error, 0 skipped.
   - `git diff --check`: `PASS`.
 - Vướng mắc hoặc phần còn thiếu:
-  - Branch xếp tầng trên AUTH-01; cần merge AUTH-01 trước AUTH-02.
+  - Không có blocker; PR #12 đã merge vào `main` sau AUTH-01.
 - Bước tiếp theo:
-  - Merge AUTH-01 rồi AUTH-02; triển khai AUTH-03 trên branch riêng.
-- Ngày hoàn tất: `Chưa hoàn tất`
+  - AUTH-03 đã hoàn tất.
+- Ngày hoàn tất: 2026-10-11
 
 ## AUTH-03: JWT login và API security
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/jwt-authentication`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/13
+- Merge commit: `4ff0d53e7b59633ef143298d6f37240429069bec`
 - Ngày cập nhật: 2026-10-11
 - Đã làm:
   - Thêm login trả `AuthSession` đúng contract, gồm access token Bearer, hạn token và `UserProfile`.
@@ -287,45 +290,72 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - `mvn -B --no-transfer-progress clean verify`: `PASS` với 21 test, 0 failure, 0 error, 0 skipped.
   - `git diff --check`: `PASS`.
 - Vướng mắc hoặc phần còn thiếu:
-  - Branch xếp tầng trên AUTH-02; cần merge theo thứ tự AUTH-01, AUTH-02 rồi AUTH-03.
+  - Không có blocker; PR #13 đã merge vào `main` sau AUTH-02.
 - Bước tiếp theo:
-  - Sau khi ba PR merge, có thể triển khai các task phụ thuộc AUTH-03.
-- Ngày hoàn tất: `Chưa hoàn tất`
+  - Các task phụ thuộc AUTH-03 có thể triển khai.
+- Ngày hoàn tất: 2026-10-11
 
 ## CAT-01: Brand và Category
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/brand-category-domain`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/16
+- Merge commit: `bb445a6123ba72670f6e4971a3beb653e30bcb7c`
 - Ngày cập nhật: 2026-10-11
 - Đã làm: entity, repository, DTO, service và chuẩn hóa slug cho Brand/Category theo schema V1.
 - Kết quả kiểm thử: `mvn -B --no-transfer-progress clean verify` PASS với 22 test; `git diff --check` PASS.
-- Vướng mắc hoặc phần còn thiếu: Không có blocker.
-- Bước tiếp theo: Merge CAT-01 rồi CAT-02.
-- Ngày hoàn tất: `Chưa hoàn tất`
+- Vướng mắc hoặc phần còn thiếu: Không có blocker; commit CAT-01 vào `main` trong PR #16 do chuỗi branch CAT xếp tầng.
+- Bước tiếp theo: CAT-02 đã hoàn tất.
+- Ngày hoàn tất: 2026-10-11
 
 ## CAT-02: Product, Variant và ProductImage
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/product-domain`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/16
+- Merge commit: `bb445a6123ba72670f6e4971a3beb653e30bcb7c`
 - Ngày cập nhật: 2026-10-11
 - Đã làm: mapping Product/Variant/Image theo V1; SKU và option thuộc variant; ảnh giữ `secureUrl/publicId`; kiểm tra giá và đúng một default variant.
 - Kết quả kiểm thử: `mvn -B --no-transfer-progress clean verify` PASS với 26 test; `git diff --check` PASS.
-- Vướng mắc hoặc phần còn thiếu: Branch xếp tầng trên CAT-01.
-- Bước tiếp theo: Merge CAT-01 rồi CAT-02; triển khai CAT-03.
-- Ngày hoàn tất: `Chưa hoàn tất`
+- Vướng mắc hoặc phần còn thiếu: Không có blocker; commit CAT-02 vào `main` trong PR #16 do chuỗi branch CAT xếp tầng.
+- Bước tiếp theo: CAT-03 đã hoàn tất.
+- Ngày hoàn tất: 2026-10-11
 
 ## CAT-03: Public catalog API
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/public-product-api`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/16
+- Merge commit: `bb445a6123ba72670f6e4971a3beb653e30bcb7c`
 - Ngày cập nhật: 2026-10-11
 - Đã làm: API public category/brand/product; tìm kiếm, filter, khoảng giá, pagination, sort và DTO summary/detail có variants.
 - Kết quả kiểm thử: MockMvc empty/pagination, filter lỗi và 404 PASS; `mvn -B --no-transfer-progress clean verify` PASS với 29 test; `git diff --check` PASS.
-- Vướng mắc hoặc phần còn thiếu: Tổng tồn kho giữ 0 cho tới INV-02; branch xếp tầng trên CAT-02.
-- Bước tiếp theo: Merge CAT-01, CAT-02 rồi CAT-03.
+- Vướng mắc hoặc phần còn thiếu: Tổng tồn kho giữ 0 cho tới INV-02; không có blocker trong phạm vi CAT-03.
+- Bước tiếp theo: Thực hiện INV-01, sau đó INV-02 bổ sung tồn kho thực cho catalog.
+- Ngày hoàn tất: 2026-10-11
+
+## INV-01: Store domain và admin API
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/store-management`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm:
+  - Thêm entity và repository Store khớp bảng `stores` của Flyway V1.
+  - Thêm DTO riêng cho request/response; không trả trực tiếp entity JPA.
+  - Thêm API admin liệt kê có lọc/phân trang, tạo, cập nhật và bật/tắt cửa hàng theo API-02.
+  - Chuẩn hóa field tùy chọn; kiểm tra dữ liệu bắt buộc, email, tọa độ, giờ hoạt động và số điện thoại trùng.
+  - Giữ toàn bộ endpoint dưới `/api/admin/**` cho role `ADMIN` theo SecurityConfig hiện có.
+- Kết quả kiểm thử:
+  - Service tạo, cập nhật, bật/tắt, trùng số điện thoại, không tìm thấy và giờ hoạt động sai: `PASS`.
+  - MockMvc request hợp lệ và validation lỗi: `PASS`.
+  - Security chặn role `CUSTOMER` và cho phép role `ADMIN` tạo cửa hàng: `PASS`.
+  - `mvn -B --no-transfer-progress clean verify`: `PASS` với 39 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - API public và availability thuộc INV-03; tồn kho theo biến thể thuộc INV-02, không đưa vào INV-01.
+  - Kiểm thử dùng H2 và mock repository; chưa kết nối Supabase thật trong task này.
+- Bước tiếp theo:
+  - Mở và merge PR INV-01; sau đó thực hiện INV-02.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
