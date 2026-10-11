@@ -997,8 +997,10 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | API-02 | BE viết, FE review | `docs/store-inventory-contract` | DONE | [PR #7](https://github.com/NgocYuh/UTEGear/pull/7) | 2026-10-11 |
 | API-03 | BE viết, FE review | `docs/customer-transaction-contract` | DONE | [PR #8](https://github.com/NgocYuh/UTEGear/pull/8) | 2026-10-11 |
 | DB-02 | BE | `feat/initial-database-migration` | DONE | [PR #9](https://github.com/NgocYuh/UTEGear/pull/9) | 2026-10-11 |
-| DB-03 | BE | `feat/reference-data-migration` | IN REVIEW | Chưa mở |  |
-| AUTH-01…03 | BE | Xem backlog | TODO |  |  |
+| DB-03 | BE | `feat/reference-data-migration` | DONE | [PR #10](https://github.com/NgocYuh/UTEGear/pull/10) | 2026-10-11 |
+| AUTH-01 | BE | `feat/user-role-domain` | IN REVIEW | Chưa mở |  |
+| AUTH-02 | BE | `feat/user-registration` | TODO |  |  |
+| AUTH-03 | BE | `feat/jwt-authentication` | TODO |  |  |
 | CAT-01…03 | BE | Xem backlog | TODO |  |  |
 | INV-01…03 | BE | Xem backlog | TODO |  |  |
 | MED-01, DATA-01…02 | BE | Xem backlog | TODO |  |  |
