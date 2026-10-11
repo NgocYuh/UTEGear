@@ -24,4 +24,41 @@ phải chờ implementation Backend hoàn tất.
   điểm đặt hàng.
 - API có trả mức tồn kho tổng ở cấp sản phẩm phải mô tả rõ cách tổng hợp từ các biến thể.
 
-Chưa có endpoint nghiệp vụ nào trong commit scaffold.
+## Quy ước HTTP chung
+
+- Base path của REST API là `/api`.
+- Request và response dùng `application/json`, trừ upload media dùng `multipart/form-data`.
+- Thời gian dùng ISO 8601 UTC, ví dụ `2026-10-11T08:30:00Z`.
+- Tiền là JSON number với tối đa hai chữ số thập phân; Backend dùng `BigDecimal`.
+- Collection rỗng trả `[]`, object thuộc tính biến thể rỗng trả `{}`; không dùng `null` thay cho collection.
+- JWT gửi qua `Authorization: Bearer <token>`. Không đặt token trong query string.
+- Endpoint phân trang nhận `page` bắt đầu từ `0`, `size` mặc định `20`, tối đa `100`, và `sort`
+  theo mẫu `field,direction`.
+
+Response thành công không bọc thêm `success` hoặc `message`. Response lỗi dùng một cấu trúc duy nhất:
+
+```json
+{
+  "timestamp": "2026-10-11T08:30:00Z",
+  "status": 400,
+  "code": "VALIDATION_FAILED",
+  "message": "Dữ liệu không hợp lệ",
+  "path": "/api/auth/register",
+  "fieldErrors": {
+    "email": "Email không đúng định dạng"
+  }
+}
+```
+
+`fieldErrors` chỉ xuất hiện với lỗi validation theo field. `requestId` có thể được bổ sung sau để truy vết,
+nhưng nếu Backend bổ sung thì phải cập nhật contract trước.
+
+## Danh mục contract
+
+| Task | Phạm vi | Tài liệu | Mock data |
+|---|---|---|---|
+| API-01 | Auth, profile, category, brand, product, search | [Auth và Catalog](auth-catalog-contract.md) | [`mock/api-01.json`](mock/api-01.json) |
+| API-02 | Store, inventory, media admin | Chờ task API-02 | Chờ task API-02 |
+| API-03 | Cart, wishlist, address, coupon, checkout, order, notification, realtime | Chờ task API-03 | Chờ task API-03 |
+
+Mock là dữ liệu phát triển giao diện, không phải dữ liệu production và không được import vào database.
