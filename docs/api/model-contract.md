@@ -1,26 +1,139 @@
 # Hợp đồng model
 
-Tài liệu này sẽ mô tả DTO trao đổi qua API: tên trường, kiểu dữ liệu, bắt buộc/tùy chọn,
-validation, enum, định dạng thời gian và quy tắc tương thích ngược. Backend (`@NgocYuh`) là
-người viết; Frontend (`@trongsonho`) review các field cần hiển thị và tương tác.
+Tài liệu này chốt ý nghĩa và tên field dùng chung giữa Backend và Frontend. Backend (`@NgocYuh`)
+viết contract; Frontend (`@trongsonho`) review dữ liệu cần hiển thị và tương tác trước khi merge.
 
-Không dùng entity persistence làm hợp đồng API mặc định. Model cụ thể chỉ được thêm sau khi
-ERD, quy tắc tồn kho và endpoint contract liên quan được review.
+Entity persistence không phải response API. API-01 đến API-03 sẽ bổ sung request, response, wrapper,
+phân trang và JSON mẫu cho từng endpoint. Các task implementation không được tự đổi tên hoặc thêm
+field trái với contract đã merge.
 
-## Bất biến catalog và tồn kho
+Mô hình bảng, khóa và constraint nằm tại
+[`docs/architecture/database-model.md`](../architecture/database-model.md).
 
-- `Product` luôn có danh sách `variants` với ít nhất một phần tử.
-- `ProductVariant` là đơn vị có SKU và là đối tượng mà cart, checkout, order và inventory tham
-  chiếu.
-- Nếu sản phẩm không có lựa chọn màu, switch hoặc layout, response vẫn chứa một biến thể mặc
-  định. Biến thể này không tạo ra lựa chọn giả trên giao diện.
-- Model biến thể phải cho Frontend nhận biết biến thể mặc định và các thuộc tính có thể chọn.
-  Tên field cụ thể sẽ được chốt trong DB-01 và API-01.
-- Model tồn kho luôn xác định `storeId` và `variantId`. Không dùng `productId` làm khóa tồn kho.
-- Số lượng tồn kho cấp sản phẩm, nếu xuất hiện trong response đọc, phải được ghi rõ là giá trị
-  tổng hợp từ các biến thể.
+## Quy ước dữ liệu
 
-Mỗi model đã chốt phải có JSON mẫu tối thiểu cho trạng thái đầy đủ, rỗng và lỗi liên quan.
-Thay đổi field đã merge phải được cập nhật ở đây trước khi sửa code Backend hoặc Frontend.
-Nếu một trang render dữ liệu trực tiếp bằng Thymeleaf, Backend cũng phải ghi tên model
-attribute, kiểu dữ liệu và trường hợp không có dữ liệu để Frontend dựng template độc lập.
+- ID dùng số nguyên 64 bit ở Backend. Frontend không suy ra ý nghĩa từ thứ tự ID.
+- Tiền dùng `BigDecimal` ở Backend. Cách biểu diễn tiền trong JSON được chốt tại API-01.
+- Thời gian API dùng ISO 8601 kèm múi giờ; database lưu `timestamptz`.
+- Enum dùng tên in hoa cố định. Backend phải từ chối giá trị ngoài contract.
+- Collection rỗng trả `[]`, object thuộc tính biến thể rỗng trả `{}`. Không dùng `null` thay cho hai
+  trạng thái này.
+- Field tổng hợp phải được ghi rõ là dữ liệu tính toán, không trở thành nguồn dữ liệu mới.
+
+## Catalog model
+
+### Product
+
+| Field | Kiểu logic | Bắt buộc | Ý nghĩa |
+|---|---|---|---|
+| `id` | integer 64 bit | Có | ID product |
+| `name` | string | Có | Tên chung của sản phẩm |
+| `description` | string | Không | Mô tả dài |
+| `specifications` | string hoặc object đọc | Không | Thông số; API-01 chốt dạng JSON đọc |
+| `basePrice` | decimal | Có | Giá cơ sở, không âm |
+| `salePrice` | decimal | Không | Giá khuyến mãi ở cấp product, nhỏ hơn hoặc bằng `basePrice` |
+| `status` | enum | Có | `ACTIVE`, `INACTIVE` hoặc `DELETED` |
+| `brandId` | integer 64 bit | Không | Brand có thể rỗng |
+| `categoryId` | integer 64 bit | Có | Category bắt buộc |
+| `variants` | array `ProductVariant` | Có | Luôn có ít nhất một phần tử |
+| `images` | array `ProductImage` | Có | Có thể rỗng |
+
+`Product` không có field SKU hoặc stock làm nguồn dữ liệu. SKU thuộc biến thể; tồn kho thuộc cặp cửa
+hàng và biến thể. Nếu API trả `totalQuantity`, giá trị đó chỉ là tổng hợp từ tồn kho biến thể.
+
+`OUT_OF_STOCK` không phải trạng thái product lưu trong database. Backend tính trạng thái hết hàng từ
+tồn kho hiện tại để tránh mâu thuẫn giữa catalog và inventory.
+
+### ProductVariant
+
+| Field | Kiểu logic | Bắt buộc | Ý nghĩa |
+|---|---|---|---|
+| `id` | integer 64 bit | Có | ID biến thể dùng cho cart, order và inventory |
+| `productId` | integer 64 bit | Có | Product sở hữu biến thể |
+| `sku` | string | Có | SKU duy nhất toàn hệ thống |
+| `optionValues` | object string-to-string | Có | Tổ hợp thuộc tính có thể chọn; `{}` cho biến thể không có lựa chọn |
+| `priceAdjustment` | decimal | Có | Mức cộng hoặc trừ vào giá product; mặc định `0` |
+| `defaultVariant` | boolean | Có | Biến thể chọn ban đầu của product |
+| `active` | boolean | Có | Cho phép chọn và giao dịch biến thể |
+| `image` | `MediaImage` | Không | Ảnh riêng của biến thể khi cần |
+
+Mỗi product có đúng một `defaultVariant = true`. Product không có lựa chọn có đúng một biến thể mặc
+định và `optionValues = {}`. Product có lựa chọn dùng object có thể chứa nhiều khóa, ví dụ `color`,
+`switch` và `layout`; Frontend không được giả định mỗi biến thể chỉ có một thuộc tính.
+
+Giá hiệu lực của biến thể bằng giá hiệu lực của product cộng `priceAdjustment`. API-01 sẽ chốt field
+giá đã tính để Frontend không tự lặp lại quy tắc khuyến mãi.
+
+### ProductImage và MediaImage
+
+| Field | Kiểu logic | Bắt buộc | Ý nghĩa |
+|---|---|---|---|
+| `secureUrl` | string URL | Có khi có ảnh | URL HTTPS để hiển thị |
+| `publicId` | string | Có ở model quản trị | Định danh Cloudinary dùng cho thay thế hoặc xóa ảnh |
+| `altText` | string | Không | Nội dung thay thế cho ảnh |
+| `sortOrder` | integer | Có với ảnh product | Thứ tự hiển thị, không âm |
+| `primary` | boolean | Có với ảnh product | Ảnh chính; tối đa một ảnh chính cho mỗi product |
+
+Response public có thể không trả `publicId`; response quản trị cần field này để quản lý tài nguyên.
+Database luôn lưu cả `secure_url` và `public_id` cho ảnh Cloudinary do hệ thống quản lý.
+
+## Store và inventory model
+
+| Field | Kiểu logic | Bắt buộc | Ý nghĩa |
+|---|---|---|---|
+| `storeId` | integer 64 bit | Có | Cửa hàng giữ tồn kho |
+| `variantId` | integer 64 bit | Có | Biến thể được lưu kho |
+| `quantity` | integer | Có | Số lượng hiện có, không âm |
+| `updatedAt` | datetime | Có | Thời điểm thay đổi gần nhất |
+
+Cặp `storeId + variantId` là duy nhất. Không có model cập nhật tồn kho chỉ nhận `productId`. Nếu màn
+hình cần tổng tồn cấp sản phẩm, Backend cộng số lượng của các biến thể và ghi rõ đây là field tổng hợp.
+
+## Cart model
+
+`CartItem` luôn có `variantId` và `quantity > 0`. Client phải gửi `variantId` kể cả khi product chỉ có
+một biến thể mặc định. Response đọc có thể lồng `product` và `variant` summary để render, nhưng ID ghi
+nhận giao dịch vẫn là `variantId`.
+
+Mỗi giỏ chỉ có một dòng cho một biến thể. Thêm lại cùng `variantId` làm tăng số lượng thay vì tạo dòng
+trùng.
+
+## Order và payment model
+
+`OrderItem` gồm hai nhóm dữ liệu:
+
+- Tham chiếu bắt buộc: `variantId`.
+- Snapshot không đổi: `productName`, `sku`, `optionValues`, `imageUrl`, `unitPrice`, `quantity` và
+  `subtotal` tại thời điểm đặt hàng.
+
+Catalog thay đổi sau đó không được làm thay đổi nội dung đơn cũ. Frontend hiển thị snapshot của
+`OrderItem`, không tải lại tên, ảnh hoặc giá hiện tại để thay thế lịch sử.
+
+`Order` có `fulfillmentStoreId`. Giá trị có thể rỗng khi đơn mới tạo và chưa phân bổ, nhưng phải có
+trước khi xác nhận nhận tại cửa hàng hoặc trừ tồn kho cho giao tận nơi.
+
+`Payment` trong phạm vi hiện tại là quan hệ tối đa một bản ghi cho mỗi order. Model gồm `method`,
+`status`, `amount`, `transactionId`, `createdAt` và `paidAt`. API-03 sẽ chốt enum và JSON lỗi cụ thể.
+
+## Bất biến Frontend phải dựa vào
+
+- `variants` không rỗng.
+- Khi `variants` chỉ có một phần tử mặc định với `optionValues = {}`, giao diện không tạo bộ chọn giả.
+- Khi có nhiều biến thể, giao diện đọc tất cả khóa trong `optionValues`; không hard-code chỉ một thuộc
+  tính.
+- Mọi thao tác giỏ hàng, checkout và kiểm tra tồn kho dùng `variantId`.
+- Tồn kho theo cửa hàng dùng đồng thời `storeId` và `variantId`.
+- Lịch sử đơn hàng dùng snapshot trong `OrderItem`.
+- Collection rỗng là `[]`; thuộc tính biến thể rỗng là `{}`.
+
+## Phần dành cho API-01 đến API-03
+
+DB-01 chưa chốt envelope HTTP, tên field phân trang, mã lỗi hoặc JSON mẫu endpoint. Backend phải bổ
+sung các phần đó trước khi Frontend bắt đầu UI phụ thuộc:
+
+1. API-01: auth, profile và catalog, gồm product một biến thể mặc định và product nhiều biến thể.
+2. API-02: store, inventory và media quản trị.
+3. API-03: cart, wishlist, checkout, order, review và WebSocket payload.
+
+Frontend có thể review ngay các field logic trong tài liệu này, nhưng chỉ dùng JSON mock sau khi task
+contract API tương ứng được merge.
