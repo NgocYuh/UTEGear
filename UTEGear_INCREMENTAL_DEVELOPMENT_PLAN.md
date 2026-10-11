@@ -1002,7 +1002,7 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | AUTH-02 | BE | `feat/user-registration` | DONE | [PR #12](https://github.com/NgocYuh/UTEGear/pull/12) | 2026-10-11 |
 | AUTH-03 | BE | `feat/jwt-authentication` | DONE | [PR #13](https://github.com/NgocYuh/UTEGear/pull/13) | 2026-10-11 |
 | CAT-01 | BE | `feat/brand-category-domain` | IN REVIEW | Chưa mở |  |
-| CAT-02 | BE | `feat/product-domain` | TODO |  |  |
+| CAT-02 | BE | `feat/product-domain` | IN REVIEW | Chưa mở |  |
 | CAT-03 | BE | `feat/public-product-api` | TODO |  |  |
 | INV-01…03 | BE | Xem backlog | TODO |  |  |
 | MED-01, DATA-01…02 | BE | Xem backlog | TODO |  |  |
