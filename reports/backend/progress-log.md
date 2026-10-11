@@ -105,6 +105,30 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Chờ `@trongsonho` review tài liệu và CI của PR #4; cập nhật `DONE` trước khi merge.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## API-01: Contract nền, Auth và Catalog
+
+- Trạng thái: `IN REVIEW`
+- Branch: `docs/api-contract-baseline`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm:
+  - Chốt quy ước HTTP, lỗi, JWT, thời gian, tiền và phân trang dùng chung.
+  - Chốt endpoint, request, response, quyền và mã lỗi cho auth, profile, category, brand và catalog.
+  - Chốt DTO product luôn có `variants`, bao gồm product một biến thể mặc định và product nhiều biến thể.
+  - Thêm JSON mock hợp lệ cho success, empty, validation, unauthorized và forbidden để Frontend làm song song.
+  - Đối chiếu controller/entity cũ nhưng sửa contract theo DB-01, không giữ SKU hoặc tồn kho ở Product.
+- Kết quả kiểm thử:
+  - Parse toàn bộ JSON trong `docs/api/mock`: `PASS`.
+  - Kiểm tra link Markdown tương đối: `PASS`.
+  - `mvnw.cmd -B --no-transfer-progress clean verify`: `CHƯA CHẠY` trong checkout này; chờ Backend CI
+    xác nhận vì lần gọi đầu tiên chạy sai working directory và đã được dừng.
+  - `git diff --check`: `PASS`.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chờ `@trongsonho` review field và state cần cho UI Auth/Catalog.
+- Bước tiếp theo:
+  - Mở PR API-01; sau khi contract merge, Frontend có thể bắt đầu UI-01, FE-AUTH-01 và FE-CAT-01.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
