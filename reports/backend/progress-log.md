@@ -292,6 +292,42 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Sau khi ba PR merge, có thể triển khai các task phụ thuộc AUTH-03.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## CAT-01: Brand và Category
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/brand-category-domain`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm: entity, repository, DTO, service và chuẩn hóa slug cho Brand/Category theo schema V1.
+- Kết quả kiểm thử: `mvn -B --no-transfer-progress clean verify` PASS với 22 test; `git diff --check` PASS.
+- Vướng mắc hoặc phần còn thiếu: Không có blocker.
+- Bước tiếp theo: Merge CAT-01 rồi CAT-02.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
+## CAT-02: Product, Variant và ProductImage
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/product-domain`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm: mapping Product/Variant/Image theo V1; SKU và option thuộc variant; ảnh giữ `secureUrl/publicId`; kiểm tra giá và đúng một default variant.
+- Kết quả kiểm thử: `mvn -B --no-transfer-progress clean verify` PASS với 26 test; `git diff --check` PASS.
+- Vướng mắc hoặc phần còn thiếu: Branch xếp tầng trên CAT-01.
+- Bước tiếp theo: Merge CAT-01 rồi CAT-02; triển khai CAT-03.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
+## CAT-03: Public catalog API
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/public-product-api`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm: API public category/brand/product; tìm kiếm, filter, khoảng giá, pagination, sort và DTO summary/detail có variants.
+- Kết quả kiểm thử: MockMvc empty/pagination, filter lỗi và 404 PASS; `mvn -B --no-transfer-progress clean verify` PASS với 29 test; `git diff --check` PASS.
+- Vướng mắc hoặc phần còn thiếu: Tổng tồn kho giữ 0 cho tới INV-02; branch xếp tầng trên CAT-02.
+- Bước tiếp theo: Merge CAT-01, CAT-02 rồi CAT-03.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md

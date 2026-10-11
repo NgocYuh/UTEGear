@@ -1,0 +1,1 @@
+package com.utegear.repository; import com.utegear.entity.ProductVariant; import org.springframework.data.jpa.repository.JpaRepository; public interface ProductVariantRepository extends JpaRepository<ProductVariant,Long>{boolean existsBySku(String sku);}

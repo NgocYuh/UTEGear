@@ -998,10 +998,12 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | API-03 | BE viết, FE review | `docs/customer-transaction-contract` | DONE | [PR #8](https://github.com/NgocYuh/UTEGear/pull/8) | 2026-10-11 |
 | DB-02 | BE | `feat/initial-database-migration` | DONE | [PR #9](https://github.com/NgocYuh/UTEGear/pull/9) | 2026-10-11 |
 | DB-03 | BE | `feat/reference-data-migration` | DONE | [PR #10](https://github.com/NgocYuh/UTEGear/pull/10) | 2026-10-11 |
-| AUTH-01 | BE | `feat/user-role-domain` | IN REVIEW | Chưa mở |  |
-| AUTH-02 | BE | `feat/user-registration` | IN REVIEW | Chưa mở |  |
-| AUTH-03 | BE | `feat/jwt-authentication` | IN REVIEW | Chưa mở |  |
-| CAT-01…03 | BE | Xem backlog | TODO |  |  |
+| AUTH-01 | BE | `feat/user-role-domain` | DONE | [PR #11](https://github.com/NgocYuh/UTEGear/pull/11) | 2026-10-11 |
+| AUTH-02 | BE | `feat/user-registration` | DONE | [PR #12](https://github.com/NgocYuh/UTEGear/pull/12) | 2026-10-11 |
+| AUTH-03 | BE | `feat/jwt-authentication` | DONE | [PR #13](https://github.com/NgocYuh/UTEGear/pull/13) | 2026-10-11 |
+| CAT-01 | BE | `feat/brand-category-domain` | IN REVIEW | Chưa mở |  |
+| CAT-02 | BE | `feat/product-domain` | IN REVIEW | Chưa mở |  |
+| CAT-03 | BE | `feat/public-product-api` | IN REVIEW | Chưa mở |  |
 | INV-01…03 | BE | Xem backlog | TODO |  |  |
 | MED-01, DATA-01…02 | BE | Xem backlog | TODO |  |  |
 | CART-01…02, WISH-01 | BE | Xem backlog | TODO |  |  |
