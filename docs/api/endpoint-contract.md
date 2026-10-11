@@ -58,7 +58,7 @@ nhưng nếu Backend bổ sung thì phải cập nhật contract trước.
 | Task | Phạm vi | Tài liệu | Mock data |
 |---|---|---|---|
 | API-01 | Auth, profile, category, brand, product, search | [Auth và Catalog](auth-catalog-contract.md) | [`mock/api-01.json`](mock/api-01.json) |
-| API-02 | Store, inventory, media admin | Chờ task API-02 | Chờ task API-02 |
+| API-02 | Store, inventory, media admin | [Store, Inventory và Media](store-inventory-media-contract.md) | [`mock/api-02.json`](mock/api-02.json) |
 | API-03 | Cart, wishlist, address, coupon, checkout, order, notification, realtime | Chờ task API-03 | Chờ task API-03 |
 
 Mock là dữ liệu phát triển giao diện, không phải dữ liệu production và không được import vào database.
