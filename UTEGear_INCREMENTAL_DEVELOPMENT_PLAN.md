@@ -990,9 +990,9 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 |---|---|---|---|---|---|
 | FND-01 | BE | `chore/project-scaffold` | DONE | [PR #1](https://github.com/NgocYuh/UTEGear/pull/1) | 2026-09-21 |
 | FND-02 | BE | `chore/application-profiles` | DONE | [PR #2](https://github.com/NgocYuh/UTEGear/pull/2) | 2026-10-10 |
-| FND-03 | BE | `ci/backend-quality-gate` | IN PROGRESS | [Tạo PR](https://github.com/NgocYuh/UTEGear/compare/main...ci/backend-quality-gate?expand=1) |  |
+| FND-03 | BE | `ci/backend-quality-gate` | DONE | [PR #3](https://github.com/NgocYuh/UTEGear/pull/3) | 2026-10-11 |
 | FND-04 | FE | `ci/frontend-quality-gate` | TODO |  |  |
-| DB-01 | BE viết, FE review | `docs/database-model` | TODO |  |  |
+| DB-01 | BE viết, FE review | `docs/database-model` | IN PROGRESS | [Tạo PR](https://github.com/NgocYuh/UTEGear/compare/main...docs/database-model?expand=1) |  |
 | API-01…03 | BE viết, FE review | Xem backlog | TODO |  |  |
 | DB-02…03 | BE | Xem backlog | TODO |  |  |
 | AUTH-01…03 | BE | Xem backlog | TODO |  |  |
