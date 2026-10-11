@@ -129,6 +129,29 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Mở PR API-01; sau khi contract merge, Frontend có thể bắt đầu UI-01, FE-AUTH-01 và FE-CAT-01.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## API-02: Contract Store, Inventory và media admin
+
+- Trạng thái: `IN REVIEW`
+- Branch: `docs/store-inventory-contract`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm:
+  - Chốt API store public, availability theo `storeId + variantId` và tổng tồn cấp product.
+  - Chốt API admin cho store, inventory, điều chuyển kho và product media.
+  - Chốt media admin trả cả `secureUrl` và `publicId`; catalog public không lộ `publicId`.
+  - Thêm JSON mock cho còn hàng, hết hàng, store ngừng hoạt động, inventory và lỗi upload.
+  - Ghi model attribute cho trang Thymeleaf dùng cùng DTO với REST.
+- Kết quả kiểm thử:
+  - Parse toàn bộ JSON trong `docs/api/mock`: `PASS`.
+  - Kiểm tra link Markdown tương đối: `PASS`.
+  - `git diff --check`: `PASS`.
+  - Backend CI: `CHỜ PUSH`.
+- Vướng mắc hoặc phần còn thiếu:
+  - Phụ thuộc API-01; chờ `@trongsonho` review field/state cho FE-STORE-01 và UI-02.
+- Bước tiếp theo:
+  - Review/merge sau API-01, rồi Frontend có thể dùng mock API-02 mà không chờ endpoint thật.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
