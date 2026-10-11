@@ -16,9 +16,10 @@ Các quy tắc này áp dụng cho toàn bộ repository UTEGear.
 12. Không tự ý đổi kiến trúc đã chốt; cập nhật và review tài liệu trước khi triển khai thay đổi kiến trúc.
 13. Khi task đổi trạng thái, người phụ trách phải cập nhật nhật ký tiến độ của vai trò mình.
     Backend dùng `reports/backend/progress-log.md`; Frontend dùng
-    `reports/frontend/progress-log.md`. Task `BLOCKED` phải ghi rõ đang thiếu gì; task chỉ được
-    ghi `DONE` khi phạm vi đã hoàn tất, kiểm thử pass và PR đã được duyệt. Bản cập nhật `DONE`
-    phải nằm trong chính PR của task để `main` nhận trạng thái này khi merge.
+    `reports/frontend/progress-log.md`. Task `BLOCKED` phải ghi rõ đang thiếu gì. PR của task ghi
+    `IN REVIEW`; sau khi PR được merge, task Backend/Frontend kế tiếp của cùng người phụ trách phải
+    đối soát `main` và cập nhật task trước thành `DONE`, kèm URL PR, merge commit và ngày hoàn tất.
+    Nếu chưa có task kế tiếp thì dùng một branch tài liệu ngắn để cập nhật, không sửa trực tiếp `main`.
 14. Tồn kho luôn được quản lý theo `Store + ProductVariant`. Mọi `Product` phải có ít nhất một
     `ProductVariant`; sản phẩm không có lựa chọn màu, switch hoặc layout dùng đúng một biến thể
     mặc định. Không tạo tồn kho chỉ gắn với `Product`.
