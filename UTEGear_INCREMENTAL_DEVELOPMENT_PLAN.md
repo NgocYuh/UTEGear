@@ -999,7 +999,7 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | DB-02 | BE | `feat/initial-database-migration` | DONE | [PR #9](https://github.com/NgocYuh/UTEGear/pull/9) | 2026-10-11 |
 | DB-03 | BE | `feat/reference-data-migration` | DONE | [PR #10](https://github.com/NgocYuh/UTEGear/pull/10) | 2026-10-11 |
 | AUTH-01 | BE | `feat/user-role-domain` | IN REVIEW | Chưa mở |  |
-| AUTH-02 | BE | `feat/user-registration` | TODO |  |  |
+| AUTH-02 | BE | `feat/user-registration` | IN REVIEW | Chưa mở |  |
 | AUTH-03 | BE | `feat/jwt-authentication` | TODO |  |  |
 | CAT-01…03 | BE | Xem backlog | TODO |  |  |
 | INV-01…03 | BE | Xem backlog | TODO |  |  |

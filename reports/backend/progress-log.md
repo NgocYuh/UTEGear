@@ -246,6 +246,28 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Merge AUTH-01, sau đó triển khai AUTH-02 trên branch riêng.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## AUTH-02: Đăng ký và mã hóa mật khẩu
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/user-registration`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-11
+- Đã làm:
+  - Thêm `POST /api/auth/register` với DTO validation đúng API-01.
+  - Chuẩn hóa email về chữ thường, chuẩn hóa phone rỗng về `null` và gán role `CUSTOMER` đã seed.
+  - Mã hóa mật khẩu bằng BCrypt; response chỉ trả `UserProfile`, không lộ password hash.
+  - Trả mã lỗi contract `EMAIL_ALREADY_EXISTS`, `PHONE_ALREADY_EXISTS` và `VALIDATION_FAILED`.
+- Kết quả kiểm thử:
+  - Đăng ký thành công, email được chuẩn hóa, mật khẩu được hash và role được gán: `PASS`.
+  - Email trùng và phone trùng: `PASS`.
+  - Toàn bộ regression test: `PASS` với 7 test, 0 failure, 0 error, 0 skipped.
+  - `git diff --check`: `PASS`.
+- Vướng mắc hoặc phần còn thiếu:
+  - Branch xếp tầng trên AUTH-01; cần merge AUTH-01 trước AUTH-02.
+- Bước tiếp theo:
+  - Merge AUTH-01 rồi AUTH-02; triển khai AUTH-03 trên branch riêng.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
