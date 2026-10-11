@@ -19,5 +19,7 @@ role `ADMIN`.
 - Cart item, order item và thao tác trừ kho luôn tham chiếu biến thể, kể cả biến thể mặc định.
 - Tồn kho tổng ở cấp sản phẩm chỉ được tính từ tồn kho các biến thể khi cần hiển thị.
 
-DB-01 sẽ cụ thể hóa quyết định này thành ERD, khóa ngoại và constraint trước khi Backend tạo
-migration Flyway đầu tiên.
+DB-01 đã cụ thể hóa quyết định này trong
+[`database-model.md`](database-model.md), gồm ERD, khóa ngoại, unique constraint, quy tắc biến thể mặc
+định và đối chiếu với entity của dự án cũ. Backend chỉ tạo migration Flyway đầu tiên sau khi Frontend
+review tài liệu đó.

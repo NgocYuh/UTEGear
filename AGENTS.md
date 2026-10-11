@@ -22,6 +22,10 @@ Các quy tắc này áp dụng cho toàn bộ repository UTEGear.
 14. Tồn kho luôn được quản lý theo `Store + ProductVariant`. Mọi `Product` phải có ít nhất một
     `ProductVariant`; sản phẩm không có lựa chọn màu, switch hoặc layout dùng đúng một biến thể
     mặc định. Không tạo tồn kho chỉ gắn với `Product`.
+15. Nhật ký tiến độ là nơi báo cáo duy nhất của task. Pull Request chỉ cần ghi Task ID và đường dẫn
+    đến mục tương ứng trong `reports/backend/progress-log.md` hoặc `reports/frontend/progress-log.md`.
+    Không lặp lại checklist, kết quả test, migration, cấu hình hoặc mô tả công việc trong phần mô tả PR.
+    Không tạo lại `.github/pull_request_template.md` nếu nhóm chưa yêu cầu.
 
 ## Phân công bắt buộc
 

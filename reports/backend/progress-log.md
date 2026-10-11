@@ -52,22 +52,57 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## FND-03: CI và Pull Request workflow
 
-- Trạng thái: `IN PROGRESS`
+- Trạng thái: `DONE`
 - Branch: `ci/backend-quality-gate`
-- Pull Request: [Chưa mở - tạo PR từ branch đã push](https://github.com/NgocYuh/UTEGear/compare/main...ci/backend-quality-gate?expand=1)
-- Ngày cập nhật: 2026-10-10
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/3
+- Merge commit: `0ae22f7aa94361b4f76c9943c6e48be84c201643`
+- Ngày cập nhật: 2026-10-11
+- Ngày hoàn tất: 2026-10-11
 - Đã làm:
   - Xác nhận workflow hiện có đã chạy `clean verify` bằng Java 21 và Maven cache trên PR #2.
-  - Bắt đầu bổ sung giới hạn thời gian, concurrency và quyền checkout chỉ đọc cho Backend CI.
-  - Đã push branch với commit CI `9469b9c` và commit tiến độ `a2b10d0`.
+  - Bổ sung giới hạn thời gian, concurrency và quyền checkout chỉ đọc cho Backend CI.
+  - Merge branch vào `main` qua PR #3.
 - Kết quả kiểm thử:
   - `mvnw.cmd -B --no-transfer-progress clean verify`: `PASS` với 1 test, 0 failure, 0 error, 0 skipped.
   - Parse YAML cục bộ cho `backend-ci.yml`: `PASS`.
-  - Workflow FND-03: `CHƯA CHẠY`; chỉ có thể xác nhận sau khi mở Pull Request.
+  - [Maven verify (Java 21)](https://github.com/NgocYuh/UTEGear/actions/runs/38068623890/job/114261280983):
+    `PASS` trên commit `ecb811f` của PR #3.
 - Vướng mắc hoặc phần còn thiếu:
-  - Không có blocker hiện tại.
+  - Không có blocker trong phạm vi FND-03.
 - Bước tiếp theo:
-  - Mở Pull Request bằng link trên, xác nhận Backend CI xanh rồi tự merge theo cách làm của nhóm.
+  - Backend thực hiện DB-01; Frontend có thể tiếp tục FND-04 độc lập.
+
+## DB-01: Chốt ERD và model contract
+
+- Trạng thái: `IN REVIEW`
+- Branch: `docs/database-model`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/4
+- Ngày cập nhật: 2026-10-11
+- Đã làm:
+  - Đối chiếu toàn bộ entity của dự án cũ, tập trung vào user, catalog, variant, store, inventory,
+    cart, order, payment và media.
+  - Chốt ERD PostgreSQL, danh mục bảng, khóa chính, khóa ngoại, unique constraint, check constraint,
+    quy tắc xóa và danh sách index dự kiến cho DB-02.
+  - Chốt tồn kho chỉ theo `store_id + variant_id`; loại `Product.stock`, `ProductVariant.stock` và
+    `StoreInventory.product_id` khỏi mô hình mục tiêu.
+  - Chốt mỗi product có đúng một biến thể mặc định; product không có lựa chọn dùng một biến thể với
+    `optionValues = {}`.
+  - Chốt cart item và order item bắt buộc dùng `variantId`; order item giữ snapshot lịch sử.
+  - Cập nhật model contract để Frontend review field và hành vi trước API-01.
+  - Theo quyết định của nhóm, bỏ Pull Request template và dùng progress log làm nơi báo cáo duy nhất
+    cho cả Backend và Frontend.
+- Kết quả kiểm thử:
+  - Kiểm tra 2 liên kết Markdown tương đối: `PASS`.
+  - Kiểm tra ERD: `PASS` với 21 bảng dự kiến và đủ invariant cho variant, inventory, cart, order,
+    payment và media.
+  - `mvnw.cmd -B --no-transfer-progress clean verify`: `PASS` với 1 test, 0 failure, 0 error,
+    0 skipped.
+  - `git diff --check`: `PASS`.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chờ `@trongsonho` review `optionValues`, biến thể mặc định, tồn kho theo cửa hàng và snapshot đơn
+    hàng trước khi DB-01 được ghi `DONE`.
+- Bước tiếp theo:
+  - Chờ `@trongsonho` review tài liệu và CI của PR #4; cập nhật `DONE` trước khi merge.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới

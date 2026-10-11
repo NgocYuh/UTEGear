@@ -144,16 +144,15 @@ Nếu rebase phát sinh conflict, giải quyết trên branch task. Không sửa
 git push -u origin <ten-branch>
 ```
 
-Pull Request phải ghi:
+Không dùng Pull Request template. Mọi báo cáo chi tiết nằm trong nhật ký tiến độ. Mô tả PR chỉ cần:
 
-- Task ID.
-- Chức năng đã làm.
-- File hoặc module bị ảnh hưởng.
-- Cách kiểm thử.
-- Có migration hay không.
-- Có biến môi trường mới hay không.
-- Ảnh chụp nếu thay đổi giao diện.
-- Đường dẫn nhật ký tiến độ đã cập nhật trạng thái `IN REVIEW`.
+```text
+Task ID: <TASK-ID>
+Log: reports/backend/progress-log.md hoặc reports/frontend/progress-log.md
+```
+
+Trước khi mở PR, người thực hiện cập nhật đúng mục Task ID sang `IN REVIEW` và ghi đủ phạm vi, kết
+quả kiểm thử, migration, cấu hình, ảnh giao diện nếu có, phần còn thiếu và bước tiếp theo trong log.
 
 ### Bước 6 — Review và merge
 
@@ -253,7 +252,8 @@ khác nhau. Frontend chỉ chờ contract, không chờ entity/service/controlle
   - GitHub Actions với Java 21.
   - Maven cache.
   - Chạy `clean verify` khi mở PR vào `main`.
-  - Pull Request template.
+  - Quy tắc Pull Request tối giản; tiến độ và kết quả kiểm thử được ghi trong nhật ký của từng vai trò.
+  - Không dùng `.github/pull_request_template.md`.
 - Kiểm tra:
   - Workflow chạy xanh trên chính PR của task.
 - Commit đề xuất: `ci: add backend verification workflow`.
@@ -990,9 +990,9 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 |---|---|---|---|---|---|
 | FND-01 | BE | `chore/project-scaffold` | DONE | [PR #1](https://github.com/NgocYuh/UTEGear/pull/1) | 2026-09-21 |
 | FND-02 | BE | `chore/application-profiles` | DONE | [PR #2](https://github.com/NgocYuh/UTEGear/pull/2) | 2026-10-10 |
-| FND-03 | BE | `ci/backend-quality-gate` | IN PROGRESS | [Tạo PR](https://github.com/NgocYuh/UTEGear/compare/main...ci/backend-quality-gate?expand=1) |  |
+| FND-03 | BE | `ci/backend-quality-gate` | DONE | [PR #3](https://github.com/NgocYuh/UTEGear/pull/3) | 2026-10-11 |
 | FND-04 | FE | `ci/frontend-quality-gate` | TODO |  |  |
-| DB-01 | BE viết, FE review | `docs/database-model` | TODO |  |  |
+| DB-01 | BE viết, FE review | `docs/database-model` | IN REVIEW | [PR #4](https://github.com/NgocYuh/UTEGear/pull/4) |  |
 | API-01…03 | BE viết, FE review | Xem backlog | TODO |  |  |
 | DB-02…03 | BE | Xem backlog | TODO |  |  |
 | AUTH-01…03 | BE | Xem backlog | TODO |  |  |
