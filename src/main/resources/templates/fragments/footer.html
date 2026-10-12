@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer" class="site-footer">
+  <div class="site-container ui-footer-grid">
+    <div>
+      <div class="footer-brand"><span class="brand-name">UTEGear</span></div>
+      <p class="footer-slogan">Gear up. Game on.</p>
+      <p class="footer-desc">Phụ kiện gaming và công nghệ dành cho góc làm việc của bạn.</p>
+    </div>
+    <nav aria-label="Liên kết cuối trang">
+      <h2 class="footer-col-title">Khám phá</h2>
+      <ul class="footer-links">
+        <li><a th:href="@{/products}">Sản phẩm</a></li>
+        <li><a th:href="@{/stores}">Hệ thống cửa hàng</a></li>
+        <li><a th:href="@{/contact}">Liên hệ</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="footer-bottom"><div class="site-container">© UTEGear</div></div>
+</footer>
+</body>
+</html>

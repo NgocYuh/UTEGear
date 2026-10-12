@@ -1,0 +1,33 @@
+/* =========================================================
+   TOAST NOTIFICATIONS COMPONENT
+   ========================================================= */
+
+.toast-area {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: var(--z-toast);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 380px;
+    width: calc(100vw - 48px);
+}
+
+.toast-msg {
+    padding: 12px 18px;
+    border-radius: var(--radius-md);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.88rem;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    backdrop-filter: blur(8px);
+    animation: fadeInUp var(--transition-base) forwards;
+}
+
+.toast-msg.success { background-color: var(--color-success); }
+.toast-msg.error { background-color: var(--color-danger); }
+.toast-msg.info { background-color: var(--color-primary); }

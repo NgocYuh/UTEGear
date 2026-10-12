@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="emptyState(title, message)" class="empty-state" role="status">
+  <h2 th:text="${title}">Chưa có dữ liệu</h2>
+  <p th:text="${message}">Nội dung sẽ xuất hiện khi có dữ liệu phù hợp.</p>
+</section>
+</body>
+</html>

@@ -1,0 +1,52 @@
+/* =========================================================
+   UTEGEAR EMPTY STATE COMPONENT
+   Anti-AI Polish: Clean, Informative, Commercial Layout
+   Standard Informative Fallback Layout
+   ========================================================= */
+
+.empty-state {
+    padding: var(--space-12) var(--space-6);
+    text-align: center;
+    background-color: var(--color-bg-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-sm);
+    margin: var(--space-6) 0;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    color: #94A3B8;
+    margin-bottom: var(--space-4);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-full);
+    background-color: #F8FAFC;
+    border: 1px solid #E2E8F0;
+}
+
+.empty-state-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+    letter-spacing: -0.01em;
+}
+
+.empty-state-desc {
+    font-size: 0.88rem;
+    color: #64748B;
+    max-width: 440px;
+    margin: 0 auto var(--space-6);
+    line-height: 1.5;
+}
+
+.empty-state-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}

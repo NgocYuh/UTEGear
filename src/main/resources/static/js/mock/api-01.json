@@ -1,0 +1,112 @@
+{
+  "loginSuccess": {
+    "accessToken": "mock.jwt.token",
+    "tokenType": "Bearer",
+    "expiresAt": "2026-10-11T10:30:00Z",
+    "user": {
+      "id": 7,
+      "fullName": "Nguyễn Văn An",
+      "email": "an@example.test",
+      "phone": "0900000007",
+      "avatarUrl": null,
+      "enabled": true,
+      "roles": ["CUSTOMER"],
+      "createdAt": "2026-10-01T03:00:00Z"
+    }
+  },
+  "profile": {
+    "id": 7,
+    "fullName": "Nguyễn Văn An",
+    "email": "an@example.test",
+    "phone": "0900000007",
+    "avatarUrl": null,
+    "enabled": true,
+    "roles": ["CUSTOMER"],
+    "createdAt": "2026-10-01T03:00:00Z"
+  },
+  "categories": [
+    {"id": 1, "name": "Bàn phím", "slug": "ban-phim", "sortOrder": 1},
+    {"id": 2, "name": "Chuột", "slug": "chuot", "sortOrder": 2}
+  ],
+  "brands": [
+    {"id": 1, "name": "Keychron", "slug": "keychron"},
+    {"id": 2, "name": "Logitech", "slug": "logitech"}
+  ],
+  "productsPage": {
+    "content": [
+      {
+        "id": 101,
+        "name": "Chuột không dây UTE M1",
+        "slug": "chuot-khong-day-ute-m1",
+        "category": {"id": 2, "name": "Chuột", "slug": "chuot"},
+        "brand": {"id": 2, "name": "Logitech", "slug": "logitech"},
+        "basePrice": 790000,
+        "salePrice": null,
+        "effectivePrice": 790000,
+        "primaryImage": {"secureUrl": "https://res.cloudinary.com/demo/image/upload/utegear/mouse-m1.jpg", "altText": "Chuột không dây UTE M1"},
+        "defaultVariantId": 1001,
+        "variantCount": 1,
+        "totalStock": 18,
+        "inStock": true,
+        "variants": [
+          {"id": 1001, "sku": "M1-DEFAULT", "optionValues": {}, "isDefault": true, "priceAdjustment": 0, "effectivePrice": 790000, "totalStock": 18, "inStock": true}
+        ]
+      },
+      {
+        "id": 102,
+        "name": "Bàn phím cơ UTE K87",
+        "slug": "ban-phim-co-ute-k87",
+        "category": {"id": 1, "name": "Bàn phím", "slug": "ban-phim"},
+        "brand": {"id": 1, "name": "Keychron", "slug": "keychron"},
+        "basePrice": 1490000,
+        "salePrice": 1390000,
+        "effectivePrice": 1390000,
+        "primaryImage": {"secureUrl": "https://res.cloudinary.com/demo/image/upload/utegear/keyboard-k87.jpg", "altText": "Bàn phím cơ UTE K87"},
+        "defaultVariantId": 1002,
+        "variantCount": 2,
+        "totalStock": 9,
+        "inStock": true,
+        "variants": [
+          {"id": 1002, "sku": "K87-BLACK-RED", "optionValues": {"color": "black", "switch": "red", "layout": "ANSI"}, "isDefault": true, "priceAdjustment": 0, "effectivePrice": 1390000, "totalStock": 6, "inStock": true},
+          {"id": 1003, "sku": "K87-WHITE-BROWN", "optionValues": {"color": "white", "switch": "brown", "layout": "ANSI"}, "isDefault": false, "priceAdjustment": 100000, "effectivePrice": 1490000, "totalStock": 3, "inStock": true}
+        ]
+      }
+    ],
+    "page": 0,
+    "size": 20,
+    "totalElements": 2,
+    "totalPages": 1,
+    "first": true,
+    "last": true,
+    "empty": false
+  },
+  "productsEmpty": {"content": [], "page": 0, "size": 20, "totalElements": 0, "totalPages": 0, "first": true, "last": true, "empty": true},
+  "productDetail": {
+    "id": 102,
+    "name": "Bàn phím cơ UTE K87",
+    "slug": "ban-phim-co-ute-k87",
+    "description": "Bàn phím cơ 87 phím.",
+    "specifications": {"connection": "USB-C", "keyCount": 87},
+    "category": {"id": 1, "name": "Bàn phím", "slug": "ban-phim"},
+    "brand": {"id": 1, "name": "Keychron", "slug": "keychron"},
+    "basePrice": 1490000,
+    "salePrice": 1390000,
+    "effectivePrice": 1390000,
+    "defaultVariantId": 1002,
+    "variantCount": 2,
+    "totalStock": 9,
+    "inStock": true,
+    "images": [
+      {"id": 501, "secureUrl": "https://res.cloudinary.com/demo/image/upload/utegear/keyboard-k87.jpg", "altText": "Bàn phím cơ UTE K87", "primary": true, "sortOrder": 0}
+    ],
+    "variants": [
+      {"id": 1002, "sku": "K87-BLACK-RED", "optionValues": {"color": "black", "switch": "red", "layout": "ANSI"}, "isDefault": true, "priceAdjustment": 0, "effectivePrice": 1390000, "totalStock": 6, "inStock": true},
+      {"id": 1003, "sku": "K87-WHITE-BROWN", "optionValues": {"color": "white", "switch": "brown", "layout": "ANSI"}, "isDefault": false, "priceAdjustment": 100000, "effectivePrice": 1490000, "totalStock": 3, "inStock": true}
+    ],
+    "createdAt": "2026-10-01T03:00:00Z",
+    "updatedAt": "2026-10-10T09:00:00Z"
+  },
+  "validationError": {"timestamp": "2026-10-11T08:30:00Z", "status": 400, "code": "VALIDATION_FAILED", "message": "Dữ liệu không hợp lệ", "path": "/api/auth/register", "fieldErrors": {"email": "Email không đúng định dạng"}},
+  "unauthorized": {"timestamp": "2026-10-11T08:30:00Z", "status": 401, "code": "UNAUTHORIZED", "message": "Cần đăng nhập để tiếp tục", "path": "/api/profile"},
+  "forbidden": {"timestamp": "2026-10-11T08:30:00Z", "status": 403, "code": "FORBIDDEN", "message": "Bạn không có quyền thực hiện thao tác này", "path": "/api/admin/products"}
+}

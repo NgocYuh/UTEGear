@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/main :: main('UI foundation', ~{::section})}">
+<body>
+<section>
+  <h1>Khung giao diện UTEGear</h1>
+  <p>Trang preview cho các thành phần giao diện dùng chung.</p>
+  <div class="ui-preview-controls">
+    <button type="button" class="btn-primary-ute" data-demo="success">Thông báo thành công</button>
+    <button type="button" class="btn-secondary-ute" data-demo="error">Thông báo lỗi</button>
+    <button type="button" class="btn-ghost-ute" data-demo="empty">Trạng thái rỗng</button>
+  </div>
+  <p data-demo-status role="status">Đang tải dữ liệu mẫu…</p>
+  <section data-demo-empty hidden th:insert="~{fragments/empty-state :: emptyState('Chưa có sản phẩm', 'Thử thay đổi bộ lọc để tìm sản phẩm phù hợp.')}"></section>
+  <nav th:replace="~{fragments/pagination :: pagination}"></nav>
+  <script defer th:src="@{/js/preview/foundation.js}"></script>
+</section>
+</body>
+</html>

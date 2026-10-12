@@ -1,0 +1,27 @@
+/* Shared structure for UI-01. Component visuals reuse the ZIP foundation. */
+.skip-link { position: fixed; top: var(--space-2); left: var(--space-2); z-index: 1100; padding: var(--space-3); background: white; color: var(--color-primary); transform: translateY(-200%); }
+.skip-link:focus { transform: translateY(0); }
+.ui-main { min-height: 45vh; padding-top: var(--space-8); padding-bottom: var(--space-8); }
+.ui-preview-controls { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-4); }
+.ui-header-row { flex-wrap: wrap; }
+.ui-search { flex: 1 1 320px; min-width: 0; }
+.ui-search .search-input { min-width: 0; }
+.ui-search .search-input::placeholder { color: var(--color-text-muted); opacity: 1; }
+.ui-menu-toggle { display: none; }
+.ui-nav-links { display: flex; flex-wrap: wrap; gap: var(--space-6); padding: var(--space-3) 0; list-style: none; }
+.ui-nav-links a { display: inline-block; padding: var(--space-2) 0; font-weight: 600; }
+.ui-footer-grid { display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-8); padding-top: var(--space-8); padding-bottom: var(--space-8); }
+.site-footer .footer-bottom { color: #94A3B8; }
+.toast-msg { align-items: flex-start; }
+.toast-message { flex: 1; overflow-wrap: anywhere; }
+.toast-dismiss { color: inherit; border: 1px solid currentColor; padding: 0 var(--space-2); border-radius: var(--radius-xs); }
+.toast-msg:focus-within { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+[hidden] { display: none !important; }
+@media (max-width: 767.98px) {
+  .ui-header-row { gap: var(--space-2); }
+  .ui-search { order: 4; flex-basis: 100%; }
+  .ui-menu-toggle { display: inline-flex; }
+  .ui-nav-links { flex-direction: column; gap: 0; }
+  .ui-footer-grid { grid-template-columns: 1fr; }
+  .ui-navigation[data-collapsible]:not([data-open]) { display: none; }
+}
