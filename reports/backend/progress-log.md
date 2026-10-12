@@ -416,9 +416,10 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## MED-01: Tích hợp Cloudinary cho ảnh sản phẩm
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/cloudinary-product-images`
-- Pull Request: `Chưa mở`
+- Pull Request: [#25](https://github.com/NgocYuh/UTEGear/pull/25)
+- Merge commit: `59433796a404edd38d3efc5cb0baea48f2b3edeb`
 - Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Cấu hình một Cloudinary bean dùng chung từ biến môi trường; không lưu cloud name, API key hoặc API secret thật trong repository.
@@ -439,7 +440,35 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Test dùng mock media storage, không gọi Cloudinary thật và không sử dụng credential tài khoản cá nhân trong CI.
   - Việc xác nhận upload thật cần cấu hình biến môi trường Cloudinary trên máy local hoặc môi trường triển khai.
 - Bước tiếp theo:
-  - Mở và merge PR MED-01; sau đó DATA-01 và phần Frontend liên quan có thể dùng contract media hiện tại.
+  - Thực hiện DATA-01; phần Frontend liên quan có thể dùng contract media hiện tại.
+- Ngày hoàn tất: 2026-10-12
+
+## DATA-01: Crawler pipeline tối thiểu
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/product-crawler-pipeline`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Hoàn thiện pipeline hữu hạn `crawl → parse → clean → validate → export` bằng Python standard library.
+  - Thêm adapter GEARVN đọc `Product` JSON-LD từ HTML công khai, không gọi API nội bộ.
+  - HTTP client kiểm tra `robots.txt`, dùng User-Agent riêng và giới hạn tốc độ mặc định 2 giây.
+  - CLI chỉ truy cập mạng khi có `--allow-network` và từ chối URL ngoài host GEARVN đã cho phép.
+  - Chuẩn hóa sáu danh mục dự kiến: bàn phím, chuột, tai nghe, keycap, switch và phụ kiện.
+  - Tạo đúng một biến thể mặc định với `option_values` rỗng khi nguồn không có lựa chọn; sinh SKU ổn định nếu nguồn thiếu SKU.
+  - Validate URL nguồn/ảnh, giá VND dương, danh mục, SKU duy nhất và đúng một biến thể mặc định.
+  - Export JSONL UTF-8 có thông tin truy vết nguồn; dữ liệu output và ảnh không được commit.
+  - Bổ sung bước test crawler offline vào Backend CI.
+- Kết quả kiểm thử:
+  - Parser, cleaner, validation, chống trùng, SKU mặc định, giới hạn host và JSONL UTF-8: `PASS` với 7 test.
+  - CLI chạy đầu-cuối bằng HTML fixture, không dùng mạng: `PASS`, export 1 record hợp lệ.
+  - `python -m compileall -q src tests`: `PASS`.
+  - `mvn -B --no-transfer-progress clean verify`: `PASS` với 67 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa crawl/import 100 sản phẩm thật; đó là phạm vi DATA-02 sau khi dataset và quyền sử dụng nguồn được rà soát.
+  - KICAP đang tắt vì chưa xác minh xong robots/điều khoản; DATA-01 chỉ triển khai adapter GEARVN.
+- Bước tiếp theo:
+  - Mở và merge PR DATA-01, sau đó triển khai DATA-02 để thu thập có kiểm soát, kiểm tra và import dữ liệu.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
