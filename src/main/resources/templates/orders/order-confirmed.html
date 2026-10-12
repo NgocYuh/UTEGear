@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Đặt hàng thành công - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+    <div class="order-confirmed-section section py-5">
+        <div class="container text-center">
+            
+            <div class="cart-empty-box mx-auto" style="max-width: 580px;">
+                <div class="cart-empty-icon" style="background-color: #DCFCE7; color: #16A34A;">
+                    <i class="bi bi-check2-circle"></i>
+                </div>
+                <h1 class="cart-empty-title text-success">Đặt hàng thành công!</h1>
+                <p class="cart-empty-desc">
+                    Cảm ơn bạn đã tin tưởng mua sắm tại <strong>UTEGear</strong>. Hệ thống đã tiếp nhận đơn hàng và đang tiến hành xử lý.
+                </p>
+
+                <div class="p-3 my-4 bg-light rounded border text-center">
+                    <span class="text-muted fs-7 d-block mb-1">Mã đơn hàng của bạn:</span>
+                    <h2 class="font-extrabold text-primary h4 mb-0" th:text="${order.orderCode}">#UTG-ABC-1234</h2>
+                </div>
+
+                <p class="text-muted fs-7 mb-4">
+                    Thông tin chi tiết và cập nhật trạng thái vận chuyển sẽ được thông báo qua SMS và Email của bạn.
+                </p>
+
+                <div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+                    <a th:href="@{'/orders/' + ${order.id}}" class="btn btn-utama">
+                        <i class="bi bi-receipt me-1"></i> Xem chi tiết đơn hàng
+                    </a>
+                    <a href="/products" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i> Tiếp tục mua hàng
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

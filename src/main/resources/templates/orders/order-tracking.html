@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Tra cứu đơn hàng - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <!-- BREADCRUMB -->
+    <div class="page-breadcrumb">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/orders}">Đơn hàng</a></li>
+                    <li class="breadcrumb-item active">Tra cứu đơn hàng</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- TRACKING SECTION -->
+    <section class="tracking-section section py-5">
+        <div class="container">
+            <div class="mx-auto bg-white p-4 p-md-5 rounded border" style="max-width: 620px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                
+                <div class="text-center mb-4">
+                    <span class="brand-icon mx-auto mb-2" style="width: 48px; height: 48px; font-size: 1.5rem; background: var(--color-accent, #E21B23); color: #fff; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <h1 class="h3 font-extrabold text-primary mb-1">Tra cứu tiến trình đơn hàng</h1>
+                    <p class="text-muted fs-7">Nhập mã đơn hàng UTEGear (Ví dụ: UTG-ABC-123) để xem chi tiết tình trạng xử lý và vận chuyển</p>
+                </div>
+
+                <!-- SEARCH FORM -->
+                <form onsubmit="event.preventDefault(); searchOrderTracking();" class="mb-4">
+                    <div class="input-group input-group-lg">
+                        <input type="text" class="form-control fs-6" id="orderCodeInput" placeholder="Nhập mã đơn hàng của bạn..." required autocomplete="off">
+                        <button class="btn btn-utama fs-6" type="submit">
+                            <i class="bi bi-search me-1"></i> Tra cứu
+                        </button>
+                    </div>
+                </form>
+
+                <!-- STEPPER TIMELINE PREVIEW -->
+                <div class="pt-4 border-top">
+                    <h2 class="fs-7 text-uppercase font-bold text-muted text-center mb-3">Quy trình xử lý đơn hàng tại UTEGear</h2>
+                    <div class="order-stepper-timeline" style="border: none; padding: 10px 0; margin-bottom: 0;">
+                        <div class="stepper-step completed">
+                            <div class="stepper-icon"><i class="bi bi-clock-history"></i></div>
+                            <span class="stepper-label">Đặt hàng</span>
+                        </div>
+                        <div class="stepper-step completed">
+                            <div class="stepper-icon"><i class="bi bi-check2-circle"></i></div>
+                            <span class="stepper-label">Xác nhận</span>
+                        </div>
+                        <div class="stepper-step active">
+                            <div class="stepper-icon"><i class="bi bi-box-seam"></i></div>
+                            <span class="stepper-label">Đóng gói</span>
+                        </div>
+                        <div class="stepper-step">
+                            <div class="stepper-icon"><i class="bi bi-truck"></i></div>
+                            <span class="stepper-label">Đang giao</span>
+                        </div>
+                        <div class="stepper-step">
+                            <div class="stepper-icon"><i class="bi bi-house-check"></i></div>
+                            <span class="stepper-label">Hoàn tất</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4 pt-3 border-top">
+                    <span class="text-muted fs-7">Đã có tài khoản UTEGear? </span>
+                    <a href="/orders" class="text-accent font-bold text-decoration-none fs-7">Xem tất cả đơn hàng đã đặt</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<th:block layout:fragment="scripts">
+    <script>
+        function searchOrderTracking() {
+            const code = document.getElementById('orderCodeInput').value.trim();
+            if (!code) return;
+            window.location.href = '/orders?q=' + encodeURIComponent(code);
+        }
+    </script>
+</th:block>
+
+</body>
+</html>

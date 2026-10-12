@@ -186,6 +186,32 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Thống nhất xử lý layout/model/mock trước khi hoàn tất task.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## FE-ORD-01: Giao diện checkout và đơn hàng
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/checkout-order-pages`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Chuẩn bị nguyên checkout, xác nhận đơn, lịch sử đơn, chi tiết đơn, tra cứu đơn và CSS checkout/orders có sẵn.
+  - Giữ nguyên bảy file nguồn, gồm cả WebSocket client inline trong trang chi tiết đơn; không tách hoặc viết mới code.
+  - Tạo branch từ main `2764ff1` sau khi PR #33 đã merge; không thay đổi Backend, dependency, layout chung hoặc API contract.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 7/7 file khớp nguyên bản.
+  - `mvnw.cmd -B clean verify`: `PASS`, 107 tests, 0 failure, 0 error, 0 skipped.
+  - Kiểm tra cú pháp ba khối JavaScript inline: `PASS`, chỉ parse, không thực thi hoặc gọi API/WebSocket thật.
+  - Diff check có whitespace nguyên bản trong các file nguồn; giữ nguyên theo yêu cầu không sửa code.
+  - Các test regression hiện có chưa chứng minh các trang mới render hoặc tích hợp được.
+- Vướng mắc hoặc phần còn thiếu:
+  - Template dùng layout:decorate, model currentUser/orderItems và bean priceFormatter cũ; chưa tương thích layout/DTO API-03.
+  - Form POST /checkout và pagination dùng giao thức/chữ ký cũ; chưa có mock loading/validation/empty/error theo contract.
+  - WebSocket inline cần SockJS/STOMP WebJars và server/destination tương ứng; chưa kiểm tra realtime hoặc reconnect.
+  - Không chạy checkout hay tạo đơn trên production trong kiểm thử. Giữ nguyên nguồn theo yêu cầu; chưa xác nhận các trang hoạt động hoặc hoàn tất FE-ORD-01.
+- Bước tiếp theo:
+  - Push branch sau kiểm tra, mở PR để review.
+  - Thống nhất xử lý tương thích layout/model/mock trước khi hoàn tất task.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
