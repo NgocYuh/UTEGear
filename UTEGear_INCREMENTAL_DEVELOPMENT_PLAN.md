@@ -1004,8 +1004,9 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | CAT-01 | BE | `feat/brand-category-domain` | DONE | [PR #16](https://github.com/NgocYuh/UTEGear/pull/16) | 2026-10-11 |
 | CAT-02 | BE | `feat/product-domain` | DONE | [PR #16](https://github.com/NgocYuh/UTEGear/pull/16) | 2026-10-11 |
 | CAT-03 | BE | `feat/public-product-api` | DONE | [PR #16](https://github.com/NgocYuh/UTEGear/pull/16) | 2026-10-11 |
-| INV-01 | BE | `feat/store-management` | IN REVIEW | Chưa mở |  |
-| INV-02…03 | BE | Xem backlog | TODO |  |  |
+| INV-01 | BE | `feat/store-management` | DONE | [PR #17](https://github.com/NgocYuh/UTEGear/pull/17) | 2026-10-12 |
+| INV-02 | BE | `feat/store-inventory` | IN REVIEW | Chưa mở |  |
+| INV-03 | BE | `feat/store-availability-api` | TODO |  |  |
 | MED-01, DATA-01…02 | BE | Xem backlog | TODO |  |  |
 | CART-01…02, WISH-01 | BE | Xem backlog | TODO |  |  |
 | ORD-01…04 | BE | Xem backlog | TODO |  |  |
