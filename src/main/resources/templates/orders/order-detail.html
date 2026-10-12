@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="'Chi tiết đơn hàng #' + ${order.orderCode} + ' - UTEGear'">Chi tiết đơn hàng - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <!-- BREADCRUMB -->
+    <div class="page-breadcrumb">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/orders}">Đơn hàng của tôi</a></li>
+                    <li class="breadcrumb-item active" th:text="'#' + ${order.orderCode}">#Mã đơn</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- ORDER DETAIL SECTION -->
+    <section class="order-detail-section section" th:if="${order != null}">
+        <div class="container">
+            
+            <!-- HEADER -->
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom flex-wrap gap-2">
+                <div>
+                    <h1 class="h3 font-extrabold text-primary mb-1">
+                        Chi tiết Đơn hàng <span class="text-danger" th:text="'#' + ${order.orderCode}">#UTG-ABC-123</span>
+                    </h1>
+                    <p class="text-muted fs-7 mb-0">
+                        Thời gian đặt hàng: <strong class="text-primary" th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2026</strong>
+                    </p>
+                </div>
+                <span class="order-status-badge fs-6" th:classappend="'status-' + ${#strings.toLowerCase(order.status.name())}">
+                    <i class="bi bi-dot fs-4"></i>
+                    <span th:text="${order.statusLabel}">Đang xử lý</span>
+                </span>
+            </div>
+
+            <!-- STEPPER TIMELINE FOR ORDER STATUS -->
+            <div class="order-stepper-timeline d-none d-md-flex" aria-label="Tiến trình xử lý đơn hàng">
+                <div class="stepper-step" th:classappend="${order.status.ordinal() >= 0} ? 'completed' : ''">
+                    <div class="stepper-icon"><i class="bi bi-clock-history"></i></div>
+                    <span class="stepper-label">Chờ xác nhận</span>
+                </div>
+                <div class="stepper-step" th:classappend="${order.status.ordinal() >= 1} ? 'completed' : ''">
+                    <div class="stepper-icon"><i class="bi bi-check2-circle"></i></div>
+                    <span class="stepper-label">Đã xác nhận</span>
+                </div>
+                <div class="stepper-step" th:classappend="${order.status.ordinal() >= 2} ? 'completed' : ''">
+                    <div class="stepper-icon"><i class="bi bi-box-seam"></i></div>
+                    <span class="stepper-label">Đang đóng gói</span>
+                </div>
+                <div class="stepper-step" th:classappend="${order.status.ordinal() >= 3} ? 'completed' : ''">
+                    <div class="stepper-icon"><i class="bi bi-truck"></i></div>
+                    <span class="stepper-label">Đang giao hàng</span>
+                </div>
+                <div class="stepper-step" th:classappend="${order.status.ordinal() >= 4} ? 'completed' : ''">
+                    <div class="stepper-icon"><i class="bi bi-house-check"></i></div>
+                    <span class="stepper-label">Đã nhận hàng</span>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-1">
+                <!-- LEFT COLUMN: PRODUCTS & DELIVERY INFO -->
+                <div class="col-lg-8">
+                    
+                    <!-- PRODUCTS LIST TABLE -->
+                    <div class="order-detail-block">
+                        <h2 class="order-detail-block-title">
+                            <i class="bi bi-box-seam"></i> Danh sách sản phẩm trong đơn hàng
+                        </h2>
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+                                <thead>
+                                    <tr class="fs-7 text-muted bg-light">
+                                        <th style="min-width: 240px;">Sản phẩm</th>
+                                        <th>Biến thể</th>
+                                        <th class="text-end">Đơn giá</th>
+                                        <th class="text-center">Số lượng</th>
+                                        <th class="text-end">Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="item : ${order.orderItems}">
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <img th:src="${item.productImage}" th:alt="${item.productName}"
+                                                     style="width: 52px; height: 52px; object-fit: contain; padding: 2px;"
+                                                     class="rounded border bg-white flex-shrink-0" onerror="this.src='/images/placeholder.png'">
+                                                <span class="font-bold fs-7 text-primary" th:text="${item.productName}">Tên sản phẩm</span>
+                                            </div>
+                                        </td>
+                                        <td class="fs-7 text-muted">
+                                            <span th:if="${item.variantAttribute != null}"
+                                                  th:text="${item.variantAttribute} + ': ' + ${item.variantValue}">Mặc định</span>
+                                            <span th:if="${item.variantAttribute == null}">—</span>
+                                        </td>
+                                        <td class="fs-7 text-end text-muted font-bold" th:text="${@priceFormatter.format(item.unitPrice)}">0 ₫</td>
+                                        <td class="text-center font-bold" th:text="${item.quantity}">1</td>
+                                        <td class="text-end font-extrabold text-primary" th:text="${@priceFormatter.format(item.subtotal)}">0 ₫</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SHIPPING & RECEIVER INFO -->
+                    <div class="order-detail-block">
+                        <h2 class="order-detail-block-title">
+                            <i class="bi bi-geo-alt"></i> Thông tin nhận hàng &amp; Vận chuyển
+                        </h2>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <span class="text-muted fs-7 d-block mb-1">Người nhận hàng:</span>
+                                <strong class="fs-6 text-primary" th:text="${order.customerName}">Nguyễn Văn A</strong>
+                                <span class="d-block text-muted fs-7" th:text="'SĐT: ' + ${order.customerPhone}">0901234567</span>
+                                <span class="d-block text-muted fs-7" th:if="${order.customerEmail != null}" th:text="'Email: ' + ${order.customerEmail}">email@domain.com</span>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="text-muted fs-7 d-block mb-1">Phương thức giao hàng:</span>
+                                <span class="badge bg-light text-primary border fs-7 font-bold mb-2" th:text="${order.shippingMethodLabel}">Giao hàng tận nơi</span>
+                                <div class="fs-7 text-dark">
+                                    <strong>Địa chỉ: </strong>
+                                    <span th:text="${order.shippingAddress}">Địa chỉ</span>
+                                    <span th:if="${order.ward != null}" th:text="', ' + ${order.ward}">, Phường</span>
+                                    <span th:if="${order.district != null}" th:text="', ' + ${order.district}">, Quận</span>
+                                    <span th:if="${order.province != null}" th:text="', ' + ${order.province}">, Tỉnh</span>
+                                </div>
+                            </div>
+                            <div class="col-12 border-top pt-2" th:if="${order.note != null && !order.note.isEmpty()}">
+                                <span class="text-muted fs-7 d-block">Ghi chú từ khách hàng:</span>
+                                <p class="fs-7 text-dark mb-0 fst-italic" th:text="${order.note}"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN: FINANCIAL SUMMARY -->
+                <div class="col-lg-4">
+                    <div class="order-detail-block sticky-top" style="top: calc(var(--header-height, 100px) + 16px);">
+                        <h2 class="order-detail-block-title">
+                            <i class="bi bi-receipt-cutoff"></i> Tóm tắt thanh toán
+                        </h2>
+
+                        <div class="d-flex justify-content-between mb-2 fs-7 text-muted">
+                            <span>Tạm tính tiền hàng:</span>
+                            <strong class="text-primary font-bold" th:text="${@priceFormatter.format(order.subtotal)}">0 ₫</strong>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-2 fs-7" th:if="${order.discount != null && order.discount.signum() > 0}">
+                            <span class="text-muted">Giảm giá khuyến mãi:</span>
+                            <span class="text-danger font-bold">− <span th:text="${@priceFormatter.format(order.discount)}">0 ₫</span></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3 fs-7 text-muted">
+                            <span>Phí vận chuyển:</span>
+                            <span class="text-success font-bold" th:text="${order.shippingFee.signum() == 0 ? 'Miễn phí' : @priceFormatter.format(order.shippingFee)}">Miễn phí</span>
+                        </div>
+
+                        <hr class="my-3">
+
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span class="font-extrabold text-primary fs-6">Tổng tiền thanh toán:</span>
+                            <strong class="font-extrabold text-danger fs-5" th:text="${@priceFormatter.format(order.total)}">0 ₫</strong>
+                        </div>
+
+                        <div class="mb-3 p-3 bg-light rounded border fs-7">
+                            <span class="text-muted d-block mb-1">Phương thức thanh toán:</span>
+                            <strong class="text-primary" th:text="${order.paymentMethodLabel}">Thanh toán khi nhận hàng (COD)</strong>
+                        </div>
+
+                        <a href="/orders" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách đơn hàng
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- Nhiệm vụ 3: Realtime — cập nhật trạng thái đơn hàng theo thời gian thực -->
+<!-- Realtime WebSocket subscription: Dynamic order status synchronization -->
+<script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+(function () {
+    const currentOrderId = /*[[${order != null ? order.id : null}]]*/ null;
+    const currentOrderCode = /*[[${order != null ? order.orderCode : ''}]]*/ '';
+
+    if (currentOrderId == null) return;
+
+    const STATUS_SEQ = ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPING', 'DELIVERED'];
+    const STATUS_LABELS = {
+        PENDING: 'Chờ xác nhận', CONFIRMED: 'Đã xác nhận', PROCESSING: 'Đang chuẩn bị',
+        SHIPPING: 'Đang giao', DELIVERED: 'Đã giao', CANCELLED: 'Đã hủy'
+    };
+
+    const stepper = document.querySelector('.order-stepper-timeline');
+
+    function refreshProgress(newStatusName) {
+        if (!newStatusName) return;
+        const code = String(newStatusName).toLowerCase();
+
+        // Badge
+        const badge = document.querySelector('.order-status-badge');
+        if (badge) {
+            badge.className = badge.className.replace(/\bstatus-[a-z0-9\-]+\b/g, '') + ' status-' + code;
+            const label = badge.querySelector('span');
+            if (label) label.textContent = STATUS_LABELS[newStatusName] || newStatusName;
+        }
+
+        // Stepper timeline
+        if (newStatusName === 'CANCELLED') {
+            const badgeOnly = badge || document.querySelector('.order-status');
+            if (badgeOnly) badgeOnly.className += ' status-cancelled';
+            return;
+        }
+        const idx = STATUS_SEQ.indexOf(newStatusName);
+        if (stepper && idx >= 0) {
+            stepper.querySelectorAll('.stepper-step').forEach((step, i) => {
+                step.classList.toggle('completed', i <= idx);
+            });
+        }
+    }
+
+    function connectOrderStatus() {
+        try {
+            const socket = new SockJS('/ws');
+            const stomp = Stomp.over(socket);
+            stomp.connect({}, function () {
+                stomp.subscribe('/user/queue/order-status', function (frame) {
+                    try {
+                        const data = JSON.parse(frame.body);
+                        if (String(data.orderId) === String(currentOrderId)) {
+                            refreshProgress(data.status);
+                            if (window.UTEGear && UTEGear.Toast) {
+                                UTEGear.Toast.show('Đơn hàng ' + (data.orderCode || currentOrderCode)
+                                    + ' đã cập nhật: ' + (data.statusLabel || data.status), 'success');
+                            }
+                        }
+                    } catch (e) {}
+                });
+            }, function () {
+                setTimeout(connectOrderStatus, 5000);
+            });
+        } catch (e) {}
+    }
+
+    connectOrderStatus();
+})();
+/*]]>*/
+</script>
+
+</body>
+</html>

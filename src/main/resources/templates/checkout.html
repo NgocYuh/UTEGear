@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Thanh toán đơn hàng - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <!-- BREADCRUMB -->
+    <div class="page-breadcrumb">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/cart}">Giỏ hàng</a></li>
+                    <li class="breadcrumb-item active">Thanh toán</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- CHECKOUT SECTION -->
+    <section class="checkout-section section">
+        <div class="container">
+            
+            <!-- EMPTY CART CHECKOUT WARNING -->
+            <div class="cart-empty-box" th:if="${cartItems == null || cartItems.isEmpty()}">
+                <div class="cart-empty-icon">
+                    <i class="bi bi-cart-x"></i>
+                </div>
+                <h2 class="cart-empty-title">Giỏ hàng của bạn đang trống</h2>
+                <p class="cart-empty-desc">Vui lòng thêm sản phẩm vào giỏ hàng trước khi tiến hành thanh toán!</p>
+                <a href="/products" class="btn btn-utama">
+                    <i class="bi bi-arrow-left me-1"></i> Khám phá sản phẩm
+                </a>
+            </div>
+
+            <!-- CHECKOUT FORM -->
+            <th:block th:if="${cartItems != null && !cartItems.isEmpty()}">
+                <!-- ERROR MESSAGE NOTIFICATION -->
+                <div th:if="${errorMessage}" class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"></i>
+                    <div th:text="${errorMessage}">Đã xảy ra lỗi khi tạo đơn hàng.</div>
+                </div>
+
+                <form th:action="@{/checkout}" method="post" id="checkoutForm" class="checkout-layout">
+                    
+                    <!-- LEFT COLUMN: CUSTOMER INFO, DELIVERY, PAYMENT -->
+                    <div class="checkout-main">
+                        
+                        <!-- 1. THÔNG TIN NGƯỜI NHẬN -->
+                        <div class="checkout-block">
+                            <h2 class="checkout-block-header">
+                                <span class="step-badge">1</span>
+                                <i class="bi bi-person-lines-fill"></i> Thông tin người nhận hàng
+                            </h2>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="customerNameInput">Họ và tên <span class="required-star">*</span></label>
+                                    <input type="text" id="customerNameInput" name="customerName" class="form-control"
+                                           th:value="${currentUser != null ? currentUser.fullName : ''}" required
+                                           placeholder="Ví dụ: Nguyễn Văn A">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="customerPhoneInput">Số điện thoại liên hệ <span class="required-star">*</span></label>
+                                    <input type="tel" id="customerPhoneInput" name="customerPhone" class="form-control"
+                                           th:value="${currentUser != null ? currentUser.phone : ''}" required
+                                           placeholder="Ví dụ: 0901234567">
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label" for="customerEmailInput">Email nhận hóa đơn &amp; cập nhật đơn hàng <span class="required-star">*</span></label>
+                                    <input type="email" id="customerEmailInput" name="customerEmail" class="form-control"
+                                           th:value="${currentUser != null ? currentUser.email : ''}" required
+                                           placeholder="Ví dụ: email@domain.com">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. HÌNH THỨC NHẬN HÀNG & ĐỊA CHỈ -->
+                        <div class="checkout-block">
+                            <h2 class="checkout-block-header">
+                                <span class="step-badge">2</span>
+                                <i class="bi bi-truck"></i> Phương thức vận chuyển &amp; Địa chỉ
+                            </h2>
+
+                            <!-- Shipping Mode Radio Options -->
+                            <div class="option-cards-group mb-3">
+                                <label class="checkout-option-card">
+                                    <input type="radio" name="shippingMethod" value="HOME_DELIVERY" checked onchange="toggleShippingMode(this)">
+                                    <div class="option-content">
+                                        <div class="option-title">
+                                            <span>Giao hàng tận nơi (Home Delivery)</span>
+                                            <span class="badge-fee">Miễn phí vận chuyển</span>
+                                        </div>
+                                        <span class="option-desc">Giao hàng nhanh từ 1 - 3 ngày làm việc trên toàn quốc qua đối tác vận chuyển uy tín.</span>
+                                    </div>
+                                </label>
+
+                                <label class="checkout-option-card">
+                                    <input type="radio" name="shippingMethod" value="STORE_PICKUP" onchange="toggleShippingMode(this)">
+                                    <div class="option-content">
+                                        <div class="option-title">
+                                            <span>Nhận tại Showroom UTEGear (Store Pickup)</span>
+                                            <span class="badge-fee">Chủ động lấy hàng</span>
+                                        </div>
+                                        <span class="option-desc">Trực tiếp kiểm tra, thử máy và nhận hàng tại các chi nhánh showroom UTEGear.</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- STORE SELECTION (REQUIRED WHEN STORE PICKUP) -->
+                            <div class="store-pickup-box" id="storePickupSection" style="display: none;">
+                                <label for="storeSelectInput"><i class="bi bi-shop me-1 text-danger"></i> Chọn Showroom nhận hàng <span class="required-star">*</span></label>
+                                <select name="storeId" id="storeSelectInput" class="form-select">
+                                    <option value="">-- Vui lòng chọn showroom gần nhất --</option>
+                                    <option th:each="s : ${stores}" th:value="${s.id}"
+                                            th:text="${s.name} + ' — ' + ${s.address}">Chi nhánh Showroom</option>
+                                </select>
+                            </div>
+
+                            <!-- DELIVERY ADDRESS (DEFAULT HOME_DELIVERY) -->
+                            <div id="addressBlock">
+                                <div class="row g-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label" for="shippingAddressInput">Địa chỉ nhận hàng chi tiết <span class="required-star">*</span></label>
+                                        <input type="text" name="shippingAddress" id="shippingAddressInput" class="form-control"
+                                               placeholder="Số nhà, tên đường..."
+                                               th:value="${currentUser != null ? currentUser.address : ''}" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label" for="provinceInput">Tỉnh / Thành phố</label>
+                                        <input type="text" id="provinceInput" name="province" class="form-control"
+                                               th:value="${currentUser != null ? currentUser.province : ''}" placeholder="TP. Hồ Chí Minh">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label" for="districtInput">Quận / Huyện</label>
+                                        <input type="text" id="districtInput" name="district" class="form-control"
+                                               th:value="${currentUser != null ? currentUser.district : ''}" placeholder="Quận 1">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label" for="wardInput">Phường / Xã</label>
+                                        <input type="text" id="wardInput" name="ward" class="form-control"
+                                               th:value="${currentUser != null ? currentUser.ward : ''}" placeholder="Phường Bến Nghé">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. PHƯƠNG THỨC THANH TOÁN -->
+                        <div class="checkout-block">
+                            <h2 class="checkout-block-header">
+                                <span class="step-badge">3</span>
+                                <i class="bi bi-credit-card-2-front"></i> Phương thức thanh toán
+                            </h2>
+
+                            <div class="option-cards-group">
+                                <label class="checkout-option-card">
+                                    <input type="radio" name="paymentMethod" value="CASH_ON_DELIVERY" checked onchange="togglePaymentMode(this)">
+                                    <div class="option-content">
+                                        <div class="option-title">
+                                            <span>Thanh toán khi nhận hàng (COD)</span>
+                                        </div>
+                                        <span class="option-desc">Kiểm tra sản phẩm trước khi thanh toán tiền mặt trực tiếp cho nhân viên giao hàng.</span>
+                                    </div>
+                                </label>
+
+                                <label class="checkout-option-card">
+                                    <input type="radio" name="paymentMethod" value="BANK_TRANSFER" onchange="togglePaymentMode(this)">
+                                    <div class="option-content">
+                                        <div class="option-title">
+                                            <span>Chuyển khoản Ngân hàng (Quét mã QR / 247)</span>
+                                        </div>
+                                        <span class="option-desc">Chuyển khoản liên ngân hàng miễn phí, xử lý đơn hàng ưu tiên qua tài khoản công ty.</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- BANK TRANSFER INSTRUCTIONS BOX -->
+                            <div class="bank-transfer-box" id="bankTransferBox" style="display: none;">
+                                <div class="bank-transfer-box-title">
+                                    <i class="bi bi-bank"></i> Thông tin tài khoản thụ hưởng của UTEGear:
+                                </div>
+                                <div class="bank-detail-grid">
+                                    <div class="bank-detail-row">
+                                        <span class="label">Ngân hàng:</span>
+                                        <span class="value">MB Bank (Ngân hàng TMCP Quân Đội)</span>
+                                    </div>
+                                    <div class="bank-detail-row">
+                                        <span class="label">Số tài khoản:</span>
+                                        <span class="value highlight">1900 1234 5678</span>
+                                    </div>
+                                    <div class="bank-detail-row">
+                                        <span class="label">Tên chủ tài khoản:</span>
+                                        <span class="value">CTY TNHH UTEGEAR VIETNAM</span>
+                                    </div>
+                                    <div class="bank-detail-row">
+                                        <span class="label">Nội dung chuyển khoản:</span>
+                                        <span class="value highlight">[Họ tên] + [Số điện thoại]</span>
+                                    </div>
+                                </div>
+                                <p class="bank-transfer-notice">
+                                    * Sau khi nhận được thanh toán chuyển khoản, hệ thống UTEGear sẽ tự động kích hoạt tiến trình đóng gói và gửi SMS/Email xác nhận ngay lập tức.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 4. GHI CHÚ ĐƠN HÀNG -->
+                        <div class="checkout-block">
+                            <h2 class="checkout-block-header">
+                                <span class="step-badge">4</span>
+                                <i class="bi bi-chat-square-text"></i> Ghi chú đơn hàng (Tùy chọn)
+                            </h2>
+                            <textarea name="note" class="form-control" rows="2"
+                                      placeholder="Ví dụ: Giao giờ hành chính, gọi điện trước khi tới 15 phút, xuất hóa đơn VAT công ty..."></textarea>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT COLUMN: ORDER SUMMARY SIDEBAR -->
+                    <div class="checkout-sidebar">
+                        <aside class="checkout-summary" aria-label="Tóm tắt đơn hàng thanh toán">
+                            <h3 class="checkout-summary-title">
+                                <span>Đơn hàng của bạn</span>
+                                <span class="item-count" th:text="${cartItems.size()} + ' sản phẩm'">1 sản phẩm</span>
+                            </h3>
+
+                            <!-- PRODUCT LIST -->
+                            <div class="checkout-items-list">
+                                <div class="checkout-item-row" th:each="item : ${cartItems}">
+                                    <div class="checkout-item-thumb">
+                                        <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}"
+                                             onerror="this.src='/images/placeholder.png'">
+                                    </div>
+                                    <div class="checkout-item-info">
+                                        <span class="checkout-item-name" th:text="${item.product.name}">Sản phẩm</span>
+                                        <div class="checkout-item-meta">
+                                            <span th:text="'Số lượng: ' + ${item.quantity}">SL: 1</span>
+                                            <span th:if="${item.variant != null}" th:text="'(' + ${item.variant.attributeValue} + ')'"></span>
+                                        </div>
+                                    </div>
+                                    <span class="checkout-item-subtotal" th:text="${@priceFormatter.format(item.subtotal)}">
+                                        0 ₫
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- TOTALS BREAKDOWN -->
+                            <div class="checkout-summary-totals">
+                                <div class="checkout-row">
+                                    <span>Tạm tính tiền hàng:</span>
+                                    <strong th:text="${@priceFormatter.format(subtotal)}">0 ₫</strong>
+                                </div>
+                                <div class="checkout-row">
+                                    <span>Phí vận chuyển:</span>
+                                    <span class="text-success font-semibold" id="shippingFeeText">Miễn phí</span>
+                                </div>
+                                <div class="checkout-row grand-total">
+                                    <span>Tổng thanh toán:</span>
+                                    <span class="val" th:text="${@priceFormatter.format(subtotal)}">0 ₫</span>
+                                </div>
+                            </div>
+
+                            <!-- SUBMIT CTA -->
+                            <button type="submit" class="btn btn-utama btn-lg w-100 mb-2">
+                                <i class="bi bi-shield-lock-fill me-1"></i> XÁC NHẬN ĐẶT HÀNG
+                            </button>
+                            <a href="/cart" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-arrow-left me-1"></i> Chỉnh sửa giỏ hàng
+                            </a>
+
+                            <!-- SECURITY BADGE -->
+                            <div class="checkout-security-notice">
+                                <i class="bi bi-patch-check-fill"></i>
+                                <span>Thanh toán an toàn &amp; Bảo mật thông tin</span>
+                            </div>
+                        </aside>
+                    </div>
+
+                </form>
+            </th:block>
+        </div>
+    </section>
+
+</main>
+
+<th:block layout:fragment="scripts">
+    <script>
+        function toggleShippingMode(radio) {
+            const storeSection = document.getElementById('storePickupSection');
+            const storeSelect = document.getElementById('storeSelectInput');
+            const addressInput = document.getElementById('shippingAddressInput');
+            
+            if (radio.value === 'STORE_PICKUP') {
+                storeSection.style.display = 'block';
+                storeSelect.setAttribute('required', 'required');
+                addressInput.removeAttribute('required');
+            } else {
+                storeSection.style.display = 'none';
+                storeSelect.removeAttribute('required');
+                storeSelect.value = '';
+                addressInput.setAttribute('required', 'required');
+            }
+        }
+
+        function togglePaymentMode(radio) {
+            const bankBox = document.getElementById('bankTransferBox');
+            if (radio.value === 'BANK_TRANSFER') {
+                bankBox.style.display = 'block';
+            } else {
+                bankBox.style.display = 'none';
+            }
+        }
+    </script>
+</th:block>
+
+</body>
+</html>

@@ -1,0 +1,404 @@
+/* =========================================================
+   UTEGEAR — CHECKOUT PAGE STYLES
+   Phase 6: High-Trust Commercial Checkout Architecture
+   Customer Checkout Flow & Payment Selection
+   ========================================================= */
+
+/* --- Main Layout Grid --- */
+.checkout-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 32px;
+    align-items: start;
+}
+
+@media (max-width: 991.98px) {
+    .checkout-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
+/* --- Section Blocks --- */
+.checkout-block {
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.checkout-block-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.checkout-block-header .step-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    color: #FFFFFF;
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+.checkout-block-header i {
+    font-size: 1.15rem;
+    color: var(--color-accent);
+}
+
+/* Form Controls and Labels */
+.checkout-block .form-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    margin-bottom: 6px;
+}
+
+.checkout-block .form-label .required-star {
+    color: var(--color-accent);
+    margin-left: 2px;
+}
+
+.checkout-block .form-control,
+.checkout-block .form-select {
+    font-size: 0.88rem;
+    border-color: var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.checkout-block .form-control:focus,
+.checkout-block .form-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(8, 43, 102, 0.12);
+}
+
+/* --- Radio Option Cards (Shipping & Payment) --- */
+.option-cards-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checkout-option-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background-color: #FFFFFF;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    user-select: none;
+    position: relative;
+}
+
+.checkout-option-card:hover {
+    border-color: #94A3B8;
+    background-color: #F8FAFC;
+}
+
+.checkout-option-card:has(input:checked) {
+    border-color: var(--color-primary);
+    background-color: #F8FAFC;
+    box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.checkout-option-card input[type="radio"] {
+    margin-top: 3px;
+    accent-color: var(--color-accent);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checkout-option-card .option-content {
+    flex: 1;
+}
+
+.checkout-option-card .option-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 2px;
+}
+
+.checkout-option-card .option-desc {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+}
+
+.checkout-option-card .badge-fee {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #16A34A;
+    background-color: #DCFCE7;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* Store Pickup Selection Box */
+.store-pickup-box {
+    margin-top: 14px;
+    padding: 16px;
+    background-color: #F8FAFC;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+}
+
+.store-pickup-box label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Bank Transfer Instruction Box */
+.bank-transfer-box {
+    background-color: #F8FAFC;
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-accent);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    margin-top: 12px;
+}
+
+.bank-transfer-box-title {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bank-transfer-box-title i {
+    color: var(--color-accent);
+    font-size: 1.05rem;
+}
+
+.bank-detail-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.bank-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.84rem;
+    padding: 4px 0;
+    border-bottom: 1px dashed var(--color-border);
+}
+
+.bank-detail-row:last-child {
+    border-bottom: none;
+}
+
+.bank-detail-row span.label {
+    color: var(--color-text-muted);
+}
+
+.bank-detail-row span.value {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.bank-detail-row span.value.highlight {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--color-accent);
+    font-family: monospace;
+    letter-spacing: 0.05em;
+}
+
+.bank-transfer-notice {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    margin-top: 10px;
+    margin-bottom: 0;
+    line-height: 1.4;
+}
+
+/* --- Sticky Order Summary Sidebar --- */
+.checkout-summary {
+    position: sticky;
+    top: calc(var(--header-height, 100px) + 16px);
+    background-color: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 22px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.checkout-summary-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.checkout-summary-title .item-count {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    background-color: #F1F5F9;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+}
+
+/* Compact Cart Items in Checkout */
+.checkout-items-list {
+    max-height: 320px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+    padding-right: 4px;
+}
+
+.checkout-item-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.checkout-item-row:last-child {
+    border-bottom: none;
+}
+
+.checkout-item-thumb {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: #FFFFFF;
+    padding: 2px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkout-item-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.checkout-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.checkout-item-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    display: block;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.checkout-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+    font-size: 0.76rem;
+    color: var(--color-text-muted);
+}
+
+.checkout-item-subtotal {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+
+/* Financial Total Rows */
+.checkout-summary-totals {
+    border-top: 1px solid var(--color-border);
+    padding-top: 14px;
+}
+
+.checkout-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+}
+
+.checkout-row span.val,
+.checkout-row strong {
+    color: var(--color-primary);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.checkout-row.grand-total {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    padding-top: 12px;
+    margin-top: 10px;
+    border-top: 1px dashed var(--color-border);
+    margin-bottom: 20px;
+}
+
+.checkout-row.grand-total .val {
+    font-size: 1.25rem;
+    color: var(--color-accent);
+}
+
+/* Security Guarantee Text */
+.checkout-security-notice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 14px;
+    text-align: center;
+}
+
+.checkout-security-notice i {
+    color: #16A34A;
+    font-size: 0.95rem;
+}
