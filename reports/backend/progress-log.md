@@ -445,9 +445,10 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## DATA-01: Crawler pipeline tối thiểu
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/product-crawler-pipeline`
-- Pull Request: `Chưa mở`
+- Pull Request: [#26](https://github.com/NgocYuh/UTEGear/pull/26)
+- Merge commit: `37bc1a5f20b12acddecfdcc575223a7508749dfe`
 - Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Hoàn thiện pipeline hữu hạn `crawl → parse → clean → validate → export` bằng Python standard library.
@@ -468,7 +469,40 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Chưa crawl/import 100 sản phẩm thật; đó là phạm vi DATA-02 sau khi dataset và quyền sử dụng nguồn được rà soát.
   - KICAP đang tắt vì chưa xác minh xong robots/điều khoản; DATA-01 chỉ triển khai adapter GEARVN.
 - Bước tiếp theo:
-  - Mở và merge PR DATA-01, sau đó triển khai DATA-02 để thu thập có kiểm soát, kiểm tra và import dữ liệu.
+  - Triển khai DATA-02 để thu thập có kiểm soát, kiểm tra và import dữ liệu.
+- Ngày hoàn tất: 2026-10-12
+
+## DATA-02: Validate và import sản phẩm
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/product-data-import`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Thêm API ADMIN nhận file JSONL UTF-8 và trả báo cáo từng dòng `IMPORTED` hoặc `FAILED`.
+  - Mỗi dòng chạy trong transaction riêng, nên dòng lỗi không rollback những sản phẩm đã import thành công.
+  - Validate trường bắt buộc, thời gian crawl, source URL, category, brand, giá, SKU, URL ảnh và biến thể mặc định.
+  - Từ chối product slug/SKU trùng; không ghi đè dữ liệu đã có.
+  - Chuẩn hóa một variant duy nhất có option rỗng thành variant mặc định; từ chối sản phẩm không có variant.
+  - Resolve category theo slug và brand không phân biệt hoa thường; chỉ nhận reference data đang hoạt động.
+  - Lưu `sourceName`, `sourceUrl`, `crawledAt` trong JSON specifications để truy vết nguồn sau import.
+  - Tải ảnh bằng HTTPS từ allowlist, giới hạn MIME/dung lượng, upload qua Cloudinary và lưu cả `secureUrl`/`publicId`.
+  - Đăng ký dọn ảnh Cloudinary nếu transaction database rollback.
+  - Không tạo tồn kho trong importer; inventory vẫn thuộc `Store + ProductVariant`.
+  - Cập nhật API contract, mock response, data contract, file cấu hình ví dụ và hướng dẫn import.
+- Kết quả kiểm thử:
+  - File hợp lệ, report hỗn hợp, file rỗng và giới hạn số dòng: `PASS`.
+  - Thiếu field, thiếu variant, SKU trùng, giá sai, brand không tồn tại và sinh default variant: `PASS`.
+  - Chặn URL ảnh HTTP hoặc host ngoài allowlist trước khi truy cập mạng: `PASS`.
+  - Customer bị chặn khỏi API import: `PASS`.
+  - Crawler DATA-01: `PASS` với 7 test.
+  - `mvn -B --no-transfer-progress clean verify`: `PASS` với 80 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa chạy import thật vào Supabase và chưa upload ảnh thật lên Cloudinary cá nhân.
+  - Bộ 100 sản phẩm chỉ chạy sau khi category/brand, danh sách URL và quyền sử dụng nguồn được review.
+  - Format canonical hiện tại là JSONL từ DATA-01; chưa bổ sung CSV vì dữ liệu variants/images là cấu trúc lồng nhau.
+- Bước tiếp theo:
+  - Mở và merge PR DATA-02; sau đó có thể chuẩn bị dataset 100 sản phẩm và chạy thử trên local/staging.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
