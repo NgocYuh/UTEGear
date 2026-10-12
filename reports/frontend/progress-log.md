@@ -212,6 +212,33 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Thống nhất xử lý tương thích layout/model/mock trước khi hoàn tất task.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## FE-WS-01: WebSocket client
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/order-websocket-client`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Đối soát main `c0ea201`: client cập nhật trạng thái đơn trong order-detail.html đã có từ FE-ORD-01/PR #34.
+  - Chuẩn bị nguyên layouts/admin.html có client SockJS/STOMP nhận thông báo đơn mới tại /topic/admin/orders và retry sau 5 giây.
+  - Giữ nguyên file nguồn; không tách hoặc viết mới code, không thay Backend, dependency hoặc layout khách hàng.
+  - Các trang/sidebar/CSS admin thuộc UI-02/UI-03; không đưa vào commit FE-WS-01.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, layout admin khớp nguyên bản.
+  - `mvnw.cmd -B clean verify`: `PASS`, 119 tests, 0 failure, 0 error, 0 skipped.
+  - Script inline: `PASS` kiểm tra cú pháp, destination admin, thông báo, frame JSON lỗi và retry 5 giây bằng SockJS/STOMP/DOM giả lập; không kết nối thật.
+  - `git diff --cached --check`: `PASS`.
+  - Các kiểm tra này chưa chứng minh realtime hoặc layout hoạt động trong ứng dụng.
+- Vướng mắc hoặc phần còn thiếu:
+  - Layout dùng Thymeleaf layout dialect và tham chiếu sidebar/admin CSS, main.js/utils.js và WebJars chưa có đủ trong main.
+  - Client gốc kết nối /ws trực tiếp, chưa có mock event/API-03 envelope, trạng thái kết nối hoặc khử trùng event theo contract.
+  - Chưa kiểm tra phân quyền WebSocket server, quyền nhận event hoặc tích hợp thật; không kết nối production trong kiểm thử.
+  - Giữ nguyên nguồn theo yêu cầu; chưa hoàn tất FE-WS-01 hoặc xác nhận giao diện realtime hoạt động.
+- Bước tiếp theo:
+  - Push branch sau kiểm tra, mở PR để review.
+  - UI-02 tái sử dụng layout đã có; thống nhất xử lý dependency/contract trước khi hoàn tất task.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
