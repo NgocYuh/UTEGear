@@ -683,6 +683,30 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Mở và merge PR ORD-04, sau đó thực hiện WS-01.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## WS-01: Notification domain
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/order-notifications`
+- Pull Request: `Chưa mở; dùng chung PR với WS-02 theo quyết định ngày 2026-10-12`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Ánh xạ `Notification` vào bảng `notifications` đã có trong Flyway V1; không tạo migration mới.
+  - Thêm loại `ORDER_STATUS_CHANGED`, lưu người nhận, tiêu đề, nội dung, reference order, trạng thái đọc và thời gian tạo.
+  - Mở API danh sách có lọc `read`/phân trang, đánh dấu một thông báo đã đọc và đánh dấu tất cả đã đọc.
+  - Mọi truy vấn đọc/sửa đều gắn `userId`; truy cập notification của user khác trả `404 NOTIFICATION_NOT_FOUND` để không lộ tài nguyên.
+  - Bổ sung mã lỗi notification vào API-03 contract.
+- Kết quả kiểm thử:
+  - Danh sách chỉ lấy notification của user hiện tại: `PASS`.
+  - Đánh dấu một/tất cả notification đã đọc: `PASS`.
+  - User khác không thể đọc notification không thuộc mình: `PASS`.
+  - Tạo notification cho user đã persist: `PASS`.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" "-Dtest=NotificationServiceTest,ApplicationProfilesTest" test`: `PASS` với 6 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa phát notification tự động khi trạng thái Order đổi; phần tích hợp sự kiện thuộc WS-02 kế tiếp trên cùng branch.
+- Bước tiếp theo:
+  - Tạo commit WS-01 rồi thực hiện WS-02 trên cùng branch và cùng Pull Request.
+- Ngày hoàn tất: `Chưa merge`
+
 ## Mẫu mục mới
 
 ```md
