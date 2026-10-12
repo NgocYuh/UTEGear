@@ -508,9 +508,10 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## CART-01: Cart domain và service
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/shopping-cart-domain`
-- Pull Request: `Chưa mở`
+- Pull Request: [#28](https://github.com/NgocYuh/UTEGear/pull/28)
+- Merge commit: `ecc1d39ce06e7c9ac9933332c6a37d6cecc3e539`
 - Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Ánh xạ `Cart` và `CartItem` đúng schema Flyway V1; mỗi người dùng có một giỏ và mỗi biến thể chỉ có một dòng trong giỏ.
@@ -531,7 +532,35 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Chưa kiểm tra tồn kho khi thêm/cập nhật giỏ vì tồn kho phụ thuộc cửa hàng phục vụ; server sẽ kiểm tra lại theo `Store + ProductVariant` ở bước checkout/order.
   - Chưa có HTTP endpoint và DTO response; đây là phạm vi CART-02 theo contract API-03.
 - Bước tiếp theo:
-  - Mở và merge PR CART-01, sau đó thực hiện CART-02.
+  - Thực hiện CART-02.
+- Ngày hoàn tất: 2026-10-12
+
+## CART-02: Protected cart API
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/cart-api`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Thêm năm endpoint theo API-03 để đọc giỏ, thêm item, cập nhật số lượng, xóa item và xóa toàn bộ giỏ.
+  - Bảo vệ toàn bộ `/api/cart/**` bằng JWT qua quy tắc `/api/**` hiện có; controller chỉ lấy người dùng từ principal và không nhận `userId` từ client.
+  - Validate `variantId` và `quantity` ở request DTO; lỗi field trả về `VALIDATION_FAILED` theo error contract chung.
+  - Trả Cart DTO riêng gồm product/variant summary, giá đơn vị, thành tiền, tổng số lượng, subtotal và thời điểm cập nhật.
+  - Tổng hợp `availableStock` của biến thể trên các cửa hàng đang hoạt động; `available` yêu cầu sản phẩm/biến thể còn hoạt động và tồn tổng đủ số lượng trong giỏ.
+  - Không trả trực tiếp entity JPA, không sửa migration và không thay đổi template/static asset của Frontend.
+- Kết quả kiểm thử:
+  - Thiếu JWT trên API cart: `PASS`, trả `401 UNAUTHORIZED`.
+  - Request hợp lệ dùng đúng người dùng từ JWT: `PASS`, trả `201` và Cart response.
+  - Số lượng bằng 0: `PASS`, trả `400 VALIDATION_FAILED` kèm lỗi field `quantity`.
+  - Item không thuộc người dùng hiện tại: `PASS`, trả `404 CART_ITEM_NOT_FOUND` và không làm lộ giỏ của người khác.
+  - Mapping response, giá, ảnh chính và tồn kho tổng hợp: `PASS`.
+  - `mvn -B --no-transfer-progress '-Dtest=CartControllerTest,CartResponseTest,CartServiceTest' test`: `PASS` với 10 test, 0 failure, 0 error, 0 skipped.
+  - `mvn -B --no-transfer-progress clean verify`: `PASS` với 93 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Test dùng H2, mock JWT user/service và dữ liệu entity trong bộ nhớ; chưa kết nối Supabase thật.
+  - API chỉ hiển thị tồn khả dụng tổng hợp; việc chọn cửa hàng phục vụ và kiểm tra tồn kho cuối cùng thuộc checkout/order.
+- Bước tiếp theo:
+  - Mở và merge PR CART-02; sau đó thực hiện WISH-01 hoặc task kế tiếp theo backlog.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
