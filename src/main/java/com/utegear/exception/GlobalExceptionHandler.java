@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,6 +47,19 @@ public class GlobalExceptionHandler {
                 "Thiếu tham số bắt buộc: " + exception.getParameterName(),
                 request,
                 Map.of(exception.getParameterName(), "Trường này là bắt buộc"));
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    ResponseEntity<ApiError> handleMaxUploadSize(
+            MaxUploadSizeExceededException exception,
+            HttpServletRequest request) {
+        ApiError error = error(
+                HttpStatus.BAD_REQUEST,
+                "FILE_TOO_LARGE",
+                "File ảnh vượt quá dung lượng cho phép",
+                request,
+                Map.of());
         return ResponseEntity.badRequest().body(error);
     }
 
