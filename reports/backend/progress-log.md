@@ -330,16 +330,17 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Ngày cập nhật: 2026-10-11
 - Đã làm: API public category/brand/product; tìm kiếm, filter, khoảng giá, pagination, sort và DTO summary/detail có variants.
 - Kết quả kiểm thử: MockMvc empty/pagination, filter lỗi và 404 PASS; `mvn -B --no-transfer-progress clean verify` PASS với 29 test; `git diff --check` PASS.
-- Vướng mắc hoặc phần còn thiếu: Tổng tồn kho giữ 0 cho tới INV-02; không có blocker trong phạm vi CAT-03.
-- Bước tiếp theo: Thực hiện INV-01, sau đó INV-02 bổ sung tồn kho thực cho catalog.
+- Vướng mắc hoặc phần còn thiếu: Tại thời điểm CAT-03, tổng tồn kho tạm giữ 0; INV-02 đã thay bằng dữ liệu tổng hợp thực.
+- Bước tiếp theo: Catalog đã được nối với inventory trong INV-02.
 - Ngày hoàn tất: 2026-10-11
 
 ## INV-01: Store domain và admin API
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/store-management`
-- Pull Request: `Chưa mở`
-- Ngày cập nhật: 2026-10-11
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/17
+- Merge commit: `fc65f71d4a6ea88dcbb3b773886a279241d2c408`
+- Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Thêm entity và repository Store khớp bảng `stores` của Flyway V1.
   - Thêm DTO riêng cho request/response; không trả trực tiếp entity JPA.
@@ -355,7 +356,34 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - API public và availability thuộc INV-03; tồn kho theo biến thể thuộc INV-02, không đưa vào INV-01.
   - Kiểm thử dùng H2 và mock repository; chưa kết nối Supabase thật trong task này.
 - Bước tiếp theo:
-  - Mở và merge PR INV-01; sau đó thực hiện INV-02.
+  - Thực hiện INV-02.
+- Ngày hoàn tất: 2026-10-12
+
+## INV-02: Inventory domain
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/store-inventory`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Thêm entity và repository tồn kho theo đúng cặp duy nhất `Store + ProductVariant` của Flyway V1.
+  - Thêm nghiệp vụ nhập kho, giảm kho và điều chuyển kho trong transaction.
+  - Khóa ghi store và dòng tồn kho theo thứ tự ổn định trước khi cập nhật để hạn chế mất cập nhật và deadlock.
+  - Chặn số lượng không dương, cửa hàng ngừng hoạt động, biến thể không tồn tại và tồn kho âm.
+  - Điều chuyển bảo toàn tổng tồn; tự tạo dòng tồn kho tại cửa hàng đích khi chưa có.
+  - Catalog public tính `totalStock` và `inStock` từ tồn kho của các biến thể tại cửa hàng đang hoạt động,
+    thay cho giá trị 0 tạm thời của CAT-03.
+- Kết quả kiểm thử:
+  - Mapping unique `store_id + variant_id` và invariant không âm: `PASS`.
+  - Nhập kho mới, nhập bổ sung và giảm kho: `PASS`.
+  - Điều chuyển thành công, tự tạo tồn kho đích, thiếu hàng và bảo toàn tổng kho: `PASS`.
+  - Tổng tồn cấp sản phẩm từ nhiều biến thể: `PASS`.
+  - `mvn -B --no-transfer-progress clean verify`: `PASS` với 50 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - INV-02 tập trung domain/service; endpoint tra cứu availability thuộc INV-03 theo kế hoạch.
+  - Kiểm thử dùng H2 cho application context và mock repository cho nghiệp vụ; chưa kết nối Supabase thật.
+- Bước tiếp theo:
+  - Mở và merge PR INV-02; sau đó thực hiện INV-03.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
