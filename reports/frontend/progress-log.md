@@ -134,6 +134,32 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Thống nhất xử lý tương thích và tồn kho theo biến thể trước khi hoàn tất task.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## FE-CART-01: Giao diện giỏ hàng
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/cart-page`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/24
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Chuẩn bị nguyên cart template, shipping-progress fragment, CSS cart và JavaScript cart có sẵn.
+  - Không sửa nội dung code, Backend, dependency, layout chung hoặc contract.
+  - Đã push theo lịch lúc 14:12:17 ngày 12/10/2026 (UTC+7), commit `d65affc`.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 4/4 file khớp nguyên bản.
+  - `node --check` cho cart.js: `PASS`.
+  - Sau đồng bộ main và xử lý conflict PR #24: `mvnw.cmd -B clean verify` PASS với 57 tests, 0 failure/error/skipped; diff check phần nhật ký PASS.
+  - `mvnw.cmd -B clean verify`: `PASS`, 50 tests, 0 failure, 0 error, 0 skipped.
+  - Kiểm thử regression hiện có chưa chứng minh template mới hoạt động; diff check có whitespace nguyên bản được giữ nguyên theo yêu cầu.
+- Vướng mắc hoặc phần còn thiếu:
+  - Template dùng layout:decorate, cartItems/entity cũ và bean priceFormatter; chưa khớp layout/DTO API-03.
+  - cart.js gọi /api/cart/add qua UTEGear.API, chưa có mock trong task này; không chạy thao tác trên production trong kiểm thử.
+  - Handler cartPlus/cartMinus/removeCartItem/clearCartAjax và việc nạp CSS/JS chưa được nối với layout hiện tại.
+  - Chưa xác nhận xử lý giỏ hàng theo biến thể hoặc trang chạy được; giữ nguyên code theo yêu cầu, chưa hoàn tất FE-CART-01.
+- Bước tiếp theo:
+  - Review PR #24; đã đồng bộ main và giữ các mục tiến độ trước khi xử lý conflict nhật ký.
+  - Thống nhất xử lý layout/model/mock trước khi hoàn tất task.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
