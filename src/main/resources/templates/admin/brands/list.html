@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/admin}">
+<head>
+    <title>Quản lý thương hiệu - UTEGear Admin</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <!-- PAGE HEADER -->
+    <div class="admin-page-header">
+        <div class="admin-page-title-group">
+            <span class="admin-badge admin-badge-primary">Bán hàng & Kho</span>
+            <h1 class="admin-page-title">Quản lý Thương hiệu</h1>
+            <p class="admin-page-subtitle">Quản lý các thương hiệu đối tác, nhà phân phối và nhà sản xuất thiết bị ngoại vi</p>
+        </div>
+    </div>
+
+    <!-- QUICK ADD PANEL -->
+    <div class="admin-card mb-4">
+        <div class="admin-card-header">
+            <div>
+                <h3 class="admin-card-title"><i class="bi bi-patch-plus me-2" style="color: var(--admin-accent-primary);"></i>Thêm thương hiệu mới</h3>
+                <div class="admin-card-subtitle">Khai báo hãng sản xuất hoặc nhãn hiệu linh kiện mới</div>
+            </div>
+        </div>
+        <div class="admin-card-body">
+            <form th:action="@{/admin/brands/save}" method="post" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label-admin">Tên thương hiệu <span class="text-danger">*</span></label>
+                    <input type="text" name="name" class="form-control-admin" placeholder="VD: Razer, Logitech, Keychron..." required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-admin">Mô tả tóm tắt</label>
+                    <input type="text" name="description" class="form-control-admin" placeholder="Ghi chú về xuất xứ, phân khúc sản phẩm...">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn-admin btn-admin-primary w-100 justify-content-center">
+                        <i class="bi bi-plus-lg me-1"></i> Thêm hãng
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- BRANDS TABLE -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div>
+                <h3 class="admin-card-title"><i class="bi bi-tags me-2" style="color: var(--admin-brand-primary);"></i>Thương hiệu hiện có</h3>
+                <div class="admin-card-subtitle" th:text="'Tổng số: ' + ${#lists.size(brands)} + ' thương hiệu'">0 thương hiệu</div>
+            </div>
+        </div>
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">ID</th>
+                        <th style="width: 260px;">Tên thương hiệu</th>
+                        <th>Mô tả</th>
+                        <th style="width: 140px;">Trạng thái</th>
+                        <th style="width: 100px;" class="text-end">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${brands == null or #lists.isEmpty(brands)}">
+                        <td colspan="5" class="text-center py-4 text-muted">Chưa có thương hiệu nào trong hệ thống</td>
+                    </tr>
+                    <tr th:each="b : ${brands}">
+                        <td>
+                            <span class="font-monospace fw-bold" style="color: var(--admin-text-muted);" th:text="'#' + ${b.id}">#1</span>
+                        </td>
+                        <td>
+                            <div class="fw-bold" style="color: var(--admin-text-primary); font-size: 0.95rem;" th:text="${b.name}">Logitech</div>
+                        </td>
+                        <td style="font-size: 0.85rem; color: var(--admin-text-secondary);" th:text="${b.description != null && !b.description.isEmpty() ? b.description : '—'}">Mô tả</td>
+                        <td>
+                            <span class="badge-status" th:classappend="${b.active} ? 'status-active' : 'status-inactive'"
+                                  th:text="${b.active} ? 'Hoạt động' : 'Tạm khóa'">Hoạt động</span>
+                        </td>
+                        <td class="text-end">
+                            <form th:action="@{'/admin/brands/' + ${b.id} + '/delete'}" method="post" class="d-inline" onsubmit="return confirm('Xác nhận xóa thương hiệu này?');">
+                                <button type="submit" class="btn-admin-icon btn-admin-danger" title="Xóa thương hiệu">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>

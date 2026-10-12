@@ -239,6 +239,33 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - UI-02 tái sử dụng layout đã có; thống nhất xử lý dependency/contract trước khi hoàn tất task.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## UI-02: Admin catalog và cửa hàng
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/admin-catalog-pages`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Chuẩn bị nguyên product list/form, brand/category list, store list/detail, sidebar admin và CSS admin có sẵn.
+  - Giữ nguyên tám file nguồn, tái sử dụng layouts/admin.html đã merge qua FE-WS-01/PR #36.
+  - Tạo branch từ main `157456a`; không thay Backend, dependency, layout chung, app.css hoặc API contract.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 8/8 file khớp nguyên bản.
+  - `mvnw.cmd -B clean verify` với Java 21.0.7: `PASS`, 131 tests, 0 failure, 0 error, 0 skipped.
+  - Lần chạy Java 26 lỗi do Byte Buddy chưa hỗ trợ phiên bản JVM; chạy lại bằng Java 21 thành công, không sửa code hoặc dependency.
+  - JavaScript: `PASS` kiểm tra cú pháp 1 script inline và 4 handler tĩnh; không thực thi thao tác admin.
+  - `git diff --cached --check`: `PASS`.
+  - Build và kiểm tra cú pháp chưa chứng minh các trang hoạt động với Backend hiện tại.
+- Vướng mắc hoặc phần còn thiếu:
+  - Template dùng layout dialect, model/entity, pagination và POST /admin/* theo giao thức cũ; chưa có mock API-02.
+  - Trang tồn kho dùng inv.product.id và stock cũ, khác mô hình Store + ProductVariant; chưa xác nhận các thao tác hoạt động.
+  - CSS admin chưa được nạp vào app.css; dependency layout/script chung chưa có đầy đủ.
+  - Không gọi API admin hay ghi database trong kiểm thử; bản nguồn chưa hoàn tất UI-02 hoặc sẵn sàng merge.
+- Bước tiếp theo:
+  - Push branch sau kiểm tra và mở PR để review.
+  - Thống nhất xử lý tương thích và inventory theo biến thể trước khi hoàn tất task.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
