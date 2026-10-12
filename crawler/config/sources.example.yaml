@@ -1,5 +1,16 @@
 sources:
-  - name: example-store
+  - name: gearvn
+    enabled: true
+    base_url: https://gearvn.com
+    allowed_hosts:
+      - gearvn.com
+      - www.gearvn.com
+    request_delay_seconds: 2
+    parser: schema_org_product
+    usage_notes: Public product HTML only; respect robots.txt; never call disallowed /api paths.
+  - name: kicap
     enabled: false
-    base_url: https://example.com
-    # TODO: Add reviewed paths, selectors, rate limits, and usage constraints.
+    base_url: https://kicap.vn
+    request_delay_seconds: 2
+    parser: not_implemented
+    usage_notes: Enable only after robots.txt and source terms are reviewed.

@@ -11,3 +11,17 @@ không có biến thể và không tạo bản ghi tồn kho chỉ gắn với s
 
 Mỗi record phải truy vết được nguồn, vượt qua validation bắt buộc và không chứa credential.
 Crawler không tự ghi vào database production trong giai đoạn scaffold.
+
+## Record JSONL của DATA-01
+
+Mỗi dòng UTF-8 là một object với các field:
+
+- `source_name`, `source_url`, `crawled_at`: thông tin truy vết nguồn.
+- `name`, `description`, `brand`, `category`, `base_price`: dữ liệu sản phẩm đã làm sạch.
+- `image_urls`: URL ảnh nguồn, không phải file ảnh tải về.
+- `variants`: danh sách gồm `sku`, `option_values`, `price`, `is_default`.
+
+`category` chỉ nhận `ban-phim`, `chuot`, `tai-nghe`, `keycap`, `switch`, `phu-kien`. Giá dùng số
+nguyên VND dương. Mỗi sản phẩm phải có ít nhất một biến thể, SKU không rỗng/không trùng và đúng
+một biến thể mặc định. Nếu nguồn không có SKU, cleaner sinh SKU ổn định từ nguồn và URL; đây là
+khóa trung gian để DATA-02 kiểm tra trước khi import.

@@ -1,1 +1,1 @@
-# Dependencies will be added only when the crawler design is implemented.
+# DATA-01 intentionally uses only the Python standard library.

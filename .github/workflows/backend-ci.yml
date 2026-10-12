@@ -33,5 +33,14 @@ jobs:
           cache: maven
           cache-dependency-path: pom.xml
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Verify backend
         run: ./mvnw -B --no-transfer-progress clean verify
+
+      - name: Verify crawler
+        working-directory: crawler
+        run: python -m unittest discover -s tests -v
