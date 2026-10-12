@@ -83,6 +83,29 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Thống nhất xử lý login và tương thích layout/contract trước khi hoàn tất task.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## FE-STORE-01: Giao diện cửa hàng
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/store-availability-ui`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Chuẩn bị nguyên template danh sách/chi tiết cửa hàng và CSS stores có sẵn.
+  - Không sửa nội dung code, Backend, dependency, layout chung hoặc contract.
+  - Người dùng yêu cầu hẹn push một lần lúc 13:54 ngày 12/10/2026 (UTC+7).
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 3/3 file khớp nguyên bản.
+  - `mvnw.cmd -B clean verify`: `PASS`, 50 tests, 0 failure, 0 error, 0 skipped.
+  - Kiểm thử regression hiện có chưa chứng minh template mới hoạt động; diff check có whitespace nguyên bản được giữ nguyên theo yêu cầu.
+- Vướng mắc hoặc phần còn thiếu:
+  - Template dùng layout:decorate, openTime/closeTime và danh sách sản phẩm theo model cũ; chưa tương thích UI-01/API-02.
+  - Chưa có mock loading/error và tồn kho theo Store + ProductVariant; chưa xác nhận trang chạy được.
+  - Giữ nguyên code theo yêu cầu; bản đưa nguồn lên review chưa hoàn tất FE-STORE-01.
+- Bước tiếp theo:
+  - Push đúng commit đã kiểm tra theo lịch, sau đó mở PR để review.
+  - Thống nhất xử lý tương thích và tồn kho theo biến thể trước khi hoàn tất task.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
