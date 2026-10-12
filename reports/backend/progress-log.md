@@ -566,9 +566,10 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## ORD-01: Address và Coupon
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/address-coupon-domain`
-- Pull Request: `Chưa mở`
+- Pull Request: [#30](https://github.com/NgocYuh/UTEGear/pull/30)
+- Merge commit: `c5351f41189de56ad7462dd998d09588b3e731c2`
 - Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Ánh xạ entity `Address` và `Coupon` đúng hai bảng đã có trong Flyway V1; không tạo hoặc sửa migration.
@@ -590,7 +591,38 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Test persistence dùng H2 qua application context; chưa chạy giao dịch thật trên Supabase.
   - Việc tạo Order/Payment, áp coupon trong checkout và API address/coupon chưa nằm trong phạm vi ORD-01.
 - Bước tiếp theo:
-  - Mở và merge PR ORD-01, sau đó thực hiện ORD-02.
+  - Thực hiện ORD-02.
+- Ngày hoàn tất: 2026-10-12
+
+## ORD-02: Order và Payment domain
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/order-payment-domain`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Ánh xạ `Order`, `OrderItem` và `Payment` đúng các bảng Flyway V1; không tạo hoặc sửa migration.
+  - Thêm enum order, shipping, payment method và payment status đúng API-03 và constraint database.
+  - Order snapshot thông tin khách hàng và địa chỉ giao hàng tại thời điểm tạo đơn.
+  - OrderItem luôn tham chiếu `ProductVariant` và snapshot bất biến tên sản phẩm, SKU, option values, ảnh, giá và subtotal.
+  - Tự tính subtotal từ các item và tính total theo `subtotal - discount + shippingFee`; từ chối giá trị âm hoặc discount vượt subtotal.
+  - Giới hạn mỗi biến thể một dòng trong đơn và mỗi đơn tối đa một Payment.
+  - Payment lưu đúng tổng tiền cuối cùng của Order và hỗ trợ trạng thái chờ, thành công, thất bại hoặc hủy.
+  - Thêm repository tra cứu đơn theo mã/chủ sở hữu và payment theo order/transaction ID.
+  - Chưa trừ tồn kho, áp dụng lượt coupon, xóa giỏ hoặc mở API checkout; các bước giao dịch này thuộc ORD-03.
+- Kết quả kiểm thử:
+  - Tính subtotal, discount, shipping fee và total: `PASS`.
+  - Snapshot product/variant không đổi khi dữ liệu catalog sau đó thay đổi: `PASS`.
+  - Từ chối discount vượt subtotal: `PASS`.
+  - Tạo đúng một Payment theo total cuối cùng và chặn Payment thứ hai: `PASS`.
+  - Chỉ cho phép hoàn tất/hủy payment từ trạng thái phù hợp: `PASS`.
+  - `mvn -B --no-transfer-progress '-Dtest=OrderTest' test`: `PASS` với 5 test, 0 failure, 0 error, 0 skipped.
+  - `mvn -B --no-transfer-progress clean verify`: `PASS` với 107 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Test mapping dùng H2 qua application context; chưa chạy persistence thật trên Supabase.
+  - Chuyển trạng thái Order cho nghiệp vụ quản trị sẽ được hoàn thiện ở ORD-04; ORD-02 mới chốt enum và trường thời gian.
+- Bước tiếp theo:
+  - Mở và merge PR ORD-02, sau đó thực hiện ORD-03.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
