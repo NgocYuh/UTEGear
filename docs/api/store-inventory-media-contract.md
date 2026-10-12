@@ -66,6 +66,21 @@ MIME cho phép: `image/jpeg`, `image/png`, `image/webp`. Dung lượng tối đa
 giá trị mặc định contract là 5 MiB. Upload thay thế chỉ xóa ảnh Cloudinary cũ sau khi ảnh mới đã upload và
 database cập nhật thành công. CI mock Cloudinary, không upload thật.
 
+## Product data import admin
+
+| Method | Path | Content-Type | Request | Response |
+|---|---|---|---|---|
+| POST | `/api/admin/products/import` | multipart/form-data | `file`: JSONL UTF-8 theo data contract | `200 ProductImportReport` |
+
+Mỗi dòng được import trong transaction riêng. Dòng lỗi không rollback những dòng đã thành công.
+`ProductImportReport` gồm `totalRows`, `importedRows`, `failedRows`, `rows`; mỗi row có `line`,
+`status` (`IMPORTED` hoặc `FAILED`), `productId`, `sourceUrl`, `message`.
+
+Importer yêu cầu category và brand đang hoạt động đã tồn tại. Product slug và SKU trùng bị từ chối.
+Ảnh nguồn phải dùng HTTPS, thuộc allowlist, có MIME JPEG/PNG/WebP và không vượt giới hạn upload.
+Ảnh được đưa qua Cloudinary rồi mới lưu `secureUrl` cùng `publicId`; transaction rollback sẽ dọn
+ảnh vừa upload. Endpoint không tạo tồn kho vì tồn kho thuộc cặp `Store + ProductVariant`.
+
 ## Mã lỗi
 
 | HTTP | Code | Khi nào |
@@ -73,6 +88,10 @@ database cập nhật thành công. CI mock Cloudinary, không upload thật.
 | 400 | `VALIDATION_FAILED` | Request store/inventory/media sai field |
 | 400 | `INVALID_MEDIA_TYPE` | File không thuộc MIME cho phép |
 | 400 | `FILE_TOO_LARGE` | File vượt giới hạn |
+| 400 | `IMPORT_FILE_REQUIRED` | Thiếu file JSONL |
+| 400 | `IMPORT_ROW_LIMIT_EXCEEDED` | File vượt giới hạn số dòng |
+| 400 | `SKU_DUPLICATE` | SKU trùng trong file hoặc database |
+| 400 | `INVALID_SOURCE_IMAGE` | URL, host, MIME hoặc dung lượng ảnh nguồn không hợp lệ |
 | 401 | `UNAUTHORIZED` | Thiếu, sai hoặc hết hạn JWT |
 | 403 | `FORBIDDEN` | User không có role ADMIN |
 | 404 | `STORE_NOT_FOUND` | Không tìm thấy store phù hợp quyền truy cập |

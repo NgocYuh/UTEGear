@@ -21,8 +21,20 @@ public class CloudinaryMediaStorage implements MediaStorage {
     @Override
     public UploadedMedia upload(MultipartFile file, String folder) {
         try {
+            return upload(file.getBytes(), file.getContentType(), file.getOriginalFilename(), folder);
+        } catch (IOException | RuntimeException exception) {
+            if (exception instanceof ApiException apiException) {
+                throw apiException;
+            }
+            throw uploadFailed();
+        }
+    }
+
+    @Override
+    public UploadedMedia upload(byte[] content, String contentType, String originalFilename, String folder) {
+        try {
             Map<?, ?> result = cloudinary.uploader().upload(
-                    file.getBytes(),
+                    content,
                     ObjectUtils.asMap(
                             "folder", folder,
                             "resource_type", "image",

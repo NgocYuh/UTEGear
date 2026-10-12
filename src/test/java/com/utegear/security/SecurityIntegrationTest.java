@@ -3,6 +3,7 @@ package com.utegear.security;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -157,6 +159,22 @@ class SecurityIntegrationTest {
                         .content(validStoreJson()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("UTEGear Quận 1"));
+    }
+
+    @Test
+    void blocksCustomerFromProductImport() throws Exception {
+        CustomUserDetails principal = principal(Role.CUSTOMER);
+        String token = jwtService.generateToken(principal);
+        when(userRepository.findByEmailIgnoreCase(principal.getUsername()))
+                .thenReturn(Optional.of(principal.getUser()));
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "products.jsonl", "application/x-ndjson", "{}".getBytes());
+
+        mockMvc.perform(multipart("/api/admin/products/import")
+                        .file(file)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value("FORBIDDEN"));
     }
 
     private String validStoreJson() {

@@ -25,3 +25,16 @@ Mỗi dòng UTF-8 là một object với các field:
 nguyên VND dương. Mỗi sản phẩm phải có ít nhất một biến thể, SKU không rỗng/không trùng và đúng
 một biến thể mặc định. Nếu nguồn không có SKU, cleaner sinh SKU ổn định từ nguồn và URL; đây là
 khóa trung gian để DATA-02 kiểm tra trước khi import.
+
+## Quy tắc import DATA-02
+
+- File canonical là JSONL UTF-8 do DATA-01 export; mỗi dòng là một transaction độc lập.
+- Category được tra theo slug và brand được tra không phân biệt hoa thường; cả hai phải tồn tại và hoạt động.
+- Product slug và SKU đã tồn tại bị báo lỗi, không cập nhật đè dữ liệu cũ.
+- `source_name`, `source_url`, `crawled_at` được lưu trong JSON specifications để truy vết nguồn.
+- Một variant duy nhất có `option_values` rỗng luôn được chuẩn hóa thành variant mặc định.
+- Không có variant, giá không dương hoặc có khác một variant mặc định đều bị từ chối.
+- URL ảnh được tải có giới hạn từ HTTPS host cho phép, sau đó upload Cloudinary; database không lưu URL
+  nguồn vào `product_images`.
+- Báo cáo trả kết quả theo số dòng và không chứa credential hay nội dung file ảnh.
+- Importer không tạo `store_inventory`; tồn kho tiếp tục được quản lý riêng theo `Store + ProductVariant`.

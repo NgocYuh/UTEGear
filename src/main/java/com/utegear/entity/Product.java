@@ -34,6 +34,7 @@ public class Product {
  public Product(String name,String slug,Category category,Brand brand,BigDecimal basePrice,BigDecimal salePrice){this.name=name;this.slug=slug;this.category=category;this.brand=brand;this.basePrice=basePrice;this.salePrice=salePrice;validatePrice();}
  public void addVariant(ProductVariant variant){variant.attach(this);variants.add(variant);}
  public void addImage(ProductImage image){image.attach(this);images.add(image);}
+ public void updateSpecifications(JsonNode specifications){if(specifications==null||!specifications.isObject())throw new IllegalArgumentException("Thông số sản phẩm phải là JSON object");this.specifications=specifications.deepCopy();}
  @PrePersist void create(){validate();createdAt=updatedAt=OffsetDateTime.now(ZoneOffset.UTC);}
  @PreUpdate void update(){validate();updatedAt=OffsetDateTime.now(ZoneOffset.UTC);}
  private void validate(){validatePrice();if(variants.isEmpty())throw new IllegalStateException("Sản phẩm phải có ít nhất một biến thể");if(variants.stream().filter(ProductVariant::isDefault).count()!=1)throw new IllegalStateException("Sản phẩm phải có đúng một biến thể mặc định");}
