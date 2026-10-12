@@ -258,3 +258,30 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - ...
 - Ngày hoàn tất: YYYY-MM-DD hoặc `Chưa hoàn tất`
 ```
+
+## UI-03: Admin người dùng và đơn hàng
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/admin-user-order-pages`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Chuẩn bị nguyên dashboard, user list/detail, coupon list và order list/detail có sẵn.
+  - Giữ nguyên sáu file nguồn; layout admin đã có từ FE-WS-01, sidebar/CSS được chuẩn bị trên branch UI-02.
+  - Tạo branch riêng từ main `157456a`; không thay Backend, dependency, layout chung hoặc API contract.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 6/6 file khớp nguyên bản.
+  - `mvnw.cmd -B clean verify` với Java 21.0.7: `PASS`, 131 tests, 0 failure, 0 error, 0 skipped.
+  - Lần chạy Java 26 lỗi do Byte Buddy chưa hỗ trợ phiên bản JVM; chạy lại bằng Java 21 thành công, không sửa code hoặc dependency.
+  - JavaScript: `PASS` kiểm tra cú pháp 2 handler tĩnh; không thực thi thao tác admin.
+  - `git diff --cached --check`: `PASS`.
+  - Build và kiểm tra cú pháp chưa chứng minh các trang hoạt động với Backend hiện tại.
+- Vướng mắc hoặc phần còn thiếu:
+  - Template dùng layout dialect, user.isAdmin(), model order/entity và pagination cũ; chưa có mock API-03.
+  - Các form coupon/order status dùng POST /admin/* khác API hiện tại; chưa xác nhận hoạt động.
+  - Sidebar/CSS của UI-02 cần được merge trước khi kiểm tra bộ giao diện admin đầy đủ.
+  - Không gọi API admin hoặc đổi trạng thái đơn trên production; bản nguồn chưa hoàn tất UI-03 hoặc sẵn sàng merge.
+- Bước tiếp theo:
+  - Push branch sau kiểm tra và mở PR riêng; review UI-02 trước khi tích hợp phần giao diện dùng chung.
+  - Thống nhất xử lý model/API/mock trước khi hoàn tất task.
+- Ngày hoàn tất: `Chưa hoàn tất`
