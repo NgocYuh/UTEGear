@@ -1,0 +1,587 @@
+/* =========================================================
+   UTEGEAR CATALOG & DISCOVERY EXPERIENCE
+   Mature Commercial Architecture: Anti-AI / Human-Designed
+   Catalog Navigation, Product Filtering & Sorting
+   Palette: UTE Navy (#082B66), Crimson (#E21B23), Neutral Slate Canvas
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   1. BREADCRUMB & CATEGORY HEADER
+   --------------------------------------------------------- */
+.catalog-breadcrumb {
+    padding: var(--space-3) 0 var(--space-2);
+    font-size: 0.82rem;
+}
+
+.catalog-breadcrumb .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 0;
+    list-style: none;
+    padding: 0;
+}
+
+.catalog-breadcrumb .breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-text-muted);
+}
+
+.catalog-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+    content: "/";
+    padding: 0 6px;
+    color: #CBD5E1;
+    font-size: 0.75rem;
+}
+
+.catalog-breadcrumb .breadcrumb-item a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.catalog-breadcrumb .breadcrumb-item a:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.catalog-breadcrumb .breadcrumb-item.active {
+    color: var(--color-text-main);
+    font-weight: 600;
+}
+
+/* Category Heading Banner */
+.catalog-header {
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.catalog-header-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.catalog-title {
+    font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+    font-weight: 800;
+    color: var(--color-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.catalog-subtitle {
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+    margin-bottom: 0;
+    max-width: 70ch;
+}
+
+/* ---------------------------------------------------------
+   2. SUBCATEGORY PILLS (CONNECTION CABLES)
+   --------------------------------------------------------- */
+.catalog-subnav {
+    margin-bottom: var(--space-4);
+    padding: 8px 12px;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+}
+
+.catalog-subpills {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.catalog-subpill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+    background-color: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.catalog-subpill:hover {
+    color: var(--color-primary);
+    border-color: #CBD5E1;
+    background-color: #FFFFFF;
+}
+
+.catalog-subpill.active {
+    color: #FFFFFF;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 6px rgba(8, 43, 102, 0.15);
+}
+
+/* ---------------------------------------------------------
+   3. CATALOG TOOLBAR (COUNT, ACTIVE FILTERS, SORT)
+   --------------------------------------------------------- */
+.catalog-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    padding: 10px 14px;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+}
+
+.catalog-count-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.catalog-count-number {
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+/* Sorting Selector */
+.catalog-sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+}
+
+.catalog-sort-wrap label {
+    font-weight: 600;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.catalog-sort-select {
+    height: 34px;
+    padding: 0 28px 0 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+    background-color: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748B' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.catalog-sort-select:focus-visible {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(8, 43, 102, 0.2);
+}
+
+/* Active Filter Badges Strip */
+.active-filters-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: var(--space-4);
+    padding: 8px 12px;
+    background-color: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: var(--radius-sm);
+}
+
+.active-filters-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #64748B;
+    margin-right: 4px;
+}
+
+.active-filter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.active-filter-badge:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background-color: #FEF2F2;
+}
+
+.active-filter-badge i {
+    font-size: 0.75rem;
+}
+
+.active-filters-clear {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    text-decoration: none;
+    margin-left: auto;
+    padding: 2px 6px;
+}
+
+.active-filters-clear:hover {
+    text-decoration: underline;
+}
+
+/* ---------------------------------------------------------
+   4. DESKTOP FILTER SIDEBAR
+   --------------------------------------------------------- */
+.filter-sidebar {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    position: sticky;
+    top: calc(var(--header-height) + 16px);
+    margin-bottom: var(--space-6);
+}
+
+.filter-title {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    letter-spacing: -0.01em;
+}
+
+.filter-group {
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.filter-group:last-of-type {
+    border-bottom: none;
+    margin-bottom: 8px;
+    padding-bottom: 0;
+}
+
+.filter-group-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.filter-group-header i {
+    color: var(--color-primary);
+    font-size: 0.85rem;
+}
+
+.filter-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.filter-link-option {
+    color: #475569;
+    padding: 5px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filter-link-option:hover {
+    background-color: #F8FAFC;
+    color: var(--color-primary);
+}
+
+.filter-link-option.active {
+    background-color: var(--color-primary-subtle);
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.filter-suboptions {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-left: 2px solid #E2E8F0;
+    margin-left: 10px;
+    padding-left: 8px;
+}
+
+.filter-suboption {
+    display: block;
+    font-size: 0.78rem;
+    color: #64748B;
+    padding: 3px 6px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.filter-suboption:hover, .filter-suboption.active {
+    color: var(--color-accent);
+    font-weight: 600;
+    background-color: #FEF2F2;
+}
+
+/* Filter Checkboxes & Radios */
+.filter-check-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.82rem;
+    color: #475569;
+    transition: all var(--transition-fast);
+    user-select: none;
+    margin: 0;
+}
+
+.filter-check-item:hover {
+    background-color: #F8FAFC;
+    color: var(--color-text-main);
+}
+
+.filter-check-item input[type="radio"],
+.filter-check-item input[type="checkbox"] {
+    accent-color: var(--color-primary);
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.filter-check-item input:checked + span {
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.rating-stars-filter {
+    color: #EAB308;
+    letter-spacing: 1px;
+}
+
+/* Price Range Inputs */
+.price-inputs-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.price-input-wrapper {
+    flex: 1;
+}
+
+.price-input-wrapper label {
+    font-size: 0.68rem;
+    color: #64748B;
+    display: block;
+    margin-bottom: 2px;
+    font-weight: 600;
+}
+
+.price-input-wrapper input {
+    height: 32px;
+    font-size: 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0 8px;
+    width: 100%;
+    background-color: #FFFFFF;
+    color: var(--color-text-main);
+}
+
+.price-input-wrapper input:focus-visible {
+    border-color: var(--color-primary);
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+}
+
+.price-hyphen {
+    color: #94A3B8;
+    font-weight: 700;
+    margin-top: 14px;
+}
+
+/* Filter Actions Button Container */
+.filter-sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.btn-filter-apply {
+    background-color: var(--color-primary);
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 0.82rem;
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+    text-align: center;
+}
+
+.btn-filter-apply:hover {
+    background-color: var(--color-primary-hover);
+    color: #FFFFFF;
+}
+
+.btn-filter-reset {
+    text-align: center;
+    font-size: 0.78rem;
+    color: #64748B;
+    text-decoration: none;
+    padding: 4px;
+    transition: color var(--transition-fast);
+}
+
+.btn-filter-reset:hover {
+    color: var(--color-accent);
+}
+
+/* ---------------------------------------------------------
+   5. PRODUCT GRID (ASSET DISCOVERY REGION)
+   --------------------------------------------------------- */
+.catalog-product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+@media (min-width: 1400px) {
+    .catalog-product-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1199.98px) {
+    .catalog-product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .catalog-product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
+
+/* ---------------------------------------------------------
+   6. MOBILE FILTER CONTROLS & OFFCANVAS
+   --------------------------------------------------------- */
+.mobile-filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: var(--space-4);
+}
+
+.btn-mobile-filter {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-main);
+}
+
+.btn-mobile-filter:hover {
+    background-color: #F8FAFC;
+    border-color: #CBD5E1;
+}
+
+.offcanvas-filter {
+    max-width: 340px;
+}
+
+.offcanvas-filter .offcanvas-header {
+    border-bottom: 1px solid var(--color-border);
+    background-color: #F8FAFC;
+    padding: 14px 16px;
+}
+
+.offcanvas-filter .offcanvas-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.offcanvas-filter .offcanvas-body {
+    padding: 16px;
+}
+
+/* ---------------------------------------------------------
+   7. SEARCH RESULTS SPECIFIC STYLING
+   --------------------------------------------------------- */
+.search-results-header {
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.search-results-header .page-title {
+    font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+    font-weight: 800;
+    color: var(--color-primary);
+    margin-bottom: 4px;
+}
+
+.search-results-header .keyword-highlight {
+    color: var(--color-accent);
+}
+
+
