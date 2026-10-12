@@ -596,9 +596,9 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## ORD-02: Order và Payment domain
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/order-payment-domain`
-- Pull Request: `Chưa mở`
+- Pull Request: [PR #31](https://github.com/NgocYuh/UTEGear/pull/31)
 - Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Ánh xạ `Order`, `OrderItem` và `Payment` đúng các bảng Flyway V1; không tạo hoặc sửa migration.
@@ -622,7 +622,37 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Test mapping dùng H2 qua application context; chưa chạy persistence thật trên Supabase.
   - Chuyển trạng thái Order cho nghiệp vụ quản trị sẽ được hoàn thiện ở ORD-04; ORD-02 mới chốt enum và trường thời gian.
 - Bước tiếp theo:
-  - Mở và merge PR ORD-02, sau đó thực hiện ORD-03.
+  - Thực hiện ORD-03.
+- Ngày hoàn tất: 2026-10-12
+
+## ORD-03: Checkout transaction
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/checkout-service`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Mở `POST /api/checkout/quote` và `POST /api/orders` theo API-03, yêu cầu JWT qua quy tắc `/api/**` hiện có.
+  - Báo giá trong 15 phút, gắn với người dùng, địa chỉ, cửa hàng, coupon, phương thức thanh toán và đúng danh sách biến thể/số lượng đã gửi.
+  - Tải lại giá sản phẩm khi báo giá và khi đặt hàng; không tin giá do client gửi.
+  - Kiểm tra cửa hàng đang hoạt động và tồn kho theo đúng cặp `Store + ProductVariant`.
+  - Dùng pessimistic lock khi trừ tồn kho; coupon cũng được khóa khi tăng lượt sử dụng.
+  - Tạo Order, snapshot OrderItem, tính `subtotal - discount + shippingFee`, tạo Payment và xóa giỏ trong cùng transaction.
+  - Chỉ vô hiệu quote token sau khi transaction commit; lỗi ở bất kỳ bước database nào sẽ rollback tồn kho, coupon, Order, Payment và giỏ hàng.
+- Kết quả kiểm thử:
+  - Checkout thành công, trừ đúng tồn kho và chỉ xóa giỏ sau khi lưu Order: `PASS`.
+  - Tồn kho không đủ trả `INSUFFICIENT_STOCK`: `PASS`.
+  - Coupon sai trả `COUPON_INVALID`: `PASS`.
+  - Lỗi lưu Order không gọi lưu giỏ đã xóa: `PASS`; service dùng một ranh giới `@Transactional` để database rollback các thay đổi đã thực hiện.
+  - `mvn -B "-Dnet.bytebuddy.experimental=true" "-Dtest=CheckoutServiceTest" test`: `PASS` với 4 test, 0 failure, 0 error, 0 skipped.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `PASS` với 111 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Máy hiện tại chạy Java 26 trong khi Byte Buddy đi kèm chỉ công bố hỗ trợ đến Java 23, nên test Mockito cần cờ `-Dnet.bytebuddy.experimental=true`; đây không phải thay đổi dependency của dự án.
+  - Chưa chạy transaction thật trên Supabase; toàn bộ suite hiện dùng H2/test double.
+  - Quote token hiện lưu trong bộ nhớ ứng dụng, phù hợp triển khai một instance; nếu triển khai nhiều instance cần chuyển sang kho dùng chung như Redis.
+  - API danh sách/chi tiết/hủy đơn của khách và luồng quản trị trạng thái chưa thuộc phần checkout này.
+- Bước tiếp theo:
+  - Mở và merge PR ORD-03, sau đó thực hiện ORD-04.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
