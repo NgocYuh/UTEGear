@@ -1009,8 +1009,9 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | INV-03 | BE | `feat/store-availability-api` | DONE | [PR #22](https://github.com/NgocYuh/UTEGear/pull/22) | 2026-10-12 |
 | MED-01 | BE | `feat/cloudinary-product-images` | DONE | [PR #25](https://github.com/NgocYuh/UTEGear/pull/25) | 2026-10-12 |
 | DATA-01 | BE | `feat/product-crawler-pipeline` | DONE | [PR #26](https://github.com/NgocYuh/UTEGear/pull/26) | 2026-10-12 |
-| DATA-02 | BE | `feat/product-data-import` | IN REVIEW | Chưa mở |  |
-| CART-01…02, WISH-01 | BE | Xem backlog | TODO |  |  |
+| DATA-02 | BE | `feat/product-data-import` | DONE | [PR #27](https://github.com/NgocYuh/UTEGear/pull/27) | 2026-10-12 |
+| CART-01 | BE | `feat/shopping-cart-domain` | IN REVIEW | Chưa mở |  |
+| CART-02, WISH-01 | BE | Xem backlog | TODO |  |  |
 | ORD-01…04 | BE | Xem backlog | TODO |  |  |
 | WS-01…02 | BE | Xem backlog | TODO |  |  |
 | UI-01…03 và các task `FE-*` | FE | Xem backlog | TODO |  |  |
