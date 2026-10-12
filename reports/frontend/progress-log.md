@@ -59,6 +59,30 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Hoàn tất kiểm tra, commit bản đã kiểm tra và lập lịch push một lần lúc 23:37; sau push mở PR để Backend review.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## FE-AUTH-01: Giao diện đăng ký và profile
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/auth-profile-pages`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Chuẩn bị đưa template đăng ký/profile và CSS auth/account có sẵn vào branch riêng.
+  - Giữ nguyên nội dung bốn file nguồn, không viết mới hoặc chỉnh sửa hành vi.
+  - Không thay đổi Backend, dependency, layout chung hoặc API contract.
+- Kết quả kiểm thử:
+  - Kiểm tra SHA-256: `PASS`, 4/4 file khớp nguyên bản.
+  - `mvnw.cmd -B clean verify`: `PASS`, 50 tests, 0 failure, 0 error, 0 skipped.
+  - `git diff --cached --check`: có 3 dòng whitespace trong profile.html nguyên bản; giữ nguyên theo yêu cầu không sửa code.
+  - Các test hiện có chưa xác nhận những trang mới có thể render hoặc tích hợp với ứng dụng.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa đưa template login vào vì chứa mật khẩu tài khoản hard-code; AGENTS.md không cho commit mật khẩu.
+  - Template dùng layout:decorate và model/endpoint cũ, chưa tương thích layout UI-01 và contract API-01.
+  - Giữ nguyên nguồn theo yêu cầu; chưa hoàn tất FE-AUTH-01, chưa sẵn sàng merge.
+- Bước tiếp theo:
+  - Người dùng kiểm tra phạm vi và nội dung trước khi commit/push.
+  - Thống nhất xử lý login và tương thích layout/contract trước khi hoàn tất task.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
