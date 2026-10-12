@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import com.utegear.entity.Address;
 import com.utegear.entity.Category;
 import com.utegear.entity.Order;
+import com.utegear.entity.Notification;
 import com.utegear.entity.OrderStatus;
 import com.utegear.entity.PaymentMethod;
 import com.utegear.entity.Product;
@@ -33,12 +34,16 @@ class AdminOrderServiceTest {
 
     private OrderRepository orders;
     private AdminOrderService service;
+    private NotificationService notificationService;
+    private OrderRealtimePublisher realtimePublisher;
     private Order order;
 
     @BeforeEach
     void setUp() {
         orders = mock(OrderRepository.class);
-        service = new AdminOrderService(orders);
+        notificationService = mock(NotificationService.class);
+        realtimePublisher = mock(OrderRealtimePublisher.class);
+        service = new AdminOrderService(orders, notificationService, realtimePublisher);
         User user = new User("Nguyễn Văn An", "an@example.test", null, "hash");
         ReflectionTestUtils.setField(user, "id", 7L);
         Address address = new Address(user, "Nguyễn Văn An", "0900000001", "01 Võ Văn Ngân",
@@ -54,6 +59,9 @@ class AdminOrderServiceTest {
         ReflectionTestUtils.setField(order, "id", 20L);
         when(orders.findLockedById(20L)).thenReturn(Optional.of(order));
         when(orders.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(notificationService.create(any(), any(), any(), any(), any()))
+                .thenAnswer(invocation -> new Notification(invocation.getArgument(0), invocation.getArgument(1),
+                        invocation.getArgument(2), invocation.getArgument(3), invocation.getArgument(4)));
     }
 
     @Test

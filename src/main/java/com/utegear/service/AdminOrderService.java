@@ -3,6 +3,8 @@ package com.utegear.service;
 import com.utegear.dto.order.AdminOrderDtos;
 import com.utegear.entity.Order;
 import com.utegear.entity.OrderStatus;
+import com.utegear.entity.Notification;
+import com.utegear.entity.NotificationType;
 import com.utegear.entity.PaymentStatus;
 import com.utegear.exception.ApiException;
 import com.utegear.repository.OrderRepository;
@@ -22,9 +24,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminOrderService {
 
     private final OrderRepository orders;
+    private final NotificationService notificationService;
+    private final OrderRealtimePublisher realtimePublisher;
 
-    public AdminOrderService(OrderRepository orders) {
+    public AdminOrderService(OrderRepository orders, NotificationService notificationService,
+            OrderRealtimePublisher realtimePublisher) {
         this.orders = orders;
+        this.notificationService = notificationService;
+        this.realtimePublisher = realtimePublisher;
     }
 
     @Transactional(readOnly = true)
@@ -45,6 +52,7 @@ public class AdminOrderService {
     @Transactional
     public AdminOrderDtos.Detail updateStatus(Long orderId, OrderStatus nextStatus) {
         Order order = orders.findLockedById(orderId).orElseThrow(this::notFound);
+        OrderStatus previousStatus = order.getStatus();
         if (!order.getStatus().canTransitionTo(nextStatus)) {
             throw new ApiException(HttpStatus.CONFLICT, "INVALID_ORDER_TRANSITION",
                     "Không thể chuyển trạng thái đơn hàng từ " + order.getStatus() + " sang " + nextStatus);
@@ -60,7 +68,26 @@ public class AdminOrderService {
         }
         order.transitionTo(nextStatus);
         orders.save(order);
+        Notification notification = notificationService.create(
+                order.getUser(), NotificationType.ORDER_STATUS_CHANGED,
+                notificationTitle(nextStatus), notificationMessage(order, nextStatus), order.getId().toString());
+        realtimePublisher.publishStatusChangedAfterCommit(order, previousStatus, notification);
         return AdminOrderDtos.Detail.from(order);
+    }
+
+    private String notificationTitle(OrderStatus status) {
+        return switch (status) {
+            case CONFIRMED -> "Đơn hàng đã được xác nhận";
+            case PROCESSING -> "Đơn hàng đang được xử lý";
+            case SHIPPING -> "Đơn hàng đang được giao";
+            case COMPLETED -> "Đơn hàng đã hoàn thành";
+            case CANCELLED -> "Đơn hàng đã bị hủy";
+            default -> throw new IllegalArgumentException("Không hỗ trợ thông báo cho trạng thái " + status);
+        };
+    }
+
+    private String notificationMessage(Order order, OrderStatus status) {
+        return "Đơn " + order.getOrderCode() + " đã chuyển sang trạng thái " + status.name() + ".";
     }
 
     private Specification<Order> specification(String query, OrderStatus status, Long storeId) {

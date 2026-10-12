@@ -49,6 +49,7 @@ class CheckoutServiceTest {
     private CartRepository carts;
     private OrderRepository orders;
     private CheckoutQuoteStore quoteStore;
+    private OrderRealtimePublisher realtimePublisher;
     private CheckoutService service;
     private User user;
     private Address address;
@@ -68,8 +69,9 @@ class CheckoutServiceTest {
         carts = mock(CartRepository.class);
         orders = mock(OrderRepository.class);
         quoteStore = new CheckoutQuoteStore();
+        realtimePublisher = mock(OrderRealtimePublisher.class);
         service = new CheckoutService(addresses, stores, variants, inventories, coupons,
-                couponService, carts, orders, quoteStore, new TransactionCallbacks());
+                couponService, carts, orders, quoteStore, new TransactionCallbacks(), realtimePublisher);
 
         user = new User("Nguyễn Văn An", "an@example.test", null, "hash");
         ReflectionTestUtils.setField(user, "id", 7L);

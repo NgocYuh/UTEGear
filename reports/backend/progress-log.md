@@ -702,9 +702,38 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Tạo notification cho user đã persist: `PASS`.
   - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" "-Dtest=NotificationServiceTest,ApplicationProfilesTest" test`: `PASS` với 6 test, 0 failure, 0 error, 0 skipped.
 - Vướng mắc hoặc phần còn thiếu:
-  - Chưa phát notification tự động khi trạng thái Order đổi; phần tích hợp sự kiện thuộc WS-02 kế tiếp trên cùng branch.
+  - Phần phát notification tự động khi trạng thái Order đổi được tích hợp ở commit WS-02 kế tiếp trên cùng branch.
 - Bước tiếp theo:
   - Tạo commit WS-01 rồi thực hiện WS-02 trên cùng branch và cùng Pull Request.
+- Ngày hoàn tất: `Chưa merge`
+
+## WS-02: Realtime order updates
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/order-notifications`
+- Pull Request: `Chưa mở; dùng chung PR với WS-01 theo quyết định ngày 2026-10-12`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Bật WebSocket/STOMP tại `/ws`, simple broker cho `/topic` và `/queue`, user destination prefix `/user`.
+  - Xác thực JWT trong STOMP `CONNECT` qua header `Authorization: Bearer <token>` và gắn principal theo email tài khoản.
+  - Origin được lấy từ `WEBSOCKET_ALLOWED_ORIGINS`; cấu hình rỗng hoặc chứa `*` bị từ chối ngay khi khởi động.
+  - Sau checkout commit, phát `ORDER_CREATED` tới `/topic/admin/orders`.
+  - Khi admin đổi trạng thái, lưu notification cùng transaction rồi phát `ORDER_STATUS_CHANGED` tới `/user/queue/orders` và `NOTIFICATION_CREATED` tới `/user/queue/notifications` của đúng chủ đơn.
+  - Tất cả event dùng envelope `eventId`, `type`, `occurredAt`, `data` theo API-03 và chỉ được gửi sau khi transaction database commit.
+  - Bổ sung biến môi trường mẫu WebSocket; không thêm dependency vì starter WebSocket đã có từ scaffold.
+- Kết quả kiểm thử:
+  - STOMP CONNECT có JWT hợp lệ được gắn principal; thiếu token bị từ chối: `PASS`.
+  - Customer bị chặn subscribe `/topic/admin/orders`; chỉ principal có `ROLE_ADMIN` được phép: `PASS`.
+  - Cấu hình origin chứa `*` bị từ chối: `PASS`.
+  - Đơn mới phát đúng topic admin và payload `ORDER_CREATED`: `PASS`.
+  - Thay đổi trạng thái chỉ phát vào user destination theo email chủ đơn, kèm payload trạng thái trước/sau: `PASS`.
+  - Checkout và AdminOrder service vẫn hoạt động với publisher mới: `PASS`.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `PASS` với 131 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa kiểm thử kết nối WebSocket qua reverse proxy/deployment thật; test hiện xác minh cấu hình, xác thực, destination và payload trong application/test double.
+  - Frontend cần dùng `WEBSOCKET_ALLOWED_ORIGINS` phù hợp domain triển khai và gửi JWT ở STOMP CONNECT.
+- Bước tiếp theo:
+  - Tạo commit WS-02 rồi push branch để mở một PR chứa hai commit.
 - Ngày hoàn tất: `Chưa merge`
 
 ## Mẫu mục mới
