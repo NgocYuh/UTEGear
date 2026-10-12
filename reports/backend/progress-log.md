@@ -537,9 +537,10 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## CART-02: Protected cart API
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/cart-api`
-- Pull Request: `Chưa mở`
+- Pull Request: [#29](https://github.com/NgocYuh/UTEGear/pull/29)
+- Merge commit: `76a1defcc8fe49b6b46de24ce100045fac54e53a`
 - Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Thêm năm endpoint theo API-03 để đọc giỏ, thêm item, cập nhật số lượng, xóa item và xóa toàn bộ giỏ.
@@ -560,7 +561,36 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Test dùng H2, mock JWT user/service và dữ liệu entity trong bộ nhớ; chưa kết nối Supabase thật.
   - API chỉ hiển thị tồn khả dụng tổng hợp; việc chọn cửa hàng phục vụ và kiểm tra tồn kho cuối cùng thuộc checkout/order.
 - Bước tiếp theo:
-  - Mở và merge PR CART-02; sau đó thực hiện WISH-01 hoặc task kế tiếp theo backlog.
+  - Thực hiện WISH-01 hoặc ORD-01 theo backlog.
+- Ngày hoàn tất: 2026-10-12
+
+## ORD-01: Address và Coupon
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/address-coupon-domain`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Ánh xạ entity `Address` và `Coupon` đúng hai bảng đã có trong Flyway V1; không tạo hoặc sửa migration.
+  - Thêm service tạo, đọc, cập nhật, xóa và chọn địa chỉ mặc định theo đúng người dùng sở hữu.
+  - Địa chỉ đầu tiên của người dùng tự động thành mặc định; khi đổi mặc định, địa chỉ cũ được bỏ cờ.
+  - Thêm quy tắc coupon theo trạng thái, thời gian hiệu lực, số lượt sử dụng và giá trị đơn tối thiểu.
+  - Hỗ trợ giảm theo phần trăm hoặc số tiền cố định, giới hạn mức giảm tối đa và không cho tổng giảm vượt subtotal.
+  - Chuẩn hóa mã coupon không phân biệt hoa thường; dùng pessimistic lock khi tiêu thụ lượt coupon để chuẩn bị cho checkout transaction.
+  - Trả `COUPON_INVALID` cho mã sai, hết hạn, hết lượt hoặc không đạt giá trị tối thiểu.
+  - Chưa tạo Address/Coupon controller vì ORD-01 chỉ gồm domain và service; checkout/order API thuộc các task ORD tiếp theo.
+- Kết quả kiểm thử:
+  - Coupon hết hạn, hết lượt và đơn chưa đạt giá trị tối thiểu: `PASS`.
+  - Coupon phần trăm có mức giảm tối đa và coupon cố định không làm subtotal âm: `PASS`.
+  - Coupon giới hạn lượt được khóa và tăng `usedCount`: `PASS`.
+  - Địa chỉ đầu tiên thành mặc định, đổi địa chỉ mặc định và chặn truy cập địa chỉ của người khác: `PASS`.
+  - `mvn -B --no-transfer-progress '-Dtest=CouponTest,AddressServiceTest,CouponServiceTest' test`: `PASS` với 9 test, 0 failure, 0 error, 0 skipped.
+  - `mvn -B --no-transfer-progress clean verify`: `PASS` với 102 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Test persistence dùng H2 qua application context; chưa chạy giao dịch thật trên Supabase.
+  - Việc tạo Order/Payment, áp coupon trong checkout và API address/coupon chưa nằm trong phạm vi ORD-01.
+- Bước tiếp theo:
+  - Mở và merge PR ORD-01, sau đó thực hiện ORD-02.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
