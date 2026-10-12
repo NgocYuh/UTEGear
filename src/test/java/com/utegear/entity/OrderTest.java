@@ -97,6 +97,33 @@ class OrderTest {
         assertThatThrownBy(payment::cancel).isInstanceOf(IllegalStateException.class);
     }
 
+    @Test
+    void followsOrderStatusWorkflowAndRecordsTimestamps() {
+        Order order = order();
+
+        order.transitionTo(OrderStatus.CONFIRMED);
+        order.transitionTo(OrderStatus.PROCESSING);
+        order.transitionTo(OrderStatus.SHIPPING);
+        order.transitionTo(OrderStatus.COMPLETED);
+
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.COMPLETED);
+        assertThat(order.getConfirmedAt()).isNotNull();
+        assertThat(order.getProcessingAt()).isNotNull();
+        assertThat(order.getShippedAt()).isNotNull();
+        assertThat(order.getCompletedAt()).isNotNull();
+    }
+
+    @Test
+    void rejectsSkippedAndTerminalStatusTransitions() {
+        Order order = order();
+
+        assertThatThrownBy(() -> order.transitionTo(OrderStatus.SHIPPING))
+                .isInstanceOf(IllegalStateException.class);
+        order.transitionTo(OrderStatus.CANCELLED);
+        assertThatThrownBy(() -> order.transitionTo(OrderStatus.CONFIRMED))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
     private Order order() {
         OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         Coupon coupon = new Coupon(

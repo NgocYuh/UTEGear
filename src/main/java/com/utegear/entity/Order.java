@@ -188,6 +188,22 @@ public class Order {
         return payment;
     }
 
+    public void transitionTo(OrderStatus nextStatus) {
+        if (nextStatus == null || !status.canTransitionTo(nextStatus)) {
+            throw new IllegalStateException("Không thể chuyển trạng thái đơn hàng từ " + status + " sang " + nextStatus);
+        }
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+        status = nextStatus;
+        switch (nextStatus) {
+            case CONFIRMED -> confirmedAt = now;
+            case PROCESSING -> processingAt = now;
+            case SHIPPING -> shippedAt = now;
+            case COMPLETED -> completedAt = now;
+            case CANCELLED -> cancelledAt = now;
+            default -> throw new IllegalStateException("Trạng thái đích không hợp lệ");
+        }
+    }
+
     private void recalculate() {
         subtotal = items.stream()
                 .map(OrderItem::getSubtotal)

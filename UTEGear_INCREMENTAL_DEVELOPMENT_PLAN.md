@@ -1015,8 +1015,8 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | WISH-01 | BE | Xem backlog | TODO |  |  |
 | ORD-01 | BE | `feat/address-coupon-domain` | DONE | [PR #30](https://github.com/NgocYuh/UTEGear/pull/30) | 2026-10-12 |
 | ORD-02 | BE | `feat/order-payment-domain` | DONE | [PR #31](https://github.com/NgocYuh/UTEGear/pull/31) | 2026-10-12 |
-| ORD-03 | BE | `feat/checkout-service` | IN REVIEW | Chưa mở |  |
-| ORD-04 | BE | `feat/admin-order-workflow` | TODO |  |  |
+| ORD-03 | BE | `feat/checkout-service` | DONE | [PR #32](https://github.com/NgocYuh/UTEGear/pull/32) | 2026-10-12 |
+| ORD-04 | BE | `feat/admin-order-management` | IN REVIEW | Chưa mở |  |
 | WS-01…02 | BE | Xem backlog | TODO |  |  |
 | UI-01…03 và các task `FE-*` | FE | Xem backlog | TODO |  |  |
 | INT-01…03 | FE, BE review contract | Xem backlog | TODO |  |  |

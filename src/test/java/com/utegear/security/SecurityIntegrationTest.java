@@ -117,6 +117,19 @@ class SecurityIntegrationTest {
     }
 
     @Test
+    void blocksCustomerFromAdminOrderManagement() throws Exception {
+        CustomUserDetails principal = principal(Role.CUSTOMER);
+        String token = jwtService.generateToken(principal);
+        when(userRepository.findByEmailIgnoreCase(principal.getUsername()))
+                .thenReturn(Optional.of(principal.getUser()));
+
+        mockMvc.perform(get("/api/admin/orders")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value("FORBIDDEN"));
+    }
+
+    @Test
     void permitsAdminOnAdminEndpoint() throws Exception {
         CustomUserDetails principal = principal(Role.ADMIN);
         String token = jwtService.generateToken(principal);

@@ -148,6 +148,7 @@ khi áp event mới; event có thể được gửi lặp và được khử tr�
 | 409 | `COUPON_INVALID` | Coupon sai, hết hạn, hết lượt hoặc không đạt giá trị tối thiểu |
 | 409 | `QUOTE_EXPIRED` | Quote không còn hợp lệ |
 | 409 | `INVALID_ORDER_TRANSITION` | Chuyển trạng thái order không hợp lệ |
+| 409 | `PAID_ORDER_CANNOT_CANCEL` | Đơn đã thanh toán cần hoàn tiền trước khi hủy |
 
 ## Model attribute cho Thymeleaf
 
