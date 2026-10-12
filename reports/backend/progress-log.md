@@ -389,9 +389,10 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## INV-03: API tra cứu tồn kho và cửa hàng
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/store-availability-api`
-- Pull Request: `Chưa mở`
+- Pull Request: [#22](https://github.com/NgocYuh/UTEGear/pull/22)
+- Merge commit: `8c36c9e633f0dc6c5b8a833b9e6711396830e06c`
 - Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Thêm API public danh sách cửa hàng với filter trạng thái/tỉnh thành và chi tiết cửa hàng hoạt động.
@@ -410,7 +411,35 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Kiểm thử dùng H2 cho application context và mock repository cho response API; chưa kết nối Supabase thật.
   - API quản trị inventory đã có domain/service từ INV-02 nhưng controller quản trị không nằm trong phạm vi INV-03.
 - Bước tiếp theo:
-  - Mở và merge PR INV-03; Frontend có thể tích hợp FE-STORE-01 theo API-02.
+  - Thực hiện MED-01; Frontend có thể tích hợp FE-STORE-01 theo API-02.
+- Ngày hoàn tất: 2026-10-12
+
+## MED-01: Tích hợp Cloudinary cho ảnh sản phẩm
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/cloudinary-product-images`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Cấu hình một Cloudinary bean dùng chung từ biến môi trường; không lưu cloud name, API key hoặc API secret thật trong repository.
+  - Thêm lớp lưu trữ media, upload vào thư mục theo sản phẩm và lưu cả `secureUrl` lẫn `publicId`.
+  - Thêm API quản trị để tải ảnh lên, cập nhật/thay ảnh, xóa ảnh và sắp xếp lại ảnh sản phẩm theo contract API-02.
+  - Kiểm tra MIME JPEG/PNG/WebP và giới hạn dung lượng mặc định 5 MiB.
+  - Khi thay ảnh, chỉ xóa ảnh cũ sau khi transaction database commit; ảnh mới được dọn nếu transaction rollback.
+  - Đồng bộ ảnh đại diện và thứ tự ảnh, đồng thời kiểm tra toàn bộ ID khi sắp xếp.
+  - Chuẩn hóa lỗi multipart vượt dung lượng thành `FILE_TOO_LARGE`.
+- Kết quả kiểm thử:
+  - Upload lưu đúng URL/public ID và đúng thư mục sản phẩm: `PASS`.
+  - Từ chối MIME không hỗ trợ và file vượt dung lượng: `PASS`.
+  - Thay ảnh, cập nhật metadata, xóa ảnh và sắp xếp ảnh: `PASS`.
+  - Callback dọn media theo commit/rollback: `PASS`.
+  - `mvn -B --no-transfer-progress -Dtest=ProductMediaServiceTest,TransactionCallbacksTest test`: `PASS` với 10 test, 0 failure, 0 error, 0 skipped.
+  - `mvn -B --no-transfer-progress clean verify`: `PASS` với 67 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Test dùng mock media storage, không gọi Cloudinary thật và không sử dụng credential tài khoản cá nhân trong CI.
+  - Việc xác nhận upload thật cần cấu hình biến môi trường Cloudinary trên máy local hoặc môi trường triển khai.
+- Bước tiếp theo:
+  - Mở và merge PR MED-01; sau đó DATA-01 và phần Frontend liên quan có thể dùng contract media hiện tại.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
