@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -32,6 +33,19 @@ public class GlobalExceptionHandler {
                 "Dữ liệu không hợp lệ",
                 request,
                 fieldErrors);
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    ResponseEntity<ApiError> handleMissingParameter(
+            MissingServletRequestParameterException exception,
+            HttpServletRequest request) {
+        ApiError error = error(
+                HttpStatus.BAD_REQUEST,
+                "VALIDATION_FAILED",
+                "Thiếu tham số bắt buộc: " + exception.getParameterName(),
+                request,
+                Map.of(exception.getParameterName(), "Trường này là bắt buộc"));
         return ResponseEntity.badRequest().body(error);
     }
 

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="'Tìm kiếm: ' + ${keyword} + ' - UTEGear'">Tìm kiếm - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <!-- BREADCRUMB -->
+    <div class="catalog-breadcrumb">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/products}">Sản phẩm</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Kết quả tìm kiếm</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- SEARCH RESULTS DISCOVERY SECTION -->
+    <section class="search-section section pt-2 pb-5">
+        <div class="container">
+
+            <div class="search-results-header">
+                <h1 class="page-title">
+                    Kết quả tìm kiếm cho <span class="keyword-highlight">&ldquo;<span th:text="${keyword}">keyword</span>&rdquo;</span>
+                </h1>
+                <div class="catalog-count-wrap">
+                    <span th:if="${!searchResults.isEmpty()}">
+                        Tìm thấy <strong class="catalog-count-number" th:text="${searchResults.size()}">0</strong> sản phẩm phù hợp
+                    </span>
+                    <span th:unless="${!searchResults.isEmpty()}">
+                        Không tìm thấy sản phẩm nào phù hợp
+                    </span>
+                </div>
+            </div>
+
+            <!-- PRODUCT GRID -->
+            <div class="catalog-product-grid" th:if="${!searchResults.isEmpty()}">
+                <th:block th:each="p : ${searchResults}">
+                    <div th:replace="~{fragments/product-card :: productCard(${p})}"></div>
+                </th:block>
+            </div>
+
+            <!-- EMPTY STATE -->
+            <div class="empty-state" th:unless="${!searchResults.isEmpty()}">
+                <div class="empty-state-icon">
+                    <i class="bi bi-search"></i>
+                </div>
+                <h3 class="empty-state-title">Không tìm thấy sản phẩm nào</h3>
+                <p class="empty-state-desc">Hãy thử kiểm tra lại chính tả hoặc tìm kiếm bằng từ khóa tổng quát hơn (ví dụ: bàn phím, chuột, tai nghe).</p>
+                <div class="empty-state-actions">
+                    <a href="/products" class="btn btn-utama btn-sm">Xem tất cả sản phẩm</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>
+

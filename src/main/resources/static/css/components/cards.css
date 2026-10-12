@@ -1,0 +1,420 @@
+/* =========================================================
+   UTEGEAR PRODUCT CARD SYSTEM
+   Mature Commercial Architecture: Anti-AI / Human-Designed
+   Modular E-Commerce Product Card Architecture
+   Palette: UTE Navy (#082B66), Crimson (#E21B23), Neutral Canvas (#F8FAFC, #E2E8F0)
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   1. PRODUCT CARD CONTAINER
+   --------------------------------------------------------- */
+.product-card {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    min-width: 0;
+}
+
+.product-card:hover {
+    border-color: #CBD5E1;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+    transform: translateY(-2px);
+}
+
+.product-card.is-out-of-stock {
+    background-color: #FBFDFE;
+}
+
+.product-card.is-out-of-stock .product-image img {
+    filter: grayscale(0.5);
+    opacity: 0.8;
+}
+
+.product-card-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 0;
+}
+
+/* ---------------------------------------------------------
+   2. PRODUCT MEDIA AREA (Dominant upper region)
+   --------------------------------------------------------- */
+.product-image {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background-color: #F8FAFC;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.product-image-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.03);
+}
+
+/* State & Discount Badges (Asymmetric top-left) */
+.product-badges {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.badge-discount {
+    background-color: var(--color-accent);
+    color: #FFFFFF;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    box-shadow: 0 2px 6px rgba(226, 27, 35, 0.25);
+    width: fit-content;
+}
+
+.badge-stock {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    line-height: 1.2;
+    width: fit-content;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.badge-stock-out {
+    background-color: #475569;
+    color: #FFFFFF;
+}
+
+.badge-stock-low {
+    background-color: #D97706;
+    color: #FFFFFF;
+}
+
+/* Floating Actions: Wishlist & Quick View (Top-right corner) */
+.product-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 2;
+}
+
+.action-btn-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 3px;
+    background-color: #FFFFFF;
+    border: 1px solid var(--color-border);
+    color: #475569;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.action-btn-icon:hover {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #FFFFFF;
+}
+
+.action-btn-icon:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+    color: var(--color-primary);
+}
+
+.action-btn-icon.active {
+    color: var(--color-accent);
+}
+
+.action-btn-icon.active:hover {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #FFFFFF;
+}
+
+/* ---------------------------------------------------------
+   3. PRODUCT METADATA & CONTENT AREA
+   --------------------------------------------------------- */
+.product-info {
+    padding: 12px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+}
+
+.product-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.product-brand {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-category-tag {
+    font-size: 0.68rem;
+    color: #64748B;
+    background-color: #F1F5F9;
+    padding: 1px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+    border: 1px solid #E2E8F0;
+    line-height: 1.3;
+}
+
+/* Product Title Heading */
+.product-title-heading {
+    margin: 0 0 6px;
+    font-size: 0.88rem;
+    line-height: 1.35;
+}
+
+.product-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-weight: 600;
+    color: #1E293B;
+    text-decoration: none;
+    height: 2.7em;
+    transition: color var(--transition-fast);
+}
+
+.product-name:hover {
+    color: var(--color-accent);
+}
+
+/* Rating & Review Count */
+.product-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+    line-height: 1;
+}
+
+.product-rating .stars {
+    display: inline-flex;
+    gap: 2px;
+    font-size: 0.72rem;
+}
+
+.rating-value {
+    font-weight: 700;
+    color: #334155;
+    margin-left: 2px;
+}
+
+.review-count {
+    color: #94A3B8;
+    font-size: 0.72rem;
+}
+
+/* Price Section: High-prominence sale price */
+.product-price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    line-height: 1.1;
+}
+
+.price-sale {
+    font-size: 1.12rem;
+    font-weight: 800;
+    color: var(--color-accent);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+}
+
+.price-original {
+    font-size: 0.78rem;
+    color: #94A3B8;
+    text-decoration: line-through;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Stock Urgency Line */
+.product-stock-status {
+    font-size: 0.72rem;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    min-height: 14px;
+}
+
+.stock-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+}
+
+.stock-text.stock-out {
+    color: var(--color-danger);
+}
+
+.stock-text.stock-low {
+    color: #D97706;
+}
+
+.stock-text.stock-available {
+    color: #15803D;
+    font-weight: 500;
+}
+
+/* ---------------------------------------------------------
+   4. PRIMARY PURCHASE ACTION BUTTON
+   --------------------------------------------------------- */
+.product-card-actions {
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid #F1F5F9;
+}
+
+.btn-card-add {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    background-color: #F8FAFC;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-card-add:hover:not(:disabled) {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #FFFFFF;
+    box-shadow: 0 2px 6px rgba(8, 43, 102, 0.15);
+}
+
+.btn-card-add:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+    border-color: var(--color-primary);
+}
+
+.btn-card-add:disabled {
+    background-color: #F1F5F9;
+    border-color: #E2E8F0;
+    color: #94A3B8;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* ---------------------------------------------------------
+   5. RESPONSIVE REFINEMENTS
+   --------------------------------------------------------- */
+@media (max-width: 575.98px) {
+    .product-info {
+        padding: 10px;
+    }
+
+    .product-title-heading {
+        font-size: 0.82rem;
+    }
+
+    .price-sale {
+        font-size: 0.98rem;
+    }
+
+    .product-category-tag {
+        display: none;
+    }
+
+    .btn-card-add {
+        padding: 7px 8px;
+        font-size: 0.78rem;
+    }
+}
+
+/* ---------------------------------------------------------
+   6. CANONICAL PRODUCT GRID
+   6. RESPONSIVE PRODUCT GRID
+   --------------------------------------------------------- */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+@media (max-width: 1199.98px) {
+    .product-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+}
+
+
