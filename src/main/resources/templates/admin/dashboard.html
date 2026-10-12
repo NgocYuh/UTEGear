@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/admin}">
+<head>
+    <title>Tổng quan Quản trị - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <!-- Page Header (70% Info / 30% Action) -->
+    <div class="admin-page-header">
+        <div class="admin-page-header-info">
+            <h1 class="admin-page-title">Tổng quan điều hành</h1>
+            <p class="admin-page-subtitle">Thống kê vận hành thực tế, luồng đơn hàng và tồn kho hệ thống UTEGear</p>
+        </div>
+        <div class="admin-page-actions">
+            <span class="btn-admin-secondary">
+                <i class="bi bi-calendar3 text-primary"></i>
+                <span>Hôm nay: <strong th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy')}">2026</strong></span>
+            </span>
+            <a th:href="@{/admin/orders}" class="btn-admin-primary">
+                <i class="bi bi-receipt"></i> Xem đơn hàng
+            </a>
+        </div>
+    </div>
+
+    <!-- 4 Compact Operational Stat Blocks (Real Metrics Only) -->
+    <div class="admin-stat-grid">
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon"><i class="bi bi-box-seam"></i></div>
+            <div class="admin-stat-body">
+                <span class="admin-stat-value" th:text="${stats.totalProducts}">0</span>
+                <span class="admin-stat-label">Sản phẩm trong kho</span>
+            </div>
+        </div>
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon"><i class="bi bi-receipt"></i></div>
+            <div class="admin-stat-body">
+                <span class="admin-stat-value" th:text="${stats.totalOrders}">0</span>
+                <span class="admin-stat-label">Tổng đơn hàng</span>
+            </div>
+        </div>
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon"><i class="bi bi-people"></i></div>
+            <div class="admin-stat-body">
+                <span class="admin-stat-value" th:text="${stats.totalUsers}">0</span>
+                <span class="admin-stat-label">Tài khoản người dùng</span>
+            </div>
+        </div>
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon revenue"><i class="bi bi-cash-stack"></i></div>
+            <div class="admin-stat-body">
+                <span class="admin-stat-value danger" th:text="${@priceFormatter.format(stats.totalRevenue)}">0 ₫</span>
+                <span class="admin-stat-label">Doanh thu tích lũy</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Asymmetric Operational Content: 60% Order & Inventory Pipeline / 40% Financial & System Metadata -->
+    <div class="row g-4">
+        <!-- Main Column: Order Lifecycle Pipeline -->
+        <div class="col-lg-7">
+            <div class="admin-panel h-100">
+                <div class="admin-panel-header">
+                    <h2 class="admin-panel-title">
+                        <i class="bi bi-diagram-3-fill"></i> Tiến độ xử lý đơn hàng
+                    </h2>
+                    <a th:href="@{/admin/orders}" class="fs-8 font-bold text-primary text-decoration-none">
+                        Quản lý tất cả đơn &rarr;
+                    </a>
+                </div>
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Trạng thái đơn</th>
+                                <th>Ý nghĩa nghiệp vụ</th>
+                                <th class="text-end">Số lượng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span class="badge-status status-pending">Chờ xác nhận</span>
+                                </td>
+                                <td class="text-muted fs-8">Đơn hàng mới tạo, chờ duyệt thanh toán hoặc kho</td>
+                                <td class="text-end font-bold fs-7 text-warning" th:text="${stats.pendingOrders}">0</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="badge-status status-processing">Đang xử lý</span>
+                                </td>
+                                <td class="text-muted fs-8">Kho đang đóng gói kiện hàng và kiểm tra linh kiện</td>
+                                <td class="text-end font-bold fs-7 text-primary" th:text="${stats.processingOrders}">0</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="badge-status status-shipping">Đang giao hàng</span>
+                                </td>
+                                <td class="text-muted fs-8">Đơn vị vận chuyển đang phát hàng tới địa chỉ nhận</td>
+                                <td class="text-end font-bold fs-7 text-info" th:text="${stats.shippingOrders}">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Secondary Operational Status: Inventory Overview -->
+                <div class="mt-4 pt-3 border-top">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fs-8 font-bold text-muted text-uppercase tracking-wider">Tình trạng kho hàng</span>
+                        <a th:href="@{/admin/products}" class="fs-8 text-muted text-decoration-none">Xem danh mục kho</a>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="p-2 px-3 bg-light rounded border d-flex justify-content-between align-items-center">
+                                <span class="fs-8 text-muted">Sản phẩm kích hoạt:</span>
+                                <strong class="fs-7 text-success" th:text="${stats.activeProducts != null ? stats.activeProducts : stats.totalProducts}">0</strong>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 px-3 bg-light rounded border d-flex justify-content-between align-items-center">
+                                <span class="fs-8 text-muted">Hết hàng:</span>
+                                <strong class="fs-7 text-danger" th:text="${stats.outOfStock != null ? stats.outOfStock : 0}">0</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side Column: Financial Summary & Master Records -->
+        <div class="col-lg-5">
+            <div class="admin-panel mb-4">
+                <div class="admin-panel-header">
+                    <h2 class="admin-panel-title">
+                        <i class="bi bi-cash-coin"></i> Doanh thu thực tế
+                    </h2>
+                </div>
+                <div class="p-3 bg-light rounded border mb-3">
+                    <span class="fs-8 text-muted font-bold text-uppercase d-block mb-1">Ghi nhận trong ngày</span>
+                    <div class="fs-4 font-extrabold text-danger" th:text="${@priceFormatter.format(stats.todayRevenue)}">0 ₫</div>
+                </div>
+                <div class="p-3 bg-light rounded border">
+                    <span class="fs-8 text-muted font-bold text-uppercase d-block mb-1">Doanh thu tích lũy toàn hệ thống</span>
+                    <div class="fs-5 font-extrabold text-primary" th:text="${@priceFormatter.format(stats.totalRevenue)}">0 ₫</div>
+                </div>
+            </div>
+
+            <!-- Master Entities Quick Counts (Real Records from DashboardService) -->
+            <div class="admin-panel">
+                <div class="admin-panel-header">
+                    <h2 class="admin-panel-title">
+                        <i class="bi bi-database-check"></i> Bản ghi hệ thống
+                    </h2>
+                </div>
+                <div class="order-detail-summary-card">
+                    <div class="order-detail-row">
+                        <span><i class="bi bi-tags me-1 text-muted"></i> Danh mục sản phẩm:</span>
+                        <strong th:text="${stats.totalCategories}">0</strong>
+                    </div>
+                    <div class="order-detail-row">
+                        <span><i class="bi bi-award me-1 text-muted"></i> Thương hiệu đối tác:</span>
+                        <strong th:text="${stats.totalBrands}">0</strong>
+                    </div>
+                    <div class="order-detail-row">
+                        <span><i class="bi bi-shop me-1 text-muted"></i> Hệ thống Showroom:</span>
+                        <strong th:text="${stats.totalStores}">0</strong>
+                    </div>
+                    <div class="order-detail-row">
+                        <span><i class="bi bi-percent me-1 text-muted"></i> Mã giảm giá phát hành:</span>
+                        <strong th:text="${stats.totalCoupons}">0</strong>
+                    </div>
+                    <div class="order-detail-row">
+                        <span><i class="bi bi-star me-1 text-muted"></i> Đánh giá khách hàng:</span>
+                        <strong th:text="${stats.totalReviews}">0</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>
