@@ -11,6 +11,7 @@ import com.utegear.exception.GlobalExceptionHandler;
 import com.utegear.repository.BrandRepository;
 import com.utegear.repository.CategoryRepository;
 import com.utegear.repository.ProductRepository;
+import com.utegear.repository.StoreInventoryRepository;
 import com.utegear.service.BrandService;
 import com.utegear.service.CategoryService;
 import com.utegear.service.ProductCatalogService;
@@ -32,7 +33,7 @@ class CatalogControllerTest {
         CatalogController controller = new CatalogController(
                 new CategoryService(mock(CategoryRepository.class)),
                 new BrandService(mock(BrandRepository.class)),
-                new ProductCatalogService(products));
+                new ProductCatalogService(products, mock(StoreInventoryRepository.class)));
         mvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
