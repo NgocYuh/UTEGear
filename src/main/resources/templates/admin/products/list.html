@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/admin}">
+<head>
+    <title>Quản lý sản phẩm - UTEGear Admin</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <!-- Page Header (70% Info / 30% Action) -->
+    <div class="admin-page-header">
+        <div class="admin-page-header-info">
+            <h1 class="admin-page-title">Quản lý danh mục sản phẩm</h1>
+            <p class="admin-page-subtitle">Kiểm soát kho linh kiện, giá bán hiệu lực và thông tin kỹ thuật thiết bị gaming</p>
+        </div>
+        <div class="admin-page-actions">
+            <a th:href="@{/admin/products/new}" class="btn-admin-primary">
+                <i class="bi bi-plus-lg"></i> Thêm sản phẩm mới
+            </a>
+        </div>
+    </div>
+
+    <!-- Operational Search Toolbar -->
+    <form method="get" class="admin-toolbar-search">
+        <div class="input-group">
+            <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+            <input type="text" name="q" class="form-control border-start-0 ps-0" placeholder="Tìm theo tên sản phẩm hoặc mã SKU..." th:value="${param.q}">
+            <button class="btn btn-primary btn-sm px-3 font-bold" type="submit">Tìm kiếm</button>
+            <a th:if="${param.q != null && !#strings.isEmpty(param.q)}" th:href="@{/admin/products}" class="btn btn-outline-secondary btn-sm" title="Xóa tìm kiếm">
+                <i class="bi bi-x-lg"></i>
+            </a>
+        </div>
+    </form>
+
+    <!-- Operational Products Table Container -->
+    <div class="admin-panel p-0">
+        <div class="admin-table-container border-0">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Ảnh</th>
+                        <th>Sản phẩm &amp; Mã SKU</th>
+                        <th>Danh mục</th>
+                        <th>Giá bán</th>
+                        <th class="text-center">Tồn kho</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${products.content.isEmpty()}">
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-3 d-block mb-1"></i>
+                            <span>Không tìm thấy sản phẩm nào phù hợp.</span>
+                        </td>
+                    </tr>
+                    <tr th:each="p : ${products.content}">
+                        <td>
+                            <img th:src="${p.imageUrl != null && !p.imageUrl.isBlank()} ? ${p.imageUrl} : '/images/placeholder.png'"
+                                 class="admin-product-thumb" alt=""
+                                 onerror="this.onerror=null; this.src='/images/placeholder.png'">
+                        </td>
+                        <td>
+                            <div class="admin-product-cell">
+                                <div>
+                                    <a th:href="@{'/products/' + ${p.id}}" class="admin-product-title" th:text="${p.name}" target="_blank" title="Xem trên cửa hàng">Tên sản phẩm</a>
+                                    <span class="admin-sku-pill" th:text="${p.sku}">SKU-001</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="fs-8 text-muted font-semibold" th:text="${p.category != null ? p.category.name : 'Chưa phân loại'}">Category</td>
+                        <td>
+                            <strong class="font-extrabold text-danger fs-7" th:text="${@priceFormatter.format(p.effectivePrice)}">100.000 ₫</strong>
+                            <span th:if="${p.hasDiscount()}" class="d-block text-decoration-line-through text-muted fs-8" th:text="${@priceFormatter.format(p.price)}">150.000 ₫</span>
+                        </td>
+                        <td class="text-center">
+                            <span th:class="${p.stock <= 0 ? 'stock-count-zero' : (p.stock <= 3 ? 'stock-count-low' : 'stock-count-normal')}"
+                                  th:text="${p.stock}">10</span>
+                        </td>
+                        <td>
+                            <span class="badge-status"
+                                  th:classappend="${p.status != null && p.status.name() == 'ACTIVE'} ? 'status-active' : (${p.status != null && p.status.name() == 'OUT_OF_STOCK'} ? 'status-out-of-stock' : 'status-inactive')"
+                                  th:text="${p.status != null ? p.status.name() : 'INACTIVE'}">ACTIVE</span>
+                        </td>
+                        <td class="text-end">
+                            <div class="d-inline-flex gap-1">
+                                <a th:href="@{'/admin/products/' + ${p.id} + '/edit'}" class="btn-admin-icon" title="Chỉnh sửa sản phẩm" aria-label="Chỉnh sửa sản phẩm">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form th:action="@{'/admin/products/' + ${p.id} + '/delete'}" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi hệ thống?')">
+                                    <button class="btn-admin-icon danger" title="Xóa sản phẩm" aria-label="Xóa sản phẩm">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <div th:replace="~{fragments/pagination :: pagination(${products}, '/admin/products', '')}"></div>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin}">
+<head>
+    <title>Quản lý cửa hàng - UTEGear Admin</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <!-- PAGE HEADER -->
+    <div class="admin-page-header">
+        <div class="admin-page-title-group">
+            <span class="admin-badge admin-badge-primary">Hệ thống & Vận hành</span>
+            <h1 class="admin-page-title">Quản lý Cửa hàng &amp; Kho hàng</h1>
+            <p class="admin-page-subtitle">Quản lý hệ thống showroom trưng bày, điểm bán hàng và kiểm kê tồn kho theo chi nhánh</p>
+        </div>
+    </div>
+
+    <!-- QUICK ADD PANEL -->
+    <div class="admin-card mb-4">
+        <div class="admin-card-header">
+            <div>
+                <h3 class="admin-card-title"><i class="bi bi-shop-window me-2" style="color: var(--admin-accent-primary);"></i>Thêm chi nhánh showroom mới</h3>
+                <div class="admin-card-subtitle">Khai báo điểm bán hàng và kho phân phối cục bộ</div>
+            </div>
+        </div>
+        <div class="admin-card-body">
+            <form th:action="@{/admin/stores/save}" method="post" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label-admin">Tên cửa hàng / Showroom <span class="text-danger">*</span></label>
+                    <input type="text" name="name" class="form-control-admin" placeholder="VD: UTEGear Thủ Đức" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label-admin">Địa chỉ chi nhánh</label>
+                    <input type="text" name="address" class="form-control-admin" placeholder="Số nhà, đường, quận/huyện...">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label-admin">Hotline liên hệ</label>
+                    <input type="text" name="phone" class="form-control-admin" placeholder="028.xxxx.xxxx">
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label-admin">Mở cửa</label>
+                    <input type="text" name="openTime" class="form-control-admin" placeholder="08:00">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn-admin btn-admin-primary w-100 justify-content-center">
+                        <i class="bi bi-plus-lg me-1"></i> Thêm chi nhánh
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- STORES TABLE -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div>
+                <h3 class="admin-card-title"><i class="bi bi-geo-alt-fill me-2" style="color: var(--admin-brand-primary);"></i>Chi nhánh đang hoạt động</h3>
+                <div class="admin-card-subtitle" th:text="'Tổng số: ' + ${#lists.size(stores)} + ' điểm bán'">0 điểm bán</div>
+            </div>
+        </div>
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">ID</th>
+                        <th style="width: 240px;">Tên chi nhánh</th>
+                        <th>Địa chỉ</th>
+                        <th style="width: 140px;">Điện thoại</th>
+                        <th style="width: 120px;">Trạng thái</th>
+                        <th style="width: 140px;" class="text-end">Kiểm kê kho</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${stores == null or #lists.isEmpty(stores)}">
+                        <td colspan="6" class="text-center py-4 text-muted">Chưa có chi nhánh nào được kích hoạt</td>
+                    </tr>
+                    <tr th:each="s : ${stores}">
+                        <td>
+                            <span class="font-monospace fw-bold" style="color: var(--admin-text-muted);" th:text="'#' + ${s.id}">#1</span>
+                        </td>
+                        <td>
+                            <div class="fw-bold" style="color: var(--admin-text-primary); font-size: 0.95rem;" th:text="${s.name}">UTEGear HCM</div>
+                            <div style="font-size: 0.775rem; color: var(--admin-text-muted);" th:if="${s.openTime != null}" th:text="'Giờ phục vụ: ' + ${s.openTime}">08:00 - 21:00</div>
+                        </td>
+                        <td style="font-size: 0.85rem; color: var(--admin-text-secondary);" th:text="${s.address}">Địa chỉ chi nhánh</td>
+                        <td style="font-size: 0.85rem; color: var(--admin-text-secondary);" th:text="${s.phone != null && !s.phone.isEmpty() ? s.phone : '—'}">0900000000</td>
+                        <td>
+                            <span class="badge-status" th:classappend="${s.active} ? 'status-active' : 'status-inactive'"
+                                  th:text="${s.active} ? 'Mở cửa' : 'Tạm đóng'">Mở cửa</span>
+                        </td>
+                        <td class="text-end">
+                            <a th:href="@{'/admin/stores/' + ${s.id}}" class="btn-admin btn-admin-secondary btn-admin-sm" title="Quản lý tồn kho">
+                                <i class="bi bi-box-seam me-1"></i> Tồn kho
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>

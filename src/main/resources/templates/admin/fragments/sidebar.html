@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<th:block th:fragment="sidebar">
+    <aside class="admin-sidebar" aria-label="Menu quản trị hệ thống">
+        <div class="admin-brand">
+            <span class="brand-icon"><i class="bi bi-controller"></i></span>
+            <span>UTE<span class="text-danger">Gear</span></span>
+            <span class="badge-admin-tag">Admin</span>
+        </div>
+
+        <nav class="admin-nav">
+            <span class="admin-nav-group-title">Điều hành</span>
+            <a th:href="@{/admin}" th:classappend="${adminPage == 'dashboard'} ? 'active'">
+                <i class="bi bi-speedometer2"></i> Tổng quan
+            </a>
+
+            <span class="admin-nav-group-title">Bán hàng &amp; Kho</span>
+            <a th:href="@{/admin/orders}" th:classappend="${adminPage == 'orders'} ? 'active'">
+                <i class="bi bi-receipt"></i> Đơn hàng
+            </a>
+            <a th:href="@{/admin/products}" th:classappend="${adminPage == 'products'} ? 'active'">
+                <i class="bi bi-box-seam"></i> Sản phẩm
+            </a>
+            <a th:href="@{/admin/categories}" th:classappend="${adminPage == 'categories'} ? 'active'">
+                <i class="bi bi-tags"></i> Danh mục
+            </a>
+            <a th:href="@{/admin/brands}" th:classappend="${adminPage == 'brands'} ? 'active'">
+                <i class="bi bi-award"></i> Thương hiệu
+            </a>
+
+            <span class="admin-nav-group-title">Hệ thống &amp; Vận hành</span>
+            <a th:href="@{/admin/stores}" th:classappend="${adminPage == 'stores'} ? 'active'">
+                <i class="bi bi-shop"></i> Cửa hàng &amp; Kho
+            </a>
+            <a th:href="@{/admin/coupons}" th:classappend="${adminPage == 'coupons'} ? 'active'">
+                <i class="bi bi-percent"></i> Mã giảm giá
+            </a>
+            <a th:href="@{/admin/users}" th:classappend="${adminPage == 'users'} ? 'active'">
+                <i class="bi bi-people"></i> Tài khoản
+            </a>
+        </nav>
+
+        <div class="admin-sidebar-footer">
+            <a th:href="@{/}" target="_blank"><i class="bi bi-globe"></i> Xem trang bán hàng</a>
+            <a th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> Đăng xuất hệ thống</a>
+        </div>
+    </aside>
+</th:block>
+
+</body>
+</html>
