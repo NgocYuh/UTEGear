@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Danh sách yêu thích - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <!-- BREADCRUMB -->
+    <div class="page-breadcrumb">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Danh sách yêu thích</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- WISHLIST SECTION -->
+    <section class="wishlist-section section">
+        <div class="container">
+            
+            <!-- HEADER -->
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                <div>
+                    <h1 class="h3 font-extrabold text-primary mb-1">
+                        <i class="bi bi-heart-fill text-danger me-2"></i>Danh sách sản phẩm yêu thích
+                    </h1>
+                    <p class="text-muted fs-7 mb-0">Lưu lại những sản phẩm công nghệ bạn quan tâm để dễ dàng theo dõi giá và đặt mua</p>
+                </div>
+                <span class="badge bg-light text-dark border px-3 py-2 fs-7 font-bold" th:if="${wishlistItems != null && !wishlistItems.isEmpty()}"
+                      th:text="${wishlistItems.size()} + ' sản phẩm'">0 sản phẩm</span>
+            </div>
+
+            <!-- EMPTY WISHLIST STATE -->
+            <div class="cart-empty-box my-5" th:if="${wishlistItems == null || wishlistItems.isEmpty()}">
+                <div class="cart-empty-icon">
+                    <i class="bi bi-heart"></i>
+                </div>
+                <h2 class="cart-empty-title">Danh sách yêu thích đang trống</h2>
+                <p class="cart-empty-desc">Bạn chưa lưu sản phẩm nào vào danh sách yêu thích. Hãy khám phá ngay các linh kiện &amp; phụ kiện gaming đỉnh cao tại UTEGear.</p>
+                <a href="/products" class="btn btn-utama">
+                    <i class="bi bi-arrow-left me-1"></i> Khám phá sản phẩm
+                </a>
+            </div>
+
+            <!-- PRODUCT GRID REUSING CANONICAL PRODUCT CARD -->
+            <!-- WISHLIST PRODUCT GRID -->
+            <div class="product-grid" th:if="${wishlistItems != null && !wishlistItems.isEmpty()}">
+                <th:block th:each="item : ${wishlistItems}">
+                    <div th:replace="~{fragments/product-card :: productCard(${item.product})}"></div>
+                </th:block>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>

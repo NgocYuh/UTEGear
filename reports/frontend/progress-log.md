@@ -160,6 +160,32 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Thống nhất xử lý layout/model/mock trước khi hoàn tất task.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## FE-WISH-01: Giao diện danh sách yêu thích
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/wishlist-page`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Chuẩn bị nguyên wishlist template và JavaScript wishlist có sẵn trên branch từ main `b4ed32e`.
+  - Giữ nguyên nội dung hai file; không viết mới hoặc chỉnh sửa hành vi.
+  - Không thay đổi Backend, layout/header/footer, dependency hoặc API contract.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 2/2 file khớp nguyên bản.
+  - `node --check` cho wishlist.js: `PASS`.
+  - Diff check có một dòng whitespace trong wishlist.html nguyên bản; giữ nguyên theo yêu cầu không sửa code.
+  - `mvnw.cmd -B clean verify`: `PASS`, 107 tests, 0 failure, 0 error, 0 skipped.
+  - Kiểm tra JavaScript cô lập với API/DOM giả lập: `PASS` cho ID rỗng, thêm/xóa và trạng thái icon, lỗi UNAUTHORIZED và lỗi yêu cầu; không gọi API thật.
+  - Các kiểm tra này chưa chứng minh template mới render hoặc tích hợp được trên ứng dụng.
+- Vướng mắc hoặc phần còn thiếu:
+  - Template dùng layout:decorate, wishlist item/entity và product card cũ; chưa có mock theo API-03.
+  - JavaScript gọi /api/wishlist/toggle qua UTEGear.API và cần được nạp trong layout; chưa xác nhận tích hợp với ứng dụng hiện tại.
+  - Giữ nguyên nguồn theo yêu cầu; bản đưa lên review chưa hoàn tất FE-WISH-01 hoặc xác nhận trang chạy được.
+- Bước tiếp theo:
+  - Push branch sau kiểm tra; mở PR để review.
+  - Thống nhất xử lý layout/model/mock trước khi hoàn tất task.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
