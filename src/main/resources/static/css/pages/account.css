@@ -1,0 +1,226 @@
+/* =========================================================
+   ACCOUNT, PROFILE & ORDER TRACKING STYLES
+   Phase 7: Intentional Asymmetry & Customer Identity
+   Customer Account Profile & Settings
+   Palette: Primary (#082B66), Accent (#E21B23), Neutral Slate Canvas
+   ========================================================= */
+
+/* --- Profile Layout Grid (Asymmetric 280px sidebar / 1fr content) --- */
+.profile-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+@media (max-width: 991.98px) {
+    .profile-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
+/* Sidebar Navigation Box */
+.profile-sidebar {
+    background-color: #FFFFFF;
+    border: 1px solid var(--color-border, #E2E8F0);
+    border-radius: var(--radius-sm, 6px);
+    padding: 24px 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.profile-avatar-block {
+    text-align: center;
+    padding-bottom: 18px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--color-border, #E2E8F0);
+}
+
+.profile-avatar-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #082B66;
+    color: #FFFFFF;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    border: 3px solid #E2E8F0;
+}
+
+.profile-user-name {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--color-primary, #082B66);
+    margin-bottom: 2px;
+}
+
+.profile-user-email {
+    font-size: 0.8rem;
+    color: var(--color-text-muted, #64748B);
+    margin: 0;
+    word-break: break-all;
+}
+
+/* Tab Navigation Links */
+.profile-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.profile-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-text-main, #1E293B);
+    text-decoration: none;
+    border-radius: var(--radius-sm, 4px);
+    transition: background-color 0.15s ease, color 0.15s ease;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+}
+
+.profile-nav-link i {
+    font-size: 1.1rem;
+    color: var(--color-text-muted, #64748B);
+}
+
+.profile-nav-link:hover {
+    background-color: #F1F5F9;
+    color: var(--color-primary, #082B66);
+}
+
+.profile-nav-link:hover i {
+    color: var(--color-primary, #082B66);
+}
+
+.profile-nav-link.active {
+    background-color: var(--color-primary, #082B66);
+    color: #FFFFFF;
+    font-weight: 700;
+}
+
+.profile-nav-link.active i {
+    color: #FFFFFF;
+}
+
+.profile-nav-link.danger {
+    color: var(--color-danger, #DC2626);
+    margin-top: 8px;
+    border-top: 1px solid var(--color-border, #E2E8F0);
+    padding-top: 14px;
+}
+
+.profile-nav-link.danger:hover {
+    background-color: #FEF2F2;
+    color: #991B1B;
+}
+
+.profile-nav-link.danger i {
+    color: var(--color-danger, #DC2626);
+}
+
+/* Profile Main Content Box */
+.profile-content-card {
+    background-color: #FFFFFF;
+    border: 1px solid var(--color-border, #E2E8F0);
+    border-radius: var(--radius-sm, 6px);
+    padding: 24px 28px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.profile-section-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-primary, #082B66);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border, #E2E8F0);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-section-title i {
+    color: var(--color-accent, #E21B23);
+}
+
+/* Address Cards Grid */
+.address-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.address-item-card {
+    background: #FFFFFF;
+    border: 1px solid var(--color-border, #E2E8F0);
+    border-radius: var(--radius-sm, 4px);
+    padding: 16px;
+    position: relative;
+    transition: border-color 0.15s ease;
+}
+
+.address-item-card.is-default {
+    border-color: var(--color-primary, #082B66);
+    background-color: #FAFCFE;
+}
+
+.address-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.address-user-name {
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--color-primary, #082B66);
+}
+
+.address-phone {
+    font-size: 0.82rem;
+    color: var(--color-text-muted, #64748B);
+    margin-bottom: 6px;
+}
+
+.address-details {
+    font-size: 0.82rem;
+    color: var(--color-text-main, #1E293B);
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.address-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--color-border, #E2E8F0);
+}
+
+/* Add Address Form Box */
+.add-address-box {
+    background-color: #F8FAFC;
+    border: 1px solid var(--color-border, #E2E8F0);
+    border-radius: var(--radius-sm, 4px);
+    padding: 20px;
+}
+
+.add-address-box-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-primary, #082B66);
+    margin-bottom: 14px;
+}

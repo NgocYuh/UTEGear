@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Tạo tài khoản - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content" class="auth-section">
+    <div class="container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <span class="brand-icon"><i class="bi bi-person-plus"></i></span>
+                <h1>Tạo tài khoản mới</h1>
+                <p>Đăng ký thành viên UTEGear để hưởng trọn ưu đãi</p>
+            </div>
+
+            <!-- ERROR ALERT -->
+            <div class="alert alert-danger" th:if="${errorMessage}" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i> <span th:text="${errorMessage}">Lỗi đăng ký</span>
+            </div>
+
+            <!-- REGISTER FORM -->
+            <form th:action="@{/register}" th:object="${registerForm}" method="post" class="auth-form">
+                <div class="mb-3">
+                    <label for="fullName" class="form-label">Họ và tên <span class="required-star">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Ví dụ: Nguyễn Văn A" th:value="*{fullName}" required autocomplete="name">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email tài khoản <span class="required-star">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="name@domain.com" th:value="*{email}" required autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Số điện thoại</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="0901234567" th:value="*{phone}" autocomplete="tel">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Mật khẩu <span class="required-star">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Tối thiểu 6 ký tự" required autocomplete="new-password">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="confirmPassword" class="form-label">Xác nhận mật khẩu <span class="required-star">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Nhập lại mật khẩu vừa nhập" required autocomplete="new-password">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-utama btn-lg w-100">
+                    ĐĂNG KÝ TÀI KHOẢN <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p class="mb-0">Đã có tài khoản UTEGear? <a href="/login">Đăng nhập ngay</a></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
