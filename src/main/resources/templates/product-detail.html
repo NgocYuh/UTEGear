@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="${product != null ? product.name + ' - UTEGear' : 'Chi tiết sản phẩm - UTEGear'}">Chi tiết sản phẩm - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <!-- 1. BREADCRUMB NAVIGATION -->
+    <div class="product-breadcrumb">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+
+                    <!-- DÂY KẾT NỐI -->
+                    <th:block th:if="${product != null and @categoryHelper.isCableCategory(product.category)}">
+                        <li class="breadcrumb-item"><a href="/category/connection-cables">Dây kết nối</a></li>
+                        <li class="breadcrumb-item" th:if="${@categoryHelper.getDisplaySubcategoryName(product.category) != null}">
+                            <a th:href="@{'/category/connection-cables?sub=' + ${#strings.toLowerCase(#strings.replace(#strings.replace(product.category.name, ' Cable', '-cable'), ' ', '-'))}}"
+                               th:text="${@categoryHelper.getDisplaySubcategoryName(product.category)}">Cáp HDMI</a>
+                        </li>
+                    </th:block>
+
+                    <!-- TAY CẦM -->
+                    <th:block th:if="${product != null and @categoryHelper.isGamepadCategory(product.category)}">
+                        <li class="breadcrumb-item"><a href="/category/gamepad">Tay cầm</a></li>
+                    </th:block>
+
+                    <!-- OTHER CATEGORIES -->
+                    <th:block th:if="${product != null and product.category != null and !@categoryHelper.isCableCategory(product.category) and !@categoryHelper.isGamepadCategory(product.category)}">
+                        <li class="breadcrumb-item">
+                            <a th:href="@{'/category/' + ${#strings.toLowerCase(product.category.name)}}"
+                               th:text="${product.category.nameVi != null ? product.category.nameVi : product.category.name}">Danh mục</a>
+                        </li>
+                    </th:block>
+
+                    <li class="breadcrumb-item active" aria-current="page" th:text="${product != null ? product.name : 'Sản phẩm'}">Tên sản phẩm</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 2. MAIN PRODUCT HERO SECTION -->
+    <section class="product-hero-section section pt-2" th:if="${product != null}">
+        <div class="container">
+            <div class="product-hero-container">
+                <div class="row g-4 g-lg-5">
+
+                    <!-- LEFT COLUMN: PRODUCT GALLERY SHOWCASE -->
+                    <div class="col-lg-6">
+                        <div class="product-gallery">
+                            <div class="product-gallery-main">
+                                <img th:src="${product.imageUrl != null ? product.imageUrl : '/images/placeholder.png'}"
+                                     th:alt="${product.name}" id="mainProductImage"
+                                     onerror="this.src='/images/placeholder.png'">
+                                <span class="product-gallery-badge" th:if="${product.hasDiscount()}"
+                                      th:text="'-' + ${product.discountPercent} + '%'">-20%</span>
+                            </div>
+
+                            <!-- Thumbnails Navigation (Rendered when secondary images exist) -->
+                            <div class="product-gallery-thumbs" th:if="${!#lists.isEmpty(product.images)}">
+                                <div class="product-thumb-item active"
+                                     th:onclick="'changeImage(\'' + ${product.imageUrl} + '\')'">
+                                    <img th:src="${product.imageUrl}" th:alt="${product.name}">
+                                </div>
+                                <div class="product-thumb-item" th:each="img : ${product.images}">
+                                    <img th:src="${img.imageUrl}" th:alt="${product.name}"
+                                         th:onclick="'changeImage(\'' + ${img.imageUrl} + '\')'">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: PRODUCT INFO & PURCHASE PANEL -->
+                    <div class="col-lg-6">
+                        <div class="product-info-panel">
+
+                            <!-- Metadata tags: Brand & Category -->
+                            <div class="product-meta-tags">
+                                <a th:if="${product.brand != null}"
+                                   th:href="@{/products(brandId=${product.brand.id})}"
+                                   class="product-brand-link" th:text="${product.brand.name}">Logitech</a>
+                                <span class="product-brand-link" th:unless="${product.brand != null}">UTEGear</span>
+
+                                <a th:if="${product.category != null}"
+                                   th:href="@{'/category/' + ${#strings.toLowerCase(product.category.name)}}"
+                                   class="product-category-badge"
+                                   th:text="${@categoryHelper.getDisplayCategoryName(product.category)}">Category</a>
+                            </div>
+
+                            <!-- Product Title -->
+                            <h1 class="product-title" th:text="${product.name}">Tên sản phẩm</h1>
+
+                            <!-- Rating, Reviews & Sold Stats Row -->
+                            <div class="product-stats-row">
+                                <span class="product-stars" aria-label="Điểm đánh giá">
+                                    <i class="bi bi-star-fill" th:each="star : ${#numbers.sequence(1, 5)}"
+                                       th:classappend="${star <= product.rating} ? 'text-warning' : 'text-secondary opacity-25'"></i>
+                                </span>
+                                <span class="product-rating-score" th:text="${#numbers.formatDecimal(product.rating, 1, 1)}">4.8</span>
+                                <a href="#productTabs" class="product-review-link"
+                                   th:text="'(' + ${product.reviewCount} + ' nhận xét)'">(125 nhận xét)</a>
+
+                                <span class="product-stats-divider">|</span>
+
+                                <span class="product-sold-badge">
+                                    <i class="bi bi-fire me-1"></i> Đã bán <span th:text="${product.soldCount}">125</span>
+                                </span>
+
+                                <span class="product-stats-divider">|</span>
+
+                                <span class="text-muted" style="font-size: 0.78rem;">
+                                    Mã SP: <strong th:text="${product.sku != null ? product.sku : 'UG-' + product.id}">SKU-001</strong>
+                                </span>
+                            </div>
+
+                            <!-- High-Prominence Price Box -->
+                            <div class="product-price-box">
+                                <th:block th:if="${product.hasDiscount()}">
+                                    <span class="product-sale-price" th:text="${@priceFormatter.format(product.salePrice)}">2.490.000 ₫</span>
+                                    <span class="product-original-price" th:text="${@priceFormatter.format(product.price)}">2.990.000 ₫</span>
+                                    <span class="product-discount-save" th:text="'Tiết kiệm ' + ${@priceFormatter.format(product.getDiscountedAmount())}">Tiết kiệm 500.000 ₫</span>
+                                </th:block>
+                                <th:block th:unless="${product.hasDiscount()}">
+                                    <span class="product-sale-price" th:text="${@priceFormatter.format(product.price)}">2.490.000 ₫</span>
+                                </th:block>
+                            </div>
+
+                            <!-- Short Description / Summary -->
+                            <p class="product-short-summary" th:if="${product.description != null}" th:text="${product.description}">
+                                Mô tả sản phẩm
+                            </p>
+
+                            <!-- Dynamic Variant Selection (If product has variants) -->
+                            <div class="variant-selection-section" th:if="${!#lists.isEmpty(product.variants)}">
+                                <th:block th:each="group : ${product.groupedVariants()}">
+                                    <div class="variant-group">
+                                        <label class="variant-label" th:text="${group.key}">Tùy chọn</label>
+                                        <div class="variant-options-list">
+                                            <button type="button" class="variant-option"
+                                                    th:each="v : ${group.value}"
+                                                    th:attr="data-variant-id=${v.id},data-stock=${v.stock}"
+                                                    th:classappend="${v.stock <= 0} ? 'disabled'"
+                                                    onclick="selectVariant(this)">
+                                                <span th:text="${v.attributeValue}">Tùy chọn</span>
+                                                <i class="bi bi-check2 ms-1 text-primary d-none"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </div>
+
+                            <!-- Stock Status Urgency Representation -->
+                            <div class="stock-status-wrap">
+                                <span class="stock-indicator-in" th:if="${product.inStock() && !product.isLowStock()}">
+                                    <i class="bi bi-check-circle-fill"></i> Có sẵn tại cửa hàng (<span th:text="${product.stock}">10</span> sản phẩm)
+                                </span>
+                                <span class="stock-indicator-low" th:if="${product.inStock() && product.isLowStock()}">
+                                    <i class="bi bi-exclamation-triangle-fill"></i> Sắp hết hàng — chỉ còn <span th:text="${product.stock}">3</span> sản phẩm!
+                                </span>
+                                <span class="stock-indicator-out" th:unless="${product.inStock()}">
+                                    <i class="bi bi-x-circle-fill"></i> Tạm hết hàng tại tất cả cửa hàng
+                                </span>
+                            </div>
+
+                            <!-- Purchase Actions & Quantity Selector -->
+                            <div class="purchase-action-section">
+                                <div class="detail-quantity-box" aria-label="Số lượng sản phẩm">
+                                    <button type="button" class="detail-qty-btn" onclick="changeQty(-1)" aria-label="Giảm số lượng">−</button>
+                                    <input type="number" id="quantity" class="detail-qty-input" value="1" min="1" max="99" aria-label="Số lượng">
+                                    <button type="button" class="detail-qty-btn" onclick="changeQty(1)" aria-label="Tăng số lượng">+</button>
+                                </div>
+
+                                <button type="button" class="btn-detail-add-cart" id="addToCartBtn"
+                                        th:attr="data-product-id=${product.id}"
+                                        th:onclick="'addToCartDetail(' + ${product.id} + ')'"
+                                        th:disabled="${product.outOfStock()}"
+                                        th:aria-label="${product.outOfStock()} ? 'Sản phẩm tạm hết hàng' : 'Thêm sản phẩm vào giỏ hàng'">
+                                    <i class="bi" th:classappend="${product.outOfStock()} ? 'bi-slash-circle' : 'bi-cart-plus'"></i>
+                                    <span th:text="${product.outOfStock()} ? 'Tạm hết hàng' : 'Thêm vào giỏ hàng'">Thêm vào giỏ hàng</span>
+                                </button>
+
+                                <button type="button" class="btn-detail-wishlist"
+                                        th:attr="data-product-id=${product.id}"
+                                        th:onclick="'toggleWishlist(' + ${product.id} + ')'"
+                                        aria-label="Thêm vào danh sách yêu thích"
+                                        th:title="'Thêm vào yêu thích'">
+                                    <i class="bi bi-heart"></i>
+                                </button>
+                            </div>
+
+                            <!-- Service & Trust Info Strip -->
+                            <div class="service-trust-grid">
+                                <div class="service-trust-item">
+                                    <i class="bi bi-patch-check"></i>
+                                    <span>100% Chính hãng phân phối</span>
+                                </div>
+                                <div class="service-trust-item">
+                                    <i class="bi bi-shield-check"></i>
+                                    <span>Bảo hành chính hãng 24T</span>
+                                </div>
+                                <div class="service-trust-item">
+                                    <i class="bi bi-truck"></i>
+                                    <span>Giao siêu tốc 2H HCM</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 3. PRODUCT SPECIFICATIONS, DESCRIPTION & REVIEWS TABS -->
+            <div class="product-content-tabs" id="productTabs">
+                <nav class="product-tab-nav" role="tablist">
+                    <button class="product-tab-btn active" data-bs-toggle="tab" data-bs-target="#tab-description" type="button" role="tab" aria-selected="true">
+                        <i class="bi bi-card-text me-1"></i> Mô tả sản phẩm
+                    </button>
+                    <button class="product-tab-btn" data-bs-toggle="tab" data-bs-target="#tab-specs" type="button" role="tab" aria-selected="false">
+                        <i class="bi bi-sliders me-1"></i> Thông số kỹ thuật
+                    </button>
+                    <button class="product-tab-btn" data-bs-toggle="tab" data-bs-target="#tab-reviews" type="button" role="tab" aria-selected="false">
+                        <i class="bi bi-star me-1"></i> Đánh giá khách hàng
+                    </button>
+                </nav>
+
+                <div class="tab-content">
+                    <!-- Tab 1: Description -->
+                    <div class="tab-pane fade show active" id="tab-description" role="tabpanel">
+                        <div class="product-tab-panel-body">
+                            <div th:text="${product.description}">Mô tả chi tiết sản phẩm</div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Specifications -->
+                    <div class="tab-pane fade" id="tab-specs" role="tabpanel">
+                        <div class="product-tab-panel-body">
+                            <table class="spec-detail-table">
+                                <tbody>
+                                    <tr>
+                                        <th>Thương hiệu</th>
+                                        <td th:text="${product.brand != null ? product.brand.name : 'Chính hãng'}">Brand</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Mã SKU</th>
+                                        <td th:text="${product.sku != null ? product.sku : 'UG-' + product.id}">SKU</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Danh mục sản phẩm</th>
+                                        <td th:text="${product.category != null ? @categoryHelper.getDisplayCategoryName(product.category) : 'Gear'}">Category</td>
+                                    </tr>
+                                    <tr th:each="spec : ${product.specificationList()}">
+                                        <th th:text="${spec.key}">Thuộc tính</th>
+                                        <td th:text="${spec.value}">Giá trị</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Reviews -->
+                    <div class="tab-pane fade" id="tab-reviews" role="tabpanel">
+                        <div class="product-tab-panel-body">
+
+                            <!-- Reviews Summary Banner -->
+                            <div class="reviews-score-banner" th:if="${ratingSummary != null}">
+                                <div class="review-big-score" th:text="${#numbers.formatDecimal(ratingSummary.average, 1, 1)}">4.8</div>
+                                <div>
+                                    <div class="product-stars">
+                                        <i class="bi bi-star-fill" th:each="star : ${#numbers.sequence(1, 5)}"></i>
+                                    </div>
+                                    <div class="text-muted" style="font-size: 0.82rem;" th:text="${ratingSummary.count} + ' đánh giá xác thực từ người mua'">125 đánh giá</div>
+                                </div>
+                            </div>
+
+                            <!-- Reviews List -->
+                            <div class="reviews-list-wrapper">
+                                <div class="review-item-card" th:each="r : ${reviews}">
+                                    <div class="reviewer-meta">
+                                        <div class="reviewer-avatar-badge"
+                                             th:text="${r.user != null && !#strings.isEmpty(r.user.fullName) ? #strings.substring(r.user.fullName, 0, 1) : 'U'}">
+                                            U
+                                        </div>
+                                        <div>
+                                            <div class="reviewer-name" th:text="${r.user != null && !#strings.isEmpty(r.user.fullName) ? r.user.fullName : 'Khách hàng UTEGear'}">Khách hàng</div>
+                                            <div class="reviewer-stars">
+                                                <i class="bi bi-star-fill" th:each="star : ${#numbers.sequence(1, 5)}"
+                                                   th:classappend="${star <= r.rating} ? 'text-warning' : 'text-secondary opacity-25'"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="reviewer-text" th:text="${r.comment}">Nội dung nhận xét</p>
+                                </div>
+
+                                <div th:if="${#lists.isEmpty(reviews)}" class="text-muted text-center py-4" style="font-size: 0.88rem;">
+                                    Chưa có nhận xét nào cho sản phẩm này. Hãy là người đầu tiên trải nghiệm!
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. RELATED PRODUCTS COMPACT GRID (Reusing Canonical Phase 3 Product Card) -->
+            <!-- 4. RELATED PRODUCTS COMPACT GRID -->
+            <div class="related-products-section" th:if="${relatedProducts != null && !relatedProducts.isEmpty()}">
+                <div class="related-section-header">
+                    <h2 class="related-section-title">Sản phẩm liên quan</h2>
+                </div>
+                <div class="related-products-grid">
+                    <th:block th:each="p : ${relatedProducts}">
+                        <div th:replace="~{fragments/product-card :: productCard(${p})}"></div>
+                    </th:block>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>
+

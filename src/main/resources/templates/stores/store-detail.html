@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="${store.name} + ' - UTEGear'">Showroom - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+    
+    <!-- BREADCRUMB -->
+    <div class="page-breadcrumb">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/stores}">Hệ thống showroom</a></li>
+                    <li class="breadcrumb-item active" th:text="${store.name}">Chi nhánh Showroom</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- STORE DETAIL & PRODUCTS SECTION -->
+    <section class="store-detail-section section">
+        <div class="container">
+            
+            <!-- STORE PROFILE BOX -->
+            <div class="store-info-box mb-5">
+                <div class="d-flex align-items-center gap-4 flex-wrap">
+                    <div class="store-big-icon">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h1 class="h3 font-extrabold text-primary mb-2" th:text="${store.name}">Tên showroom</h1>
+                        <div class="d-flex flex-wrap gap-4 fs-7 text-muted">
+                            <div><i class="bi bi-geo-alt-fill text-danger me-1"></i> <span class="text-dark" th:text="${store.address}">Địa chỉ</span></div>
+                            <div><i class="bi bi-telephone-fill text-primary me-1"></i> Hotline: <strong class="text-dark" th:text="${store.phone}">0901234567</strong></div>
+                            <div><i class="bi bi-clock-fill text-primary me-1"></i> Mở cửa: <strong class="text-primary" th:text="${store.openTime} + ' - ' + ${store.closeTime}">08:00 - 22:00</strong></div>
+                        </div>
+                    </div>
+                    <a href="/contact" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-headset me-1"></i> Hỗ trợ kỹ thuật
+                    </a>
+                </div>
+            </div>
+
+            <!-- STORE INVENTORY / PRODUCTS -->
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <h2 class="h4 font-extrabold text-primary mb-0">
+                    <i class="bi bi-box-seam me-2 text-danger"></i>Sản phẩm có sẵn tại showroom này
+                </h2>
+                <span class="fs-7 text-muted" th:if="${products != null}" th:text="'(' + ${products.size()} + ' sản phẩm trưng bày)'"></span>
+            </div>
+
+            <div class="product-grid" th:if="${products != null && !products.isEmpty()}">
+                <th:block th:each="p : ${products}">
+                    <div th:replace="~{fragments/product-card :: productCard(${p})}"></div>
+                </th:block>
+            </div>
+
+            <div class="cart-empty-box my-5" th:if="${products == null || products.isEmpty()}">
+                <div class="cart-empty-icon">
+                    <i class="bi bi-boxes"></i>
+                </div>
+                <h3 class="cart-empty-title">Chưa có danh sách sản phẩm trưng bày</h3>
+                <p class="cart-empty-desc">Sản phẩm tại showroom này đang được đồng bộ dữ liệu tồn kho. Quý khách vui lòng tham khảo danh mục chung.</p>
+                <a href="/products" class="btn btn-utama">Xem tất cả sản phẩm</a>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>

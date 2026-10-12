@@ -361,9 +361,10 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## INV-02: Inventory domain
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/store-inventory`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/19
+- Merge commit: `1b68983ac491ba133e6309ba2a97d209ea404184`
 - Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Thêm entity và repository tồn kho theo đúng cặp duy nhất `Store + ProductVariant` của Flyway V1.
@@ -383,7 +384,33 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - INV-02 tập trung domain/service; endpoint tra cứu availability thuộc INV-03 theo kế hoạch.
   - Kiểm thử dùng H2 cho application context và mock repository cho nghiệp vụ; chưa kết nối Supabase thật.
 - Bước tiếp theo:
-  - Mở và merge PR INV-02; sau đó thực hiện INV-03.
+  - Thực hiện INV-03.
+- Ngày hoàn tất: 2026-10-12
+
+## INV-03: API tra cứu tồn kho và cửa hàng
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/store-availability-api`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Thêm API public danh sách cửa hàng với filter trạng thái/tỉnh thành và chi tiết cửa hàng hoạt động.
+  - Thêm API availability theo đúng cặp `storeId + variantId`; không dùng tồn kho cấp Product.
+  - Thêm API availability cấp sản phẩm, tổng hợp tồn kho của từng biến thể tại các cửa hàng đang hoạt động.
+  - Response dùng DTO riêng và giữ đúng field của API-02; không trả trực tiếp entity JPA.
+  - Phân biệt cửa hàng không tồn tại/ngừng hoạt động, biến thể không tồn tại và trường hợp hết hàng.
+  - Chuẩn hóa lỗi thiếu `variantId` về `VALIDATION_FAILED`.
+- Kết quả kiểm thử:
+  - Danh sách theo tỉnh thành và ẩn chi tiết cửa hàng ngừng hoạt động: `PASS`.
+  - Biến thể còn hàng, hết hàng do chưa có dòng inventory và cửa hàng ngừng hoạt động: `PASS`.
+  - Tổng tồn sản phẩm qua nhiều biến thể/cửa hàng: `PASS`.
+  - API store public không cần JWT: `PASS`.
+  - `mvn -B --no-transfer-progress clean verify`: `PASS` với 57 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Kiểm thử dùng H2 cho application context và mock repository cho response API; chưa kết nối Supabase thật.
+  - API quản trị inventory đã có domain/service từ INV-02 nhưng controller quản trị không nằm trong phạm vi INV-03.
+- Bước tiếp theo:
+  - Mở và merge PR INV-03; Frontend có thể tích hợp FE-STORE-01 theo API-02.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới

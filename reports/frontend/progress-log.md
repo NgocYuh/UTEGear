@@ -83,19 +83,71 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Thống nhất xử lý login và tương thích layout/contract trước khi hoàn tất task.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## FE-CAT-01: Giao diện catalog, tìm kiếm và chi tiết sản phẩm
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/product-catalog-pages`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Chuẩn bị ba trang products/search/product-detail, hai fragment product-card/product-filter, bốn file CSS và hai file JavaScript có sẵn.
+  - Giữ nguyên nội dung 11 file nguồn; không viết mới hoặc chỉnh sửa hành vi.
+  - Tạo branch từ main commit `ea9ce82`, sau khi PR #20 đã merge.
+  - Không thay Backend, dependency, layout/header/footer/pagination chung hoặc API contract.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 11/11 file khớp nguyên bản.
+  - `node --check` cho filter.js và variant.js: `PASS`.
+  - `git diff --cached --check`: có cảnh báo whitespace ở file nguyên bản; giữ nguyên theo yêu cầu không sửa code.
+  - `mvnw.cmd -B clean verify`: `PASS`, 50 tests, 0 failure, 0 error, 0 skipped.
+  - Maven kiểm tra regression hiện có, chưa xác nhận các template mới render hoặc hoạt động với contract hiện tại.
+- Vướng mắc hoặc phần còn thiếu:
+  - Template dùng layout:decorate và gọi pagination theo chữ ký cũ, chưa tương thích layout/fragment UI-01.
+  - Field imageUrl/stock và groupedVariants() trong template khác DTO API-01; chưa có mock theo contract mới.
+  - Các handler quickView/addToCart/toggleWishlist và việc nạp CSS/JS cũ chưa được nối với layout hiện tại.
+  - Giữ nguyên code theo yêu cầu; đây là bản đưa nguồn lên để review, chưa hoàn tất FE-CAT-01 hoặc xác nhận giao diện chạy được.
+- Bước tiếp theo:
+  - Người dùng đã yêu cầu hẹn push bản đã kiểm tra lúc 13:23 ngày 12/10/2026 (UTC+7); chưa có PR/review.
+  - Thống nhất cách xử lý tương thích trước khi hoàn tất task.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
+## FE-STORE-01: Giao diện cửa hàng
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/store-availability-ui`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/23
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Chuẩn bị nguyên template danh sách/chi tiết cửa hàng và CSS stores có sẵn.
+  - Không sửa nội dung code, Backend, dependency, layout chung hoặc contract.
+  - Đã push theo lịch lúc 13:54:21 ngày 12/10/2026 (UTC+7), commit `f2fcf60`.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 3/3 file khớp nguyên bản.
+  - `mvnw.cmd -B clean verify`: `PASS`, 50 tests, 0 failure, 0 error, 0 skipped.
+  - Kiểm thử regression hiện có chưa chứng minh template mới hoạt động; diff check có whitespace nguyên bản được giữ nguyên theo yêu cầu.
+  - Sau đồng bộ main và xử lý conflict PR #23: `mvnw.cmd -B clean verify` PASS với 57 tests, 0 failure/error/skipped; diff check của phần nhật ký PASS.
+- Vướng mắc hoặc phần còn thiếu:
+  - Template dùng layout:decorate, openTime/closeTime và danh sách sản phẩm theo model cũ; chưa tương thích UI-01/API-02.
+  - Chưa có mock loading/error và tồn kho theo Store + ProductVariant; chưa xác nhận trang chạy được.
+  - Giữ nguyên code theo yêu cầu; bản đưa nguồn lên review chưa hoàn tất FE-STORE-01.
+- Bước tiếp theo:
+  - Review PR #23; đã đồng bộ main và giữ cả mục FE-CAT-01 lẫn FE-STORE-01 khi xử lý conflict nhật ký.
+  - Thống nhất xử lý tương thích và tồn kho theo biến thể trước khi hoàn tất task.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## FE-CART-01: Giao diện giỏ hàng
 
 - Trạng thái: `BLOCKED`
 - Branch: `feat/cart-page`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/24
 - Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Chuẩn bị nguyên cart template, shipping-progress fragment, CSS cart và JavaScript cart có sẵn.
   - Không sửa nội dung code, Backend, dependency, layout chung hoặc contract.
-  - Người dùng yêu cầu hẹn push một lần lúc 14:12 ngày 12/10/2026 (UTC+7).
+  - Đã push theo lịch lúc 14:12:17 ngày 12/10/2026 (UTC+7), commit `d65affc`.
 - Kết quả kiểm thử:
   - SHA-256: `PASS`, 4/4 file khớp nguyên bản.
   - `node --check` cho cart.js: `PASS`.
+  - Sau đồng bộ main và xử lý conflict PR #24: `mvnw.cmd -B clean verify` PASS với 57 tests, 0 failure/error/skipped; diff check phần nhật ký PASS.
   - `mvnw.cmd -B clean verify`: `PASS`, 50 tests, 0 failure, 0 error, 0 skipped.
   - Kiểm thử regression hiện có chưa chứng minh template mới hoạt động; diff check có whitespace nguyên bản được giữ nguyên theo yêu cầu.
 - Vướng mắc hoặc phần còn thiếu:
@@ -104,7 +156,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Handler cartPlus/cartMinus/removeCartItem/clearCartAjax và việc nạp CSS/JS chưa được nối với layout hiện tại.
   - Chưa xác nhận xử lý giỏ hàng theo biến thể hoặc trang chạy được; giữ nguyên code theo yêu cầu, chưa hoàn tất FE-CART-01.
 - Bước tiếp theo:
-  - Push đúng commit đã kiểm tra theo lịch, sau đó mở PR để review.
+  - Review PR #24; đã đồng bộ main và giữ các mục tiến độ trước khi xử lý conflict nhật ký.
   - Thống nhất xử lý layout/model/mock trước khi hoàn tất task.
 - Ngày hoàn tất: `Chưa hoàn tất`
 

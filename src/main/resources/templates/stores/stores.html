@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Hệ thống cửa hàng - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+    
+    <!-- BREADCRUMB -->
+    <div class="page-breadcrumb">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Hệ thống showroom</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- STORES LIST SECTION -->
+    <section class="stores-page section">
+        <div class="container">
+            
+            <!-- HEADER -->
+            <div class="mb-4 pb-3 border-bottom">
+                <h1 class="h3 font-extrabold text-primary mb-1">
+                    <i class="bi bi-shop me-2 text-danger"></i>Hệ thống Showroom &amp; Điểm bán UTEGear
+                </h1>
+                <p class="text-muted fs-7 mb-0">
+                    Trải nghiệm trực tiếp các sản phẩm công nghệ, tư vấn build PC chuyên sâu và nhận hàng nhanh chóng
+                </p>
+            </div>
+
+            <!-- STORES GRID -->
+            <div class="stores-card-grid" th:if="${stores != null && !stores.isEmpty()}">
+                <div th:each="store : ${stores}">
+                    <a th:href="@{'/stores/' + ${store.id}}" class="store-card-link">
+                        <div class="store-card-full">
+                            <div class="store-card-header">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <h2 class="store-title" th:text="${store.name}">Chi nhánh Showroom</h2>
+                            </div>
+                            <div class="store-card-body">
+                                <p>
+                                    <i class="bi bi-pin-map"></i>
+                                    <span th:text="${store.address}">Địa chỉ showroom</span>
+                                </p>
+                                <p>
+                                    <i class="bi bi-telephone"></i>
+                                    <span>Hotline: <strong th:text="${store.phone}">0901234567</strong></span>
+                                </p>
+                                <p th:if="${store.email != null}">
+                                    <i class="bi bi-envelope"></i>
+                                    <span th:text="${store.email}">store@utegear.vn</span>
+                                </p>
+                                <p>
+                                    <i class="bi bi-clock"></i>
+                                    <span>Giờ mở cửa: <strong class="text-primary" th:text="${store.openTime} + ' - ' + ${store.closeTime}">08:00 - 22:00</strong></span>
+                                </p>
+                            </div>
+                            <div class="store-card-footer">
+                                <span>Xem sản phẩm tại cửa hàng</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="cart-empty-box my-5" th:if="${stores == null || stores.isEmpty()}">
+                <div class="cart-empty-icon">
+                    <i class="bi bi-shop"></i>
+                </div>
+                <h2 class="cart-empty-title">Đang cập nhật danh sách showroom</h2>
+                <p class="cart-empty-desc">Thông tin hệ thống showroom đang được đồng bộ. Quý khách vui lòng liên hệ hotline để được hỗ trợ.</p>
+                <a href="/contact" class="btn btn-utama">Liên hệ hỗ trợ</a>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>

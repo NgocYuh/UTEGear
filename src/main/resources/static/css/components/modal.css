@@ -1,0 +1,27 @@
+/* =========================================================
+   MODAL COMPONENT (QUICK VIEW & DIALOGS)
+   ========================================================= */
+
+.modal-content {
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-4) var(--space-6);
+    background-color: var(--color-bg-surface);
+}
+
+.modal-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.modal-body {
+    padding: var(--space-6);
+    background-color: var(--color-bg-surface);
+}
