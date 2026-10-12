@@ -1007,8 +1007,9 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | INV-01 | BE | `feat/store-management` | DONE | [PR #17](https://github.com/NgocYuh/UTEGear/pull/17) | 2026-10-12 |
 | INV-02 | BE | `feat/store-inventory` | DONE | [PR #19](https://github.com/NgocYuh/UTEGear/pull/19) | 2026-10-12 |
 | INV-03 | BE | `feat/store-availability-api` | DONE | [PR #22](https://github.com/NgocYuh/UTEGear/pull/22) | 2026-10-12 |
-| MED-01 | BE | `feat/cloudinary-product-images` | IN REVIEW | Chưa mở |  |
-| DATA-01…02 | BE | Xem backlog | TODO |  |  |
+| MED-01 | BE | `feat/cloudinary-product-images` | DONE | [PR #25](https://github.com/NgocYuh/UTEGear/pull/25) | 2026-10-12 |
+| DATA-01 | BE | `feat/product-crawler-pipeline` | IN REVIEW | Chưa mở |  |
+| DATA-02 | BE | `feat/product-data-import` | TODO |  |  |
 | CART-01…02, WISH-01 | BE | Xem backlog | TODO |  |  |
 | ORD-01…04 | BE | Xem backlog | TODO |  |  |
 | WS-01…02 | BE | Xem backlog | TODO |  |  |
