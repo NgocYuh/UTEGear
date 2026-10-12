@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Giỏ hàng - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <!-- BREADCRUMB -->
+    <div class="page-breadcrumb">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Giỏ hàng</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- CART SECTION -->
+    <section class="cart-section section">
+        <div class="container">
+
+            <!-- EMPTY CART STATE -->
+            <div class="cart-empty-box" id="emptyCartView" th:if="${cartItems == null || cartItems.isEmpty()}">
+                <div class="cart-empty-icon">
+                    <i class="bi bi-bag-x"></i>
+                </div>
+                <h2 class="cart-empty-title">Giỏ hàng của bạn đang trống</h2>
+                <p class="cart-empty-desc">Không có sản phẩm nào trong giỏ hàng. Hãy khám phá ngay hàng ngàn sản phẩm công nghệ chính hãng tại UTEGear.</p>
+                <a href="/products" class="btn btn-utama">
+                    <i class="bi bi-arrow-left me-1"></i> Tiếp tục mua sắm
+                </a>
+            </div>
+
+            <!-- CART HAS ITEMS -->
+            <div class="cart-layout" id="cartContentLayout" th:if="${cartItems != null && !cartItems.isEmpty()}">
+                
+                <!-- LEFT COLUMN: CART ITEMS LIST -->
+                <div class="cart-main-content">
+                    <!-- FREE SHIPPING PROGRESS STRIP -->
+                    <div class="shipping-progress-box">
+                        <div class="shipping-progress-text">
+                            <i class="bi bi-truck"></i>
+                            <span>Miễn phí giao hàng toàn quốc cho đơn hàng từ <strong>500.000 ₫</strong></span>
+                        </div>
+                        <div class="shipping-progress-bar">
+                            <div class="shipping-progress-fill" style="width: 100%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- CART ITEMS TABLE HEADER (DESKTOP) -->
+                    <div class="cart-items-header">
+                        <span class="col-thumb">Ảnh</span>
+                        <span class="col-name">Sản phẩm</span>
+                        <span class="col-price">Đơn giá</span>
+                        <span class="col-qty">Số lượng</span>
+                        <span class="col-subtotal">Thành tiền</span>
+                        <span class="col-action"></span>
+                    </div>
+
+                    <!-- ITEM LIST CONTAINER -->
+                    <div class="cart-items-list">
+                        <!-- ITEM ROW -->
+                        <div class="cart-item" th:each="item : ${cartItems}" th:id="'cart-item-' + ${item.id}">
+                            <!-- THUMBNAIL -->
+                            <div class="cart-item-image">
+                                <a th:href="@{'/products/' + ${item.product.id}}">
+                                    <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}"
+                                         onerror="this.src='/images/placeholder.png'">
+                                </a>
+                            </div>
+
+                            <!-- NAME & VARIANT -->
+                            <div class="cart-item-info">
+                                <a class="cart-item-name" th:href="@{'/products/' + ${item.product.id}}"
+                                   th:text="${item.product.name}">Sản phẩm</a>
+                                <div class="cart-item-variant" th:if="${item.variant != null}">
+                                    <i class="bi bi-gear-fill me-1"></i>
+                                    <span th:text="${item.variant.attributeName} + ': ' + ${item.variant.attributeValue}">Phân loại</span>
+                                </div>
+                            </div>
+
+                            <!-- UNIT PRICE -->
+                            <div class="cart-item-unit-price" th:text="${@priceFormatter.format(item.product.effectivePrice)}">
+                                0 ₫
+                            </div>
+                            
+                            <!-- QUANTITY STEPPER -->
+                            <div class="cart-item-qty">
+                                <div class="qty-input-group" role="group" aria-label="Số lượng">
+                                    <button type="button" class="qty-btn" th:onclick="'cartMinus(' + ${item.id} + ')'" title="Giảm số lượng" aria-label="Giảm số lượng">−</button>
+                                    <input type="number" th:id="'qty-input-' + ${item.id}" th:value="${item.quantity}" min="1" max="99"
+                                           th:onchange="'updateCartQty(' + ${item.id} + ', this.value)'" aria-label="Số lượng">
+                                    <button type="button" class="qty-btn" th:onclick="'cartPlus(' + ${item.id} + ')'" title="Tăng số lượng" aria-label="Tăng số lượng">+</button>
+                                </div>
+                            </div>
+
+                            <!-- ITEM SUBTOTAL -->
+                            <div class="cart-item-subtotal" th:id="'subtotal-' + ${item.id}"
+                                 th:text="${@priceFormatter.format(item.subtotal)}">0 ₫</div>
+
+                            <!-- REMOVE ACTION -->
+                            <div class="cart-item-action">
+                                <button type="button" class="remove-btn" th:onclick="'removeCartItem(' + ${item.id} + ')'"
+                                        aria-label="Xóa sản phẩm này" title="Xóa khỏi giỏ hàng">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CART ACTIONS FOOTER -->
+                    <div class="cart-actions-bar">
+                        <a href="/products" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-arrow-left me-1"></i> Tiếp tục mua hàng
+                        </a>
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="clearCartAjax()">
+                            <i class="bi bi-trash3 me-1"></i> Xóa toàn bộ giỏ hàng
+                        </button>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: STICKY ORDER SUMMARY -->
+                <aside class="cart-summary" aria-label="Tóm tắt đơn hàng">
+                    <h3 class="cart-summary-title">
+                        <i class="bi bi-receipt"></i> Tóm tắt đơn hàng
+                    </h3>
+
+                    <!-- COUPON REDEMPTION FORM -->
+                    <form th:action="@{/cart/apply-coupon}" method="post" class="cart-coupon-form">
+                        <div class="cart-coupon-input-group">
+                            <input type="text" name="code" class="form-control" placeholder="Mã giảm giá (nếu có)"
+                                   th:value="${appliedCode}" aria-label="Mã giảm giá">
+                            <button type="submit" class="btn btn-dark">Áp dụng</button>
+                        </div>
+                        <div th:if="${appliedCode != null}" class="coupon-alert success">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>Đã áp dụng mã: <strong th:text="${appliedCode}"></strong></span>
+                        </div>
+                        <div th:if="${param.couponError != null}" class="coupon-alert error">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            <span>Mã giảm giá không hợp lệ hoặc đã hết hạn!</span>
+                        </div>
+                    </form>
+
+                    <!-- FINANCIAL LINE ITEMS -->
+                    <div class="summary-row">
+                        <span>Số lượng sản phẩm:</span>
+                        <strong id="cartTotalQty" th:text="${totalQuantity}">0</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tạm tính tiền hàng:</span>
+                        <strong id="cartSubtotal" class="val" th:text="${@priceFormatter.format(subtotal)}">0 ₫</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Phí vận chuyển:</span>
+                        <span class="text-success font-semibold">Miễn phí</span>
+                    </div>
+
+                    <div class="summary-row grand-total">
+                        <span>Tổng thanh toán:</span>
+                        <span id="cartGrandTotal" class="val" th:text="${@priceFormatter.format(subtotal)}">0 ₫</span>
+                    </div>
+
+                    <!-- PROCEED TO CHECKOUT CTA -->
+                    <a href="/checkout" class="btn btn-utama btn-lg w-100 mb-2">
+                        TIẾN HÀNH ĐẶT HÀNG <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+
+                    <!-- TRUST BADGES -->
+                    <div class="cart-trust-badges">
+                        <div class="trust-badge-item">
+                            <i class="bi bi-shield-check"></i>
+                            <span>Cam kết 100% linh kiện chính hãng</span>
+                        </div>
+                        <div class="trust-badge-item">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                            <span>Đổi mới trong 7 ngày nếu lỗi từ NSX</span>
+                        </div>
+                        <div class="trust-badge-item">
+                            <i class="bi bi-patch-check"></i>
+                            <span>Bảo hành tận nơi nhanh chóng</span>
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>

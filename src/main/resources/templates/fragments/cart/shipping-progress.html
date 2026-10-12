@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Free Shipping Progress Bar Fragment -->
+<div th:fragment="shippingProgress(cartTotal)" class="shipping-progress-box" th:with="freeShippingThreshold=500000">
+    <div class="shipping-progress-text" th:if="${cartTotal != null && cartTotal >= freeShippingThreshold}">
+        <i class="bi bi-check-circle-fill text-success fs-5"></i> <span>Chúc mừng! Đơn hàng của bạn đã đủ điều kiện <strong>Miễn phí vận chuyển</strong></span>
+    </div>
+    <div class="shipping-progress-text" th:unless="${cartTotal != null && cartTotal >= freeShippingThreshold}">
+        <i class="bi bi-truck text-accent fs-5"></i>
+        <span>Mua thêm <strong class="text-accent" th:text="${@priceFormatter.format(freeShippingThreshold - (cartTotal != null ? cartTotal : 0))}">210.000 ₫</strong> để được <strong>Miễn phí vận chuyển</strong></span>
+    </div>
+    <div class="shipping-progress-bar mt-2">
+        <div class="shipping-progress-fill" th:style="'width: ' + (${cartTotal != null && cartTotal > 0 ? (cartTotal >= freeShippingThreshold ? 100 : (cartTotal * 100 / freeShippingThreshold)) : 0}) + '%'"></div>
+    </div>
+</div>
+
+</body>
+</html>
