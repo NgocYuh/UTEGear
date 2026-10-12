@@ -474,9 +474,10 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## DATA-02: Validate và import sản phẩm
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/product-data-import`
-- Pull Request: `Chưa mở`
+- Pull Request: [#27](https://github.com/NgocYuh/UTEGear/pull/27)
+- Merge commit: `88bffcb35032d750e925d42a46a624f59efcb56a`
 - Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Thêm API ADMIN nhận file JSONL UTF-8 và trả báo cáo từng dòng `IMPORTED` hoặc `FAILED`.
@@ -502,7 +503,35 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Bộ 100 sản phẩm chỉ chạy sau khi category/brand, danh sách URL và quyền sử dụng nguồn được review.
   - Format canonical hiện tại là JSONL từ DATA-01; chưa bổ sung CSV vì dữ liệu variants/images là cấu trúc lồng nhau.
 - Bước tiếp theo:
-  - Mở và merge PR DATA-02; sau đó có thể chuẩn bị dataset 100 sản phẩm và chạy thử trên local/staging.
+  - Thực hiện CART-01; việc chuẩn bị dataset 100 sản phẩm và chạy thử local/staging là công việc vận hành riêng.
+- Ngày hoàn tất: 2026-10-12
+
+## CART-01: Cart domain và service
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/shopping-cart-domain`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Ánh xạ `Cart` và `CartItem` đúng schema Flyway V1; mỗi người dùng có một giỏ và mỗi biến thể chỉ có một dòng trong giỏ.
+  - Bắt buộc mọi dòng giỏ hàng tham chiếu `ProductVariant`, kể cả sản phẩm chỉ có biến thể mặc định.
+  - Thêm service đọc giỏ, thêm/cộng dồn biến thể, cập nhật số lượng, xóa dòng và xóa toàn bộ giỏ.
+  - Tính `unitPrice` từ giá hiệu lực của sản phẩm cộng điều chỉnh giá biến thể; tính `lineTotal`, tổng số lượng và subtotal tại domain.
+  - Kiểm tra người dùng, ID và số lượng hợp lệ; từ chối biến thể không tồn tại, ngừng hoạt động, thuộc sản phẩm ngừng hoạt động hoặc không thuộc danh sách biến thể của sản phẩm.
+  - Giới hạn cập nhật/xóa theo chủ sở hữu giỏ hàng để không thao tác được item của người dùng khác.
+  - Không sửa migration, API/controller, template hoặc static asset; protected cart API thuộc CART-02.
+- Kết quả kiểm thử:
+  - Thêm trùng biến thể cộng dồn vào đúng một dòng: `PASS`.
+  - Số lượng bằng 0 bị từ chối và item của người dùng khác không thể cập nhật: `PASS`.
+  - Tổng tiền dùng giá khuyến mãi cộng điều chỉnh biến thể: `PASS`.
+  - Biến thể không gắn đúng sản phẩm bị từ chối: `PASS`.
+  - `mvn -B --no-transfer-progress '-Dtest=CartTest,CartServiceTest' test`: `PASS` với 8 test, 0 failure, 0 error, 0 skipped.
+  - `mvn -B --no-transfer-progress clean verify`: `PASS` với 88 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa kiểm tra tồn kho khi thêm/cập nhật giỏ vì tồn kho phụ thuộc cửa hàng phục vụ; server sẽ kiểm tra lại theo `Store + ProductVariant` ở bước checkout/order.
+  - Chưa có HTTP endpoint và DTO response; đây là phạm vi CART-02 theo contract API-03.
+- Bước tiếp theo:
+  - Mở và merge PR CART-01, sau đó thực hiện CART-02.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
