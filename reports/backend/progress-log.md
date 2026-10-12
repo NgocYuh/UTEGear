@@ -627,9 +627,9 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## ORD-03: Checkout transaction
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/checkout-service`
-- Pull Request: `Chưa mở`
+- Pull Request: [PR #32](https://github.com/NgocYuh/UTEGear/pull/32)
 - Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Mở `POST /api/checkout/quote` và `POST /api/orders` theo API-03, yêu cầu JWT qua quy tắc `/api/**` hiện có.
@@ -652,7 +652,35 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Quote token hiện lưu trong bộ nhớ ứng dụng, phù hợp triển khai một instance; nếu triển khai nhiều instance cần chuyển sang kho dùng chung như Redis.
   - API danh sách/chi tiết/hủy đơn của khách và luồng quản trị trạng thái chưa thuộc phần checkout này.
 - Bước tiếp theo:
-  - Mở và merge PR ORD-03, sau đó thực hiện ORD-04.
+  - Thực hiện ORD-04.
+- Ngày hoàn tất: 2026-10-12
+
+## ORD-04: Admin order management
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/admin-order-management`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Thêm `GET /api/admin/orders` để tìm theo mã đơn, email hoặc số điện thoại; lọc theo trạng thái/cửa hàng và phân trang từ mới đến cũ.
+  - Thêm `GET /api/admin/orders/{orderId}` trả chi tiết snapshot khách hàng, giao hàng, cửa hàng, payment, item và toàn bộ mốc trạng thái.
+  - Thêm `PUT /api/admin/orders/{orderId}/status`; toàn bộ đường dẫn dùng quy tắc role `ADMIN` hiện có.
+  - Chốt transition: `PENDING -> CONFIRMED|CANCELLED`, `CONFIRMED -> PROCESSING|CANCELLED`, `PROCESSING -> SHIPPING|CANCELLED`, `SHIPPING -> COMPLETED`; trạng thái cuối không đổi tiếp.
+  - Lưu thời điểm xác nhận, xử lý, giao, hoàn thành hoặc hủy; khóa pessimistic Order khi đổi trạng thái để tránh hai admin cập nhật đồng thời.
+  - Hủy payment đang chờ cùng đơn; chặn hủy đơn đã thanh toán bằng `PAID_ORDER_CANNOT_CANCEL` vì chưa có nghiệp vụ hoàn tiền.
+  - Cập nhật API-03 contract với mã lỗi hủy đơn đã thanh toán.
+- Kết quả kiểm thử:
+  - Đi đủ chuỗi trạng thái và ghi các timestamp: `PASS`.
+  - Không cho nhảy cóc hoặc đổi trạng thái cuối: `PASS`.
+  - Confirm đơn hợp lệ, hủy đơn đồng thời hủy payment chờ và từ chối transition sai: `PASS`.
+  - Customer gọi `/api/admin/orders` nhận `403 FORBIDDEN`: `PASS`.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" "-Dtest=OrderTest,AdminOrderServiceTest,SecurityIntegrationTest" test`: `PASS` với 22 test, 0 failure, 0 error, 0 skipped.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `PASS` với 119 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa chạy trên Supabase thật; kiểm thử application context hiện dùng H2.
+  - Chưa phát notification/WebSocket khi trạng thái đổi; đây là phụ thuộc tiếp theo `WS-01` và `WS-02`.
+- Bước tiếp theo:
+  - Mở và merge PR ORD-04, sau đó thực hiện WS-01.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
