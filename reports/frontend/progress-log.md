@@ -110,6 +110,30 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Thống nhất cách xử lý tương thích trước khi hoàn tất task.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## FE-STORE-01: Giao diện cửa hàng
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/store-availability-ui`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/23
+- Ngày cập nhật: 2026-10-12
+- Đã làm:
+  - Chuẩn bị nguyên template danh sách/chi tiết cửa hàng và CSS stores có sẵn.
+  - Không sửa nội dung code, Backend, dependency, layout chung hoặc contract.
+  - Đã push theo lịch lúc 13:54:21 ngày 12/10/2026 (UTC+7), commit `f2fcf60`.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 3/3 file khớp nguyên bản.
+  - `mvnw.cmd -B clean verify`: `PASS`, 50 tests, 0 failure, 0 error, 0 skipped.
+  - Kiểm thử regression hiện có chưa chứng minh template mới hoạt động; diff check có whitespace nguyên bản được giữ nguyên theo yêu cầu.
+  - Sau đồng bộ main và xử lý conflict PR #23: `mvnw.cmd -B clean verify` PASS với 57 tests, 0 failure/error/skipped; diff check của phần nhật ký PASS.
+- Vướng mắc hoặc phần còn thiếu:
+  - Template dùng layout:decorate, openTime/closeTime và danh sách sản phẩm theo model cũ; chưa tương thích UI-01/API-02.
+  - Chưa có mock loading/error và tồn kho theo Store + ProductVariant; chưa xác nhận trang chạy được.
+  - Giữ nguyên code theo yêu cầu; bản đưa nguồn lên review chưa hoàn tất FE-STORE-01.
+- Bước tiếp theo:
+  - Review PR #23; đã đồng bộ main và giữ cả mục FE-CAT-01 lẫn FE-STORE-01 khi xử lý conflict nhật ký.
+  - Thống nhất xử lý tương thích và tồn kho theo biến thể trước khi hoàn tất task.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
