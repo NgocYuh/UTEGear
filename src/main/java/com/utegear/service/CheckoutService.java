@@ -53,11 +53,13 @@ public class CheckoutService {
     private final OrderRepository orders;
     private final CheckoutQuoteStore quoteStore;
     private final TransactionCallbacks transactionCallbacks;
+    private final OrderRealtimePublisher realtimePublisher;
 
     public CheckoutService(AddressRepository addresses, StoreRepository stores,
             ProductVariantRepository variants, StoreInventoryRepository inventories,
             CouponRepository coupons, CouponService couponService, CartRepository carts,
-            OrderRepository orders, CheckoutQuoteStore quoteStore, TransactionCallbacks transactionCallbacks) {
+            OrderRepository orders, CheckoutQuoteStore quoteStore, TransactionCallbacks transactionCallbacks,
+            OrderRealtimePublisher realtimePublisher) {
         this.addresses = addresses;
         this.stores = stores;
         this.variants = variants;
@@ -68,6 +70,7 @@ public class CheckoutService {
         this.orders = orders;
         this.quoteStore = quoteStore;
         this.transactionCallbacks = transactionCallbacks;
+        this.realtimePublisher = realtimePublisher;
     }
 
     @Transactional(readOnly = true)
@@ -107,6 +110,7 @@ public class CheckoutService {
         order.applyPricing(discount, HOME_DELIVERY_FEE);
         order.createPayment(request.paymentMethod());
         Order saved = orders.save(order);
+        realtimePublisher.publishCreatedAfterCommit(saved);
 
         cart.clear();
         carts.save(cart);

@@ -144,6 +144,7 @@ khi áp event mới; event có thể được gửi lặp và được khử tr�
 | 403 | `FORBIDDEN` | Không sở hữu tài nguyên hoặc thiếu role ADMIN |
 | 404 | `CART_ITEM_NOT_FOUND` | Không có item thuộc cart hiện tại |
 | 404 | `ORDER_NOT_FOUND` | Không có order thuộc phạm vi truy cập |
+| 404 | `NOTIFICATION_NOT_FOUND` | Không có notification thuộc user hiện tại |
 | 409 | `INSUFFICIENT_STOCK` | Một hoặc nhiều variant không đủ tồn kho |
 | 409 | `COUPON_INVALID` | Coupon sai, hết hạn, hết lượt hoặc không đạt giá trị tối thiểu |
 | 409 | `QUOTE_EXPIRED` | Quote không còn hợp lệ |
