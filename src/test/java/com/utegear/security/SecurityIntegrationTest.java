@@ -84,7 +84,7 @@ class SecurityIntegrationTest {
     @Test
     void permitsPublicCatalogPathWithoutToken() throws Exception {
         mockMvc.perform(get("/api/stores"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk());
     }
 
     @Test

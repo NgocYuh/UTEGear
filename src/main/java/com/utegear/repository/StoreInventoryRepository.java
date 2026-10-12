@@ -34,6 +34,21 @@ public interface StoreInventoryRepository extends JpaRepository<StoreInventory, 
             """)
     List<VariantStock> sumStockByVariantIds(@Param("variantIds") Collection<Long> variantIds);
 
+    @Query("""
+            select inventory
+            from StoreInventory inventory
+            join fetch inventory.store store
+            join fetch inventory.variant variant
+            join fetch variant.product product
+            where product.id = :productId
+              and store.active = true
+              and variant.active = true
+              and (:province is null or lower(store.province) = lower(:province))
+            """)
+    List<StoreInventory> findProductAvailability(
+            @Param("productId") Long productId,
+            @Param("province") String province);
+
     interface VariantStock {
         Long getVariantId();
         Long getQuantity();

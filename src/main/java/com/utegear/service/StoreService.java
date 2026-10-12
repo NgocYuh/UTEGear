@@ -4,6 +4,7 @@ import com.utegear.dto.store.StoreActiveRequest;
 import com.utegear.dto.store.StoreDetail;
 import com.utegear.dto.store.StorePage;
 import com.utegear.dto.store.StoreUpsertRequest;
+import com.utegear.dto.store.StoreSummary;
 import com.utegear.entity.Store;
 import com.utegear.exception.ApiException;
 import com.utegear.repository.StoreRepository;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 @Service
 public class StoreService {
@@ -23,6 +25,23 @@ public class StoreService {
 
     public StoreService(StoreRepository repository) {
         this.repository = repository;
+    }
+
+    @Transactional(readOnly = true)
+    public List<StoreSummary> findPublic(boolean active, String province) {
+        String normalizedProvince = normalize(province);
+        List<Store> stores = normalizedProvince == null
+                ? repository.findByActiveOrderByNameAsc(active)
+                : repository.findByActiveAndProvinceIgnoreCaseOrderByNameAsc(active, normalizedProvince);
+        return stores.stream().map(StoreSummary::from).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public StoreDetail findPublicDetail(Long id) {
+        return repository.findByIdAndActiveTrue(id)
+                .map(StoreDetail::from)
+                .orElseThrow(() -> new ApiException(
+                        HttpStatus.NOT_FOUND, "STORE_NOT_FOUND", "Không tìm thấy cửa hàng"));
     }
 
     @Transactional(readOnly = true)
