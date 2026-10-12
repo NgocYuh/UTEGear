@@ -1011,9 +1011,10 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | DATA-01 | BE | `feat/product-crawler-pipeline` | DONE | [PR #26](https://github.com/NgocYuh/UTEGear/pull/26) | 2026-10-12 |
 | DATA-02 | BE | `feat/product-data-import` | DONE | [PR #27](https://github.com/NgocYuh/UTEGear/pull/27) | 2026-10-12 |
 | CART-01 | BE | `feat/shopping-cart-domain` | DONE | [PR #28](https://github.com/NgocYuh/UTEGear/pull/28) | 2026-10-12 |
-| CART-02 | BE | `feat/cart-api` | IN REVIEW | Chưa mở |  |
+| CART-02 | BE | `feat/cart-api` | DONE | [PR #29](https://github.com/NgocYuh/UTEGear/pull/29) | 2026-10-12 |
 | WISH-01 | BE | Xem backlog | TODO |  |  |
-| ORD-01…04 | BE | Xem backlog | TODO |  |  |
+| ORD-01 | BE | `feat/address-coupon-domain` | IN REVIEW | Chưa mở |  |
+| ORD-02…04 | BE | Xem backlog | TODO |  |  |
 | WS-01…02 | BE | Xem backlog | TODO |  |  |
 | UI-01…03 và các task `FE-*` | FE | Xem backlog | TODO |  |  |
 | INT-01…03 | FE, BE review contract | Xem backlog | TODO |  |  |
