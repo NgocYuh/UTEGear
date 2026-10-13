@@ -685,9 +685,9 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## WS-01: Notification domain
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/order-notifications`
-- Pull Request: `Chưa mở; dùng chung PR với WS-02 theo quyết định ngày 2026-10-12`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/37
 - Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Ánh xạ `Notification` vào bảng `notifications` đã có trong Flyway V1; không tạo migration mới.
@@ -705,13 +705,13 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Phần phát notification tự động khi trạng thái Order đổi được tích hợp ở commit WS-02 kế tiếp trên cùng branch.
 - Bước tiếp theo:
   - Tạo commit WS-01 rồi thực hiện WS-02 trên cùng branch và cùng Pull Request.
-- Ngày hoàn tất: `Chưa merge`
+- Ngày hoàn tất: 2026-10-12; merge commit `157456a`
 
 ## WS-02: Realtime order updates
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/order-notifications`
-- Pull Request: `Chưa mở; dùng chung PR với WS-01 theo quyết định ngày 2026-10-12`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/37
 - Ngày cập nhật: 2026-10-12
 - Đã làm:
   - Bật WebSocket/STOMP tại `/ws`, simple broker cho `/topic` và `/queue`, user destination prefix `/user`.
@@ -734,6 +734,32 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Frontend cần dùng `WEBSOCKET_ALLOWED_ORIGINS` phù hợp domain triển khai và gửi JWT ở STOMP CONNECT.
 - Bước tiếp theo:
   - Tạo commit WS-02 rồi push branch để mở một PR chứa hai commit.
+- Ngày hoàn tất: 2026-10-12; merge commit `157456a`
+
+## WISH-01: Wishlist Backend
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/wishlist`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-13
+- Đã làm:
+  - Ánh xạ `WishlistItem` vào bảng `wishlist_items` đã có trong Flyway V1; không tạo migration mới.
+  - Thêm repository, service và API `GET /api/wishlist`, `POST /api/wishlist/items`, `DELETE /api/wishlist/items/{productId}` đúng API-03.
+  - Xác định chủ sở hữu hoàn toàn từ JWT; client không gửi `userId`.
+  - Chỉ cho thêm sản phẩm đang hoạt động và không tạo bản ghi trùng khi gửi lại cùng `productId`.
+  - Response trả product summary rút gọn, biến thể mặc định, ảnh chính và trạng thái còn hàng tổng hợp từ tồn kho của các biến thể đang hoạt động.
+  - Xóa sản phẩm bằng truy vấn có cả `userId + productId`; tài nguyên không thuộc user hiện tại trả `404 WISHLIST_ITEM_NOT_FOUND`.
+  - Cập nhật API-03 để ghi rõ tính idempotent khi thêm trùng và lỗi quyền sở hữu khi xóa.
+- Kết quả kiểm thử:
+  - Thêm sản phẩm hợp lệ, thêm lại không tạo trùng và từ chối sản phẩm không tồn tại/không hoạt động: `PASS`.
+  - Danh sách và thao tác xóa chỉ dùng dữ liệu của user hiện tại: `PASS`.
+  - Thiếu JWT bị từ chối; request hợp lệ và validation `productId` được kiểm tra qua MockMvc: `PASS`.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" "-Dtest=WishlistServiceTest,WishlistControllerTest" test`: `PASS` với 11 test, 0 failure, 0 error, 0 skipped.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `PASS` với 142 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa kiểm thử với PostgreSQL/Supabase thật; test ứng dụng dùng profile `test` và H2, không kết nối database production.
+- Bước tiếp theo:
+  - Chạy toàn bộ suite, tạo commit và push branch để mở Pull Request.
 - Ngày hoàn tất: `Chưa merge`
 
 ## Mẫu mục mới

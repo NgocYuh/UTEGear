@@ -26,7 +26,9 @@ chọn chủ sở hữu.
 `isDefault`. Thêm lại cùng `variantId` tăng quantity của dòng hiện có. `quantity` phải lớn hơn 0.
 
 `WishlistItem` gồm `product` theo ProductSummary rút gọn và `createdAt`. Wishlist unique theo product,
-không theo variant.
+không theo variant. Gửi lại `POST` cho sản phẩm đã có là thao tác idempotent: server trả item hiện có và
+không tạo bản ghi trùng. `DELETE` chỉ xóa item thuộc user lấy từ JWT; item không thuộc user hiện tại trả
+`404 WISHLIST_ITEM_NOT_FOUND` để không làm lộ dữ liệu của user khác.
 
 ## Address và coupon
 
@@ -143,6 +145,7 @@ khi áp event mới; event có thể được gửi lặp và được khử tr�
 | 401 | `UNAUTHORIZED` | Thiếu, sai hoặc hết hạn JWT |
 | 403 | `FORBIDDEN` | Không sở hữu tài nguyên hoặc thiếu role ADMIN |
 | 404 | `CART_ITEM_NOT_FOUND` | Không có item thuộc cart hiện tại |
+| 404 | `WISHLIST_ITEM_NOT_FOUND` | Không có product thuộc wishlist của user hiện tại |
 | 404 | `ORDER_NOT_FOUND` | Không có order thuộc phạm vi truy cập |
 | 404 | `NOTIFICATION_NOT_FOUND` | Không có notification thuộc user hiện tại |
 | 409 | `INSUFFICIENT_STOCK` | Một hoặc nhiều variant không đủ tồn kho |
