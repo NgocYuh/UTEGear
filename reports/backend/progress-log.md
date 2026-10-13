@@ -784,9 +784,9 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## QA-02: Backend repository và PostgreSQL integration tests
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `test/postgresql-integration`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/48 (hotfix: https://github.com/NgocYuh/UTEGear/pull/49)
 - Ngày cập nhật: 2026-10-13
 - Đã làm:
   - Thêm Testcontainers PostgreSQL chỉ trong test scope; không kết nối Supabase hoặc database production.
@@ -798,11 +798,33 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - `PostgresqlMigrationRepositoryTest`: phát hiện 3 test, `SKIPPED` cả 3 vì Docker daemon local không chạy; không có test PostgreSQL nào được báo `PASS` giả.
   - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `BUILD SUCCESS` với 163 test được phát hiện, 160 pass và 3 PostgreSQL test bị skip do không có Docker.
   - Backend CI sau merge PR #48: `FAIL`; Spring ApplicationContext của ba test PostgreSQL không khởi động vì test chưa dùng profile `test` và chưa ghi đè H2 driver sang PostgreSQL.
-  - Hotfix `fix/qa02-postgresql-context`: bật profile `test` để dùng credential giả an toàn và ghi đè driver thành `org.postgresql.Driver`; chờ CI xác nhận PostgreSQL thật.
+  - Hotfix `fix/qa02-postgresql-context`: bật profile `test` để dùng credential giả an toàn và ghi đè driver thành `org.postgresql.Driver`.
+  - Backend CI trên merge commit hotfix `8320dd4`: `PASS`; ba test Testcontainers đã chạy với PostgreSQL thật trên GitHub Actions.
 - Vướng mắc hoặc phần còn thiếu:
-  - Cần GitHub Actions hoặc máy có Docker để xác nhận 3 test PostgreSQL thật sự `PASS`.
+  - Docker daemon local không chạy nên máy local vẫn skip ba test PostgreSQL; kết quả PostgreSQL thật đã được GitHub Actions xác nhận.
 - Bước tiếp theo:
-  - Chạy toàn bộ suite local, push branch và kiểm tra Backend CI trên Pull Request.
+  - Tiếp tục QA-03 kiểm thử security và controller.
+- Ngày hoàn tất: 2026-10-13; merge commit PR #48 `1bbe2b1`, hotfix PR #49 `8320dd4`
+
+## QA-03: Backend security và controller tests
+
+- Trạng thái: `IN REVIEW`
+- Branch: `test/security-controller-flows`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-13
+- Đã làm:
+  - Bổ sung kiểm thử MockMvc cho các API được bảo vệ của checkout, notification, quản trị đơn hàng và quản trị ảnh sản phẩm.
+  - Kiểm tra request thiếu JWT bị từ chối với `401 UNAUTHORIZED`.
+  - Kiểm tra JWT hợp lệ xác định đúng người dùng và truyền đúng principal vào `CheckoutService` và `NotificationService`.
+  - Kiểm tra khách hàng bị từ chối khỏi API admin với `403 FORBIDDEN`, còn admin có thể truy cập controller quản lý đơn hàng.
+  - Kiểm tra request cập nhật trạng thái đơn hàng thiếu dữ liệu trả về `400 VALIDATION_FAILED`.
+- Kết quả kiểm thử:
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" "-Dtest=ProtectedApiFlowTest,SecurityIntegrationTest" test`: `PASS` với 18 test, 0 failure, 0 error, 0 skipped.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `BUILD SUCCESS` với 169 test được phát hiện, 166 pass, 0 failure, 0 error và 3 PostgreSQL test bị skip do Docker local không chạy.
+- Vướng mắc hoặc phần còn thiếu:
+  - Ba test PostgreSQL của QA-02 vẫn bị skip ở local; chúng đã được xác nhận chạy đạt trên GitHub Actions sau hotfix PR #49.
+- Bước tiếp theo:
+  - Chạy toàn bộ suite, commit và push branch để mở Pull Request.
 - Ngày hoàn tất: `Chưa merge`
 
 ## Mẫu mục mới
