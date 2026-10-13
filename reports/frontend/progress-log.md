@@ -396,3 +396,31 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Push để review lượt 1; sau khi merge chuẩn bị lượt 2 trang chủ và tài nguyên giao diện.
   - Đối chiếu dependency/model/API và kiểm thử giao diện thực tế trước khi xác nhận hoàn tất tích hợp.
 - Ngày hoàn tất: `Chưa hoàn tất`
+
+## FE-HOME-01: Trang chủ và tài nguyên giao diện
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/home-page-assets`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-13
+- Đã làm:
+  - Bổ sung nguyên home.html, home.css, favicon.ico/favicon.svg, placeholder.png/placeholder.svg và bốn banner home-main, home-side-top, home-side-bottom, home-flash-sale với hai định dạng jpg/svg.
+  - Giữ nguyên 14 file nguồn/tài nguyên; tạo branch từ main 49089c5, không sửa Backend, layout, dependency hoặc API contract.
+  - Đối soát lượt 1: https://github.com/NgocYuh/UTEGear/pull/42 đã merge tại 49089c5. Các giới hạn tương thích của FE-RESTORE-01 chưa được giải quyết; chưa ghi hoàn tất tích hợp.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 14/14 file khớp nguyên bản.
+  - `mvnw.cmd -B clean verify` với Java 21.0.7: `PASS`, 131 tests, 0 failure, 0 error, 0 skipped.
+  - `node --test tests/frontend/mock-data.test.mjs`: `PASS`, 4 tests; chỉ kiểm tra fixture loader.
+  - SVG: `PASS`, 6/6 file .svg parse XML và có root svg.
+  - JPEG: `PASS`, bốn banner mở được, kích thước lần lượt 920x420, 320x200, 320x200 và 1240x130.
+  - Kiểm tra định dạng placeholder.png/favicon.ico: `FAIL`, dữ liệu gốc là SVG văn bản; không phải PNG/ICO, bộ giải mã PNG/ICO không mở được.
+  - `git diff --cached --check`: cảnh báo khoảng trắng cuối home.html:16, 181; giữ nguyên nguồn theo yêu cầu.
+  - Chưa kiểm tra render, responsive, accessibility hoặc kết nối API thật; build pass không chứng minh trang chủ hoạt động.
+- Vướng mắc hoặc phần còn thiếu:
+  - home.html dùng layout dialect, categoryHelper, model product/store và các field cũ; dependency/controller/model hiện tại chưa được xác nhận tương thích.
+  - placeholder.png và favicon.ico có nội dung không khớp đuôi file trong nguồn; giữ nguyên theo yêu cầu, chưa xác nhận trình duyệt hiển thị đúng.
+  - Chưa hoàn tất chức năng trang chủ hoặc xác nhận task tích hợp DONE.
+- Bước tiếp theo:
+  - Push để review lượt 2; sau merge chuẩn bị lượt 3 các trang thông tin.
+  - Thống nhất xử lý định dạng tài nguyên và tương thích trước khi xác nhận giao diện chạy đầy đủ.
+- Ngày hoàn tất: `Chưa hoàn tất`

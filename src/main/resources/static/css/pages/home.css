@@ -1,0 +1,568 @@
+/* =========================================================
+   UTEGEAR HOMEPAGE STYLES
+   Phase 8: Anti-AI Commerce UX & Intentional Asymmetry
+   Storefront Landing, Promotional Banners & Product Showcases
+   Palette: Primary (#082B66), Accent (#E21B23), Surface (#FFFFFF), Canvas (#F8FAFC), Border (#E2E8F0)
+   ========================================================= */
+
+/* --- 1. Commercial E-Commerce Hero Banner Section (75% / 25% Grid) --- */
+.hero-banner-section {
+    background: #FFFFFF;
+    padding: 16px 0 12px 0;
+    max-width: 100%;
+}
+
+.hero-banner-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 74%) minmax(0, 26%);
+    gap: 12px;
+    align-items: stretch;
+}
+
+/* Main Dominant Banner Carousel (~74% width) */
+.main-banner-container {
+    position: relative;
+    border-radius: var(--radius-sm, 6px);
+    overflow: hidden;
+    background: #0B192C;
+    box-shadow: 0 2px 10px rgba(8, 43, 102, 0.08);
+}
+
+.main-banner-container .carousel,
+.main-banner-container .carousel-inner,
+.main-banner-container .carousel-item {
+    height: 100%;
+}
+
+.main-banner-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    text-decoration: none;
+}
+
+.main-banner-link .banner-img {
+    width: 100%;
+    height: 100%;
+    min-height: 380px;
+    max-height: 420px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.main-banner-container:hover .main-banner-link .banner-img {
+    transform: scale(1.01);
+}
+
+/* Subtle Carousel Controls & Indicators */
+.main-banner-container .carousel-control-prev,
+.main-banner-container .carousel-control-next {
+    width: 38px;
+    height: 38px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    border-radius: 50%;
+    opacity: 0;
+    transition: all 0.2s ease;
+    margin: 0 12px;
+}
+
+.main-banner-container:hover .carousel-control-prev,
+.main-banner-container:hover .carousel-control-next {
+    opacity: 0.85;
+}
+
+.main-banner-container .carousel-control-prev:hover,
+.main-banner-container .carousel-control-next:hover {
+    opacity: 1;
+    background: var(--color-accent, #E21B23);
+}
+
+.main-banner-container .carousel-control-prev-icon,
+.main-banner-container .carousel-control-next-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.main-banner-container .carousel-indicators {
+    margin-bottom: 12px;
+    gap: 6px;
+}
+
+.main-banner-container .carousel-indicators button {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.45);
+    border: none;
+    opacity: 0.6;
+    transition: all 0.25s ease;
+}
+
+.main-banner-container .carousel-indicators button.active {
+    width: 22px;
+    border-radius: 4px;
+    background-color: var(--color-accent, #E21B23);
+    opacity: 1;
+}
+
+/* Secondary Side Banner Stack (~26% width, 2 stacked banners with equal heights) */
+.side-banners-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+}
+
+.side-banner-item {
+    display: block;
+    flex: 1;
+    border-radius: var(--radius-sm, 6px);
+    overflow: hidden;
+    background: #0F172A;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(8, 43, 102, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.side-banner-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(8, 43, 102, 0.12);
+}
+
+.side-banner-item .banner-img {
+    width: 100%;
+    height: 100%;
+    min-height: 184px;
+    max-height: 204px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+/* --- 2. Full-Width Promotional Flash Sale Banner (Static, Solid Frame) --- */
+.flash-sale-promo-section {
+    width: 100%;
+    padding: 8px 0 16px 0;
+    background: #FFFFFF;
+    position: relative;
+    z-index: 2;
+}
+
+.flash-sale-banner {
+    width: 100%;
+    min-height: 100px;
+    background: linear-gradient(90deg, #991B1B 0%, #E21B23 50%, #991B1B 100%);
+    border-radius: var(--radius-sm, 6px);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 3px 12px rgba(226, 27, 35, 0.12);
+}
+
+.flash-sale-banner-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    line-height: 0;
+}
+
+.flash-sale-banner-link .flash-sale-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 100px;
+    max-height: 130px;
+    object-fit: cover;
+    object-position: center;
+    border: none;
+    outline: none;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: transform 0.25s ease;
+}
+
+.flash-sale-banner:hover .flash-sale-img {
+    transform: scale(1.006);
+}
+
+/* --- 2. Category Navigation Rail --- */
+.category-rail-section {
+    padding: 20px 0;
+    background: #FFFFFF;
+    border-bottom: 1px solid var(--color-border, #E2E8F0);
+    max-width: 100%;
+    min-width: 0;
+}
+
+.category-rail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.category-rail-title {
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted, #64748B);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.category-rail-title i {
+    color: var(--color-accent, #E21B23);
+}
+
+.category-rail-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.category-rail-container::-webkit-scrollbar {
+    height: 4px;
+}
+
+.category-rail-container::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 4px;
+}
+
+.category-rail-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #F8FAFC;
+    border: 1px solid var(--color-border, #E2E8F0);
+    border-radius: var(--radius-sm, 4px);
+    text-decoration: none;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--color-primary, #082B66);
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+}
+
+.category-rail-pill i {
+    font-size: 1.05rem;
+    color: var(--color-text-muted, #64748B);
+    transition: color 0.15s ease;
+}
+
+.category-rail-pill:hover {
+    background: #FFFFFF;
+    border-color: var(--color-primary, #082B66);
+    color: var(--color-accent, #E21B23);
+    box-shadow: 0 2px 6px rgba(8, 43, 102, 0.06);
+}
+
+.category-rail-pill:hover i {
+    color: var(--color-accent, #E21B23);
+}
+
+/* --- 3. Product Grid Sections & Section Headers --- */
+.products-section {
+    padding: var(--space-8, 32px) 0;
+    background: #FFFFFF;
+}
+
+.home-section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border, #E2E8F0);
+    gap: 16px;
+}
+
+.home-section-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.home-section-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-accent, #E21B23);
+}
+
+.home-section-title {
+    font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+    font-weight: 800;
+    color: var(--color-primary, #082B66);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.home-section-title i {
+    color: var(--color-accent, #E21B23);
+}
+
+.home-section-desc {
+    font-size: 0.82rem;
+    color: var(--color-text-muted, #64748B);
+    margin: 0;
+}
+
+.home-section-link {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--color-primary, #082B66);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s ease;
+}
+
+.home-section-link:hover {
+    color: var(--color-accent, #E21B23);
+    border-bottom-color: var(--color-accent, #E21B23);
+}
+
+/* --- 4. Asymmetric Merchandising Spotlight Block --- */
+.asymmetric-spotlight-section {
+    padding: var(--space-8, 32px) 0;
+    background: #F8FAFC;
+    border-top: 1px solid var(--color-border, #E2E8F0);
+    border-bottom: 1px solid var(--color-border, #E2E8F0);
+}
+
+.asymmetric-spotlight-grid {
+    display: grid;
+    grid-template-columns: 360px minmax(0, 1fr);
+    gap: 24px;
+    align-items: stretch;
+}
+
+.spotlight-curation-panel {
+    background: linear-gradient(145deg, #082B66 0%, #0D3A8A 100%);
+    border-radius: var(--radius-sm, 6px);
+    padding: 32px 28px;
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+}
+
+.spotlight-curation-content {
+    margin-bottom: 24px;
+}
+
+.curation-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm, 4px);
+    margin-bottom: 14px;
+}
+
+.curation-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    line-height: 1.25;
+    color: #FFFFFF;
+    margin-bottom: 12px;
+}
+
+.curation-desc {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.curation-highlights {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.curation-highlights li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.curation-highlights li i {
+    color: var(--color-accent, #E21B23);
+}
+
+/* 3-Column Dense Product Cluster for Spotlight */
+.spotlight-products-cluster {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 16px;
+    min-width: 0;
+}
+
+/* --- 5. Showroom & Consultation Section (Understated / Commercial) --- */
+.home-showrooms-section {
+    padding: var(--space-8, 32px) 0;
+}
+
+.home-showrooms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.home-showroom-card {
+    background: #FFFFFF;
+    border: 1px solid var(--color-border, #E2E8F0);
+    border-radius: var(--radius-sm, 6px);
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.home-showroom-card:hover {
+    border-color: var(--color-primary, #082B66);
+    transform: translateY(-2px);
+}
+
+.home-showroom-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.home-showroom-header i {
+    font-size: 1.25rem;
+    color: var(--color-accent, #E21B23);
+}
+
+.home-showroom-header h3 {
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: var(--color-primary, #082B66);
+    margin: 0;
+}
+
+.home-showroom-meta {
+    font-size: 0.82rem;
+    color: var(--color-text-muted, #64748B);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.home-showroom-meta span {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+}
+
+.home-showroom-meta i {
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.home-showroom-action {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-primary, #082B66);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--color-border, #E2E8F0);
+}
+
+/* --- Responsive Adaptations --- */
+@media (max-width: 991.98px) {
+    .hero-banner-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .main-banner-link .banner-img {
+        min-height: 280px;
+        max-height: 340px;
+    }
+    .side-banners-stack {
+        flex-direction: row;
+        gap: 12px;
+    }
+    .side-banner-item .banner-img {
+        min-height: 140px;
+        max-height: 160px;
+    }
+    .asymmetric-spotlight-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .hero-banner-section {
+        padding: 10px 0 8px 0;
+    }
+    .main-banner-link .banner-img {
+        min-height: 180px;
+        max-height: 220px;
+    }
+    .side-banners-stack {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .side-banner-item .banner-img {
+        min-height: 110px;
+        max-height: 130px;
+    }
+    .flash-sale-banner {
+        min-height: 70px;
+    }
+    .flash-sale-banner-link .flash-sale-img {
+        min-height: 70px;
+        max-height: 90px;
+    }
+    .home-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
