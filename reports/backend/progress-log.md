@@ -764,9 +764,9 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## QA-01: Backend service unit tests
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `test/service-coverage`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/47
 - Ngày cập nhật: 2026-10-13
 - Đã làm:
   - Rà soát toàn bộ lớp trong `service` và đối chiếu với test hiện có.
@@ -780,6 +780,27 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Không có thay đổi mã nguồn nghiệp vụ; QA-02 sẽ kiểm tra repository/PostgreSQL và QA-03 sẽ kiểm tra controller/security sâu hơn.
 - Bước tiếp theo:
   - Chạy toàn bộ suite, tạo commit và push branch để mở Pull Request.
+- Ngày hoàn tất: 2026-10-13; merge commit `66acfee`
+
+## QA-02: Backend repository và PostgreSQL integration tests
+
+- Trạng thái: `IN REVIEW`
+- Branch: `test/postgresql-integration`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-13
+- Đã làm:
+  - Thêm Testcontainers PostgreSQL chỉ trong test scope; không kết nối Supabase hoặc database production.
+  - Kiểm tra Flyway áp dụng V1/V2, cột JSONB và ba partial unique index đặc thù PostgreSQL.
+  - Kiểm tra repository tồn kho theo `storeId + variantId` và unique constraint chống bản ghi trùng.
+  - Kiểm tra Wishlist repository giới hạn theo chủ sở hữu và unique constraint `userId + productId`.
+  - Test tự bỏ qua khi không có Docker để máy local không báo lỗi giả; CI/máy có Docker sẽ chạy PostgreSQL thật.
+- Kết quả kiểm thử:
+  - `PostgresqlMigrationRepositoryTest`: phát hiện 3 test, `SKIPPED` cả 3 vì Docker daemon local không chạy; không có test PostgreSQL nào được báo `PASS` giả.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `BUILD SUCCESS` với 163 test được phát hiện, 160 pass và 3 PostgreSQL test bị skip do không có Docker.
+- Vướng mắc hoặc phần còn thiếu:
+  - Cần GitHub Actions hoặc máy có Docker để xác nhận 3 test PostgreSQL thật sự `PASS`.
+- Bước tiếp theo:
+  - Chạy toàn bộ suite local, push branch và kiểm tra Backend CI trên Pull Request.
 - Ngày hoàn tất: `Chưa merge`
 
 ## Mẫu mục mới
