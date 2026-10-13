@@ -1,5 +1,41 @@
 # Nhật ký tiến độ Frontend
 
+## FE-INT-FIX: Khôi phục CSS ZIP và đối chiếu INT-01/02/03 với Backend
+
+- Trạng thái: `BLOCKED`
+- Người phụ trách: `@trongsonho` (Frontend).
+- Task liên kết: `INT-01`, `INT-02`, `INT-03`.
+- Branch: `fix/frontend-integration`
+- Pull Request: `Chưa mở; BE yêu cầu push branch để review code, chưa duyệt merge`
+- Ngày cập nhật: 2026-10-13
+- Đã làm:
+  - Khôi phục 7 CSS nguyên ZIP; SHA-256 khớp 7/7.
+  - Chuẩn bị API/JWT, auth form, search/quick view, cart/wishlist theo Backend main b2225f8.
+  - Thêm client checkout/admin/realtime và kiểm thử hành vi; chưa nối đầy đủ mọi trang.
+  - Chi tiết phạm vi, phần chưa nối và thông báo layout: `docs/frontend/integration-review.md`.
+  - Người dùng chuyển yêu cầu BE: push branch hiện tại để BE review/sửa tiếp; không coi đây là
+    phê duyệt sessionStorage hoặc xác nhận INT-01/02/03 hoàn tất.
+- Kết quả kiểm thử:
+  - JS integration + fixture: `PASS` 16 tests, 0 failure.
+  - JS syntax: `PASS` 9 files; module cuối cũng được Node VM nạp trong test.
+  - `mvnw.cmd -B clean verify -Dnet.bytebuddy.experimental=true`: `BUILD SUCCESS` trên Java 26;
+    169 tests được phát hiện, 166 pass và 3 PostgreSQL tests skip do Docker local chưa chạy.
+  - Browser/API thật: `CHƯA CHẠY`; chưa thể xác nhận INT-01/02/03 DONE.
+- Vướng mắc hoặc phần còn thiếu:
+  - Thiếu MVC routing/model và layout dialect; các API profile update/password, address,
+    customer order GET/cancel chưa có trên main; BE đã xác nhận các blocker này.
+  - sessionStorage chưa được BE chấp thuận; đã ghi đề xuất DRAFT trong
+    `docs/frontend/auth-session-decision.md`, cần review/chốt trước merge.
+  - Forgot-password và CRUD admin từ ZIP là phần cần làm rõ scope/contract, không mặc định
+    là Backend thiếu API. Đối chiếu chi tiết đã bổ sung trong integration-review.md.
+  - Hai layout dùng chung chưa sửa; BE đã nhận và review tài liệu phạm vi theo phản hồi người dùng.
+  - Module admin/realtime mới chưa nối đủ UI; template/model cũ và checkout form còn cần chuyển.
+- Bước tiếp theo:
+  - Commit/push branch theo yêu cầu BE để review code; chưa mở PR, không merge.
+  - Chốt quyết định quản lý phiên với BE và hoàn thiện phần FE còn lại.
+  - Backend xử lý phần thiếu trên task/branch/PR riêng; sau đó kiểm thử API thật trước QA-04/QA-05.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 Người phụ trách: `@trongsonho`
 
 Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` phải ghi phần còn thiếu; task

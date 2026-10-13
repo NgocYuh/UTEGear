@@ -1,0 +1,163 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import fs from 'node:fs';
+
+function setup() {
+    const calls = [], responses = [], store = new Map(), events = [];
+    const context = vm.createContext({
+        URL, URLSearchParams, Headers, FormData, Event,
+        CustomEvent: class extends Event { constructor(name, options) { super(name); this.detail = options.detail; } },
+        location: { origin: 'https://utegear.test', pathname: '/cart', search: '' },
+        document: { addEventListener() {}, querySelectorAll: () => [] },
+        sessionStorage: { getItem: key => store.get(key) || null, setItem: (key, value) => store.set(key, value), removeItem: key => store.delete(key) },
+        dispatchEvent: event => events.push(event), addEventListener() {}, removeEventListener() {},
+        fetch: async (url, options) => {
+            calls.push({ url, ...options });
+            const response = responses.shift();
+            assert.ok(response, 'Unexpected request: ' + url);
+            return { ok: response.status < 400, status: response.status, text: async () => response.raw ?? JSON.stringify(response.data) };
+        },
+        setTimeout, clearTimeout
+    });
+    context.window = context;
+    for (const file of ['core/api.js', 'domain/cart.js', 'domain/wishlist.js', 'domain/admin.js', 'domain/realtime.js', 'app.js']) {
+        vm.runInContext(fs.readFileSync(new URL('../../src/main/resources/static/js/' + file, import.meta.url), 'utf8'), context, { filename: file });
+    }
+    const session = { accessToken: 'test-only-token', tokenType: 'Bearer', expiresAt: new Date(Date.now() + 60000).toISOString(), user: { roles: ['ADMIN'] } };
+    context.UTEGear.Session.save(session);
+    return { context, api: context.UTEGear, calls, responses, events, session };
+}
+
+test('API sends JWT, preserves caller headers and handles 204', async () => {
+    const { api, calls, responses } = setup();
+    responses.push({ status: 204 });
+    assert.equal(await api.API.delete('/api/cart/items', { headers: { 'X-Request-ID': 'example' } }), null);
+    assert.equal(calls[0].headers.get('Authorization'), 'Bearer test-only-token');
+    assert.equal(calls[0].headers.get('X-Request-ID'), 'example');
+    assert.equal(calls[0].redirect, 'error');
+});
+
+test('public login stores session; incorrect credentials preserve current session', async () => {
+    const { api, calls, responses, session } = setup();
+    responses.push({ status: 200, data: session });
+    await api.Auth.login('sample@example.test', 'test-only-password');
+    assert.equal(calls[0].url, '/api/auth/login');
+    assert.equal(calls[0].headers.has('Authorization'), false);
+    responses.push({ status: 401, data: { code: 'INVALID_CREDENTIALS', message: 'Invalid credentials' } });
+    await assert.rejects(api.Auth.login('sample@example.test', 'test-only-password'), /Invalid credentials/);
+    assert.ok(api.Session.get());
+});
+
+test('protected 401 clears session while 403 preserves it', async () => {
+    const { api, responses, events } = setup();
+    responses.push({ status: 403, data: { code: 'FORBIDDEN' } });
+    await assert.rejects(api.API.get('/api/admin/orders'), error => error.status === 403);
+    assert.ok(api.Session.get());
+    responses.push({ status: 401, data: { code: 'UNAUTHORIZED' } });
+    await assert.rejects(api.API.get('/api/cart'), error => error.status === 401);
+    assert.equal(api.Session.get(), null);
+    assert.ok(events.some(event => event.type === 'utegear:unauthorized'));
+});
+
+test('API prevents token leakage and redirects stay on origin', async () => {
+    const { api, calls } = setup();
+    await assert.rejects(api.API.get('https://other.test/api/cart'), /cùng máy chủ/);
+    await assert.rejects(api.API.get('/login'), /cùng máy chủ/);
+    assert.equal(calls.length, 0);
+    assert.equal(api.Session.redirectTarget('//other.test/path'), '/');
+    assert.equal(api.Session.redirectTarget('/cart?view=full'), '/cart?view=full');
+});
+
+test('cart quick add resolves default variant and posts no client prices/productId', async () => {
+    const { api, responses, calls } = setup();
+    responses.push({ status: 200, data: { defaultVariantId: 7, variants: [{ id: 7, isDefault: true }] } }, { status: 201, data: { itemCount: 2 } });
+    await api.Cart.add({ productId: 3, quantity: 2 });
+    assert.equal(calls[0].url, '/api/products/3');
+    assert.equal(calls[1].url, '/api/cart/items');
+    assert.deepEqual(JSON.parse(calls[1].body), { variantId: 7, quantity: 2 });
+    await assert.rejects(api.Cart.add({ variantId: 7, quantity: 1.5 }), /nguyên/);
+});
+
+test('cart update/delete/clear use item endpoints', async () => {
+    const { api, responses, calls } = setup();
+    responses.push({ status: 200, data: { itemCount: 2 } }, { status: 204 }, { status: 204 });
+    await api.Cart.update(9, 2);
+    await api.Cart.remove(9);
+    await api.Cart.clear();
+    assert.deepEqual(calls.map(call => [call.method, call.url]), [
+        ['PUT', '/api/cart/items/9'], ['DELETE', '/api/cart/items/9'], ['DELETE', '/api/cart/items']
+    ]);
+});
+
+test('wishlist reads state and uses idempotent add or delete', async () => {
+    const { api, responses, calls } = setup();
+    responses.push({ status: 200, data: [] }, { status: 201, data: {} });
+    assert.equal(await api.Wishlist.toggle(3), true);
+    responses.push({ status: 200, data: [{ product: { id: 3 } }] }, { status: 204 });
+    assert.equal(await api.Wishlist.toggle(3), false);
+    assert.equal(calls[1].url, '/api/wishlist/items');
+    assert.equal(calls[3].url, '/api/wishlist/items/3');
+});
+
+test('checkout sends variant IDs/server quote token and rejects expired quotes', async () => {
+    const { api, responses, calls } = setup();
+    const request = { addressId: 1, fulfillmentStoreId: 2, paymentMethod: 'COD', items: [{ variantId: 7, quantity: 2, unitPrice: 1 }] };
+    const quote = { quoteToken: 'test-quote', expiresAt: new Date(Date.now() + 60000).toISOString() };
+    responses.push({ status: 200, data: quote }, { status: 201, data: { id: 8 } });
+    await api.Transactions.quote(request);
+    await api.Transactions.place(request, quote);
+    assert.deepEqual(JSON.parse(calls[1].body).items, [{ variantId: 7, quantity: 2 }]);
+    assert.equal(JSON.parse(calls[1].body).quoteToken, 'test-quote');
+    await assert.rejects(api.Transactions.place(request, { ...quote, expiresAt: '2020-01-01' }), /hết hạn/);
+});
+
+test('admin inventory uses Store + Variant and rejects invalid transfer', async () => {
+    const { api, responses, calls } = setup();
+    responses.push({ status: 200, data: {} });
+    await api.Admin.inventory(2, 7, 0);
+    assert.equal(calls[0].url, '/api/admin/stores/2/inventory/7');
+    assert.throws(() => api.Admin.transfer(2, 2, 7, 3), /không hợp lệ/);
+});
+
+test('public catalog/store requests use contract query and variant availability', async () => {
+    const { api, responses, calls } = setup();
+    responses.push({ status: 200, data: { content: [] } }, { status: 200, data: { variantId: 7, available: false } });
+    await api.Catalog.products({ q: 'keyboard', page: 0 });
+    await api.Stores.availability(2, 7);
+    assert.equal(calls[0].url, '/api/products?q=keyboard&page=0');
+    assert.equal(calls[1].url, '/api/stores/2/availability?variantId=7');
+    assert.equal(calls[1].headers.has('Authorization'), false);
+});
+
+test('media keeps FormData boundary and server publicId/secureUrl', async () => {
+    const { api, responses, calls } = setup();
+    responses.push({ status: 201, data: { secureUrl: 'https://images.example.test/a.png', publicId: 'test-image-id' } });
+    const file = new Blob(['test-only-image'], { type: 'image/png' });
+    const result = await api.Admin.upload(3, file);
+    assert.equal(result.publicId, 'test-image-id');
+    assert.equal(calls[0].url, '/api/admin/products/3/images');
+    assert.ok(calls[0].body instanceof FormData);
+    assert.equal(calls[0].headers.has('Content-Type'), false);
+    assert.equal(calls[0].headers.get('Authorization'), 'Bearer test-only-token');
+});
+
+test('STOMP uses native WebSocket, JWT, resync and deduplicated envelopes', async () => {
+    const { context, api } = setup();
+    let destination, receive, headers, socketUrl, disconnected = false, synced = false;
+    const delivered = [];
+    context.WebSocket = class { constructor(url) { socketUrl = url; } close() {} };
+    context.Stomp = { over: ws => ({ ws, connect(value, ready) { headers = value; void ready(); }, subscribe(value, handler) { destination = value; receive = handler; }, disconnect() { disconnected = true; } }) };
+    const realtime = api.Realtime.start({ orderId: 8, resync: async () => { synced = true; }, onEvent: event => { assert.ok(synced); delivered.push(event); } });
+    await new Promise(resolve => setImmediate(resolve));
+    const event = { eventId: 'test-event', occurredAt: new Date().toISOString(), type: 'ORDER_STATUS_CHANGED', data: { orderId: 8, status: 'COMPLETED' } };
+    receive({ body: JSON.stringify(event) });
+    receive({ body: JSON.stringify(event) });
+    receive({ body: JSON.stringify({ ...event, eventId: 'other-order', data: { orderId: 9, status: 'COMPLETED' } }) });
+    assert.equal(socketUrl, 'wss://utegear.test/ws');
+    assert.equal(headers.Authorization, 'Bearer test-only-token');
+    assert.equal(destination, '/user/queue/orders');
+    assert.equal(delivered.length, 1);
+    realtime.stop();
+    assert.ok(disconnected);
+});

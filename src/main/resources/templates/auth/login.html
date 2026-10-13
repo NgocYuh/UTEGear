@@ -23,7 +23,8 @@
             </div>
 
             <!-- LOGIN FORM -->
-            <form th:action="@{/login}" method="post" class="auth-form">
+            <form th:action="@{/api/auth/login}" method="post" class="auth-form" data-auth="login">
+                <p data-auth-status role="status" aria-live="polite"></p>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email tài khoản <span class="required-star">*</span></label>
                     <div class="input-group">

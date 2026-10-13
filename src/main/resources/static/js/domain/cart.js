@@ -1,51 +1,36 @@
-/**
- * UTEGear Standard Cart Module
- * Single clean implementation of Cart operations.
- */
 window.UTEGear = window.UTEGear || {};
-
 UTEGear.Cart = {
-    async add({ productId, variantId = null, quantity = 1 }) {
-        if (!productId) {
-            UTEGear.Toast.show('Vui lòng chọn sản phẩm', 'error');
-            return;
-        }
-
-        try {
-            const data = await UTEGear.API.post('/api/cart/add', {
-                productId: Number(productId),
-                variantId: variantId ? Number(variantId) : null,
-                quantity: Number(quantity) || 1
-            });
-
-            UTEGear.Toast.show('Đã thêm sản phẩm vào giỏ hàng', 'success');
-
-            // Update badge counts and trigger pulse animation
-            const countElements = document.querySelectorAll('#cartCount, .cart-count');
-            countElements.forEach(el => {
-                if (data.cartCount !== undefined) {
-                    el.textContent = data.cartCount;
-                    el.classList.add('pulse');
-                    setTimeout(() => el.classList.remove('pulse'), 400);
-                }
-            });
-        } catch (e) {
-            if (e.message !== 'UNAUTHORIZED') {
-                UTEGear.Toast.show(e.message || 'Không thể thêm vào giỏ hàng', 'error');
+    id(value) {
+        const id = Number(value);
+        if (!Number.isSafeInteger(id) || id < 1) throw new Error('ID không hợp lệ');
+        return id;
+    },
+    get() { return UTEGear.API.get('/api/cart'); },
+    async add({ productId, variantId, quantity = 1 }) {
+        const qty = Number(quantity);
+        if (!Number.isInteger(qty) || qty < 1) throw new Error('Số lượng phải là số nguyên dương');
+        let id = variantId;
+        if (id == null || id === '') {
+            const product = await UTEGear.API.get(`/api/products/${this.id(productId)}`, { public: true });
+            id = product.defaultVariantId;
+            if (!product.variants?.some(variant => variant.id === id && variant.isDefault)) {
+                throw new Error('Sản phẩm chưa có biến thể mặc định hợp lệ');
             }
         }
+        const cart = await UTEGear.API.post('/api/cart/items', { variantId: this.id(id), quantity: qty });
+        this.badges(cart);
+        return cart;
+    },
+    async update(itemId, quantity) {
+        const qty = Number(quantity);
+        if (!Number.isInteger(qty) || qty < 1) throw new Error('Số lượng phải là số nguyên dương');
+        const cart = await UTEGear.API.put(`/api/cart/items/${this.id(itemId)}`, { quantity: qty });
+        this.badges(cart);
+        return cart;
+    },
+    remove(itemId) { return UTEGear.API.delete(`/api/cart/items/${this.id(itemId)}`); },
+    clear() { return UTEGear.API.delete('/api/cart/items'); },
+    badges(cart) {
+        document.querySelectorAll('#cartCount, #mobileCartCount, .cart-count').forEach(el => { el.textContent = cart.itemCount; });
     }
-};
-
-// Global unified function bridge
-window.addToCart = function (productId, variantId, quantity) {
-    if (typeof productId === 'object') {
-        UTEGear.Cart.add(productId);
-    } else {
-        UTEGear.Cart.add({ productId, variantId, quantity: quantity || 1 });
-    }
-};
-
-window.quickAddToCart = function (productId) {
-    UTEGear.Cart.add({ productId, quantity: 1 });
 };
