@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Đăng nhập - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content" class="auth-section">
+    <div class="container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <span class="brand-icon"><i class="bi bi-controller"></i></span>
+                <h1>Đăng nhập tài khoản</h1>
+                <p>Đăng nhập để quản lý đơn hàng và trải nghiệm mua sắm</p>
+            </div>
+
+            <!-- ALERTS -->
+            <div class="alert alert-danger" th:if="${param.error}" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i> Email hoặc mật khẩu không chính xác!
+            </div>
+            <div class="alert alert-success" th:if="${param.logout}" role="alert">
+                <i class="bi bi-check-circle-fill me-1"></i> Bạn đã đăng xuất thành công.
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form th:action="@{/login}" method="post" class="auth-form">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email tài khoản <span class="required-star">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="name@domain.com" required autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label for="password" class="form-label mb-0">Mật khẩu <span class="required-star">*</span></label>
+                        <a href="/forgot-password" class="text-accent text-decoration-none fs-7 font-semibold">Quên mật khẩu?</a>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu của bạn" required autocomplete="current-password">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-utama btn-lg w-100">
+                    ĐĂNG NHẬP <i class="bi bi-box-arrow-in-right ms-1"></i>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p class="mb-2">Chưa có tài khoản UTEGear? <a href="/register">Đăng ký ngay</a></p>
+                <div class="auth-demo-credentials">
+                    <div><i class="bi bi-info-circle me-1 text-primary"></i> <strong>Tài khoản hệ thống demo:</strong></div>
+                    <div class="mt-1">Admin: <code>admin@utegear.vn</code> / <code>admin123</code></div>
+                    <div class="mt-1">Khách: <code>user@utegear.vn</code> / <code>user123</code></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
