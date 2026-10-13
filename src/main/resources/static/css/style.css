@@ -1,0 +1,20 @@
+/* =========================================================
+   UTEGEAR LEGACY CSS BRIDGE (STANDALONE FALLBACK)
+   Preserved for legacy direct-link compatibility without circular imports.
+   ========================================================= */
+
+/* Custom Page Utility Overrides & Legacy Compatibility Bridge */
+
+.text-muted {
+    color: var(--color-text-muted) !important;
+}
+
+.bg-light {
+    background-color: var(--color-bg-subtle) !important;
+}
+
+.brand-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}

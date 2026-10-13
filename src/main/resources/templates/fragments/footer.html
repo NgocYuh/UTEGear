@@ -1,23 +1,160 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <body>
-<footer th:fragment="footer" class="site-footer">
-  <div class="site-container ui-footer-grid">
-    <div>
-      <div class="footer-brand"><span class="brand-name">UTEGear</span></div>
-      <p class="footer-slogan">Gear up. Game on.</p>
-      <p class="footer-desc">Phụ kiện gaming và công nghệ dành cho góc làm việc của bạn.</p>
-    </div>
-    <nav aria-label="Liên kết cuối trang">
-      <h2 class="footer-col-title">Khám phá</h2>
-      <ul class="footer-links">
-        <li><a th:href="@{/products}">Sản phẩm</a></li>
-        <li><a th:href="@{/stores}">Hệ thống cửa hàng</a></li>
-        <li><a th:href="@{/contact}">Liên hệ</a></li>
-      </ul>
-    </nav>
-  </div>
-  <div class="footer-bottom"><div class="site-container">© UTEGear</div></div>
-</footer>
+
+<th:block th:fragment="footer">
+    <footer class="site-footer">
+
+        <!-- 1. Commerce Trust & Service Commitment Strip -->
+        <div class="footer-trust-strip">
+            <div class="container">
+                <div class="row g-3">
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="trust-item">
+                            <div class="trust-item-icon">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div class="trust-item-content">
+                                <h6>100% Chính Hãng</h6>
+                                <p>Cam kết sản phẩm chuẩn hãng, phân phối chính ngạch</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="trust-item">
+                            <div class="trust-item-icon">
+                                <i class="bi bi-truck"></i>
+                            </div>
+                            <div class="trust-item-content">
+                                <h6>Giao Hàng Toàn Quốc</h6>
+                                <p>Miễn phí đơn từ 500K, đóng gói chuyên nghiệp chống sốc</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="trust-item">
+                            <div class="trust-item-icon">
+                                <i class="bi bi-arrow-repeat"></i>
+                            </div>
+                            <div class="trust-item-content">
+                                <h6>Đổi Mới Trong 30 Ngày</h6>
+                                <p>Lỗi nhà sản xuất hỗ trợ 1 đổi 1 nhanh chóng</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="trust-item">
+                            <div class="trust-item-icon accent">
+                                <i class="bi bi-headset"></i>
+                            </div>
+                            <div class="trust-item-content">
+                                <h6>Tư Vấn Chuyên Sâu</h6>
+                                <p>Đội ngũ am hiểu gear hỗ trợ 08:00 - 22:00 hằng ngày</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Main Footer Navigation (Asymmetric column weighting) -->
+        <div class="footer-main-area">
+            <div class="container">
+                <div class="row g-4">
+
+                    <!-- Brand Column (Wider: 3.5 col) -->
+                    <div class="col-lg-4 col-md-6 footer-brand-col">
+                        <div class="footer-brand">
+                            <div class="brand-icon" aria-hidden="true">
+                                <i class="bi bi-controller"></i>
+                            </div>
+                            <span class="brand-name">UTE<span class="text-danger">Gear</span></span>
+                        </div>
+                        <p class="footer-slogan">Gear up. Game on.</p>
+                        <p class="footer-desc">
+                            Hệ thống bán lẻ phụ kiện gaming và thiết bị công nghệ chính hãng hàng đầu Việt Nam. Điểm đến tin cậy cho game thủ, lập trình viên và người yêu công nghệ.
+                        </p>
+                        <div class="social-icons" aria-label="Mạng xã hội UTEGear">
+                            <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                            <a href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+                            <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Category Quick Links (2 col) -->
+                    <div class="col-lg-2 col-sm-6 col-6">
+                        <div class="footer-col-title">Sản phẩm</div>
+                        <ul class="footer-links">
+                            <li><a href="/category/keyboard">Bàn phím cơ</a></li>
+                            <li><a href="/category/mouse">Chuột gaming</a></li>
+                            <li><a href="/category/headset">Tai nghe eSports</a></li>
+                            <li><a href="/category/connection-cables">Dây cáp &amp; Hub</a></li>
+                            <li><a href="/category/gamepad">Tay cầm chơi game</a></li>
+                            <li><a href="/products?onSale=true" class="text-danger fw-bold">Khuyến mãi HOT</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Policy Quick Links (2 col) -->
+                    <div class="col-lg-2 col-sm-6 col-6">
+                        <div class="footer-col-title">Chính sách</div>
+                        <ul class="footer-links">
+                            <li><a href="/contact">Chính sách bảo hành</a></li>
+                            <li><a href="/contact">Chính sách đổi trả</a></li>
+                            <li><a href="/contact">Chính sách vận chuyển</a></li>
+                            <li><a href="/contact">Chính sách bảo mật</a></li>
+                            <li><a href="/about">Giới thiệu UTEGear</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Store & Support Info (Wider: 4 col) -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-col-title">Hệ thống &amp; Liên hệ</div>
+                        <ul class="footer-contact-list">
+                            <li class="footer-contact-item">
+                                <i class="bi bi-telephone-fill"></i>
+                                <div>
+                                    <strong>Hotline mua hàng:</strong> 1900 1234 (08:00 - 22:00)
+                                </div>
+                            </li>
+                            <li class="footer-contact-item">
+                                <i class="bi bi-envelope-fill"></i>
+                                <div>
+                                    <strong>Email hỗ trợ:</strong> support@utegear.vn
+                                </div>
+                            </li>
+                            <li class="footer-contact-item">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <div>
+                                    <strong>Showroom chính:</strong> 01 Võ Văn Ngân, P. Linh Chiểu, TP. Thủ Đức, TP.HCM
+                                    <div class="mt-1"><a href="/stores" class="text-danger fw-bold" style="font-size: 0.8rem;">Xem tất cả showroom &rarr;</a></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Bottom Legal & Payment Bar -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="footer-bottom-layout">
+                    <div>
+                        <span>&copy; <span th:text="${#temporals.year(#temporals.createNow())}">2026</span> UTEGear Co., Ltd. Tất cả quyền được bảo lưu.</span>
+                    </div>
+                    <div class="footer-bottom-badges">
+                        <span><i class="bi bi-shield-lock-fill"></i> Thanh toán an toàn SSL 256-bit</span>
+                        <span><i class="bi bi-check-circle-fill"></i> Đã thông báo Bộ Công Thương</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </footer>
+</th:block>
+
 </body>
 </html>
+

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<th:block th:fragment="header">
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <span class="topbar-slogan">
+                <i class="bi bi-lightning-charge-fill"></i>
+                UTEGear - Gear up. Game on. Miễn phí vận chuyển từ 500K!
+            </span>
+            <div class="topbar-links">
+                <a href="/stores"><i class="bi bi-geo-alt"></i> Hệ thống cửa hàng</a>
+                <a href="/contact"><i class="bi bi-headset"></i> Hỗ trợ</a>
+                <th:block th:if="${isAuthenticated}">
+                    <a href="/profile">
+                        <i class="bi bi-person-circle"></i>
+                        <span th:text="${currentUser != null ? currentUser.fullName : 'Tài khoản'}">Tài khoản</span>
+                    </a>
+                </th:block>
+                <th:block th:unless="${isAuthenticated}">
+                    <a href="/login"><i class="bi bi-box-arrow-in-right"></i> Đăng nhập</a>
+                    <a href="/register" class="topbar-register"><i class="bi bi-person-plus"></i> Đăng ký</a>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container">
+            <!-- LOGO -->
+            <a class="navbar-brand brand" href="/">
+                <span class="brand-icon"><i class="bi bi-controller"></i></span>
+                <span class="brand-text">
+                    <span class="brand-name">UTE<span class="brand-accent">Gear</span></span>
+                    <span class="brand-slogan">Gear up. Game on.</span>
+                </span>
+            </a>
+
+            <!-- MOBILE TOGGLER -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Chuyển đổi điều hướng">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- NAVIGATION & MEGA MENU -->
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}" th:classappend="${activePage == 'home'} ? 'active'">Trang chủ</a>
+                    </li>
+                    <li class="nav-item product-menu">
+                        <a class="nav-link product-menu-link" th:href="@{/products}" th:classappend="${activePage == 'products'} ? 'active'">
+                            Sản phẩm <i class="bi bi-chevron-down product-menu-arrow"></i>
+                        </a>
+                        <div class="product-mega-menu">
+                            <div class="mega-menu-inner">
+                                <div class="mega-menu-column">
+                                    <h6><i class="bi bi-keyboard"></i> Bàn phím</h6>
+                                    <a href="/category/keyboard">Tất cả bàn phím</a>
+                                    <a href="/category/keyboard?sort=price_asc">Bàn phím giá tốt</a>
+                                    <a href="/category/keycap">Keycap</a>
+                                    <a href="/category/switch">Switch</a>
+                                </div>
+                                <div class="mega-menu-column">
+                                    <h6><i class="bi bi-mouse"></i> Chuột</h6>
+                                    <a href="/category/mouse">Tất cả chuột</a>
+                                    <a href="/category/mouse?wireless=true">Chuột không dây</a>
+                                    <a href="/category/mousepad">Tấm lót chuột</a>
+                                </div>
+                                <div class="mega-menu-column">
+                                    <h6><i class="bi bi-headphones"></i> Tai nghe</h6>
+                                    <a href="/category/headset">Tất cả tai nghe</a>
+                                    <a href="/category/headset?wireless=true">Tai nghe không dây</a>
+                                    <a href="/category/microphone">Microphone</a>
+                                </div>
+                                <div class="mega-menu-column">
+                                    <h6><i class="bi bi-usb-plug"></i> Phụ kiện</h6>
+                                    <a href="/category/usb-c-cable">Cáp USB-C / HDMI</a>
+                                    <a href="/category/adapter">Adapter</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/products?onSale=true}">Khuyến mãi</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/stores}" th:classappend="${activePage == 'stores'} ? 'active'">Cửa hàng</a></li>
+                </ul>
+
+                <!-- SEARCH AUTOCOMPLETE FORM -->
+                <div class="search-form position-relative me-3">
+                    <form action="/search" method="get" class="d-flex" role="search">
+                        <input class="search-input form-control" type="search" name="q" placeholder="Tìm bàn phím, chuột..." aria-label="Tìm kiếm" autocomplete="off">
+                        <button type="submit" class="search-btn" aria-label="Tìm kiếm"><i class="bi bi-search"></i></button>
+                    </form>
+                </div>
+
+                <!-- ACTIONS BAR -->
+                <div class="navbar-actions d-flex align-items-center gap-2">
+                    <a href="/wishlist" class="action-btn" aria-label="Danh sách yêu thích" title="Yêu thích">
+                        <i class="bi bi-heart"></i>
+                        <span class="cart-count" th:if="${wishlistCount != null && wishlistCount > 0}" th:text="${wishlistCount}">0</span>
+                    </a>
+                    <a href="/cart" class="action-btn" aria-label="Giỏ hàng" title="Giỏ hàng">
+                        <i class="bi bi-cart3"></i>
+                        <span class="cart-count" id="cartCount" th:if="${cartCount != null && cartCount > 0}" th:text="${cartCount}">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</th:block>
+
+</body>
+</html>
