@@ -424,3 +424,31 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Push để review lượt 2; sau merge chuẩn bị lượt 3 các trang thông tin.
   - Thống nhất xử lý định dạng tài nguyên và tương thích trước khi xác nhận giao diện chạy đầy đủ.
 - Ngày hoàn tất: `Chưa hoàn tất`
+
+## FE-INFO-01: Các trang thông tin và lỗi
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/information-pages`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-13
+- Đã làm:
+  - Bổ sung nguyên ba template có sẵn: about.html, contact.html và error.html; không chỉnh sửa code nguồn.
+  - Tạo branch từ main abe524f, không thay Backend, dependency, layout hoặc API contract.
+  - Đối soát lượt 2: https://github.com/NgocYuh/UTEGear/pull/43 đã merge tại abe524f. Các giới hạn tương thích và lỗi định dạng tài nguyên vẫn chưa được xử lý.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 3/3 file khớp nguyên bản.
+  - `mvnw.cmd -B clean verify` với Java 21.0.7: `PASS`, 131 tests, 0 failure, 0 error, 0 skipped.
+  - `node --test tests/frontend/mock-data.test.mjs`: `PASS`, 4 tests; chỉ kiểm tra fixture loader.
+  - JavaScript: `PASS` cú pháp một handler onsubmit; giả lập xác minh form contact ngăn điều hướng, hiện alert và reset form. Ba template không có script inline riêng.
+  - `git diff --cached --check`: cảnh báo khoảng trắng cuối about.html:9,25; contact.html:9,25,37,42; error.html:11. Giữ nguyên nguồn theo yêu cầu.
+  - Kiểm tra mẫu credential trên ba file: không phát hiện private key, GitHub/AWS token hoặc mật khẩu demo đã biết.
+  - Không gọi API thật hoặc ghi dữ liệu trong kiểm thử; chưa kiểm tra HTML đã render, responsive hoặc accessibility.
+- Vướng mắc hoặc phần còn thiếu:
+  - Template dùng layout dialect của nguồn cũ; dependency/routing/render thực tế chưa được xác nhận tương thích.
+  - Form contact chỉ hiện thông báo và reset, không gửi dữ liệu tới server; chưa phải chức năng gửi yêu cầu hỗ trợ.
+  - error.html dùng model status/error/message; chưa kiểm tra trang lỗi thực tế của ứng dụng.
+  - Bản nguồn được bảo toàn theo yêu cầu; chưa xác nhận giao diện hoạt động hoàn chỉnh.
+- Bước tiếp theo:
+  - Push để review lượt 3; sau merge chuẩn bị phần auth còn thiếu của lượt 4.
+  - login.html cần xử lý mật khẩu demo theo quy tắc repository trước khi được phép commit; chưa được đưa vào lượt này.
+- Ngày hoàn tất: `Chưa hoàn tất`
