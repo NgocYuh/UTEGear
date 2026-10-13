@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Giới thiệu - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+    
+    <!-- BREADCRUMB -->
+    <div class="page-breadcrumb">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Về UTEGear</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- ABOUT SECTION -->
+    <section class="about-section section py-5">
+        <div class="container" style="max-width: 960px;">
+            
+            <!-- EDITORIAL HEADER -->
+            <div class="mb-5 pb-3 border-bottom">
+                <span class="text-uppercase text-danger font-bold fs-7 letter-spacing-1 d-block mb-1">Thương hiệu &amp; Sứ mệnh</span>
+                <h1 class="display-6 font-extrabold text-primary mb-3">Về Hệ thống UTEGear</h1>
+                <p class="lead text-muted" style="line-height: 1.6;">
+                    UTEGear là đơn vị chuyên phân phối linh kiện máy tính, thiết bị gaming gear và giải pháp công nghệ cao cấp chính hãng tại Việt Nam.
+                </p>
+            </div>
+
+            <!-- EDITORIAL BODY TEXT -->
+            <div class="editorial-content fs-6 text-dark mb-5" style="line-height: 1.8;">
+                <p>
+                    Được thành lập với mục tiêu mang đến cho cộng đồng game thủ, lập trình viên và những người sáng tạo nội dung những giải pháp phần cứng tối ưu nhất, <strong>UTEGear</strong> không ngừng mở rộng hợp tác với các thương hiệu công nghệ hàng đầu thế giới như Asus, MSI, Gigabyte, Corsair, Razer, Logitech, Kingston và nhiều đối tác uy tín khác.
+                </p>
+                <p>
+                    Chúng tôi thấu hiểu rằng mỗi dàn máy tính không chỉ là một công cụ làm việc hay giải trí, mà còn là người bạn đồng hành tin cậy trong từng dự án và trận đấu. Do đó, tất cả sản phẩm tại UTEGear đều trải qua quy trình kiểm định nguồn gốc xuất xứ nghiêm ngặt, đảm bảo 100% linh kiện chính hãng kèm chế độ bảo hành chuyên nghiệp.
+                </p>
+            </div>
+
+            <!-- CORE COMMITMENTS (EDITORIAL BLOCKS) -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="p-4 bg-white rounded border h-100" style="box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                        <i class="bi bi-shield-check fs-2 text-primary mb-3 d-block"></i>
+                        <h2 class="h5 font-extrabold text-primary mb-2">100% Hàng chính hãng</h2>
+                        <p class="text-muted fs-7 mb-0">Cam kết đầy đủ tem nhãn, hóa đơn VAT và chế độ bảo hành chính thức từ các nhà phân phối tại Việt Nam.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 bg-white rounded border h-100" style="box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                        <i class="bi bi-tools fs-2 text-primary mb-3 d-block"></i>
+                        <h2 class="h5 font-extrabold text-primary mb-2">Hỗ trợ kỹ thuật chuyên sâu</h2>
+                        <p class="text-muted fs-7 mb-0">Đội ngũ chuyên viên am hiểu phần cứng sẵn sàng tư vấn tối ưu hiệu năng cấu hình theo đúng ngân sách của bạn.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 bg-white rounded border h-100" style="box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                        <i class="bi bi-truck fs-2 text-primary mb-3 d-block"></i>
+                        <h2 class="h5 font-extrabold text-primary mb-2">Giao nhận &amp; Hậu mãi nhanh</h2>
+                        <p class="text-muted fs-7 mb-0">Giao hàng toàn quốc, đổi mới trong 7 ngày đối với lỗi nhà sản xuất và hỗ trợ bảo hành tận nơi thuận tiện.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-light rounded border text-center">
+                <h3 class="h5 font-extrabold text-primary mb-2">Sẵn sàng nâng cấp không gian làm việc &amp; gaming của bạn?</h3>
+                <p class="text-muted fs-7 mb-3">Khám phá ngay danh mục hàng ngàn sản phẩm linh kiện và phụ kiện mới nhất.</p>
+                <a href="/products" class="btn btn-utama">
+                    <i class="bi bi-cart3 me-1"></i> Khám phá sản phẩm
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>

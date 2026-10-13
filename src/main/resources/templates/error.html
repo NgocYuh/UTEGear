@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Lỗi truy cập - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content">
+    <div class="error-page section py-5">
+        <div class="container text-center">
+            
+            <div class="cart-empty-box mx-auto my-5" style="max-width: 540px;">
+                <div class="cart-empty-icon" style="background-color: #FEF2F2; color: #DC2626;">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <h1 class="display-4 font-extrabold text-primary mb-2" th:text="${status} ?: '404'">404</h1>
+                <h2 class="h4 font-extrabold text-primary mb-2" th:text="${error} ?: 'Không tìm thấy trang yêu cầu'">Không tìm thấy trang</h2>
+                <p class="cart-empty-desc mb-4" th:text="${message} ?: 'Địa chỉ trang bạn vừa truy cập không tồn tại hoặc đã được chuyển sang đường dẫn khác.'">
+                    Trang bạn yêu cầu không tồn tại hoặc đã bị di chuyển.
+                </p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="/" class="btn btn-utama">
+                        <i class="bi bi-house me-1"></i> Quay về Trang chủ
+                    </a>
+                    <a href="/products" class="btn btn-outline-secondary">
+                        <i class="bi bi-cart3 me-1"></i> Xem danh mục sản phẩm
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
