@@ -1012,13 +1012,13 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | DATA-02 | BE | `feat/product-data-import` | DONE | [PR #27](https://github.com/NgocYuh/UTEGear/pull/27) | 2026-10-12 |
 | CART-01 | BE | `feat/shopping-cart-domain` | DONE | [PR #28](https://github.com/NgocYuh/UTEGear/pull/28) | 2026-10-12 |
 | CART-02 | BE | `feat/cart-api` | DONE | [PR #29](https://github.com/NgocYuh/UTEGear/pull/29) | 2026-10-12 |
-| WISH-01 | BE | Xem backlog | TODO |  |  |
+| WISH-01 | BE | `feat/wishlist` | IN REVIEW | Chưa mở |  |
 | ORD-01 | BE | `feat/address-coupon-domain` | DONE | [PR #30](https://github.com/NgocYuh/UTEGear/pull/30) | 2026-10-12 |
 | ORD-02 | BE | `feat/order-payment-domain` | DONE | [PR #31](https://github.com/NgocYuh/UTEGear/pull/31) | 2026-10-12 |
 | ORD-03 | BE | `feat/checkout-service` | DONE | [PR #32](https://github.com/NgocYuh/UTEGear/pull/32) | 2026-10-12 |
 | ORD-04 | BE | `feat/admin-order-management` | DONE | [PR #35](https://github.com/NgocYuh/UTEGear/pull/35) | 2026-10-12 |
-| WS-01 | BE | `feat/order-notifications` | IN REVIEW | Chưa mở |  |
-| WS-02 | BE | `feat/order-notifications` | IN REVIEW | Chung PR với WS-01, chưa mở |  |
+| WS-01 | BE | `feat/order-notifications` | DONE | [PR #37](https://github.com/NgocYuh/UTEGear/pull/37) | 2026-10-12 |
+| WS-02 | BE | `feat/order-notifications` | DONE | [PR #37](https://github.com/NgocYuh/UTEGear/pull/37) | 2026-10-12 |
 | UI-01…03 và các task `FE-*` | FE | Xem backlog | TODO |  |  |
 | INT-01…03 | FE, BE review contract | Xem backlog | TODO |  |  |
 | QA-01…03 | BE | Xem backlog | TODO |  |  |
