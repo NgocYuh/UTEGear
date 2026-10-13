@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#f1f5f9"/>
+  <rect x="2" y="2" width="396" height="396" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8,8" rx="12"/>
+  <g transform="translate(136, 120)" opacity="0.45">
+    <!-- Gaming Controller Placeholder Icon -->
+    <path d="M 16,30 C 16,10 32,4 64,4 C 96,4 112,10 112,30 C 112,54 96,84 83,84 C 76,84 70,75 64,75 C 58,75 52,84 45,84 C 32,84 16,54 16,30 Z" fill="#082b66" />
+    <path d="M 36,24 L 42,24 L 42,18 L 48,18 L 48,24 L 54,24 L 54,30 L 48,30 L 48,36 L 42,36 L 42,30 L 36,30 Z" fill="#ffffff" />
+    <circle cx="82" cy="21" r="5" fill="#ffffff" />
+    <circle cx="92" cy="29" r="5" fill="#ffffff" />
+    <circle cx="72" cy="29" r="5" fill="#ffffff" />
+    <circle cx="82" cy="37" r="5" fill="#ffffff" />
+  </g>
+  <text x="200" y="255" text-anchor="middle" font-family="'Be Vietnam Pro', system-ui, sans-serif" font-weight="700" font-size="18" fill="#64748b">UTEGear</text>
+  <text x="200" y="280" text-anchor="middle" font-family="'Be Vietnam Pro', system-ui, sans-serif" font-weight="500" font-size="13" fill="#94a3b8">Hình ảnh sản phẩm</text>
+</svg>
