@@ -797,6 +797,8 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Kết quả kiểm thử:
   - `PostgresqlMigrationRepositoryTest`: phát hiện 3 test, `SKIPPED` cả 3 vì Docker daemon local không chạy; không có test PostgreSQL nào được báo `PASS` giả.
   - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `BUILD SUCCESS` với 163 test được phát hiện, 160 pass và 3 PostgreSQL test bị skip do không có Docker.
+  - Backend CI sau merge PR #48: `FAIL`; Spring ApplicationContext của ba test PostgreSQL không khởi động vì test chưa dùng profile `test` và chưa ghi đè H2 driver sang PostgreSQL.
+  - Hotfix `fix/qa02-postgresql-context`: bật profile `test` để dùng credential giả an toàn và ghi đè driver thành `org.postgresql.Driver`; chờ CI xác nhận PostgreSQL thật.
 - Vướng mắc hoặc phần còn thiếu:
   - Cần GitHub Actions hoặc máy có Docker để xác nhận 3 test PostgreSQL thật sự `PASS`.
 - Bước tiếp theo:
