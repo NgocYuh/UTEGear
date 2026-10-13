@@ -312,3 +312,29 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Push branch sau kiểm tra và mở PR riêng; review UI-02 trước khi tích hợp phần giao diện dùng chung.
   - Thống nhất xử lý model/API/mock trước khi hoàn tất task.
 - Ngày hoàn tất: `Chưa hoàn tất`
+
+## INT-01: Nguồn hỗ trợ API và tìm kiếm sản phẩm
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/integrate-auth-catalog-store`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-13
+- Đã làm:
+  - Chuẩn bị nguyên ba file có sẵn: core/api.js, core/utils.js và components/autocomplete.js.
+  - Tạo branch từ main `ae95070`; giữ nguyên code nguồn, không thay layout, Backend, dependency hoặc contract.
+  - Đối soát main: UI-02 đã merge qua https://github.com/NgocYuh/UTEGear/pull/38 (ae95070), UI-03 qua https://github.com/NgocYuh/UTEGear/pull/39 (8fc2437). Phần nguồn đã merge nhưng các giới hạn tương thích còn nguyên; chưa xác nhận hai task hoàn tất.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 3/3 file khớp nguyên bản.
+  - `mvnw.cmd -B clean verify` với Java 21.0.7: `PASS`, 131 tests, 0 failure, 0 error, 0 skipped.
+  - `git diff --cached --check`: `PASS`.
+  - JavaScript: `PASS` cú pháp 3 file và kiểm tra bằng fetch giả lập cho GET/POST/DELETE, lỗi 400, 401 và redirect, JSON không hợp lệ, lỗi mạng và định dạng giá.
+  - Không kết nối API thật hoặc ghi dữ liệu trong kiểm thử; kiểm tra trên chưa chứng minh tích hợp hoạt động.
+- Vướng mắc hoặc phần còn thiếu:
+  - Layout hiện tại chưa nạp các script mới; chưa có lời gọi API auth/profile/store trong ba file này.
+  - Autocomplete dùng keyword thay vì q; price/imageUrl khác basePrice/effectivePrice/primaryImage trong contract hiện tại.
+  - API wrapper chưa tự gửi JWT; chưa kiểm thử đầy đủ loading/empty/error, bàn phím hoặc tích hợp với backend.
+  - Đây là phần nguồn hỗ trợ API và tìm kiếm, chưa hoàn tất phạm vi INT-01; giữ nguyên nguồn theo yêu cầu.
+- Bước tiếp theo:
+  - Push branch sau khi build pass, mở PR để review phần nguồn.
+  - Thống nhất xử lý tương thích và các luồng auth/catalog/store trước khi hoàn tất task.
+- Ngày hoàn tất: `Chưa hoàn tất`
