@@ -452,3 +452,31 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Push để review lượt 3; sau merge chuẩn bị phần auth còn thiếu của lượt 4.
   - login.html cần xử lý mật khẩu demo theo quy tắc repository trước khi được phép commit; chưa được đưa vào lượt này.
 - Ngày hoàn tất: `Chưa hoàn tất`
+
+## FE-AUTH-RESTORE-01: Các trang auth còn thiếu
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/remaining-auth-pages`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-13
+- Đã làm:
+  - Bổ sung nguyên login.html và forgot-password.html có sẵn, không sửa nội dung hai template.
+  - Giữ nguyên khối hiển thị tài khoản/mật khẩu demo trong login.html theo xác nhận trực tiếp của người dùng ngày 2026-10-13; đây là ngoại lệ do người dùng yêu cầu đối với quy tắc không commit mật khẩu. Chưa thử đăng nhập các tài khoản này.
+  - Tạo branch từ main 0762605; không thay Backend, dependency, layout hoặc contract.
+  - Đối soát lượt 3: https://github.com/NgocYuh/UTEGear/pull/45 đã merge tại 0762605. Các giới hạn render/tích hợp vẫn chưa được xử lý.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 2/2 file khớp nguyên bản.
+  - `mvnw.cmd -B clean verify` với Java 21.0.7, đủ hai template: `PASS`, 142 tests, 0 failure, 0 error, 0 skipped.
+  - `git diff --cached --check`: `PASS`.
+  - `node --test tests/frontend/mock-data.test.mjs`: `PASS`, 4 tests; chỉ kiểm tra fixture loader.
+  - Template tĩnh: `PASS`, POST target, liên kết, label/type/name/required/autocomplete của email/password, trạng thái login error/logout và khối demo được giữ nguyên.
+  - Không gọi API, gửi yêu cầu khôi phục hoặc thử tài khoản demo; chưa kiểm tra HTML đã render và hành vi trình duyệt.
+- Vướng mắc hoặc phần còn thiếu:
+  - Login dùng POST /login theo nguồn cũ, khác API JWT POST /api/auth/login của Backend hiện tại.
+  - Forgot-password dùng POST /forgot-password; chưa thấy endpoint xử lý khôi phục mật khẩu trên main.
+  - Cả hai trang dùng layout dialect cũ; chưa xác nhận routing/render, responsive hoặc accessibility.
+  - Hoàn tất việc đưa nguồn của lượt 4 lên để review không đồng nghĩa auth hoặc INT-01 đã hoạt động hoàn chỉnh.
+- Bước tiếp theo:
+  - Push để review lượt 4; đối chiếu lại nguồn frontend sau merge.
+  - Thống nhất xử lý routing, dependency và API trước khi xác nhận tích hợp DONE.
+- Ngày hoàn tất: `Chưa hoàn tất`
