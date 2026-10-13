@@ -1,7 +1,74 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <body>
-<!-- Client renders from the ProductPage DTO; no custom server-side model required. -->
-<nav th:fragment="pagination" data-pagination aria-label="Phân trang" hidden></nav>
+
+<nav th:fragment="pagination(result, basePath, query)"
+     class="pagination-nav" aria-label="Phân trang"
+     th:if="${result != null && result.totalPages > 1}">
+    <ul class="pagination justify-content-center align-items-center gap-1">
+        <!-- Previous Page Link -->
+        <li class="page-item" th:classappend="${result.first} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{${basePath != null ? basePath : '/products'}(
+                            page=${result.number - 1},
+                            sub=${selectedSub != null ? selectedSub : param.sub},
+                            categoryId=${selectedCategoryId != null ? selectedCategoryId : param.categoryId},
+                            brandId=${selectedBrandId != null ? selectedBrandId : param.brandId},
+                            minPrice=${selectedMinPrice != null ? selectedMinPrice : param.minPrice},
+                            maxPrice=${selectedMaxPrice != null ? selectedMaxPrice : param.maxPrice},
+                            minRating=${selectedMinRating != null ? selectedMinRating : param.minRating},
+                            inStock=${selectedInStock != null ? selectedInStock : param.inStock},
+                            onSale=${selectedOnSale != null ? selectedOnSale : param.onSale},
+                            sort=${sort != null ? sort : param.sort},
+                            q=${keyword != null ? keyword : param.q}
+                        )}"
+               aria-label="Trang trước">
+                <i class="bi bi-chevron-left"></i>
+            </a>
+        </li>
+
+        <!-- Page Numbers -->
+        <li class="page-item" th:each="i : ${#numbers.sequence(0, result.totalPages - 1)}"
+            th:classappend="${i == result.number} ? 'active'">
+            <a class="page-link"
+               th:href="@{${basePath != null ? basePath : '/products'}(
+                            page=${i},
+                            sub=${selectedSub != null ? selectedSub : param.sub},
+                            categoryId=${selectedCategoryId != null ? selectedCategoryId : param.categoryId},
+                            brandId=${selectedBrandId != null ? selectedBrandId : param.brandId},
+                            minPrice=${selectedMinPrice != null ? selectedMinPrice : param.minPrice},
+                            maxPrice=${selectedMaxPrice != null ? selectedMaxPrice : param.maxPrice},
+                            minRating=${selectedMinRating != null ? selectedMinRating : param.minRating},
+                            inStock=${selectedInStock != null ? selectedInStock : param.inStock},
+                            onSale=${selectedOnSale != null ? selectedOnSale : param.onSale},
+                            sort=${sort != null ? sort : param.sort},
+                            q=${keyword != null ? keyword : param.q}
+                        )}"
+               th:text="${i + 1}">1</a>
+        </li>
+
+        <!-- Next Page Link -->
+        <li class="page-item" th:classappend="${result.last} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{${basePath != null ? basePath : '/products'}(
+                            page=${result.number + 1},
+                            sub=${selectedSub != null ? selectedSub : param.sub},
+                            categoryId=${selectedCategoryId != null ? selectedCategoryId : param.categoryId},
+                            brandId=${selectedBrandId != null ? selectedBrandId : param.brandId},
+                            minPrice=${selectedMinPrice != null ? selectedMinPrice : param.minPrice},
+                            maxPrice=${selectedMaxPrice != null ? selectedMaxPrice : param.maxPrice},
+                            minRating=${selectedMinRating != null ? selectedMinRating : param.minRating},
+                            inStock=${selectedInStock != null ? selectedInStock : param.inStock},
+                            onSale=${selectedOnSale != null ? selectedOnSale : param.onSale},
+                            sort=${sort != null ? sort : param.sort},
+                            q=${keyword != null ? keyword : param.q}
+                        )}"
+               aria-label="Trang sau">
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </li>
+    </ul>
+</nav>
+
 </body>
 </html>

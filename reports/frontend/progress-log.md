@@ -366,3 +366,33 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Push branch sau khi build pass, mở PR để review phần nguồn.
   - Thống nhất xử lý tương thích, an toàn hiển thị và luồng checkout/order trước khi hoàn tất task.
 - Ngày hoàn tất: `Chưa hoàn tất`
+
+## FE-RESTORE-01: Khôi phục bộ khung giao diện và bổ sung fragment
+
+- Trạng thái: `BLOCKED`
+- Branch: `fix/restore-frontend-shell`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-13
+- Đã làm:
+  - Khôi phục nguyên tám file nguồn: css/app.css, js/app.js, js/components/toast.js, layouts/main.html và fragments/header.html, footer.html, pagination.html, toastArea.html.
+  - Bổ sung nguyên bảy file còn thiếu: css/style.css, fragments/alerts.html, fragments/global/header.html, footer.html, toastArea.html và fragments/product/product-card.html, product-specs.html.
+  - Tạo branch từ main 1ee539b; giữ nguyên nội dung nguồn, không thay Backend, dependency hoặc contract.
+  - Layout khôi phục tham chiếu các module JavaScript đã push trước đó; app.css khôi phục danh sách CSS component và CSS từng trang.
+  - Đối soát: PR #40 đã merge tại 1ee539b và PR #41 tại ddea4a4; phạm vi tích hợp INT-01/INT-02 vẫn chưa hoàn tất.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, 15/15 file khớp nguyên bản.
+  - `mvnw.cmd -B clean verify` với Java 21.0.7: `PASS`, 131 tests, 0 failure, 0 error, 0 skipped.
+  - JavaScript: `PASS` cú pháp 2 file JS và 2 script inline; khởi tạo autocomplete/filter, delegation cart/wishlist/quick view, toast escaping/bridge/timer bằng DOM/module giả lập.
+  - `node --test tests/frontend/mock-data.test.mjs`: `PASS`, 4 tests; chỉ xác minh fixture loader, không kiểm tra layout đã render.
+  - `git diff --cached --check`: cảnh báo dòng trống cuối footer.html/product-card.html và khoảng trắng cuối main.html:8; giữ nguyên nguồn theo yêu cầu.
+  - Kiểm tra mẫu credential trên 15 file: không phát hiện private key, GitHub/AWS token hoặc mật khẩu demo đã biết.
+  - Không kết nối API thật hoặc ghi dữ liệu trong kiểm thử; build và giả lập chưa chứng minh giao diện render hoặc tích hợp hoạt động.
+- Vướng mắc hoặc phần còn thiếu:
+  - Layout gốc cần Thymeleaf layout dialect; header/fragment dùng model, helper và security expression cũ chưa xác nhận tương thích với Backend hiện tại.
+  - home.css, favicon và ảnh dự phòng/banner nằm trong lượt 2, chưa có đủ trong branch này.
+  - Chưa kiểm tra render, responsive, bàn phím hoặc accessibility; bản khôi phục thay thế phần hỗ trợ menu/toast của UI-01 đã viết lại trước đó.
+  - Giữ nguyên source theo phạm vi được duyệt; chưa xác nhận ứng dụng frontend hoàn chỉnh hoặc các task tích hợp DONE.
+- Bước tiếp theo:
+  - Push để review lượt 1; sau khi merge chuẩn bị lượt 2 trang chủ và tài nguyên giao diện.
+  - Đối chiếu dependency/model/API và kiểm thử giao diện thực tế trước khi xác nhận hoàn tất tích hợp.
+- Ngày hoàn tất: `Chưa hoàn tất`

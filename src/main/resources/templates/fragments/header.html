@@ -1,32 +1,394 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <body>
-<header th:fragment="header" class="main-navbar">
-  <div class="site-container">
-    <div class="header-primary-row ui-header-row">
-      <a class="brand" th:href="@{/}" aria-label="UTEGear — Trang chủ">
-        <span class="brand-text"><span class="brand-name">UTE<span class="brand-accent">Gear</span></span>
-        <span class="brand-slogan">Gear up. Game on.</span></span>
-      </a>
-      <form class="ui-search" th:action="@{/search}" method="get" role="search">
-        <label class="sr-only" for="header-search">Tìm kiếm sản phẩm</label>
-        <div class="search-input-group">
-          <input id="header-search" class="search-input" type="search" name="q" placeholder="Tìm phụ kiện gaming…" maxlength="200">
-          <button class="search-submit-btn" type="submit">Tìm</button>
+
+<th:block th:fragment="header">
+
+    <!-- =====================================================
+         1. TOP UTILITY BAR (Secondary trust and quick links)
+         ===================================================== -->
+    <div class="topbar d-none d-md-block">
+        <div class="container d-flex justify-content-between align-items-center">
+
+            <div class="topbar-slogan">
+                <span class="slogan-tag">Official</span>
+                <span>UTEGear &mdash; Phụ kiện gaming &amp; công nghệ chính hãng. Miễn phí vận chuyển từ 500K!</span>
+            </div>
+
+            <div class="topbar-links">
+                <a href="/stores">
+                    <i class="bi bi-geo-alt"></i>
+                    <span>Hệ thống cửa hàng</span>
+                </a>
+
+                <a href="/contact">
+                    <i class="bi bi-headset"></i>
+                    <span>Hỗ trợ khách hàng</span>
+                </a>
+
+                <span class="topbar-divider" aria-hidden="true"></span>
+
+                <th:block th:if="${isAuthenticated}">
+                    <a href="/profile">
+                        <i class="bi bi-person-check-fill text-success"></i>
+                        <span th:text="${currentUser != null ? currentUser.fullName : 'Tài khoản'}">Tài khoản</span>
+                    </a>
+                    <a th:if="${currentUser != null && currentUser.isAdmin()}" href="/admin" class="ms-2" style="background: rgba(226, 27, 35, 0.15); color: #F87171; padding: 2px 8px; border-radius: 3px; font-weight: 700; text-decoration: none;">
+                        <i class="bi bi-speedometer2 me-1"></i> Trang Quản Trị
+                    </a>
+                </th:block>
+
+                <th:block th:unless="${isAuthenticated}">
+                    <a href="/login">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <span>Đăng nhập</span>
+                    </a>
+                    <a href="/register" class="topbar-register">
+                        <i class="bi bi-person-plus"></i>
+                        <span>Đăng ký</span>
+                    </a>
+                </th:block>
+            </div>
+
         </div>
-      </form>
-      <a class="header-action-item" th:href="@{/login}" data-account-link>Đăng nhập</a>
-      <button class="btn-ghost-ute ui-menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation" data-menu-toggle>Menu</button>
     </div>
-    <nav id="site-navigation" class="ui-navigation" aria-label="Điều hướng chính">
-      <ul class="ui-nav-links">
-        <li><a th:href="@{/products}">Sản phẩm</a></li>
-        <li><a th:href="@{/stores}">Cửa hàng</a></li>
-        <li><a th:href="@{/wishlist}">Yêu thích</a></li>
-        <li><a th:href="@{/cart}">Giỏ hàng</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+
+    <!-- =====================================================
+         2. MAIN COMMERCIAL HEADER ROW (Logo, Large Search, Actions)
+         ===================================================== -->
+    <header class="main-navbar">
+        <div class="container">
+            <div class="header-primary-row">
+
+                <!-- Brand / Logo -->
+                <a class="brand" href="/" aria-label="UTEGear Trang chủ">
+                    <div class="brand-icon" aria-hidden="true">
+                        <i class="bi bi-controller"></i>
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-name">UTE<span class="brand-accent">Gear</span></span>
+                        <span class="brand-slogan">Gear up. Game on.</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Search Region (Asymmetrical prominence, keyboard shortcut) -->
+                <div class="header-search-region d-none d-lg-block">
+                    <form class="header-search-form" action="/search" method="get" role="search">
+                        <div class="search-input-group">
+                            <span class="search-category-badge">
+                                <i class="bi bi-grid-fill"></i>
+                                <span>Tất cả</span>
+                            </span>
+                            <input class="search-input" type="search" name="q"
+                                   th:value="${keyword}"
+                                   placeholder="Tìm bàn phím cơ, chuột không dây, tai nghe eSports..."
+                                   aria-label="Tìm kiếm sản phẩm" autocomplete="off">
+                            <span class="search-shortcut-hint" aria-hidden="true" title="Phím tắt: nhấn '/' để tìm kiếm">
+                                <kbd>/</kbd>
+                            </span>
+                            <button type="submit" class="search-submit-btn" aria-label="Tìm kiếm">
+                                <i class="bi bi-search"></i>
+                                <span>Tìm kiếm</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Commercial Header Actions (Account, Wishlist, Cart) -->
+                <div class="header-actions-group">
+
+                    <!-- Account Action (Desktop) -->
+                    <a th:href="${isAuthenticated ? '/profile' : '/login'}" class="header-action-item d-none d-sm-inline-flex"
+                       th:aria-label="${isAuthenticated ? 'Trang cá nhân' : 'Đăng nhập tài khoản'}">
+                        <div class="header-action-icon">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <div class="header-action-text">
+                            <span class="header-action-label" th:text="${isAuthenticated ? 'Xin chào' : 'Tài khoản'}">Tài khoản</span>
+                            <span class="header-action-title"
+                                  th:text="${isAuthenticated && currentUser != null ? currentUser.fullName : 'Đăng nhập'}">Đăng nhập</span>
+                        </div>
+                    </a>
+
+                    <!-- Admin Operations Center Quick Entry (Admin Only) -->
+                    <a th:if="${isAuthenticated && currentUser != null && currentUser.isAdmin()}"
+                       href="/admin" class="header-action-item d-none d-sm-inline-flex" style="background: rgba(6, 26, 61, 0.05); border: 1px solid rgba(6, 26, 61, 0.15);"
+                       aria-label="Khu vực quản trị" title="Khu vực quản trị UTEGear">
+                        <div class="header-action-icon" style="color: var(--color-primary);">
+                            <i class="bi bi-shield-lock-fill"></i>
+                        </div>
+                        <div class="header-action-text">
+                            <span class="header-action-label" style="color: var(--color-accent); font-weight: 700;">Hệ thống</span>
+                            <span class="header-action-title">Quản trị</span>
+                        </div>
+                    </a>
+
+                    <!-- Wishlist Action -->
+                    <a href="/wishlist" class="header-action-item" aria-label="Danh sách yêu thích" title="Danh sách yêu thích">
+                        <div class="header-action-icon">
+                            <i class="bi bi-heart"></i>
+                            <span class="action-count-badge" id="wishlistCount"
+                                  th:if="${wishlistCount != null && wishlistCount > 0}"
+                                  th:text="${wishlistCount}">0</span>
+                        </div>
+                        <div class="header-action-text d-none d-xl-flex">
+                            <span class="header-action-label">Yêu thích</span>
+                            <span class="header-action-title">Bộ sưu tập</span>
+                        </div>
+                    </a>
+
+                    <!-- Cart Action (Higher Transactional Prominence) -->
+                    <a href="/cart" class="header-action-item cart-action-item" aria-label="Giỏ hàng" title="Giỏ hàng mua sắm">
+                        <div class="header-action-icon">
+                            <i class="bi bi-cart3"></i>
+                            <span class="action-count-badge" id="cartCount"
+                                  th:if="${cartCount != null && cartCount > 0}"
+                                  th:text="${cartCount}">0</span>
+                        </div>
+                        <div class="header-action-text d-none d-sm-flex">
+                            <span class="header-action-label">Giỏ hàng</span>
+                            <span class="header-action-title">Thanh toán</span>
+                        </div>
+                    </a>
+
+                    <!-- Mobile Drawer Toggler (< 992px) -->
+                    <button class="btn btn-ghost d-lg-none p-2 ms-1" type="button"
+                            data-bs-toggle="offcanvas" data-bs-target="#mobileNavDrawer"
+                            aria-controls="mobileNavDrawer" aria-label="Mở danh mục menu">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- =====================================================
+             3. SECONDARY CATEGORY NAVIGATION ROW (Desktop Only)
+             ===================================================== -->
+        <div class="header-nav-row d-none d-lg-block">
+            <div class="container nav-bar-container">
+
+                <ul class="primary-category-nav">
+                    <!-- Products Catalog Button with Mega Menu -->
+                    <li class="nav-item product-menu">
+                        <a class="nav-link all-products-link" th:href="@{/products}"
+                           th:classappend="${activePage == 'products'} ? 'active'">
+                            <i class="bi bi-grid-3x3-gap-fill"></i>
+                            <span>Danh mục sản phẩm</span>
+                            <i class="bi bi-chevron-down ms-1" style="font-size: 0.7rem;"></i>
+                        </a>
+
+                        <!-- ASYMMETRICAL EDITORIAL MEGA MENU -->
+                        <div class="product-mega-menu">
+                            <div class="container">
+                                <div class="mega-menu-grid">
+
+                                    <!-- Col 1: Keyboards -->
+                                    <div class="mega-menu-col">
+                                        <div class="mega-menu-col-header">
+                                            <i class="bi bi-keyboard"></i>
+                                            <span>Bàn phím cơ</span>
+                                        </div>
+                                        <ul class="mega-menu-links">
+                                            <li><a href="/category/keyboard">Tất cả bàn phím</a></li>
+                                            <li><a href="/category/keyboard?sort=price_asc">Bàn phím phổ thông</a></li>
+                                            <li><a href="/category/keycap" class="sub-item">Keycap custom</a></li>
+                                            <li><a href="/category/switch" class="sub-item">Switch cơ học</a></li>
+                                            <li><a href="/category/keyboard?wireless=true">Bàn phím không dây</a></li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Col 2: Mouse & Mousepad -->
+                                    <div class="mega-menu-col">
+                                        <div class="mega-menu-col-header">
+                                            <i class="bi bi-mouse"></i>
+                                            <span>Chuột gaming</span>
+                                        </div>
+                                        <ul class="mega-menu-links">
+                                            <li><a href="/category/mouse">Tất cả chuột gaming</a></li>
+                                            <li><a href="/category/mouse?wireless=true">Chuột không dây eSports</a></li>
+                                            <li><a href="/category/mousepad">Lót chuột Speed / Control</a></li>
+                                            <li><a href="/category/mouse?sort=price_asc">Chuột công thái học</a></li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Col 3: Audio & Headset -->
+                                    <div class="mega-menu-col">
+                                        <div class="mega-menu-col-header">
+                                            <i class="bi bi-headphones"></i>
+                                            <span>Âm thanh gaming</span>
+                                        </div>
+                                        <ul class="mega-menu-links">
+                                            <li><a href="/category/headset">Tai nghe gaming 7.1</a></li>
+                                            <li><a href="/category/headset?wireless=true">Tai nghe không dây</a></li>
+                                            <li><a href="/category/microphone">Microphone stream / podcast</a></li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Col 4: Cables & Accessories -->
+                                    <div class="mega-menu-col">
+                                        <div class="mega-menu-col-header">
+                                            <i class="bi bi-usb-plug"></i>
+                                            <span>Dây cáp &amp; Hub</span>
+                                        </div>
+                                        <ul class="mega-menu-links">
+                                            <li><a href="/category/connection-cables">Tất cả dây kết nối</a></li>
+                                            <li><a href="/category/connection-cables?sub=usb-hub" class="sub-item">Bộ chia USB Hub</a></li>
+                                            <li><a href="/category/connection-cables?sub=hdmi" class="sub-item">Cáp HDMI 2.1 4K/8K</a></li>
+                                            <li><a href="/category/connection-cables?sub=usb-c" class="sub-item">Cáp Type-C sạc &amp; data</a></li>
+                                            <li><a href="/category/connection-cables?sub=dp" class="sub-item">Cáp DisplayPort 1.4/2.0</a></li>
+                                            <li><a href="/category/gamepad">Tay cầm chơi game</a></li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Col 5: Editorial Highlight / Promo Card (Controlled Asymmetry) -->
+                                    <div class="mega-menu-col">
+                                        <div class="mega-menu-featured">
+                                            <span class="featured-badge">
+                                                <i class="bi bi-fire"></i> Ưu đãi đặc biệt
+                                            </span>
+                                            <h6 class="featured-title">Trang bị Gaming Chuẩn Pro</h6>
+                                            <p class="featured-desc">
+                                                Bảo hành chính hãng 1 đổi 1 trong 30 ngày. Đa dạng mẫu mã switch và switch hotswap cao cấp.
+                                            </p>
+                                            <a href="/products?onSale=true" class="featured-cta">
+                                                <span>Xem sản phẩm đang giảm giá</span>
+                                                <i class="bi bi-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/category/keyboard}">Bàn phím</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/category/mouse}">Chuột</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/category/headset}">Tai nghe</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/category/connection-cables}">Dây kết nối</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/category/gamepad}">Tay cầm</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-sale" th:href="@{/products?onSale=true}">
+                            <i class="bi bi-percent"></i>
+                            <span>Khuyến mãi</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="nav-secondary-badges">
+                    <a href="/stores" th:classappend="${activePage == 'stores'} ? 'text-primary fw-bold'">
+                        <i class="bi bi-shop"></i>
+                        <span>Showroom</span>
+                    </a>
+                    <a href="/about">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Bảo hành chính hãng</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </header>
+
+    <!-- =====================================================
+         4. MOBILE SEARCH ROW (< 992px)
+         ===================================================== -->
+    <div class="mobile-search-strip d-lg-none">
+        <div class="container">
+            <form action="/search" method="get" class="w-100" role="search">
+                <div class="search-input-group">
+                    <input class="search-input" type="search" name="q"
+                           th:value="${keyword}"
+                           placeholder="Tìm sản phẩm tại UTEGear..."
+                           aria-label="Tìm kiếm sản phẩm" autocomplete="off">
+                    <button type="submit" class="search-submit-btn" aria-label="Tìm kiếm">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         5. MOBILE NAVIGATION OFFCANVAS DRAWER (< 992px)
+         ===================================================== -->
+    <div class="offcanvas offcanvas-start mobile-nav-offcanvas d-lg-none" tabindex="-1" id="mobileNavDrawer"
+         aria-labelledby="mobileNavDrawerLabel">
+        <div class="offcanvas-header">
+            <div class="d-flex align-items-center gap-2">
+                <div class="brand-icon" style="width: 32px; height: 32px; font-size: 1rem;">
+                    <i class="bi bi-controller"></i>
+                </div>
+                <span class="fw-bold text-primary fs-6" id="mobileNavDrawerLabel">UTEGear Menu</span>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Đóng"></button>
+        </div>
+        <div class="offcanvas-body">
+
+            <!-- Mobile Auth Card -->
+            <div class="mobile-user-status">
+                <th:block th:if="${isAuthenticated}">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-person-circle fs-4 text-primary"></i>
+                        <div>
+                            <div class="fw-bold text-dark fs-7" th:text="${currentUser != null ? currentUser.fullName : 'Tài khoản'}">Người dùng</div>
+                            <small class="text-muted fs-8" th:text="${currentUser != null ? currentUser.email : ''}">user@email.com</small>
+                        </div>
+                    </div>
+                    <a href="/profile" class="btn btn-sm btn-outline-primary w-100 mb-1">Quản lý tài khoản</a>
+                </th:block>
+                <th:block th:unless="${isAuthenticated}">
+                    <div class="d-flex gap-2">
+                        <a href="/login" class="btn btn-sm btn-outline-primary flex-fill">Đăng nhập</a>
+                        <a href="/register" class="btn btn-sm btn-utama flex-fill">Đăng ký</a>
+                    </div>
+                </th:block>
+            </div>
+
+            <!-- Categories -->
+            <div class="mobile-nav-group-title">Danh mục sản phẩm</div>
+            <ul class="mobile-nav-list">
+                <li><a href="/products"><strong>Tất cả sản phẩm</strong> <i class="bi bi-chevron-right text-muted"></i></a></li>
+                <li><a href="/category/keyboard">Bàn phím cơ <i class="bi bi-chevron-right text-muted"></i></a></li>
+                <li><a href="/category/mouse">Chuột gaming <i class="bi bi-chevron-right text-muted"></i></a></li>
+                <li><a href="/category/headset">Tai nghe &amp; Âm thanh <i class="bi bi-chevron-right text-muted"></i></a></li>
+                <li><a href="/category/connection-cables">Dây kết nối &amp; Hub <i class="bi bi-chevron-right text-muted"></i></a></li>
+                <li><a href="/category/gamepad">Tay cầm chơi game <i class="bi bi-chevron-right text-muted"></i></a></li>
+                <li><a href="/products?onSale=true" class="text-danger"><strong>Khuyến mãi đặc biệt</strong> <i class="bi bi-percent"></i></a></li>
+            </ul>
+
+            <!-- Information -->
+            <div class="mobile-nav-group-title">Thông tin &amp; Hỗ trợ</div>
+            <ul class="mobile-nav-list">
+                <li><a href="/stores">Hệ thống showroom <i class="bi bi-geo-alt text-muted"></i></a></li>
+                <li><a href="/about">Giới thiệu UTEGear <i class="bi bi-info-circle text-muted"></i></a></li>
+                <li><a href="/contact">Liên hệ hỗ trợ <i class="bi bi-headset text-muted"></i></a></li>
+            </ul>
+
+        </div>
+    </div>
+
+</th:block>
+
+<!-- GLOBAL TOAST AREA FRAGMENT -->
+<th:block th:fragment="toastArea">
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer" style="z-index: var(--z-toast);">
+    </div>
+</th:block>
+
 </body>
 </html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Dynamic Specification Table Fragment for Gaming Gear -->
+<div th:fragment="productSpecs(product)" class="product-specs-wrapper">
+    <table class="spec-table surface-card">
+        <tbody>
+            <tr>
+                <th>Thương hiệu</th>
+                <td th:text="${product.brand != null ? product.brand.name : 'Chính hãng'}">Brand</td>
+            </tr>
+            <tr>
+                <th>Mã SKU</th>
+                <td th:text="${product.sku != null ? product.sku : 'UG-' + product.id}">SKU</td>
+            </tr>
+            <tr>
+                <th>Danh mục</th>
+                <td th:text="${product.category != null ? @categoryHelper.getDisplayCategoryName(product.category) : 'Gear'}">Category</td>
+            </tr>
+            <!-- Dynamic Specs list if present -->
+            <tr th:each="spec : ${product.specificationList()}">
+                <th th:text="${spec.key}">Thuộc tính</th>
+                <td th:text="${spec.value}">Giá trị</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

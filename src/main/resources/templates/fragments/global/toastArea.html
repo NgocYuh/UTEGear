@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="toastArea">
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="globalToastContainer">
+        <!-- Flash message toast (success) -->
+        <div class="toast text-bg-success border-0" id="successToast" role="alert" th:if="${successMessage}">
+            <div class="d-flex">
+                <div class="toast-body" th:text="${successMessage}">Thành công</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        <!-- Flash message toast (error) -->
+        <div class="toast text-bg-danger border-0" id="errorToast" role="alert" th:if="${errorMessage}">
+            <div class="d-flex">
+                <div class="toast-body" th:text="${errorMessage}">Có lỗi xảy ra</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+    <script th:if="${successMessage != null or errorMessage != null}">
+        document.addEventListener('DOMContentLoaded', function () {
+            var el = document.getElementById('successToast');
+            if (el) new bootstrap.Toast(el, { delay: 4000 }).show();
+            var er = document.getElementById('errorToast');
+            if (er) new bootstrap.Toast(er, { delay: 4000 }).show();
+        });
+    </script>
+</th:block>
+</body>
+</html>
