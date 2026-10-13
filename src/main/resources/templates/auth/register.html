@@ -20,12 +20,13 @@
             </div>
 
             <!-- REGISTER FORM -->
-            <form th:action="@{/register}" th:object="${registerForm}" method="post" class="auth-form">
+            <form th:action="@{/api/auth/register}" method="post" class="auth-form" data-auth="register">
+                <p data-auth-status role="status" aria-live="polite"></p>
                 <div class="mb-3">
                     <label for="fullName" class="form-label">Họ và tên <span class="required-star">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-person"></i></span>
-                        <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Ví dụ: Nguyễn Văn A" th:value="*{fullName}" required autocomplete="name">
+                        <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Ví dụ: Nguyễn Văn A" required autocomplete="name">
                     </div>
                 </div>
 
@@ -33,7 +34,7 @@
                     <label for="email" class="form-label">Email tài khoản <span class="required-star">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="name@domain.com" th:value="*{email}" required autocomplete="email">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="name@domain.com" required autocomplete="email">
                     </div>
                 </div>
 
@@ -41,7 +42,7 @@
                     <label for="phone" class="form-label">Số điện thoại</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="0901234567" th:value="*{phone}" autocomplete="tel">
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="0901234567" autocomplete="tel">
                     </div>
                 </div>
 
@@ -49,7 +50,7 @@
                     <label for="password" class="form-label">Mật khẩu <span class="required-star">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Tối thiểu 6 ký tự" required autocomplete="new-password">
+                        <input type="password" class="form-control" id="password" name="password" minlength="8" maxlength="72" placeholder="Tối thiểu 8 ký tự" required autocomplete="new-password">
                     </div>
                 </div>
 

@@ -11,7 +11,11 @@ function showToast(message, type = 'success') {
     const toast = document.createElement('div');
     toast.className = `toast-msg ${type}`;
     const icons = { success: 'bi-check-circle', error: 'bi-x-circle', info: 'bi-info-circle' };
-    toast.innerHTML = `<i class="bi ${icons[type] || icons.info}"></i><span>${message}</span>`;
+    const icon = document.createElement('i');
+    icon.className = `bi ${icons[type] || icons.info}`;
+    const label = document.createElement('span');
+    label.textContent = message;
+    toast.append(icon, label);
     container.appendChild(toast);
     setTimeout(() => {
         toast.style.opacity = '0';
@@ -34,18 +38,13 @@ function changeQty(delta) {
 
 // ===== AJAX CART QUANTITY & REMOVE =====
 async function updateCartQty(itemId, newQty) {
-    const qty = parseInt(newQty) || 1;
+    const qty = Number(newQty);
     if (qty < 1) {
         removeCartItem(itemId);
         return;
     }
     try {
-        const res = await fetch(`/api/cart/${itemId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ quantity: qty })
-        });
-        if (!res.ok) throw new Error('Không thể cập nhật số lượng');
+        await UTEGear.Cart.update(itemId, qty);
         
         // Refresh cart page data seamlessly
         location.reload();
@@ -76,8 +75,7 @@ async function cartMinus(itemId) {
 
 async function removeCartItem(itemId) {
     try {
-        const res = await fetch(`/api/cart/${itemId}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error('Không thể xóa sản phẩm');
+        await UTEGear.Cart.remove(itemId);
         showToast('Đã xóa sản phẩm khỏi giỏ hàng', 'info');
         
         const itemRow = document.getElementById(`cart-item-${itemId}`);
@@ -96,8 +94,7 @@ async function removeCartItem(itemId) {
 
 async function clearCartAjax() {
     try {
-        const res = await fetch('/api/cart', { method: 'DELETE' });
-        if (!res.ok) throw new Error('Không thể xóa giỏ hàng');
+        await UTEGear.Cart.clear();
         showToast('Đã xóa toàn bộ giỏ hàng', 'info');
         setTimeout(() => location.reload(), 400);
     } catch (e) {
@@ -123,28 +120,15 @@ function selectVariant(btn) {
 // ===== ADD TO CART (UNIFIED) =====
 async function addToCart(productId, variantId = null, quantity = 1) {
     try {
-        const qty = parseInt(quantity) || 1;
-        const res = await fetch('/api/cart/add', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ productId: productId, variantId: variantId, quantity: qty })
-        });
-        const data = await res.json();
-        if (!res.ok) {
-            if (res.status === 401) {
-                showToast(data.message || 'Vui lòng đăng nhập để thêm vào giỏ hàng', 'error');
-                setTimeout(() => { window.location.href = '/login'; }, 1200);
-                return;
-            }
-            throw new Error(data.message || 'Không thể thêm vào giỏ hàng');
-        }
+        const qty = Number(quantity);
+        const data = await UTEGear.Cart.add({ productId, variantId, quantity: qty });
         showToast('Đã thêm sản phẩm vào giỏ hàng!', 'success');
         
         // Update Cart Count Badges with Pulse animation
         const countElements = document.querySelectorAll('#cartCount, #mobileCartCount');
         countElements.forEach(el => {
-            if (data.cartCount !== undefined) {
-                el.textContent = data.cartCount;
+            if (data.itemCount !== undefined) {
+                el.textContent = data.itemCount;
                 el.classList.add('pulse');
                 setTimeout(() => el.classList.remove('pulse'), 400);
             }
@@ -172,22 +156,9 @@ function quickAddToCart(productId) {
 // ===== WISHLIST =====
 async function toggleWishlist(productId, btnElement = null) {
     try {
-        const res = await fetch('/api/wishlist/toggle', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ productId })
-        });
-        const data = await res.json();
-        if (!res.ok) {
-            if (res.status === 401) {
-                showToast(data.message || 'Vui lòng đăng nhập để thực hiện', 'error');
-                setTimeout(() => { window.location.href = '/login'; }, 1200);
-                return;
-            }
-            throw new Error(data.message || 'Lỗi');
-        }
-        const isAdded = data.added !== undefined ? data.added : (data.inWishlist !== undefined ? data.inWishlist : false);
-        const toastMessage = data.message || (isAdded ? 'Đã thêm vào danh sách yêu thích' : 'Đã bỏ khỏi danh sách yêu thích');
+        const isAdded = await UTEGear.Wishlist.toggle(productId, btnElement);
+        if (isAdded === undefined) return;
+        const toastMessage = isAdded ? 'Đã thêm vào danh sách yêu thích' : 'Đã bỏ khỏi danh sách yêu thích';
         showToast(toastMessage, isAdded ? 'success' : 'info');
 
         // Toggle heart icon on buttons matching this productId
@@ -212,23 +183,22 @@ async function toggleWishlist(productId, btnElement = null) {
 // ===== QUICK VIEW =====
 async function quickView(productId) {
     try {
-        const res = await fetch(`/api/products/${productId}`);
-        const product = await res.json();
+        const product = await UTEGear.API.get(`/api/products/${UTEGear.Cart.id(productId)}`, { public: true });
         const modalBody = document.getElementById('quickViewContent');
         if (!modalBody) return;
-        const variantText = product.variants && product.variants.length ? product.variants[0].attributeName + ': ' + product.variants[0].attributeValue : '';
+        const variantText = Object.entries(product.variants?.[0]?.optionValues || {}).map(([key, value]) => `${key}: ${value}`).join(', ');
         modalBody.innerHTML = `
-            <div class="modal-header"><h5 class="modal-title">${product.name}</h5>
+            <div class="modal-header"><h5 class="modal-title">${escapeHtml(product.name)}</h5>
             <button class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-6"><img src="${product.imageUrl || '/images/placeholder.png'}" class="img-fluid rounded" alt="${product.name}"></div>
+                    <div class="col-md-6"><img src="${UTEGear.Utils.safeImage(product.primaryImage?.secureUrl)}" class="img-fluid rounded" alt="${escapeHtml(product.name)}"></div>
                     <div class="col-md-6">
-                        <div class="product-detail-price"><span class="price current">${formatPrice(product.salePrice || product.price)}</span></div>
+                        <div class="product-detail-price"><span class="price current">${formatPrice(product.effectivePrice)}</span></div>
                         <p class="text-muted">${escapeHtml(product.description || '')}</p>
                         ${variantText ? `<p><strong>${escapeHtml(variantText)}</strong></p>` : ''}
-                        <button class="btn btn-utama" onclick="quickAddToCart(${product.id})"><i class="bi bi-cart-plus"></i> Thêm vào giỏ</button>
-                        <a href="/products/${product.id}" class="btn btn-outline-primary mt-2 w-100">Xem chi tiết</a>
+                        <button class="btn btn-utama" onclick="quickAddToCart(${UTEGear.Cart.id(product.id)})"><i class="bi bi-cart-plus"></i> Thêm vào giỏ</button>
+                        <a href="/products/${UTEGear.Cart.id(product.id)}" class="btn btn-outline-primary mt-2 w-100">Xem chi tiết</a>
                     </div>
                 </div>
             </div>`;
@@ -247,7 +217,7 @@ function formatPrice(v) {
 function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str || '';
-    return div.innerHTML;
+    return div.innerHTML.replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 }
 
 // ===== CHECKOUT STORE PICKUP TOGGLE =====

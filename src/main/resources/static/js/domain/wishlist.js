@@ -1,41 +1,27 @@
-/**
- * UTEGear Wishlist Module
- */
 window.UTEGear = window.UTEGear || {};
-
 UTEGear.Wishlist = {
-    async toggle(productId, buttonElement) {
-        if (!productId) return;
-
+    pending: new Set(),
+    get() { return UTEGear.API.get('/api/wishlist'); },
+    async toggle(productId, button) {
+        const id = UTEGear.Cart.id(productId);
+        if (this.pending.has(id)) return;
+        this.pending.add(id);
+        if (button) button.disabled = true;
         try {
-            const data = await UTEGear.API.post('/api/wishlist/toggle', { productId: Number(productId) });
-            const isAdded = data.added !== undefined ? data.added : (data.inWishlist !== undefined ? data.inWishlist : false);
-            const message = data.message || (isAdded ? 'Đã thêm vào danh sách yêu thích' : 'Đã bỏ khỏi danh sách yêu thích');
-
-            UTEGear.Toast.show(message, isAdded ? 'success' : 'info');
-
-            // Update UI icons across page
-            const targetBtns = document.querySelectorAll(`button[data-product-id="${productId}"].action-btn-icon, button[onclick*="toggleWishlist(${productId})"]`);
-            targetBtns.forEach(btn => {
-                const icon = btn.querySelector('i');
-                if (icon) {
-                    if (isAdded) {
-                        icon.className = 'bi bi-heart-fill text-danger';
-                        btn.classList.add('active');
-                    } else {
-                        icon.className = 'bi bi-heart';
-                        btn.classList.remove('active');
-                    }
-                }
+            const items = await this.get();
+            const exists = items.some(item => Number(item.product.id) === id);
+            if (exists) await UTEGear.API.delete(`/api/wishlist/items/${id}`);
+            else await UTEGear.API.post('/api/wishlist/items', { productId: id });
+            document.querySelectorAll(`[data-product-id="${id}"][data-action="toggle-wishlist"], button[onclick*="toggleWishlist(${id}"]`).forEach(el => {
+                el.classList.toggle('active', !exists);
+                el.setAttribute('aria-pressed', String(!exists));
+                const icon = el.querySelector('i');
+                if (icon) icon.className = exists ? 'bi bi-heart' : 'bi bi-heart-fill text-danger';
             });
-        } catch (e) {
-            if (e.message !== 'UNAUTHORIZED') {
-                UTEGear.Toast.show(e.message || 'Không thể cập nhật danh sách yêu thích', 'error');
-            }
+            return !exists;
+        } finally {
+            this.pending.delete(id);
+            if (button) button.disabled = false;
         }
     }
-};
-
-window.toggleWishlist = function (productId, btn) {
-    UTEGear.Wishlist.toggle(productId, btn);
 };

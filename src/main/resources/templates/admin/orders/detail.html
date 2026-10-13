@@ -24,7 +24,8 @@
     <!-- STATUS WORKFLOW CARD -->
     <div class="admin-card mb-4">
         <div class="admin-card-body py-3">
-            <form th:action="@{'/admin/orders/' + ${order.id} + '/status'}" method="post" class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
+            <form th:action="@{'/api/admin/orders/' + ${order.id} + '/status'}" th:data-admin-order="${order.id}" method="post" class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
+                <p data-admin-status role="status" aria-live="polite"></p>
                 <div class="d-flex align-items-center gap-3 flex-wrap">
                     <div class="d-flex align-items-center gap-2">
                         <i class="bi bi-shield-check" style="font-size: 1.25rem; color: var(--admin-accent-primary);"></i>
@@ -171,5 +172,10 @@
 
 </main>
 
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/core/api.js}"></script>
+    <script th:src="@{/js/domain/admin.js}"></script>
+    <script>document.addEventListener('DOMContentLoaded', () => UTEGear.Admin.init());</script>
+</th:block>
 </body>
 </html>

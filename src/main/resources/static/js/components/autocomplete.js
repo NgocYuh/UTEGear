@@ -26,9 +26,8 @@ UTEGear.Autocomplete = {
                 }
 
                 try {
-                    const data = await UTEGear.API.get(`/api/products?keyword=${encodeURIComponent(query)}&size=5`);
-                    const products = data.products || data.content || (Array.isArray(data) ? data : []);
-                    this.render(dropdown, products, query);
+                    const data = await UTEGear.API.get(`/api/products?q=${encodeURIComponent(query)}&size=5`, { public: true });
+                    if (input.value.trim() === query) this.render(dropdown, data.content, query);
                 } catch (err) {
                     dropdown.classList.remove('show');
                 }
@@ -75,10 +74,10 @@ UTEGear.Autocomplete = {
 
         let html = `<div class="autocomplete-section-title">Gợi ý sản phẩm (${products.length})</div>`;
         products.forEach(item => {
-            const priceHtml = item.salePrice ? UTEGear.Utils.formatPrice(item.salePrice) : UTEGear.Utils.formatPrice(item.price);
+            const priceHtml = UTEGear.Utils.formatPrice(item.effectivePrice);
             html += `
-                <a href="/products/${item.id}" class="autocomplete-item">
-                    <img src="${item.imageUrl || '/images/placeholder.png'}" class="autocomplete-item-img" alt="${UTEGear.Utils.escapeHtml(item.name)}" onerror="this.src='/images/placeholder.png'">
+                <a href="/products/${UTEGear.Cart.id(item.id)}" class="autocomplete-item">
+                    <img src="${UTEGear.Utils.safeImage(item.primaryImage?.secureUrl)}" class="autocomplete-item-img" alt="${UTEGear.Utils.escapeHtml(item.name).replaceAll('"', '&quot;')}" onerror="this.src='/images/placeholder.svg'">
                     <div>
                         <div class="autocomplete-item-name">${UTEGear.Utils.escapeHtml(item.name)}</div>
                         <div class="text-muted" style="font-size: 0.75rem;">${item.brand ? UTEGear.Utils.escapeHtml(item.brand.name) : 'UTEGear'}</div>

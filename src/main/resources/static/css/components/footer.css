@@ -255,18 +255,19 @@
         padding-right: 0;
         margin-bottom: 24px;
     }
-
+    
     .footer-trust-strip {
         padding: 16px 0;
     }
-
+    
     .trust-item {
         margin-bottom: 12px;
     }
-
+    
     .footer-bottom-layout {
         flex-direction: column;
         text-align: center;
         justify-content: center;
     }
 }
+

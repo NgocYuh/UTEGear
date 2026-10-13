@@ -4,6 +4,13 @@
 window.UTEGear = window.UTEGear || {};
 
 UTEGear.Utils = {
+    safeImage(value) {
+        try {
+            const url = new URL(value || '/images/placeholder.svg', location.origin);
+            if (url.protocol !== 'https:' && !(url.origin === location.origin && url.protocol === 'http:')) return '/images/placeholder.svg';
+            return this.escapeHtml(url.href).replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+        } catch { return '/images/placeholder.svg'; }
+    },
     formatPrice: function (amount) {
         if (amount === null || amount === undefined) return '0 ₫';
         return Number(amount).toLocaleString('vi-VN') + ' ₫';
