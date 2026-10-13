@@ -738,9 +738,9 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## WISH-01: Wishlist Backend
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/wishlist`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/44
 - Ngày cập nhật: 2026-10-13
 - Đã làm:
   - Ánh xạ `WishlistItem` vào bảng `wishlist_items` đã có trong Flyway V1; không tạo migration mới.
@@ -758,6 +758,26 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `PASS` với 142 test, 0 failure, 0 error, 0 skipped.
 - Vướng mắc hoặc phần còn thiếu:
   - Chưa kiểm thử với PostgreSQL/Supabase thật; test ứng dụng dùng profile `test` và H2, không kết nối database production.
+- Bước tiếp theo:
+  - Chạy toàn bộ suite, tạo commit và push branch để mở Pull Request.
+- Ngày hoàn tất: 2026-10-13; merge commit `9cbc97e`
+
+## QA-01: Backend service unit tests
+
+- Trạng thái: `IN REVIEW`
+- Branch: `test/service-coverage`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-13
+- Đã làm:
+  - Rà soát toàn bộ lớp trong `service` và đối chiếu với test hiện có.
+  - Bổ sung test cho `BrandService`, `CategoryService`, `CheckoutQuoteStore`, `DefaultCartApiService`, `ProductCatalogService` và `StoreAvailabilityService`.
+  - Bao phủ tạo dữ liệu tham chiếu và chống trùng; vòng đời checkout quote; ánh xạ API cart; catalog detail/filter; tồn kho theo cửa hàng và tổng hợp theo biến thể.
+  - Không thêm test cho interface thuần `CartApiService`, `ProductRowImporter` hoặc getter/setter đơn giản.
+- Kết quả kiểm thử:
+  - 18 test mới chạy tập trung: `PASS`, 0 failure, 0 error, 0 skipped.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `PASS` với 160 test, 0 failure, 0 error, 0 skipped.
+- Vướng mắc hoặc phần còn thiếu:
+  - Không có thay đổi mã nguồn nghiệp vụ; QA-02 sẽ kiểm tra repository/PostgreSQL và QA-03 sẽ kiểm tra controller/security sâu hơn.
 - Bước tiếp theo:
   - Chạy toàn bộ suite, tạo commit và push branch để mở Pull Request.
 - Ngày hoàn tất: `Chưa merge`
