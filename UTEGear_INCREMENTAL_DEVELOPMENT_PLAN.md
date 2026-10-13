@@ -1021,8 +1021,9 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | WS-02 | BE | `feat/order-notifications` | DONE | [PR #37](https://github.com/NgocYuh/UTEGear/pull/37) | 2026-10-12 |
 | UI-01…03 và các task `FE-*` | FE | Xem backlog | TODO |  |  |
 | INT-01…03 | FE, BE review contract | Xem backlog | TODO |  |  |
-| QA-01 | BE | `test/service-coverage` | IN REVIEW | Chưa mở |  |
-| QA-02…03 | BE | Xem backlog | TODO |  |  |
+| QA-01 | BE | `test/service-coverage` | DONE | [PR #47](https://github.com/NgocYuh/UTEGear/pull/47) | 2026-10-13 |
+| QA-02 | BE | `test/postgresql-integration` | IN REVIEW | Chưa mở |  |
+| QA-03 | BE | Xem backlog | TODO |  |  |
 | QA-04 | FE | `test/frontend-flows` | TODO |  |  |
 | QA-05 | Cả hai | `docs/manual-test-report` | TODO |  |  |
 | DOC-01…02 | BE | Xem backlog | TODO |  |  |
