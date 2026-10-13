@@ -317,12 +317,13 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 - Trạng thái: `BLOCKED`
 - Branch: `feat/integrate-auth-catalog-store`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/40
 - Ngày cập nhật: 2026-10-13
 - Đã làm:
   - Chuẩn bị nguyên ba file có sẵn: core/api.js, core/utils.js và components/autocomplete.js.
   - Tạo branch từ main `ae95070`; giữ nguyên code nguồn, không thay layout, Backend, dependency hoặc contract.
   - Đối soát main: UI-02 đã merge qua https://github.com/NgocYuh/UTEGear/pull/38 (ae95070), UI-03 qua https://github.com/NgocYuh/UTEGear/pull/39 (8fc2437). Phần nguồn đã merge nhưng các giới hạn tương thích còn nguyên; chưa xác nhận hai task hoàn tất.
+  - Gộp main ddea4a4 sau PR #41 vào nhánh PR #40, giải quyết xung đột nhật ký bằng cách giữ cả mục INT-01 và INT-02; nội dung code giữ nguyên.
 - Kết quả kiểm thử:
   - SHA-256: `PASS`, 3/3 file khớp nguyên bản.
   - `mvnw.cmd -B clean verify` với Java 21.0.7: `PASS`, 131 tests, 0 failure, 0 error, 0 skipped.
@@ -337,4 +338,31 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Bước tiếp theo:
   - Push branch sau khi build pass, mở PR để review phần nguồn.
   - Thống nhất xử lý tương thích và các luồng auth/catalog/store trước khi hoàn tất task.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
+## INT-02: Nguồn JavaScript giỏ hàng và wishlist
+
+- Trạng thái: `BLOCKED`
+- Branch: `feat/integrate-customer-transactions`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-13
+- Đã làm:
+  - Thêm nguyên main.js có sẵn: thao tác giỏ hàng, wishlist, thông báo, chọn biến thể/ảnh, quick view, nhận tại cửa hàng, lọc giá và phím tắt.
+  - Tạo branch từ main ae95070; không thay các module/template đã push, app.js, layout, Backend hoặc contract.
+  - INT-01 đã push trên branch feat/integrate-auth-catalog-store (b7db7bd), chưa nằm trong main tại thời điểm tạo branch này.
+- Kết quả kiểm thử:
+  - SHA-256: `PASS`, main.js khớp nguyên bản.
+  - JavaScript: `PASS` cú pháp và kiểm tra fetch/DOM giả lập cho thêm/cập nhật/xóa giỏ, xóa toàn bộ, wishlist, redirect 401, lỗi mạng và giới hạn quantity 1-99.
+  - `mvnw.cmd -B clean verify` với Java 21.0.7: `PASS`, 131 tests, 0 failure, 0 error, 0 skipped.
+  - `git diff --cached --check`: cảnh báo khoảng trắng cuối dòng tại main.js:49, 82, 142; giữ nguyên theo yêu cầu bảo toàn code nguồn.
+  - Không gọi API thật hoặc ghi database trong kiểm thử; chưa xác nhận luồng tích hợp hoạt động.
+- Vướng mắc hoặc phần còn thiếu:
+  - Endpoint /api/cart/add, /api/cart/{itemId}, DELETE /api/cart và /api/wishlist/toggle khác contract hiện tại /api/cart/items và /api/wishlist/items.
+  - Layout hiện tại chưa nạp main.js; chưa xử lý JWT và request/response đúng contract.
+  - File không có tích hợp API tạo đơn/lịch sử đơn; phần checkout chỉ bật/tắt lựa chọn nhận tại cửa hàng.
+  - Quick view dùng model cũ; thông báo và một số dữ liệu được đưa trực tiếp vào innerHTML, chưa kiểm thử hoặc xác nhận an toàn với dữ liệu không tin cậy.
+  - Giữ nguyên nguồn theo yêu cầu; chưa hoàn tất INT-02 hoặc sẵn sàng merge.
+- Bước tiếp theo:
+  - Push branch sau khi build pass, mở PR để review phần nguồn.
+  - Thống nhất xử lý tương thích, an toàn hiển thị và luồng checkout/order trước khi hoàn tất task.
 - Ngày hoàn tất: `Chưa hoàn tất`
