@@ -978,6 +978,31 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Chạy các kiểm tra cuối, commit, push và mở PR sau QA-05.
 - Ngày hoàn tất: `Chờ merge`
 
+## DOC-02: Hướng dẫn cài đặt và demo
+
+- Trạng thái: `IN REVIEW`
+- Branch: `docs/setup-demo-guide`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-15
+- Đã làm:
+  - Viết hướng dẫn Windows PowerShell cho JDK/Maven, cấu hình local và nguyên tắc không commit secret.
+  - Ghi rõ cách điền JDBC URL Supabase, username/password riêng, Session pooler cho IPv4 và SSL.
+  - Ghi cách tạo JWT secret ngẫu nhiên, cấu hình Cloudinary và WebSocket allowed origins.
+  - Hướng dẫn Flyway V1/V2, kiểm tra history/role và cảnh báo không baseline schema tùy tiện.
+  - Ghi cách build, chạy app, tạo customer/admin QA an toàn, nạp JSONL và thực hiện kịch bản demo.
+  - Bổ sung bảng xử lý lỗi thường gặp và checklist trước khi push/demo.
+- Kết quả kiểm thử:
+  - Kiểm tra liên kết Markdown nội bộ của README và hai tài liệu setup: `PASS`.
+  - Kiểm tra đủ placeholder và quét mẫu credential trong hướng dẫn: `PASS`, không có giá trị thật.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `BUILD SUCCESS`,
+    187 test được phát hiện, 184 pass, 0 failure, 0 error và 3 PostgreSQL test skip do Docker local không chạy.
+  - `git diff --check`: `PASS`.
+- Vướng mắc hoặc phần còn thiếu:
+  - Không có blocker nội dung. Nhánh xếp sau QA-05 và DOC-01 trong chuỗi merge.
+- Bước tiếp theo:
+  - Chạy kiểm tra cuối, commit, push và mở PR sau DOC-01.
+- Ngày hoàn tất: `Chờ merge`
+
 ## Mẫu mục mới
 
 ```md
