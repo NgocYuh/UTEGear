@@ -1,71 +1,87 @@
 # Nhật ký tiến độ Frontend
 
+## QA-05: End-to-end và kiểm thử media thật
+
+- Trạng thái: `BLOCKED` — chưa xác nhận Cloudinary QA, chưa chạy upload/thay/xóa ảnh thật.
+- Frontend: @trongsonho; đề nghị @NgocYuh review và trực tiếp chạy phần media thật.
+- Branch: `feat/admin-media-manager`; phụ thuộc `test/qa04-completion`.
+- Ngày cập nhật: 2026-10-14.
+- Đã kiểm tra: checklist 44 PASS/0 FAIL, media UI 23 PASS/0 FAIL; không mock API/STOMP.
+- Build: Maven clean verify thành công; 182 pass, 3 PostgreSQL skip local.
+- BE cần: chạy live suite trên Cloudinary QA, cập nhật bằng chứng; xác nhận tồn kho khi hủy
+  PENDING và bước thu tiền COD khi COMPLETED. Lỗi BE xử lý trên branch BE riêng.
+- Hướng dẫn và điều kiện hoàn tất: `docs/frontend/qa05-review.md`,
+  `docs/frontend/admin-media-review.md`. QA-04 chờ duyệt, QA-05 chưa DONE.
+- Sau khi phạm vi hoàn tất, tests pass và PR được duyệt: cập nhật DONE trong chính PR trước merge.
+
+## FE-MEDIA-01: UI quản lý ảnh cho QA-05
+
+- Trạng thái: `IN REVIEW` — FE/UI kiểm thử khả dụng đạt; liveCloudinaryQA chưa cấu hình,
+  chờ BE review/duyệt, không DONE.
+- Phụ trách: `@trongsonho` Frontend; liên kếtQA05, không tự giao/sửaBackend.
+- Branch: `feat/admin-media-manager`,base8d2d71d, được gửi lên GitHub để BE review, chưa được duyệt.
+- Ngày cập nhật:2026-10-14.
+- Đã làm: media native details panel tại /admin/orders#product-media, gallery/search activeproducts,
+  upload/replace/delete API contract, metadata/primary/receipt, confirmation, role/session/validation,
+  loading/duplicate-submit/errorresync/product-change; productdetail ưu tiên primaryimage.
+- Kiểm thử: mediaUI23PASS/0FAIL/1BLOCKED; checklistQA05candidate44PASS/0FAIL/step8liveBLOCKED.
+  Metadata PUT/API thật và card/detail; labels/focus/responsive/negativefiles/offline/role403/logout.
+  Mavencleanverify Java26/ByteBuddy flag BUILDSUCCESS,182pass/3PGskip vì Dockerlocal không chạy.
+- Không gọi Cloudinary chưa xác nhận; 3envkeys chưa có. Đã chuẩn bị real-mode QA folder riêng,
+  PNG hợp lệ/receipts/render/upload/replace/delete và cleanup tài nguyên vừa tạo; nhánhlive chưa chạy.
+  Launcher ép H2mem/driver/credentials/Flywayfalse, không kế thừa datasource môi trường khác.
+- Review/cách chạy:docs/frontend/admin-media-review.md; artifact
+  D:/UTEGear/.local-reference/storefront-test-artifacts/admin-media-review/, không commit log/ảnh/token.
+- Còn cần:BE xác nhận/cấu hình QACloudinary và reviewcode; review cancellationstock/CODpayment
+  trong checklistQA05 và duyệtPRQA04/FE, không tự chốt nghiệp vụ.
+- Bước tiếp theo:review bản FE cụ thể, BE chạy live khi QA keys được xác nhận, cập nhật bằng chứng rồi review/duyệt.
+- Ngày hoàn tất:Chưa hoàn tất.
+
 ## FE-BIND-01: Binding dữ liệu và realtime FE theo BE
 
-- Trạng thái: `IN PROGRESS`
-- Phụ trách: `@trongsonho` (Frontend); liên kết INT-01/02/03, QA-04.
-- Branch nguồn: `fix/storefront-bindings`; commit FE `462c9eb` đã merge qua [PR #56](https://github.com/NgocYuh/UTEGear/pull/56) tại `7457eb5`.
-- Bản kiểm thử/báo cáo tiếp: `test/qa04-realtime-verification`, base `7457eb5`; chưa mở PR.
-- Ngày cập nhật: 2026-10-14
-- Đã kiểm thử sau PR #55 bằng merge local `cdcb689`; tree nguồn trùng main `7457eb5` sau PR #56.
-  Người dùng đã duyệt push phần kiểm thử/báo cáo trên nhánh mới để BE review.
-- Đã làm:
-  - Catalog/cart/wishlist/profile/address/checkout/customer-admin orders theo BE contract.
-  - STOMP native /ws, Authorization ở CONNECT; sessionStorage theo policy APPROVED PR #54.
-  - Đồng bộ bản BE sửa cart/STOMP từ PR #55, không tự sửa Backend Java/config/migration.
-  - Bổ sung browser test nhận event thật, socket loss, reconnect và REST resync customer/admin.
-- Kết quả kiểm thử sau PR #55:
-  - `mvnw.cmd -B clean verify -Dnet.bytebuddy.experimental=true`: `BUILD SUCCESS`, Java 26;
-    185 tests được phát hiện, 182 pass, 3 PostgreSQL tests skip vì Docker chưa chạy.
-  - Unit JS: `18 PASS`; browser script syntax PASS.
-  - HTTP/DOM/responsive/labels/focus/validation: `93 PASS, 0 FAIL`; 5 nhóm ngoài phạm vi
-    read-only runner giữ placeholder BLOCKED, đối chiếu với suite giao dịch riêng.
-  - Browser/API giao dịch thật: `39 PASS, 0 FAIL`, không mock API/frame STOMP.
-  - Cart PUT cập nhật quantity/subtotal PASS. Customer/admin CONNECT/subscription PASS.
-  - Customer nhận ORDER_STATUS_CHANGED, admin nhận ORDER_CREATED và UI cập nhật không navigation.
-  - Customer/admin reconnect sau đóng native socket và GET REST resync mới PASS.
-  - Không có uncaught browser exception. Test server/browser riêng đã dừng sau lưu artifact.
-- Đối soát blocker cũ:
-  - Cart PUT 500 và STOMP subscription từ chối đã được BE sửa PR #55 và xác nhận hết trên H2.
-  - Không còn ghi thiếu profile/address/customer-order API, route hoặc policy.
-- Còn cần hoàn tất:
-  - Review/duyệt cập nhật kiểm thử và các ca QA-04 chưa bao phủ; PR #56 merge không thay thế kiểm thử còn thiếu.
-  - Chưa xác nhận PostgreSQL/Flyway thực tế hoặc toàn bộ dataset theo hướng dẫn BE.
-- Review/bằng chứng: `docs/frontend/storefront-bindings-review.md`.
-- Tiếp theo: review bản đồng bộ/kiểm thử, hoàn thiện QA-04 trước QA-05.
-- Ngày hoàn tất: `Chưa hoàn tất`
+- Trạng thái: `IN REVIEW` (bản FE nguồn đã merge; sửa accessibility/kiểm thử bổ sung chờ PR).
+- Phụ trách: `@trongsonho`; liên kết INT-01/02/03, QA-04.
+- Source: fix/storefront-bindings, commit 462c9eb, [PR #56](https://github.com/NgocYuh/UTEGear/pull/56), merge 7457eb5.
+- Realtime tests: [PR #57](https://github.com/NgocYuh/UTEGear/pull/57), merge 8d2d71d.
+- Bản tiếp: `test/qa04-completion`, base 8d2d71d, được gửi lên GitHub để BE review, chưa được duyệt.
+- Ngày cập nhật: 2026-10-14.
+- Đã làm: API bindings profile/address/cart/wishlist/catalog/checkout/customer-admin orders;
+  policy APPROVED, native STOMP; BE PR #55 đã sửa cart/subscription, kiểm thử thật pass.
+  Quick-view bổ sung tên nút/dialog và trả focus khi đóng; không sửa Backend.
+- Kiểm thử cuối: HTTP/DOM 93 PASS, giao dịch 39 PASS, ca mở rộng 54 PASS, 0 FAIL;
+  unit JS 18 PASS. Maven BUILD SUCCESS, 182 pass/3 PostgreSQL skip local (Docker không chạy).
+- Phạm vi/giới hạn: docs/frontend/qa04-completion-review.md; dữ liệu H2 tạm, clock expiry là phía client,
+  ảnh SVG fixture không chứng minh Cloudinary upload; PostgreSQL thuộc QA-02 BE, CI đã có bằng chứng.
+- Tiếp theo: review/duyệt cập nhật FE/QA-04; phần QA-05 chuẩn bị trên branch tài liệu riêng.
+- Ngày hoàn tất: Chưa ghi DONE trước khi bản sửa/kiểm thử mới được duyệt.
 
 ## QA-04: Frontend automated và manual tests
 
-- Trạng thái: `IN PROGRESS` (đã gỡ hai blocker BE sau PR #55).
-- Người phụ trách: `@trongsonho` (Frontend).
-- Tooling gốc: `test/frontend-flows`, đã merge [PR #53](https://github.com/NgocYuh/UTEGear/pull/53)
-  tại `aba8d3c`; merge tooling không đồng nghĩa QA-04 đã DONE.
-- Bản FE đã merge PR #56; kiểm thử/báo cáo tiếp: `test/qa04-realtime-verification`, base `7457eb5`.
-  Người dùng đã duyệt push phần mới để BE review, chưa mở PR.
-- Ngày cập nhật: 2026-10-14
+- Trạng thái: `IN REVIEW` — phạm vi kiểm thử FE đạt; chờ review/duyệt bản bổ sung để ghi DONE.
+- Phụ trách: `@trongsonho` (Frontend).
+- Tooling gốc PR #53 đã merge; bổ sung realtime PR #57 đã merge tại 8d2d71d.
+- Branch tiếp: `test/qa04-completion`, base 8d2d71d, được gửi lên GitHub để BE review, chưa được duyệt.
+- Ngày cập nhật: 2026-10-14.
 - Đã làm:
-  - Chạy HTTP/CDP trên Spring Boot thật với H2 tạm và CUSTOMER A/B + admin QA.
-  - Catalog/cart/wishlist/profile/address/quote/place/cancel/admin status/password/logout và ownership.
-  - Responsive 1440/768/390, labels, Tab/focus, form required/email/mismatch, menu Escape/focus.
-  - Realtime customer/admin: JWT CONNECT, events thật, mất socket, reconnect và REST resync.
-- Kết quả:
-  - Sau PR #52: `79 PASS, 0 FAIL, 7 BLOCKED` (lịch sử trên các trang/dữ liệu rỗng).
-  - Sau PR #54: giao dịch `32 PASS, 3 FAIL` (cart PUT, customer/admin STOMP; lịch sử).
-  - Sau PR #55: giao dịch `39 PASS, 0 FAIL`; read-only `93 PASS, 0 FAIL, 5 BLOCKED` là
-    placeholder cho các nhóm không chạy trong runner read-only, không phải 5 lỗi API mới.
-  - Unit JS `18 PASS`; Maven `BUILD SUCCESS`, 182 pass/3 PostgreSQL skip.
-- Còn thiếu:
-  - Dataset nhiều biến thể/media, store inactive, thiếu hàng/coupon/quote hết hạn/race/double-submit,
-    JWT expiry trên browser và phần checklist keyboard/accessibility còn lại chưa kiểm tra đầy đủ.
-  - Dữ liệu H2 chỉ phủ happy path và các quyền đã ghi, chưa thay kiểm thử PostgreSQL/Flyway.
-  - PR #56 của FE đã merge; cập nhật kiểm thử mới chưa mở/duyệt PR, các ca còn thiếu chưa hoàn tất.
-    Chưa ghi DONE, chưa bắt đầu QA-05.
-- Bằng chứng mới: `D:/UTEGear/.local-reference/storefront-test-artifacts/pr55-final/`;
-  build log `D:/UTEGear/.local-reference/storefront-test-artifacts/pr55-verify.log`.
-  Artifact/log/ảnh/tài khoản/token không commit.
-- Review/cách chạy: `docs/frontend/storefront-bindings-review.md`.
-- Ngày hoàn tất: `Chưa hoàn tất`
+  - Real Spring Boot/H2/Chromium, không mock API/STOMP; helper chung và fixture nhiều variant,
+    hai store active/một inactive, stock còn/hết/low, ảnh local, ba loại coupon.
+  - Validation client/server errors; stock/coupon/quote expiry client/pending quote stale;
+    double-submit chỉ tạo một đơn; offline/retry; 401/403/ownership/session expiry client.
+  - Responsive và labels trang authenticated; quick-view AX names, Tab/Shift+Tab/Escape/focus.
+  - Customer/admin native STOMP events, mất socket/reconnect và REST resync.
+- Kết quả: HTTP/DOM `93 PASS`; giao dịch `39 PASS`; ca mở rộng `54 PASS`; không FAIL.
+  Unit JS `18 PASS`; Maven clean verify Java 26 với ByteBuddy flag `BUILD SUCCESS`,
+  185 tests phát hiện/182 pass/3 PostgreSQL skip local. Backend CI main 8d2d71d success.
+- Launcher tổng hợp đối chiếu đúng 5 nhóm ngoài read-only runner với companion suites;
+  không đổi FAIL/BLOCKED thật thành PASS, không coi số check là số luồng nghiệp vụ.
+- Giới hạn: client clock expiry không thay kiểm thử expiry phía server; H2 không chứng minh
+  PostgreSQL local; fixture ảnh không thay upload Cloudinary; accessibility cơ bản, không full audit.
+  PostgreSQL/Flyway theo QA-02 của BE; không gán việc Docker local chưa chạy thành blocker FE mới.
+- Bằng chứng/cách chạy: docs/frontend/qa04-completion-review.md;
+  artifact D:/UTEGear/.local-reference/storefront-test-artifacts/qa04-ready/, không commit log/ảnh/token.
+- Tiếp theo: PR review/duyệt bản kiểm thử bổ sung rồi cập nhật DONE theo quy tắc repository.
+  QA-05 chuẩn bị trên docs/manual-test-report; chưa xác nhận bước upload/thay/xóa ảnh.
+- Ngày hoàn tất: Chưa ghi DONE trước khi PR được duyệt.
 
 ## FE-INT-FIX: Khôi phục CSS ZIP và đối chiếu INT-01/02/03 với Backend
 
@@ -112,7 +128,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## FND-04: Frontend quality workflow
 
-- Trạng thái: `IN PROGRESS`
+- Trạng thái: `IN REVIEW`
 - Branch: `ci/frontend-quality-gate`
 - Pull Request: `Chưa mở`
 - Ngày cập nhật: 2026-10-11
@@ -136,7 +152,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## UI-01: Layout và design foundation (A + B)
 
-- Trạng thái: `IN PROGRESS`
+- Trạng thái: `IN REVIEW`
 - Branch: `feat/shared-ui-layout`
 - Pull Request: `Chưa mở`
 - Ngày cập nhật: 2026-10-11

@@ -6,4 +6,27 @@
  <div data-view-items></div><nav data-order-pagination aria-label="Phân trang" class="d-flex gap-2"></nav>
  <section data-order-detail class="surface-card p-3 mt-3" aria-label="Chi tiết đơn hàng"></section>
  <a href="/login" class="btn btn-outline-primary mt-3">Đăng nhập</a>
-</section></main></body></html>
+</section>
+<details id="product-media" class="surface-card p-3 mt-4" data-media-manager>
+ <summary class="h4">Quản lý ảnh sản phẩm đang hiển thị</summary>
+ <p data-media-status role="status" aria-live="polite">Đang tải sản phẩm…</p>
+ <fieldset data-media-controls disabled>
+  <form data-media-search class="row g-2 my-3">
+   <div class="col-md-9"><label for="media-search" class="form-label">Tìm sản phẩm</label><input id="media-search" name="q" maxlength="200" class="form-control"></div>
+   <div class="col-md-3 align-self-end"><button type="submit" class="btn btn-outline-primary">Tìm kiếm</button></div>
+  </form>
+  <label for="media-product" class="form-label">Sản phẩm</label><select id="media-product" data-media-product class="form-select mb-3"><option value="">Chọn sản phẩm</option></select>
+  <h2 data-media-product-name class="h5"></h2>
+  <section data-media-images aria-label="Ảnh hiện tại" class="my-3"></section>
+  <form data-media-upload class="border rounded p-3" hidden>
+   <h3 class="h6">Thêm ảnh mới</h3>
+   <label for="media-upload-file" class="form-label">Ảnh JPEG, PNG hoặc WebP, tối đa 5 MiB</label><input id="media-upload-file" type="file" name="file" accept="image/jpeg,image/png,image/webp" required class="form-control mb-2">
+   <label for="media-upload-alt" class="form-label">Mô tả ảnh</label><input id="media-upload-alt" name="altText" maxlength="255" class="form-control mb-2">
+   <div class="form-check mb-2"><input id="media-upload-primary" name="primary" type="checkbox" class="form-check-input"><label for="media-upload-primary" class="form-check-label">Đặt làm ảnh chính</label></div>
+   <button type="submit" class="btn btn-primary">Tải ảnh lên</button>
+  </form>
+ </fieldset>
+</details>
+</main>
+<th:block layout:fragment="scripts"><script th:src="@{/js/domain/media-manager.js}"></script></th:block>
+</body></html>
