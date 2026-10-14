@@ -182,14 +182,15 @@ async function toggleWishlist(productId, btnElement = null) {
 
 // ===== QUICK VIEW =====
 async function quickView(productId) {
+    const trigger = document.activeElement;
     try {
         const product = await UTEGear.API.get(`/api/products/${UTEGear.Cart.id(productId)}`, { public: true });
         const modalBody = document.getElementById('quickViewContent');
         if (!modalBody) return;
         const variantText = Object.entries(product.variants?.[0]?.optionValues || {}).map(([key, value]) => `${key}: ${value}`).join(', ');
         modalBody.innerHTML = `
-            <div class="modal-header"><h5 class="modal-title">${escapeHtml(product.name)}</h5>
-            <button class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header"><h5 class="modal-title" id="quickViewTitle">${escapeHtml(product.name)}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng xem nhanh"></button></div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-6"><img src="${UTEGear.Utils.safeImage(product.images?.find(image => image.primary)?.secureUrl || product.images?.[0]?.secureUrl)}" class="img-fluid rounded" alt="${escapeHtml(product.name)}"></div>
@@ -202,8 +203,13 @@ async function quickView(productId) {
                     </div>
                 </div>
             </div>`;
-        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('quickViewModal'));
-        modal.show();
+        const modalElement = document.getElementById('quickViewModal');
+        modalElement.setAttribute('aria-labelledby', 'quickViewTitle');
+        modalElement.addEventListener('hidden.bs.modal', () => {
+            if (trigger?.isConnected && !trigger.disabled) trigger.focus();
+        }, { once: true });
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        modal.show(trigger);
     } catch (e) {
         showToast('Không thể tải sản phẩm', 'error');
     }
