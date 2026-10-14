@@ -2,6 +2,8 @@ package com.utegear.service;
 
 import com.utegear.dto.inventory.InventoryResult;
 import com.utegear.dto.inventory.InventoryTransferResult;
+import com.utegear.entity.Order;
+import com.utegear.entity.OrderItem;
 import com.utegear.entity.ProductVariant;
 import com.utegear.entity.Store;
 import com.utegear.entity.StoreInventory;
@@ -11,6 +13,7 @@ import com.utegear.repository.StoreInventoryRepository;
 import com.utegear.repository.StoreRepository;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Comparator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,6 +93,27 @@ public class InventoryService {
                 sourceInventory.getQuantity(),
                 destinationInventory.getQuantity(),
                 OffsetDateTime.now(ZoneOffset.UTC));
+    }
+
+    @Transactional
+    public void restoreReservedStock(Order order) {
+        if (order == null || order.getFulfillmentStore() == null || order.getFulfillmentStore().getId() == null) {
+            throw new ApiException(HttpStatus.CONFLICT, "ORDER_STORE_NOT_FOUND",
+                    "Đơn hàng không có cửa hàng thực hiện để hoàn tồn kho");
+        }
+        Long storeId = order.getFulfillmentStore().getId();
+        order.getItems().stream()
+                .sorted(Comparator.comparing(item -> item.getVariant().getId()))
+                .forEach(item -> restoreLine(storeId, item));
+    }
+
+    private void restoreLine(Long storeId, OrderItem item) {
+        Long variantId = item.getVariant().getId();
+        StoreInventory inventory = inventoryRepository.findLocked(storeId, variantId)
+                .orElseThrow(() -> new ApiException(HttpStatus.CONFLICT, "INVENTORY_RESERVATION_NOT_FOUND",
+                        "Không tìm thấy tồn kho đã giữ cho đơn hàng"));
+        inventory.receive(item.getQuantity());
+        inventoryRepository.save(inventory);
     }
 
     private Store requireActiveStore(Long storeId) {

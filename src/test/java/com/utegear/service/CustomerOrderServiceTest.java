@@ -26,6 +26,7 @@ class CustomerOrderServiceTest {
     private OrderRepository orders;
     private NotificationService notifications;
     private OrderRealtimePublisher realtime;
+    private InventoryService inventoryService;
     private CustomerOrderService service;
     private User user;
 
@@ -34,7 +35,8 @@ class CustomerOrderServiceTest {
         orders = mock(OrderRepository.class);
         notifications = mock(NotificationService.class);
         realtime = mock(OrderRealtimePublisher.class);
-        service = new CustomerOrderService(orders, notifications, realtime);
+        inventoryService = mock(InventoryService.class);
+        service = new CustomerOrderService(orders, notifications, realtime, inventoryService);
         user = new User("Nguyễn Văn An", "an@example.test", null, "hash");
         ReflectionTestUtils.setField(user, "id", 7L);
     }
@@ -67,6 +69,7 @@ class CustomerOrderServiceTest {
         service.cancel(user, 10L, "Không còn nhu cầu");
 
         assertThat(order.getStatus()).isEqualTo(OrderStatus.CANCELLED);
+        verify(inventoryService).restoreReservedStock(order);
         verify(realtime).publishStatusChangedAfterCommit(order, OrderStatus.PENDING, notification);
     }
 

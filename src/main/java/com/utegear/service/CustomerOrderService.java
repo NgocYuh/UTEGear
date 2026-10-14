@@ -27,12 +27,14 @@ public class CustomerOrderService {
     private final OrderRepository orders;
     private final NotificationService notifications;
     private final OrderRealtimePublisher realtimePublisher;
+    private final InventoryService inventoryService;
 
     public CustomerOrderService(OrderRepository orders, NotificationService notifications,
-            OrderRealtimePublisher realtimePublisher) {
+            OrderRealtimePublisher realtimePublisher, InventoryService inventoryService) {
         this.orders = orders;
         this.notifications = notifications;
         this.realtimePublisher = realtimePublisher;
+        this.inventoryService = inventoryService;
     }
 
     @Transactional(readOnly = true)
@@ -70,6 +72,7 @@ public class CustomerOrderService {
         if (order.getPayment() != null && order.getPayment().getStatus() == PaymentStatus.PENDING) {
             order.getPayment().cancel();
         }
+        inventoryService.restoreReservedStock(order);
         order.transitionTo(OrderStatus.CANCELLED);
         orders.save(order);
         Notification notification = notifications.create(user, NotificationType.ORDER_STATUS_CHANGED,
