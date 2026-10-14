@@ -22,7 +22,15 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
     @Query("select order from Order order where order.id = :id")
     Optional<Order> findDetailedById(@Param("id") Long id);
 
+    @EntityGraph(attributePaths = {"items", "items.variant", "payment", "fulfillmentStore"})
+    @Query("select order from Order order where order.id = :id and order.user.id = :userId")
+    Optional<Order> findDetailedByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select order from Order order where order.id = :id")
     Optional<Order> findLockedById(@Param("id") Long id);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select order from Order order where order.id = :id and order.user.id = :userId")
+    Optional<Order> findLockedByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
 }

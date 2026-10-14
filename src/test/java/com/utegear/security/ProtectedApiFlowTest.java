@@ -6,20 +6,25 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.utegear.dto.notification.NotificationPage;
 import com.utegear.dto.order.AdminOrderDtos;
+import com.utegear.dto.order.CustomerOrderDtos;
 import com.utegear.dto.order.CheckoutQuoteResponse;
 import com.utegear.entity.Role;
 import com.utegear.entity.User;
 import com.utegear.repository.UserRepository;
 import com.utegear.service.AdminOrderService;
+import com.utegear.service.AddressService;
 import com.utegear.service.CheckoutService;
+import com.utegear.service.CustomerOrderService;
 import com.utegear.service.NotificationService;
 import com.utegear.service.ProductMediaService;
+import com.utegear.service.ProfileService;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -46,6 +51,9 @@ class ProtectedApiFlowTest {
     @MockBean private NotificationService notificationService;
     @MockBean private AdminOrderService adminOrderService;
     @MockBean private ProductMediaService productMediaService;
+    @MockBean private ProfileService profileService;
+    @MockBean private AddressService addressService;
+    @MockBean private CustomerOrderService customerOrderService;
 
     private User customer;
     private User admin;
@@ -68,6 +76,41 @@ class ProtectedApiFlowTest {
                 .andExpect(status().isUnauthorized()).andExpect(jsonPath("$.code").value("UNAUTHORIZED"));
         mockMvc.perform(get("/api/notifications"))
                 .andExpect(status().isUnauthorized()).andExpect(jsonPath("$.code").value("UNAUTHORIZED"));
+    }
+
+    @Test
+    void rejectsAccountAndCustomerOrderApisWithoutJwt() throws Exception {
+        mockMvc.perform(patch("/api/profile").contentType("application/json")
+                        .content("{\"fullName\":\"Test User\",\"phone\":\"0900000000\"}"))
+                .andExpect(status().isUnauthorized()).andExpect(jsonPath("$.code").value("UNAUTHORIZED"));
+        mockMvc.perform(get("/api/addresses"))
+                .andExpect(status().isUnauthorized()).andExpect(jsonPath("$.code").value("UNAUTHORIZED"));
+        mockMvc.perform(get("/api/orders"))
+                .andExpect(status().isUnauthorized()).andExpect(jsonPath("$.code").value("UNAUTHORIZED"));
+    }
+
+    @Test
+    void accountAndCustomerOrderApisUseUserFromJwt() throws Exception {
+        when(profileService.update(eq(customer), any())).thenReturn(new com.utegear.dto.auth.UserProfile(
+                customer.getId(), "Updated User", customer.getEmail(), "0900000000", null,
+                true, List.of(Role.CUSTOMER), customer.getCreatedAt()));
+        when(addressService.findAll(customer)).thenReturn(List.of());
+        when(customerOrderService.list(customer, null, 0, 20)).thenReturn(
+                new CustomerOrderDtos.OrderPage(List.of(), 0, 20, 0, 0, true, true, true));
+
+        mockMvc.perform(patch("/api/profile")
+                        .header("Authorization", "Bearer " + customerToken)
+                        .contentType("application/json")
+                        .content("{\"fullName\":\"Updated User\",\"phone\":\"0900000000\"}"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.fullName").value("Updated User"));
+        mockMvc.perform(get("/api/addresses").header("Authorization", "Bearer " + customerToken))
+                .andExpect(status().isOk()).andExpect(jsonPath("$").isArray());
+        mockMvc.perform(get("/api/orders").header("Authorization", "Bearer " + customerToken))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.empty").value(true));
+
+        verify(profileService).update(eq(customer), any());
+        verify(addressService).findAll(customer);
+        verify(customerOrderService).list(customer, null, 0, 20);
     }
 
     @Test
