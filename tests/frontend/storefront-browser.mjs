@@ -18,9 +18,13 @@ async function createBrowser() {
     const target = await (await fetch(cdp + '/json/new?about:blank', { method: 'PUT' })).json();
     const socket = new WebSocket(target.webSocketDebuggerUrl), pending = new Map(); let serial = 0;
     await new Promise((resolve,reject) => { socket.onopen=resolve; socket.onerror=reject; });
-    const errors = [], stomp = [];
+    const errors = [], stomp = [], requests = [];
     socket.onmessage = event => {
         const value = JSON.parse(event.data); if (value.method === 'Runtime.exceptionThrown') errors.push(value.params.exceptionDetails.text);
+        if (value.method === 'Network.requestWillBeSent') {
+            const route = new URL(value.params.request.url).pathname;
+            if (route.startsWith('/api/orders/') || route.startsWith('/api/admin/orders')) requests.push({ route, method: value.params.request.method });
+        }
         if (value.method === 'Network.webSocketFrameSent' || value.method === 'Network.webSocketFrameReceived') {
             const frame = value.params.response.payloadData;
             // Retain only protocol evidence. Never retain raw frames or JWT header values.
@@ -48,7 +52,9 @@ async function createBrowser() {
     const fill = (selector, values) => evaluate(`(()=>{const form=document.querySelector(${JSON.stringify(selector)});for(const [name,value] of Object.entries(${JSON.stringify(values)}))form.elements.namedItem(name).value=value;form.requestSubmit();})()`);
     const login = async (email,password) => { await navigate('/login'); await fill('[data-auth=login]',{email,password}); await wait(`location.pathname === '/' && !!window.UTEGear?.Session.get() && !document.querySelector('[data-session-controls]').hidden`); };
     await send('Page.enable'); await send('Runtime.enable'); await send('Network.enable');
-    const browser={send,evaluate,wait,navigate,fill,login,errors,stomp,close:async()=>{for(const task of pending.values())clearTimeout(task.timer);socket.close();await fetch(cdp+'/json/close/'+target.id).catch(()=>{});}};
+    // Track real native sockets only, to exercise a dropped connection without mocking frames/API.
+    await send('Page.addScriptToEvaluateOnNewDocument', { source: `window.__qaSockets=[];const NativeWebSocket=window.WebSocket;window.WebSocket=class extends NativeWebSocket{constructor(...args){super(...args);window.__qaSockets.push(this);}};` });
+    const browser={send,evaluate,wait,navigate,fill,login,errors,stomp,requests,close:async()=>{for(const task of pending.values())clearTimeout(task.timer);socket.close();await fetch(cdp+'/json/close/'+target.id).catch(()=>{});}};
     browsers.push(browser); return browser;
 }
 fs.mkdirSync(output,{recursive:true});
@@ -104,8 +110,25 @@ try {
         if(await admin.evaluate(`document.querySelector('[data-realtime-status]').textContent.includes('Đã kết nối')`))check(true,'Real ADMIN STOMP CONNECT/subscription/resync');else fail('Admin STOMP',await admin.evaluate(`document.querySelector('[data-realtime-status]').textContent`));
         await admin.navigate('/admin/orders/'+orderId,'/admin/orders');await admin.wait(`document.querySelector('[data-order-detail]').textContent.includes('CANCELLED')`);check(true,'Admin real order detail');
         await admin.navigate('/admin/orders/'+secondId,'/admin/orders');await admin.wait(`!!document.getElementById('order-next-status')`);
+        await A.navigate('/orders/'+secondId,'/orders');await A.wait(`document.querySelector('[data-realtime-status]').textContent.includes('Đã kết nối')`);
         await admin.evaluate(`document.getElementById('order-next-status').value='CONFIRMED';Array.from(document.querySelectorAll('[data-order-detail] button')).find(el=>el.textContent==='Cập nhật trạng thái').click()`);await admin.wait(`document.querySelector('[data-order-detail]').textContent.includes('Trạng thái: CONFIRMED')`);check(true,'Real ADMIN status update');
-        await A.navigate('/orders/'+secondId,'/orders');await A.wait(`document.querySelector('[data-order-detail]').textContent.includes('Trạng thái: CONFIRMED')`);check(true,'Customer REST resync shows ADMIN status');
+        await A.wait(`document.querySelector('[data-order-detail]').textContent.includes('Trạng thái: CONFIRMED')`);check(true,'Customer receives real status event and resyncs without navigation');
+        const connects=A.stomp.filter(frame=>frame.command==='CONNECTED').length, reads=A.requests.filter(request=>request.route==='/api/orders/'+secondId && request.method==='GET').length;
+        await A.evaluate(`window.__qaSockets.find(ws=>ws.readyState===WebSocket.OPEN).close()`);
+        await A.wait(`window.__qaSockets.length>=2 && window.__qaSockets.at(-1).readyState===WebSocket.OPEN && document.querySelector('[data-realtime-status]').textContent.includes('Đã kết nối')`);
+        check(A.stomp.filter(frame=>frame.command==='CONNECTED').length>connects,'Customer reconnects native STOMP after socket loss');
+        check(A.requests.filter(request=>request.route==='/api/orders/'+secondId && request.method==='GET').length>reads,'Customer reconnect performs fresh REST resync');
+        await A.navigate('/products/100');await A.evaluate(`document.querySelector('[data-detail-add]').click()`);await A.wait(`!!document.querySelector('.toast-msg')`);
+        await A.navigate('/checkout');await A.wait(`!document.querySelector('[data-quote]').disabled`);
+        await A.evaluate(`document.querySelector('[name=addressId]').selectedIndex=1;document.querySelector('[name=fulfillmentStoreId]').value='100';document.querySelector('[data-quote]').click()`);await A.wait(`!document.querySelector('[data-place]').disabled`);await A.evaluate(`document.querySelector('[data-place]').click()`);await A.wait(`document.querySelector('[data-view-status]').textContent.includes('Đã đặt đơn')`);
+        const thirdId=await A.evaluate(`Number(new URL(Array.from(document.querySelectorAll('a')).find(el=>el.textContent==='Xem đơn hàng').href).searchParams.get('focus'))`);
+        const thirdCode=await A.evaluate(`UTEGear.API.get('/api/orders/'+${thirdId}).then(order=>order.orderCode)`);
+        await admin.wait(`document.querySelector('[data-view-items]').textContent.includes(${JSON.stringify(thirdCode)}) && Array.from(document.querySelectorAll('.toast-msg')).some(el=>el.textContent.includes('Có đơn hàng mới'))`);check(true,'Admin receives real ORDER_CREATED event and refreshes list without navigation');
+        const adminConnects=admin.stomp.filter(frame=>frame.command==='CONNECTED').length, adminReads=admin.requests.filter(request=>request.route==='/api/admin/orders' && request.method==='GET').length;
+        await admin.evaluate(`window.__qaSockets.find(ws=>ws.readyState===WebSocket.OPEN).close()`);
+        await admin.wait(`window.__qaSockets.length>=2 && window.__qaSockets.at(-1).readyState===WebSocket.OPEN && document.querySelector('[data-realtime-status]').textContent.includes('Đã kết nối')`);
+        check(admin.stomp.filter(frame=>frame.command==='CONNECTED').length>adminConnects,'Admin reconnects native STOMP after socket loss');
+        check(admin.requests.filter(request=>request.route==='/api/admin/orders' && request.method==='GET').length>adminReads,'Admin reconnect performs fresh REST resync');
     }
     await A.navigate('/profile');await A.wait(`!document.querySelector('[data-profile-management]').hidden`);const nextPassword=randomUUID()+'Ab1!';await A.fill('[data-password-form]',{currentPassword:password,newPassword:nextPassword,confirmPassword:nextPassword});await A.wait(`location.pathname==='/login' && !window.UTEGear?.Session.get()`);check(true,'Real password update clears local session');
     await A.login(email,nextPassword);check(true,'Login with updated password');

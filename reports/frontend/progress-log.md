@@ -1,62 +1,70 @@
 # Nhật ký tiến độ Frontend
 
-## FE-BIND-01: Binding dữ liệu và realtime FE theo BE PR #54
+## FE-BIND-01: Binding dữ liệu và realtime FE theo BE
 
-- Trạng thái: `BLOCKED`
+- Trạng thái: `IN PROGRESS`
 - Phụ trách: `@trongsonho` (Frontend); liên kết INT-01/02/03, QA-04.
-- Branch: `fix/storefront-bindings`; base `ef285f9` (merge PR #54).
-- Pull Request: `Chưa mở; người dùng đã duyệt commit/push branch để BE review`
+- Branch nguồn: `fix/storefront-bindings`; commit FE `462c9eb` đã merge qua [PR #56](https://github.com/NgocYuh/UTEGear/pull/56) tại `7457eb5`.
+- Bản kiểm thử/báo cáo tiếp: `test/qa04-realtime-verification`, base `7457eb5`; chưa mở PR.
 - Ngày cập nhật: 2026-10-14
+- Đã kiểm thử sau PR #55 bằng merge local `cdcb689`; tree nguồn trùng main `7457eb5` sau PR #56.
+  Người dùng đã duyệt push phần kiểm thử/báo cáo trên nhánh mới để BE review.
 - Đã làm:
-  - Cart/wishlist/catalog/detail/store theo DTO, profile PATCH/password và address CRUD/default.
-  - Checkout quote/place; customer/admin order list/detail/focus/cancel/status.
-  - STOMP native /ws, Authorization ở CONNECT, REST resync, stop khi server ERROR.
-  - Áp dụng policy sessionStorage đã BE APPROVED trong PR #54, không đổi kiến trúc.
-  - Fixture/launcher/browser tests tạm; chỉ sửa frontend, không Java/config/migration/BE tests.
-  - Review và cách tái hiện: `docs/frontend/storefront-bindings-review.md`.
-- Kiểm thử:
-  - Unit JS: `18 PASS`; JS syntax PASS.
+  - Catalog/cart/wishlist/profile/address/checkout/customer-admin orders theo BE contract.
+  - STOMP native /ws, Authorization ở CONNECT; sessionStorage theo policy APPROVED PR #54.
+  - Đồng bộ bản BE sửa cart/STOMP từ PR #55, không tự sửa Backend Java/config/migration.
+  - Bổ sung browser test nhận event thật, socket loss, reconnect và REST resync customer/admin.
+- Kết quả kiểm thử sau PR #55:
   - `mvnw.cmd -B clean verify -Dnet.bytebuddy.experimental=true`: `BUILD SUCCESS`, Java 26;
-    185 tests được phát hiện, 182 pass, 3 PostgreSQL tests skip do Docker chưa chạy.
-  - Browser/API giao dịch thật: `32 PASS, 3 FAIL`; FAIL cart PUT và customer/admin STOMP.
-  - HTTP/render/responsive/labels/focus/validation: `93 PASS, 0 FAIL`; runner read-only còn
-    5 placeholder BLOCKED cho authenticated groups, đối chiếu với suite giao dịch riêng.
-- Blocker:
-  - Cart PUT trả 500: “Dòng sản phẩm không thuộc giỏ hàng”, Cart.java:75; FE rollback đúng.
-  - STOMP server từ chối subscription cả customer/admin: “Kết nối STOMP chưa được xác thực”.
-    CDP xác nhận CONNECT có JWT; FE dừng retry. BE cần kiểm tra principal CONNECT/SUBSCRIBE.
-  - Realtime delivery/reconnect và các ca rủi ro QA-04 còn chưa hoàn tất; chi tiết trong review.
-- Tiếp theo: BE review code trên branch đã được duyệt push, sửa riêng hai lỗi rồi chạy lại QA-04; chưa QA-05.
-- Ngày hoàn tất: `Chưa hoàn tất`; push để review không đồng nghĩa QA-04 đã DONE.
+    185 tests được phát hiện, 182 pass, 3 PostgreSQL tests skip vì Docker chưa chạy.
+  - Unit JS: `18 PASS`; browser script syntax PASS.
+  - HTTP/DOM/responsive/labels/focus/validation: `93 PASS, 0 FAIL`; 5 nhóm ngoài phạm vi
+    read-only runner giữ placeholder BLOCKED, đối chiếu với suite giao dịch riêng.
+  - Browser/API giao dịch thật: `39 PASS, 0 FAIL`, không mock API/frame STOMP.
+  - Cart PUT cập nhật quantity/subtotal PASS. Customer/admin CONNECT/subscription PASS.
+  - Customer nhận ORDER_STATUS_CHANGED, admin nhận ORDER_CREATED và UI cập nhật không navigation.
+  - Customer/admin reconnect sau đóng native socket và GET REST resync mới PASS.
+  - Không có uncaught browser exception. Test server/browser riêng đã dừng sau lưu artifact.
+- Đối soát blocker cũ:
+  - Cart PUT 500 và STOMP subscription từ chối đã được BE sửa PR #55 và xác nhận hết trên H2.
+  - Không còn ghi thiếu profile/address/customer-order API, route hoặc policy.
+- Còn cần hoàn tất:
+  - Review/duyệt cập nhật kiểm thử và các ca QA-04 chưa bao phủ; PR #56 merge không thay thế kiểm thử còn thiếu.
+  - Chưa xác nhận PostgreSQL/Flyway thực tế hoặc toàn bộ dataset theo hướng dẫn BE.
+- Review/bằng chứng: `docs/frontend/storefront-bindings-review.md`.
+- Tiếp theo: review bản đồng bộ/kiểm thử, hoàn thiện QA-04 trước QA-05.
+- Ngày hoàn tất: `Chưa hoàn tất`
 
 ## QA-04: Frontend automated và manual tests
 
-- Trạng thái: `BLOCKED`
+- Trạng thái: `IN PROGRESS` (đã gỡ hai blocker BE sau PR #55).
 - Người phụ trách: `@trongsonho` (Frontend).
-- Tooling gốc: branch `test/frontend-flows`, đã merge [PR #53](https://github.com/NgocYuh/UTEGear/pull/53)
-  tại `aba8d3c`. Merge tooling không đồng nghĩa phạm vi QA-04 đã hoàn tất.
-- Bản sửa/kiểm thử tiếp: `fix/storefront-bindings`, base `ef285f9`; người dùng đã duyệt push để BE review, chưa PR.
+- Tooling gốc: `test/frontend-flows`, đã merge [PR #53](https://github.com/NgocYuh/UTEGear/pull/53)
+  tại `aba8d3c`; merge tooling không đồng nghĩa QA-04 đã DONE.
+- Bản FE đã merge PR #56; kiểm thử/báo cáo tiếp: `test/qa04-realtime-verification`, base `7457eb5`.
+  Người dùng đã duyệt push phần mới để BE review, chưa mở PR.
 - Ngày cập nhật: 2026-10-14
 - Đã làm:
-  - HTTP/CDP runner gốc và checklist: `docs/frontend/qa04-review.md`.
-  - Bổ sung H2 fixture, account CUSTOMER/admin tạm, suite browser giao dịch thật không intercept API.
-  - `/orders` và `/admin/orders` đã render được sau PR #54; policy đã APPROVED, không còn dùng
-    kết quả 404/DRAFT cũ để kết luận bản hiện tại.
+  - Chạy HTTP/CDP trên Spring Boot thật với H2 tạm và CUSTOMER A/B + admin QA.
+  - Catalog/cart/wishlist/profile/address/quote/place/cancel/admin status/password/logout và ownership.
+  - Responsive 1440/768/390, labels, Tab/focus, form required/email/mismatch, menu Escape/focus.
+  - Realtime customer/admin: JWT CONNECT, events thật, mất socket, reconnect và REST resync.
 - Kết quả:
-  - Lịch sử sau PR #52: `79 PASS, 0 FAIL, 7 BLOCKED` trên các trang/dữ liệu rỗng.
-  - Sau PR #54 và bản FE local: read-only `93 PASS, 0 FAIL, 5 BLOCKED` (nhóm không chạy trong
-    read-only runner); giao dịch riêng `32 PASS, 3 FAIL`, không cộng thành số luồng nghiệp vụ.
-  - Login/profile/address/quote/place/cancel/admin status/ownership/password/logout PASS thực tế.
-  - Responsive 1440/768/390, labels/Tab/menu/form validation PASS trong điều kiện đã chạy.
+  - Sau PR #52: `79 PASS, 0 FAIL, 7 BLOCKED` (lịch sử trên các trang/dữ liệu rỗng).
+  - Sau PR #54: giao dịch `32 PASS, 3 FAIL` (cart PUT, customer/admin STOMP; lịch sử).
+  - Sau PR #55: giao dịch `39 PASS, 0 FAIL`; read-only `93 PASS, 0 FAIL, 5 BLOCKED` là
+    placeholder cho các nhóm không chạy trong runner read-only, không phải 5 lỗi API mới.
   - Unit JS `18 PASS`; Maven `BUILD SUCCESS`, 182 pass/3 PostgreSQL skip.
 - Còn thiếu:
-  - BE cart PUT 500 và STOMP subscription bị từ chối; chưa thể xác nhận realtime delivery/reconnect.
-  - Multi-variant/media, coupon/stock/expired quote/race/double-submit, JWT expiry trên browser và
-    checklist accessibility đầy đủ chưa được bao phủ; không dùng unit doubles để ghi E2E PASS.
-  - Cần review/duyệt PR bản FE này và chạy lại các ca thiếu trước khi ghi DONE.
-- Bằng chứng mới/cách chạy: `docs/frontend/storefront-bindings-review.md`; artifact ở
-  `D:/UTEGear/.local-reference/storefront-test-artifacts/pr54-final/`, không commit log/ảnh/token.
-- Tiếp theo: review FE, BE sửa hai blocker riêng, chạy lại QA-04; chỉ sau QA-04 hoàn tất mới QA-05.
+  - Dataset nhiều biến thể/media, store inactive, thiếu hàng/coupon/quote hết hạn/race/double-submit,
+    JWT expiry trên browser và phần checklist keyboard/accessibility còn lại chưa kiểm tra đầy đủ.
+  - Dữ liệu H2 chỉ phủ happy path và các quyền đã ghi, chưa thay kiểm thử PostgreSQL/Flyway.
+  - PR #56 của FE đã merge; cập nhật kiểm thử mới chưa mở/duyệt PR, các ca còn thiếu chưa hoàn tất.
+    Chưa ghi DONE, chưa bắt đầu QA-05.
+- Bằng chứng mới: `D:/UTEGear/.local-reference/storefront-test-artifacts/pr55-final/`;
+  build log `D:/UTEGear/.local-reference/storefront-test-artifacts/pr55-verify.log`.
+  Artifact/log/ảnh/tài khoản/token không commit.
+- Review/cách chạy: `docs/frontend/storefront-bindings-review.md`.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## FE-INT-FIX: Khôi phục CSS ZIP và đối chiếu INT-01/02/03 với Backend

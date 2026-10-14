@@ -1,6 +1,11 @@
 # QA-04 — Bản kiểm thử để FE/BE review
 
-> Cập nhật sau PR #54, ngày 2026-10-14: tooling đã merge qua PR #53; QA-04 vẫn BLOCKED.
+> Cập nhật sau PR #55, ngày 2026-10-14: cart PUT và STOMP đã PASS, QA-04 chuyển IN PROGRESS.
+> Lượt mới có 39 mục giao dịch PASS, 0 FAIL; 93 mục HTTP/DOM PASS. Đã xác nhận events thật,
+> reconnect và REST resync customer/admin. PR #56 FE đã merge; cập nhật test trên nhánh
+> test/qa04-realtime-verification chưa mở/duyệt PR, còn ca chưa bao phủ, chưa DONE.
+>
+> Kết quả lịch sử sau PR #54: tooling đã merge qua PR #53; QA-04 lúc đó BLOCKED.
 > `/orders` và `/admin/orders` đã render, policy phiên đã APPROVED. Bản FE local có 93 mục
 > HTTP/DOM PASS và 32 mục tích hợp PASS, 3 FAIL (cart PUT, customer/admin STOMP).
 > Xem [bằng chứng mới và blocker](storefront-bindings-review.md) và nhật ký FE.
