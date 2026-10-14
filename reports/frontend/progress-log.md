@@ -1,5 +1,24 @@
 # Nhật ký tiến độ Frontend
 
+## DOC-03: Hướng dẫn sử dụng/demo và kiểm tra giao diện
+
+- Trạng thái: `IN REVIEW` — tài liệu và kiểm tra DOC-03 hoàn tất, chờ duyệt.
+- Phụ trách: `@trongsonho` (Frontend); reviewer: `@NgocYuh`.
+- Branch: `docs/frontend-demo-guide`; base main `2836a1a` (PR #63).
+- Ngày cập nhật: 2026-10-15.
+- Đã làm: `docs/frontend/demo-and-verification.md` mô tả route hiện có, kịch bản customer/admin,
+  media, trạng thái lỗi/empty/loading, responsive 1440/768/390 và keyboard/focus/accessibility.
+- Hướng dẫn chạy unit/syntax/Maven/CDP, giới hạn H2/client clock, media live và placeholder FE CI;
+  liên kết DOC-02 thay vì lặp cấu hình Backend. Không sửa Backend hoặc giao diện runtime.
+- Đối soát QA-05: báo cáo PASS đã merge [PR #61](https://github.com/NgocYuh/UTEGear/pull/61),
+  merge `56b9e0a`, ngày 2026-10-15 giờ Asia/Bangkok; 44 checklist/28 media live PASS theo báo cáo BE.
+  Mục QA-05 bên dưới là trạng thái viết trước merge; không coi còn thiếu media QA thật.
+- Kiểm tra mới: Maven clean verify BUILD SUCCESS, 187 phát hiện/184 pass/3 PostgreSQL skip local;
+  18 unit JS PASS, syntax JS PASS. QA-04 browser: 93 public/39 giao dịch/54 ca mở rộng PASS, 0 FAIL, summary PASS.
+- Bằng chứng local: `.local-reference/storefront-test-artifacts/doc03-rel01-verify.log`;
+  không commit log, screenshot, credential. Bản này gửi lên GitHub để review; chưa duyệt/DONE.
+- Tiếp theo: review/merge DOC-03 rồi chốt REL-01 trên branch riêng.
+
 ## QA-05: End-to-end và kiểm thử media thật
 
 - Trạng thái: `IN REVIEW` — toàn bộ phạm vi chức năng đã PASS, chờ review/merge PR báo cáo.
