@@ -1,3 +1,44 @@
+# Cập nhật QA-04 sau BE PR #55 — 2026-10-14
+
+Đã kiểm thử source sau main `70ca4b9` bằng merge `cdcb689`. Sau đó GitHub merge FE qua PR #56
+tại `7457eb5`; tree nguồn trùng bản đã kiểm thử. Phần kiểm thử/báo cáo mới đưa lên nhánh
+`test/qa04-realtime-verification` từ `7457eb5` theo yêu cầu push của người dùng.
+Không tự sửa Backend; code BE mới lấy từ PR #55.
+
+## Kết quả mới nhất
+
+- Cart PUT quantity/subtotal: PASS, không còn lỗi 500.
+- Customer/admin STOMP CONNECT/subscription: PASS, không còn lỗi chưa xác thực.
+- Customer nhận event trạng thái và admin nhận event đơn mới; UI cập nhật không navigation: PASS.
+- Customer/admin reconnect sau đóng socket native và có GET REST resync mới: PASS.
+- Suite giao dịch thật: **39 PASS, 0 FAIL**. HTTP/DOM: **93 PASS, 0 FAIL**; 5 placeholder
+  BLOCKED thuộc nhóm ngoài read-only runner, đối chiếu với suite giao dịch, không phải API thiếu.
+- Unit JS: 18 PASS; browser script syntax PASS.
+- Maven clean verify (Java 26, -Dnet.bytebuddy.experimental=true): BUILD SUCCESS,
+  185 tests được phát hiện, 182 pass, 3 PostgreSQL skip vì Docker chưa chạy.
+
+Test dùng H2 tạm và real HTTP/Chromium/STOMP. CDP chỉ ghi command và cờ có Authorization,
+không giữ frame/JWT. Theo dõi native socket để chủ động đóng rồi xác nhận reconnect;
+không mock frame, API hoặc sự kiện server. GET sau reconnect được xác nhận qua CDP Network.
+
+Artifact local, không commit:
+- D:/UTEGear/.local-reference/storefront-test-artifacts/pr55-final/browser/report.json
+- D:/UTEGear/.local-reference/storefront-test-artifacts/pr55-final/public/report.json
+- D:/UTEGear/.local-reference/storefront-test-artifacts/pr55-final/browser/cart-390.png
+- D:/UTEGear/.local-reference/storefront-test-artifacts/pr55-verify.log
+
+## Trạng thái
+
+FE-BIND-01 và QA-04 chuyển từ BLOCKED sang IN PROGRESS: hai blocker BE đã được xác nhận hết.
+Chưa DONE: còn các ca/dataset chưa bao phủ (multi-variant/media, inactive/stock/coupon/quote expiry,
+race/double-submit, JWT expiry trên browser và keyboard/accessibility còn lại), PostgreSQL/Flyway
+chưa xác nhận. PR #56 FE đã merge; cập nhật kiểm thử mới chưa mở/duyệt PR. Chưa bắt đầu QA-05.
+
+Cách chạy fixture/launcher ở phần lịch sử dưới vẫn áp dụng. Bản dưới lưu kết quả PR #54,
+không dùng các lỗi cũ để kết luận main hiện tại còn lỗi.
+
+---
+
 # FE-BIND-01 — Đồng bộ Frontend với BE PR #54
 
 - Phụ trách: Frontend @trongsonho. Branch: fix/storefront-bindings.
