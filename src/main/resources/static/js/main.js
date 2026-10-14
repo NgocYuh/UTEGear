@@ -144,7 +144,7 @@ function addToCartDetail(productId) {
     const qtyInput = document.getElementById('quantity');
     const qty = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
     const firstVariant = document.querySelector('.variant-option:not(.disabled)');
-    let variantId = selectedVariantId || (firstVariant ? firstVariant.getAttribute('data-variant-id') : null);
+    let variantId = UTEGear.Variant?.selectedVariantId || selectedVariantId || (firstVariant ? firstVariant.getAttribute('data-variant-id') : null);
     addToCart(productId, variantId, qty);
 }
 
@@ -192,7 +192,7 @@ async function quickView(productId) {
             <button class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-6"><img src="${UTEGear.Utils.safeImage(product.primaryImage?.secureUrl)}" class="img-fluid rounded" alt="${escapeHtml(product.name)}"></div>
+                    <div class="col-md-6"><img src="${UTEGear.Utils.safeImage(product.images?.find(image => image.primary)?.secureUrl || product.images?.[0]?.secureUrl)}" class="img-fluid rounded" alt="${escapeHtml(product.name)}"></div>
                     <div class="col-md-6">
                         <div class="product-detail-price"><span class="price current">${formatPrice(product.effectivePrice)}</span></div>
                         <p class="text-muted">${escapeHtml(product.description || '')}</p>

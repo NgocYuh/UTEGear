@@ -35,7 +35,7 @@
                         <div class="d-flex flex-wrap gap-4 fs-7 text-muted">
                             <div><i class="bi bi-geo-alt-fill text-danger me-1"></i> <span class="text-dark" th:text="${store.address}">Địa chỉ</span></div>
                             <div><i class="bi bi-telephone-fill text-primary me-1"></i> Hotline: <strong class="text-dark" th:text="${store.phone}">0901234567</strong></div>
-                            <div><i class="bi bi-clock-fill text-primary me-1"></i> Mở cửa: <strong class="text-primary" th:text="${store.openTime} + ' - ' + ${store.closeTime}">08:00 - 22:00</strong></div>
+                            <div><i class="bi bi-clock-fill text-primary me-1"></i> Mở cửa: <strong class="text-primary" th:text="${store.openingTime} + ' - ' + ${store.closingTime}">08:00 - 22:00</strong></div>
                         </div>
                     </div>
                     <a href="/contact" class="btn btn-outline-secondary btn-sm">

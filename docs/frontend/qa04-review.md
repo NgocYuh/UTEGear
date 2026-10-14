@@ -1,5 +1,11 @@
 # QA-04 — Bản kiểm thử để FE/BE review
 
+> Cập nhật sau PR #54, ngày 2026-10-14: tooling đã merge qua PR #53; QA-04 vẫn BLOCKED.
+> `/orders` và `/admin/orders` đã render, policy phiên đã APPROVED. Bản FE local có 93 mục
+> HTTP/DOM PASS và 32 mục tích hợp PASS, 3 FAIL (cart PUT, customer/admin STOMP).
+> Xem [bằng chứng mới và blocker](storefront-bindings-review.md) và nhật ký FE.
+> Nội dung bên dưới lưu kết quả lịch sử sau PR #52, không mô tả trạng thái hiện tại của main.
+
 - Phụ trách: Frontend `@trongsonho`.
 - Branch: `test/frontend-flows`, base `35a5e78` (merge PR #52).
 - Ngày chạy lại: 2026-10-14, 11:59 giờ Việt Nam/Thái Lan (UTC+7).

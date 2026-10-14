@@ -1,42 +1,62 @@
 # Nhật ký tiến độ Frontend
 
+## FE-BIND-01: Binding dữ liệu và realtime FE theo BE PR #54
+
+- Trạng thái: `BLOCKED`
+- Phụ trách: `@trongsonho` (Frontend); liên kết INT-01/02/03, QA-04.
+- Branch: `fix/storefront-bindings`; base `ef285f9` (merge PR #54).
+- Pull Request: `Chưa mở; người dùng đã duyệt commit/push branch để BE review`
+- Ngày cập nhật: 2026-10-14
+- Đã làm:
+  - Cart/wishlist/catalog/detail/store theo DTO, profile PATCH/password và address CRUD/default.
+  - Checkout quote/place; customer/admin order list/detail/focus/cancel/status.
+  - STOMP native /ws, Authorization ở CONNECT, REST resync, stop khi server ERROR.
+  - Áp dụng policy sessionStorage đã BE APPROVED trong PR #54, không đổi kiến trúc.
+  - Fixture/launcher/browser tests tạm; chỉ sửa frontend, không Java/config/migration/BE tests.
+  - Review và cách tái hiện: `docs/frontend/storefront-bindings-review.md`.
+- Kiểm thử:
+  - Unit JS: `18 PASS`; JS syntax PASS.
+  - `mvnw.cmd -B clean verify -Dnet.bytebuddy.experimental=true`: `BUILD SUCCESS`, Java 26;
+    185 tests được phát hiện, 182 pass, 3 PostgreSQL tests skip do Docker chưa chạy.
+  - Browser/API giao dịch thật: `32 PASS, 3 FAIL`; FAIL cart PUT và customer/admin STOMP.
+  - HTTP/render/responsive/labels/focus/validation: `93 PASS, 0 FAIL`; runner read-only còn
+    5 placeholder BLOCKED cho authenticated groups, đối chiếu với suite giao dịch riêng.
+- Blocker:
+  - Cart PUT trả 500: “Dòng sản phẩm không thuộc giỏ hàng”, Cart.java:75; FE rollback đúng.
+  - STOMP server từ chối subscription cả customer/admin: “Kết nối STOMP chưa được xác thực”.
+    CDP xác nhận CONNECT có JWT; FE dừng retry. BE cần kiểm tra principal CONNECT/SUBSCRIBE.
+  - Realtime delivery/reconnect và các ca rủi ro QA-04 còn chưa hoàn tất; chi tiết trong review.
+- Tiếp theo: BE review code trên branch đã được duyệt push, sửa riêng hai lỗi rồi chạy lại QA-04; chưa QA-05.
+- Ngày hoàn tất: `Chưa hoàn tất`; push để review không đồng nghĩa QA-04 đã DONE.
+
 ## QA-04: Frontend automated và manual tests
 
 - Trạng thái: `BLOCKED`
 - Người phụ trách: `@trongsonho` (Frontend).
-- Branch: `test/frontend-flows`
-- Pull Request: `Chưa mở; người dùng đã duyệt push branch để BE review, chưa duyệt merge`
+- Tooling gốc: branch `test/frontend-flows`, đã merge [PR #53](https://github.com/NgocYuh/UTEGear/pull/53)
+  tại `aba8d3c`. Merge tooling không đồng nghĩa phạm vi QA-04 đã hoàn tất.
+- Bản sửa/kiểm thử tiếp: `fix/storefront-bindings`, base `ef285f9`; người dùng đã duyệt push để BE review, chưa PR.
 - Ngày cập nhật: 2026-10-14
-- Base: `35a5e78`, PR #52 đã merge; INT-01/02/03 vẫn chưa xác nhận hoạt động đầy đủ.
 - Đã làm:
-  - Thêm runner `tests/frontend/qa04-live.mjs` gọi HTTP thật trên loopback, không dùng API mock.
-  - Chuẩn bị kiểm tra browser qua CDP cho rendered pages và checklist thủ công 12 nhóm hành vi.
-  - Chạy local Spring Boot test profile + H2 in-memory bằng tham số lệnh, không sửa Backend/config.
-  - Ghi bằng chứng và cách chạy lại tại `docs/frontend/qa04-review.md`.
-  - Đồng bộ PR #52 giữ nguyên file QA chưa commit; chạy Chromium thật và xem ảnh giao diện.
-  - Sửa runner nhận diện checkout empty state hợp lệ; thêm home/wishlist, validation và menu mobile.
-  - Người dùng đã yêu cầu commit/push đúng 3 file tooling/tài liệu QA-04 để BE review.
-    Không coi việc push là xác nhận các luồng BLOCKED đã hoàn tất.
-- Kết quả kiểm thử:
-  - Live HTTP + Chromium sau PR #52: `79 PASS, 0 FAIL, 7 BLOCKED`.
-  - 9 trang HTTP 200; responsive 1440/768/390, Tab focus, labels và runtime checks PASS;
-    required/email/mismatch và menu Escape/focus PASS. /orders và /admin/orders vẫn 404.
-  - `node --check tests/frontend/qa04-live.mjs`: `PASS`.
-  - Browser/CDP đã chạy; flow authenticated/giao dịch/realtime: `CHƯA CHẠY`, thiếu policy/data/UI/API.
-  - Unit JS hiện có: `PASS` 16 tests; test doubles của suite này không tính là UI tích hợp pass.
-  - `mvnw.cmd -B clean verify -Dnet.bytebuddy.experimental=true` sau PR #52: `BUILD SUCCESS`
-    trên Java 26; 175 tests được phát hiện, 172 pass, 3 PostgreSQL tests skip do Docker local chưa chạy.
-  - Test server localhost và Chromium riêng đã dừng sau khi lưu report và 27 ảnh.
-- Vướng mắc hoặc phần còn thiếu:
-  - Public/auth/customer shell MVC và layout dialect đã có sau PR #52; /orders/admin chưa có.
-  - Các API profile update/password, address/customer order và UI binding còn cần hoàn thiện.
-  - Policy phiên trên main vẫn DRAFT; chưa xác nhận BE duyệt sessionStorage.
-  - FE chưa nối đủ checkout/admin/realtime; layout cũ vẫn dùng SockJS/CONNECT không JWT.
-  - Đã có bằng chứng browser cho các trang rỗng; chưa có flow authenticated/data thật, không ghi DONE.
-- Bước tiếp theo:
-  - BE review tooling/checklist/báo cáo trên branch test/frontend-flows; chưa mở PR hoặc merge.
-  - Giải quyết task tích hợp riêng rồi chạy lại QA-04 với API thật và môi trường test.
-  - Chỉ sau QA-04 pass mới làm QA-05 trên branch riêng.
+  - HTTP/CDP runner gốc và checklist: `docs/frontend/qa04-review.md`.
+  - Bổ sung H2 fixture, account CUSTOMER/admin tạm, suite browser giao dịch thật không intercept API.
+  - `/orders` và `/admin/orders` đã render được sau PR #54; policy đã APPROVED, không còn dùng
+    kết quả 404/DRAFT cũ để kết luận bản hiện tại.
+- Kết quả:
+  - Lịch sử sau PR #52: `79 PASS, 0 FAIL, 7 BLOCKED` trên các trang/dữ liệu rỗng.
+  - Sau PR #54 và bản FE local: read-only `93 PASS, 0 FAIL, 5 BLOCKED` (nhóm không chạy trong
+    read-only runner); giao dịch riêng `32 PASS, 3 FAIL`, không cộng thành số luồng nghiệp vụ.
+  - Login/profile/address/quote/place/cancel/admin status/ownership/password/logout PASS thực tế.
+  - Responsive 1440/768/390, labels/Tab/menu/form validation PASS trong điều kiện đã chạy.
+  - Unit JS `18 PASS`; Maven `BUILD SUCCESS`, 182 pass/3 PostgreSQL skip.
+- Còn thiếu:
+  - BE cart PUT 500 và STOMP subscription bị từ chối; chưa thể xác nhận realtime delivery/reconnect.
+  - Multi-variant/media, coupon/stock/expired quote/race/double-submit, JWT expiry trên browser và
+    checklist accessibility đầy đủ chưa được bao phủ; không dùng unit doubles để ghi E2E PASS.
+  - Cần review/duyệt PR bản FE này và chạy lại các ca thiếu trước khi ghi DONE.
+- Bằng chứng mới/cách chạy: `docs/frontend/storefront-bindings-review.md`; artifact ở
+  `D:/UTEGear/.local-reference/storefront-test-artifacts/pr54-final/`, không commit log/ảnh/token.
+- Tiếp theo: review FE, BE sửa hai blocker riêng, chạy lại QA-04; chỉ sau QA-04 hoàn tất mới QA-05.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## FE-INT-FIX: Khôi phục CSS ZIP và đối chiếu INT-01/02/03 với Backend

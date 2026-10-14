@@ -1,227 +1,38 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
-<head>
-    <title>Tài khoản cá nhân - UTEGear</title>
-</head>
-<body>
-
-<main layout:fragment="content">
-
-    <!-- BREADCRUMB -->
-    <div class="page-breadcrumb">
-        <div class="container">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
-                    <li class="breadcrumb-item active">Tài khoản cá nhân</li>
-                </ol>
-            </nav>
-        </div>
-    </div>
-
-    <!-- PROFILE SECTION -->
-    <section class="profile-section section" th:if="${currentUser != null}">
-        <div class="container">
-            <div class="profile-layout">
-                
-                <!-- ASYMMETRIC COMPACT LEFT SIDEBAR: IDENTITY & NAVIGATION -->
-                <aside class="profile-sidebar" aria-label="Điều hướng tài khoản">
-                    <div class="profile-avatar-block">
-                        <div class="profile-avatar-circle"
-                             th:text="${!#strings.isEmpty(currentUser.fullName) ? #strings.substring(currentUser.fullName, 0, 1) : 'U'}">
-                            U
-                        </div>
-                        <h2 class="profile-user-name" th:text="${currentUser.fullName}">Tên người dùng</h2>
-                        <p class="profile-user-email" th:text="${currentUser.email}">email@example.com</p>
-                    </div>
-                    
-                    <nav class="profile-nav" id="profileTab" role="tablist">
-                        <button class="profile-nav-link active" data-bs-toggle="pill" data-bs-target="#tab-personal" type="button" role="tab">
-                            <i class="bi bi-person-circle"></i> Thông tin cá nhân
-                        </button>
-                        <button class="profile-nav-link" data-bs-toggle="pill" data-bs-target="#tab-addresses" type="button" role="tab">
-                            <i class="bi bi-geo-alt"></i> Sổ địa chỉ nhận hàng
-                        </button>
-                        <button class="profile-nav-link" data-bs-toggle="pill" data-bs-target="#tab-password" type="button" role="tab">
-                            <i class="bi bi-shield-lock"></i> Đổi mật khẩu
-                        </button>
-                        <a href="/orders" class="profile-nav-link">
-                            <i class="bi bi-receipt"></i> Đơn hàng của tôi
-                        </a>
-                        <a href="/wishlist" class="profile-nav-link">
-                            <i class="bi bi-heart"></i> Danh sách yêu thích
-                        </a>
-                        <a th:href="@{/logout}" class="profile-nav-link danger">
-                            <i class="bi bi-box-arrow-right"></i> Đăng xuất
-                        </a>
-                    </nav>
-                </aside>
-
-                <!-- MAIN CONTENT AREA -->
-                <div class="profile-main-area">
-                    <!-- SERVER FLASH ALERTS -->
-                    <div class="alert alert-success d-flex align-items-center mb-4" th:if="${successMessage}" role="alert">
-                        <i class="bi bi-check-circle-fill me-2"></i> <span th:text="${successMessage}">Thành công</span>
-                    </div>
-                    <div class="alert alert-danger d-flex align-items-center mb-4" th:if="${errorMessage}" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i> <span th:text="${errorMessage}">Lỗi</span>
-                    </div>
-
-                    <div class="tab-content" id="profileTabContent">
-                        
-                        <!-- TAB 1: PERSONAL INFORMATION -->
-                        <div class="tab-pane fade show active" id="tab-personal" role="tabpanel">
-                            <div class="profile-content-card">
-                                <h3 class="profile-section-title">
-                                    <i class="bi bi-person-lines-fill"></i> Thông tin cá nhân
-                                </h3>
-                                <form th:action="@{/profile/update}" method="post" class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label" for="profileFullName">Họ và tên *</label>
-                                        <input id="profileFullName" type="text" name="fullName" class="form-control" th:value="${currentUser.fullName}" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label" for="profileEmail">Email tài khoản (không thể đổi)</label>
-                                        <input id="profileEmail" type="email" class="form-control" th:value="${currentUser.email}" disabled readonly>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label" for="profilePhone">Số điện thoại liên hệ</label>
-                                        <input id="profilePhone" type="tel" name="phone" class="form-control" th:value="${currentUser.phone}" placeholder="Ví dụ: 0901234567">
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label" for="profileAddress">Địa chỉ nhà / Văn phòng</label>
-                                        <input id="profileAddress" type="text" name="address" class="form-control" th:value="${currentUser.address}" placeholder="Số nhà, tên đường...">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label" for="profileProvince">Tỉnh / Thành phố</label>
-                                        <input id="profileProvince" type="text" name="province" class="form-control" th:value="${currentUser.province}" placeholder="TP. Hồ Chí Minh">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label" for="profileDistrict">Quận / Huyện</label>
-                                        <input id="profileDistrict" type="text" name="district" class="form-control" th:value="${currentUser.district}" placeholder="Quận 1">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label" for="profileWard">Phường / Xã</label>
-                                        <input id="profileWard" type="text" name="ward" class="form-control" th:value="${currentUser.ward}" placeholder="Phường Bến Nghé">
-                                    </div>
-                                    <div class="col-12 mt-4 pt-2 border-top">
-                                        <button type="submit" class="btn btn-utama">
-                                            <i class="bi bi-check2 me-1"></i> Lưu thay đổi thông tin
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                        <!-- TAB 2: ADDRESS BOOK -->
-                        <div class="tab-pane fade" id="tab-addresses" role="tabpanel">
-                            <div class="profile-content-card">
-                                <h3 class="profile-section-title">
-                                    <i class="bi bi-geo-alt-fill"></i> Sổ địa chỉ nhận hàng
-                                </h3>
-
-                                <!-- Address Cards Grid -->
-                                <div class="address-card-grid" th:if="${currentUser.addresses != null && !currentUser.addresses.isEmpty()}">
-                                    <div class="address-item-card" th:each="addr : ${currentUser.addresses}" th:classappend="${addr.isDefault} ? 'is-default' : ''">
-                                        <div class="address-card-top">
-                                            <span class="address-user-name" th:text="${addr.fullName != null ? addr.fullName : currentUser.fullName}">Tên</span>
-                                            <span class="badge bg-primary" th:if="${addr.isDefault}">Mặc định</span>
-                                        </div>
-                                        <div class="address-phone" th:text="${addr.phone != null ? addr.phone : currentUser.phone}">SĐT</div>
-                                        <div class="address-details" th:text="${addr.street + ', ' + addr.ward + ', ' + addr.district + ', ' + addr.province}">
-                                            Địa chỉ chi tiết
-                                        </div>
-                                        <div class="address-actions">
-                                            <form th:if="${!addr.isDefault}" th:action="@{'/profile/address/default/' + ${addr.id}}" method="post" class="d-inline">
-                                                <button class="btn btn-sm btn-outline-secondary">Đặt làm mặc định</button>
-                                            </form>
-                                            <form th:action="@{'/profile/address/delete/' + ${addr.id}}" method="post" class="d-inline ms-auto">
-                                                <button class="btn btn-sm btn-outline-danger" title="Xóa địa chỉ" aria-label="Xóa địa chỉ">
-                                                    <i class="bi bi-trash3"></i> Xóa
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="alert alert-light border text-muted mb-4" th:if="${currentUser.addresses == null || currentUser.addresses.isEmpty()}">
-                                    <i class="bi bi-info-circle me-1"></i> Bạn chưa lưu địa chỉ giao hàng nào trong sổ địa chỉ.
-                                </div>
-
-                                <!-- ADD NEW ADDRESS FORM -->
-                                <div class="add-address-box">
-                                    <h4 class="add-address-box-title"><i class="bi bi-plus-circle me-1 text-danger"></i> Thêm địa chỉ nhận hàng mới</h4>
-                                    <form th:action="@{/profile/address/add}" method="post">
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <label class="form-label" for="newAddrStreet">Số nhà, tên đường *</label>
-                                                <input id="newAddrStreet" type="text" name="street" class="form-control" placeholder="Ví dụ: 123 Lê Duẩn" required>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label" for="newAddrWard">Phường / Xã *</label>
-                                                <input id="newAddrWard" type="text" name="ward" class="form-control" placeholder="Phường Bến Nghé" required>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="form-label" for="newAddrDistrict">Quận / Huyện *</label>
-                                                <input id="newAddrDistrict" type="text" name="district" class="form-control" placeholder="Quận 1" required>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="form-label" for="newAddrProvince">Tỉnh / Thành phố *</label>
-                                                <input id="newAddrProvince" type="text" name="province" class="form-control" placeholder="TP. Hồ Chí Minh" required>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="form-label" for="newAddrPhone">SĐT nhận hàng</label>
-                                                <input id="newAddrPhone" type="tel" name="phone" class="form-control" placeholder="0901234567">
-                                            </div>
-                                            <div class="col-12 form-check ms-1 my-1">
-                                                <input type="checkbox" class="form-check-input" name="isDefault" id="addrDefault">
-                                                <label class="form-check-label fs-7" for="addrDefault">Đặt làm địa chỉ giao hàng mặc định</label>
-                                            </div>
-                                            <div class="col-12">
-                                                <button type="submit" class="btn btn-outline-dark">
-                                                    <i class="bi bi-plus-lg me-1"></i> Lưu vào sổ địa chỉ
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- TAB 3: PASSWORD -->
-                        <div class="tab-pane fade" id="tab-password" role="tabpanel">
-                            <div class="profile-content-card" style="max-width: 520px;">
-                                <h3 class="profile-section-title">
-                                    <i class="bi bi-shield-lock-fill"></i> Đổi mật khẩu tài khoản
-                                </h3>
-                                <form th:action="@{/profile/password}" method="post">
-                                    <div class="mb-3">
-                                        <label class="form-label" for="currentPassword">Mật khẩu hiện tại *</label>
-                                        <input id="currentPassword" type="password" name="currentPassword" class="form-control" required autocomplete="current-password">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label" for="newPassword">Mật khẩu mới *</label>
-                                        <input id="newPassword" type="password" name="newPassword" class="form-control" placeholder="Tối thiểu 6 ký tự" required autocomplete="new-password">
-                                    </div>
-                                    <div class="mb-4">
-                                        <label class="form-label" for="confirmPassword">Xác nhận lại mật khẩu mới *</label>
-                                        <input id="confirmPassword" type="password" name="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu mới" required autocomplete="new-password">
-                                    </div>
-                                    <button type="submit" class="btn btn-utama">
-                                        <i class="bi bi-shield-check me-1"></i> Cập nhật mật khẩu mới
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-</main>
-
-</body>
-</html>
+<head><title>Tài khoản - UTEGear</title></head><body>
+<main layout:fragment="content" class="section">
+ <section class="container" data-customer-view="profile" aria-labelledby="profile-title">
+  <h1 id="profile-title">Thông tin tài khoản</h1>
+  <p data-view-status role="status" aria-live="polite">Đang tải thông tin…</p>
+  <noscript>Cần bật JavaScript để tải thông tin tài khoản.</noscript>
+  <dl data-view-items class="surface-card p-4"></dl>
+  <div data-profile-management hidden>
+   <h2 class="h4">Cập nhật thông tin</h2>
+   <form data-profile-form class="surface-card p-3 mb-4" onsubmit="return false">
+    <label for="profile-name" class="form-label">Họ tên</label><input id="profile-name" name="fullName" minlength="2" maxlength="100" required class="form-control mb-3">
+    <label for="profile-phone" class="form-label">Điện thoại</label><input id="profile-phone" name="phone" type="tel" pattern="\+?[0-9]{10,20}" maxlength="20" class="form-control mb-3">
+    <button type="submit" class="btn btn-utama">Lưu thông tin</button>
+   </form>
+   <h2 id="addresses" class="h4">Địa chỉ giao hàng</h2><div data-address-items></div>
+   <form data-address-form class="surface-card p-3 mb-4" onsubmit="return false">
+    <label for="address-name" class="form-label">Người nhận</label><input id="address-name" name="fullName" maxlength="100" required class="form-control mb-3">
+    <label for="address-phone" class="form-label">Điện thoại người nhận</label><input id="address-phone" name="phone" type="tel" pattern="\+?[0-9]{10,20}" maxlength="20" required class="form-control mb-3">
+    <label for="address-street" class="form-label">Số nhà, tên đường</label><input id="address-street" name="street" maxlength="255" required class="form-control mb-3">
+    <label for="address-ward" class="form-label">Phường/xã</label><input id="address-ward" name="ward" maxlength="100" class="form-control mb-3">
+    <label for="address-district" class="form-label">Quận/huyện</label><input id="address-district" name="district" maxlength="100" class="form-control mb-3">
+    <label for="address-province" class="form-label">Tỉnh/thành phố</label><input id="address-province" name="province" maxlength="100" required class="form-control mb-3">
+    <label for="address-label" class="form-label">Tên địa chỉ</label><input id="address-label" name="label" maxlength="100" class="form-control mb-3">
+    <button type="submit" class="btn btn-utama">Lưu địa chỉ</button><button type="button" data-address-reset class="btn btn-outline-primary">Thêm địa chỉ mới</button>
+   </form>
+   <h2 class="h4">Đổi mật khẩu</h2>
+   <form data-password-form class="surface-card p-3" onsubmit="return false">
+    <label for="password-current" class="form-label">Mật khẩu hiện tại</label><input id="password-current" type="password" name="currentPassword" autocomplete="current-password" required class="form-control mb-3">
+    <label for="password-new" class="form-label">Mật khẩu mới</label><input id="password-new" type="password" name="newPassword" autocomplete="new-password" minlength="8" maxlength="72" required class="form-control mb-3">
+    <label for="password-confirm" class="form-label">Xác nhận mật khẩu mới</label><input id="password-confirm" type="password" name="confirmPassword" autocomplete="new-password" required class="form-control mb-3">
+    <button type="submit" class="btn btn-utama">Đổi mật khẩu</button>
+   </form>
+  </div>
+  <a href="/login" class="btn btn-outline-primary">Đăng nhập</a>
+ </section>
+</main></body></html>

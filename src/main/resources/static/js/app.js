@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         switch (action) {
             case 'add-to-cart':
                 e.preventDefault();
-                window.addToCart(productId, variantId, 1);
+                window.addToCart(productId, variantId, target.dataset.quantityTarget ? document.getElementById(target.dataset.quantityTarget).value : 1);
                 break;
             case 'toggle-wishlist':
                 e.preventDefault();
