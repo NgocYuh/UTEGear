@@ -1,43 +1,52 @@
-# QA-05 — Bàn giao BE kiểm thử và xác nhận
+# QA-05 — Kết quả kiểm thử end-to-end
 
-- Frontend: @trongsonho; Backend review và kiểm thử ảnh thật: @NgocYuh.
-- Nhánh FE: feat/admin-media-manager; phụ thuộc bản bổ sung test/qa04-completion.
-- FE đã kiểm tra checklist giao dịch/realtime: 44 PASS, 0 FAIL; giao diện media: 23 PASS,
-  0 FAIL. Upload/thay/xóa Cloudinary thật còn BLOCKED vì chưa có môi trường QA được xác nhận.
-- Đây là số assertion. Không coi metadata PUT hoặc ảnh fixture là bằng chứng media thật.
-- Maven clean verify đạt: 185 tests phát hiện, 182 pass, 3 PostgreSQL skip local do Docker
-  không chạy. PostgreSQL/Flyway thuộc QA-02 BE; không ghi đã chạy PostgreSQL local.
+- Phụ trách: Frontend `@trongsonho`; Backend review và chạy media thật `@NgocYuh`.
+- Nhánh báo cáo: `docs/manual-test-report`.
+- Commit được kiểm tra: `71a50d2` (main sau khi merge PR #60).
+- Ngày chạy: 2026-10-15.
+- Kết luận tổng hợp: `PASS`.
 
-## Yêu cầu BE hoàn tất
+## Kết quả
 
-1. Review code FE và contract media, quyền ADMIN, secureUrl/publicId; mở giao diện tại
-   /admin/orders#product-media. Không cần thêm route /admin/products để dùng panel này.
-2. Cấu hình CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET trong môi trường
-   riêng đã xác nhận là QA. Không ghi giá trị vào repository, PR hoặc bằng chứng.
-3. Chạy live suite theo docs/frontend/admin-media-review.md, bật QA_RUN_CHECKLIST=1,
-   QA_MEDIA_REAL=1 và QA_CLOUDINARY_CONFIRMED=1. Launcher dùng H2 tạm, tạo folder QA riêng,
-   chạy POST upload → PUT thay → DELETE ảnh vừa tạo; kiểm receipt và ảnh render.
-4. Lưu report.json, qa05-summary.json và ảnh chụp đã che dữ liệu nhạy cảm ở nơi review truy cập
-   được; ghi môi trường, ngày chạy, commit thực tế, kết quả và đường dẫn bằng chứng trong mục
-   QA-05 của reports/frontend/progress-log.md. Không commit log, secret hoặc ảnh tải về.
-5. Xác nhận hai quan sát dưới đây, cập nhật contract nếu cần. Lỗi backend xử lý bằng task/branch
-   BE riêng; lỗi frontend chuyển FE sửa, sau đó chạy lại các ca bị ảnh hưởng.
-6. Review/duyệt PR QA-04 và QA-05. Chỉ ghi DONE khi phạm vi hoàn tất, kiểm thử pass và PR đã
-   được duyệt; bản cập nhật DONE phải nằm trong chính PR của task trước khi merge.
+- Checklist giao dịch/realtime: `44 PASS`, `0 FAIL`; bước media thật được kiểm tra bằng companion
+  suite thay vì bị chuyển thành PASS giả trong checklist.
+- Media UI và Cloudinary thật: `28 PASS`, `0 FAIL`, `0 BLOCKED`; `realMedia=true`.
+- Upload ảnh trả đủ `secureUrl` và `publicId`, ảnh tải lên render thành công.
+- Thay file tạo `secureUrl` và `publicId` mới, ảnh thay thế render thành công.
+- Xóa thành công đúng ảnh do lượt QA tạo. Runner dùng folder riêng `utegear-qa/<UUID>` và không xóa
+  fixture hoặc tài nguyên có sẵn trong tài khoản.
+- Quyền `CUSTOMER` bị từ chối đúng và phiên đăng nhập không bị mất.
+- Responsive đạt ở viewport 1440, 768 và 390; không có browser exception chưa xử lý.
 
-## Hai quan sát cần BE quyết định
+Kết quả tổng hợp trong `qa05-summary.json` là `PASS`: bước 8 của checklist được companion media suite
+xác nhận bằng `step8VerifiedByRealMediaSuite=true`.
 
-- Hủy đơn PENDING: tồn kho store100 + variant200 từ 4 giảm còn 3 khi đặt đơn; sau hủy vẫn 3,
-  order/payment chuyển CANCELLED. Contract chưa chốt việc hoàn tồn kho; chưa coi là lỗi đã xác nhận.
-- COD chuyển COMPLETED: paymentStatus vẫn PENDING, amount 630000 bằng total 630000.
-  BE cần xác nhận bước ghi nhận thu tiền và luồng giao diện tương ứng.
+## Xác nhận nghiệp vụ Backend
+
+- Hủy đơn `PENDING`: tồn kho `storeId=100`, `variantId=200` có số lượng ban đầu `4` và sau hủy là
+  `4`. Hành vi hoàn tồn kho đã đúng sau PR #60.
+- COD chuyển `COMPLETED`: `paymentStatus=PAID`, `amount=630000` bằng `total=630000`.
+  Hành vi ghi nhận thanh toán đã đúng sau PR #60.
 
 ## Phạm vi đã kiểm tra
 
-Đăng ký/đăng nhập; tìm/lọc/sắp xếp/phân trang; variants và stock theo chi nhánh; wishlist/cart;
+Đăng ký/đăng nhập; tìm/lọc/sắp xếp/phân trang; variants và tồn kho theo chi nhánh; wishlist/cart;
 address/quote/coupon/place order; trạng thái đơn customer/admin và ownership; native STOMP
-events/reconnect; media metadata/primary, validation, duplicate submit, focus, responsive,
-offline/retry, CUSTOMER 403 và logout. Không mock API hoặc MediaStorage.
+events/reconnect; media upload/replace/delete, metadata/primary, validation, duplicate submit, focus,
+responsive, offline/retry, `CUSTOMER` 403 và logout. API, STOMP và `MediaStorage` không bị mock.
 
-QA-04 còn chờ duyệt bản bổ sung; QA-05 còn chờ kiểm thử Cloudinary thật và review nghiệp vụ.
-Việc push hoặc merge code riêng lẻ không thay thế các điều kiện này.
+## Môi trường và bằng chứng
+
+- Spring Boot chạy với H2 tạm dành riêng cho QA; trình duyệt Microsoft Edge qua CDP.
+- Node.js 20 với WebSocket runtime flag; JDK 26 biên dịch project ở release 21.
+- Credential Cloudinary chỉ được nạp vào process từ cấu hình local, không ghi vào command line, report,
+  tài liệu hoặc Git.
+- Artifact chỉ lưu local, không commit:
+  - `.local-reference/storefront-test-artifacts/qa05-live-20261014/qa05-summary.json`
+  - `.local-reference/storefront-test-artifacts/qa05-live-20261014/checklist/report.json`
+  - `.local-reference/storefront-test-artifacts/qa05-live-20261014/checklist/admin-completed.png`
+  - `.local-reference/storefront-test-artifacts/qa05-live-20261014/browser/report.json`
+  - `.local-reference/storefront-test-artifacts/qa05-live-20261014/browser/media-manager.png`
+
+Không còn blocker chức năng trong phạm vi QA-05. Task giữ trạng thái `IN REVIEW` cho đến khi PR báo cáo
+này được review và merge; sau merge mới đối soát thành `DONE` theo quy tắc repository.
