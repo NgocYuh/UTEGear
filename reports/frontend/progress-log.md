@@ -1,12 +1,51 @@
 # Nhật ký tiến độ Frontend
 
+## QA-04: Frontend automated và manual tests
+
+- Trạng thái: `BLOCKED`
+- Người phụ trách: `@trongsonho` (Frontend).
+- Branch: `test/frontend-flows`
+- Pull Request: `Chưa mở; người dùng đã duyệt push branch để BE review, chưa duyệt merge`
+- Ngày cập nhật: 2026-10-14
+- Base: `35a5e78`, PR #52 đã merge; INT-01/02/03 vẫn chưa xác nhận hoạt động đầy đủ.
+- Đã làm:
+  - Thêm runner `tests/frontend/qa04-live.mjs` gọi HTTP thật trên loopback, không dùng API mock.
+  - Chuẩn bị kiểm tra browser qua CDP cho rendered pages và checklist thủ công 12 nhóm hành vi.
+  - Chạy local Spring Boot test profile + H2 in-memory bằng tham số lệnh, không sửa Backend/config.
+  - Ghi bằng chứng và cách chạy lại tại `docs/frontend/qa04-review.md`.
+  - Đồng bộ PR #52 giữ nguyên file QA chưa commit; chạy Chromium thật và xem ảnh giao diện.
+  - Sửa runner nhận diện checkout empty state hợp lệ; thêm home/wishlist, validation và menu mobile.
+  - Người dùng đã yêu cầu commit/push đúng 3 file tooling/tài liệu QA-04 để BE review.
+    Không coi việc push là xác nhận các luồng BLOCKED đã hoàn tất.
+- Kết quả kiểm thử:
+  - Live HTTP + Chromium sau PR #52: `79 PASS, 0 FAIL, 7 BLOCKED`.
+  - 9 trang HTTP 200; responsive 1440/768/390, Tab focus, labels và runtime checks PASS;
+    required/email/mismatch và menu Escape/focus PASS. /orders và /admin/orders vẫn 404.
+  - `node --check tests/frontend/qa04-live.mjs`: `PASS`.
+  - Browser/CDP đã chạy; flow authenticated/giao dịch/realtime: `CHƯA CHẠY`, thiếu policy/data/UI/API.
+  - Unit JS hiện có: `PASS` 16 tests; test doubles của suite này không tính là UI tích hợp pass.
+  - `mvnw.cmd -B clean verify -Dnet.bytebuddy.experimental=true` sau PR #52: `BUILD SUCCESS`
+    trên Java 26; 175 tests được phát hiện, 172 pass, 3 PostgreSQL tests skip do Docker local chưa chạy.
+  - Test server localhost và Chromium riêng đã dừng sau khi lưu report và 27 ảnh.
+- Vướng mắc hoặc phần còn thiếu:
+  - Public/auth/customer shell MVC và layout dialect đã có sau PR #52; /orders/admin chưa có.
+  - Các API profile update/password, address/customer order và UI binding còn cần hoàn thiện.
+  - Policy phiên trên main vẫn DRAFT; chưa xác nhận BE duyệt sessionStorage.
+  - FE chưa nối đủ checkout/admin/realtime; layout cũ vẫn dùng SockJS/CONNECT không JWT.
+  - Đã có bằng chứng browser cho các trang rỗng; chưa có flow authenticated/data thật, không ghi DONE.
+- Bước tiếp theo:
+  - BE review tooling/checklist/báo cáo trên branch test/frontend-flows; chưa mở PR hoặc merge.
+  - Giải quyết task tích hợp riêng rồi chạy lại QA-04 với API thật và môi trường test.
+  - Chỉ sau QA-04 pass mới làm QA-05 trên branch riêng.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## FE-INT-FIX: Khôi phục CSS ZIP và đối chiếu INT-01/02/03 với Backend
 
 - Trạng thái: `BLOCKED`
 - Người phụ trách: `@trongsonho` (Frontend).
 - Task liên kết: `INT-01`, `INT-02`, `INT-03`.
 - Branch: `fix/frontend-integration`
-- Pull Request: `Chưa mở; BE yêu cầu push branch để review code, chưa duyệt merge`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/51
 - Ngày cập nhật: 2026-10-13
 - Đã làm:
   - Khôi phục 7 CSS nguyên ZIP; SHA-256 khớp 7/7.
@@ -15,6 +54,8 @@
   - Chi tiết phạm vi, phần chưa nối và thông báo layout: `docs/frontend/integration-review.md`.
   - Người dùng chuyển yêu cầu BE: push branch hiện tại để BE review/sửa tiếp; không coi đây là
     phê duyệt sessionStorage hoặc xác nhận INT-01/02/03 hoàn tất.
+  - PR #51 đã merge vào main tại `2979dd4`; cập nhật khi chuẩn bị QA-04. Phạm vi source đã merge,
+    nhưng trạng thái vẫn BLOCKED vì routing/API/UI/policy chưa hoàn tất.
 - Kết quả kiểm thử:
   - JS integration + fixture: `PASS` 16 tests, 0 failure.
   - JS syntax: `PASS` 9 files; module cuối cũng được Node VM nạp trong test.
@@ -31,7 +72,7 @@
   - Hai layout dùng chung chưa sửa; BE đã nhận và review tài liệu phạm vi theo phản hồi người dùng.
   - Module admin/realtime mới chưa nối đủ UI; template/model cũ và checkout form còn cần chuyển.
 - Bước tiếp theo:
-  - Commit/push branch theo yêu cầu BE để review code; chưa mở PR, không merge.
+  - Theo dõi các phụ thuộc sau merge PR #51; không tiếp tục code mới trên branch đã merge.
   - Chốt quyết định quản lý phiên với BE và hoàn thiện phần FE còn lại.
   - Backend xử lý phần thiếu trên task/branch/PR riêng; sau đó kiểm thử API thật trước QA-04/QA-05.
 - Ngày hoàn tất: `Chưa hoàn tất`
