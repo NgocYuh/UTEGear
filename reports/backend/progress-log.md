@@ -909,10 +909,11 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## QA-05-BE-FIX: Hoàn tồn kho và hoàn tất thanh toán COD
 
-- Trạng thái: `IN PROGRESS`
+- Trạng thái: `DONE`
 - Branch: `fix/order-cancellation-payment`
-- Pull Request: `Chưa mở`
-- Ngày cập nhật: 2026-10-14
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/60
+- Merge commit: `71a50d2`
+- Ngày cập nhật: 2026-10-15
 - Đã làm:
   - Khi customer hoặc admin hủy đơn hợp lệ, khóa từng bản ghi tồn kho theo thứ tự variant và hoàn lại số lượng vào đúng cặp `Store + ProductVariant` trong cùng transaction.
   - Nếu không tìm thấy cửa hàng thực hiện hoặc bản ghi tồn kho đã giữ, trả lỗi conflict và rollback toàn bộ thao tác hủy.
@@ -922,11 +923,34 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" "-Dtest=InventoryServiceTest,AdminOrderServiceTest,CustomerOrderServiceTest" test`: `PASS` với 18 test, 0 failure, 0 error, 0 skipped.
   - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `BUILD SUCCESS` với 187 test được phát hiện, 184 pass, 0 failure, 0 error và 3 PostgreSQL test bị skip do Docker local không chạy.
 - Vướng mắc hoặc phần còn thiếu:
-  - Frontend cần chạy lại checklist QA-05 để xác nhận tồn kho sau hủy và payment COD sau hoàn tất qua API/browser thật.
-  - Cloudinary live suite vẫn là bước riêng của QA-05, không được thay thế bằng test H2 này.
+  - Không còn blocker trong phạm vi QA-05-BE-FIX; checklist QA-05 đã xác nhận lại hai hành vi qua
+    API/browser thật.
 - Bước tiếp theo:
-  - Commit/push branch và mở PR để merge; sau đó FE chạy lại hai ca nghiệp vụ cùng Cloudinary live suite.
-- Ngày hoàn tất: `Chưa merge`
+  - Ghi nhận kết quả QA-05 tổng hợp trên branch `docs/manual-test-report`.
+- Ngày hoàn tất: 2026-10-14
+
+## QA-05-REVIEW: Xác nhận end-to-end và Cloudinary thật
+
+- Trạng thái: `IN REVIEW`
+- Branch: `docs/manual-test-report`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-15
+- Đã làm:
+  - Chạy checklist giao dịch/realtime và companion media suite trên commit main `71a50d2`.
+  - Kiểm tra Cloudinary thật theo chuỗi upload → render → replace → render → delete trong folder QA riêng.
+  - Xác nhận hủy đơn PENDING hoàn tồn kho và COD COMPLETED chuyển payment sang PAID.
+  - Kiểm tra ảnh bằng chứng desktop/mobile và giữ report, log, screenshot ở local.
+- Kết quả kiểm thử:
+  - Kết quả tổng hợp: `PASS`; checklist `44 PASS`, `0 FAIL`.
+  - Companion media thật: `28 PASS`, `0 FAIL`, `0 BLOCKED`; `realMedia=true`.
+  - Tồn kho `storeId=100`, `variantId=200`: ban đầu `4`, sau hủy `4`.
+  - Đơn COD COMPLETED: `paymentStatus=PAID`, `amount=630000`, `total=630000`.
+  - Responsive 1440/768/390, CUSTOMER 403 không mất session và không có browser exception chưa xử lý.
+- Vướng mắc hoặc phần còn thiếu:
+  - Không còn blocker chức năng; chờ review và merge PR báo cáo.
+- Bước tiếp theo:
+  - Sau merge, đối soát QA-05 thành `DONE` theo quy tắc repository.
+- Ngày hoàn tất: `Chờ merge`
 
 ## Mẫu mục mới
 

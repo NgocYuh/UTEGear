@@ -1053,10 +1053,10 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | QA-01 | BE | `test/service-coverage` | DONE | [PR #47](https://github.com/NgocYuh/UTEGear/pull/47) | 2026-10-13 |
 | QA-02 | BE | `test/postgresql-integration` | DONE | [PR #48](https://github.com/NgocYuh/UTEGear/pull/48) | 2026-10-13 |
 | QA-03 | BE | `test/security-controller-flows` | DONE | [PR #50](https://github.com/NgocYuh/UTEGear/pull/50) | 2026-10-13 |
-| QA-04 | FE | `test/frontend-flows` | BLOCKED | [PR #53](https://github.com/NgocYuh/UTEGear/pull/53) | 2026-10-14 |
+| QA-04 | FE | `test/qa04-completion` | DONE | [PR #58](https://github.com/NgocYuh/UTEGear/pull/58) | 2026-10-14 |
 | QA-04-BE-FIX | BE | `fix/cart-stomp-integration` | DONE | [PR #55](https://github.com/NgocYuh/UTEGear/pull/55) | 2026-10-14 |
-| QA-05-BE-FIX | BE | `fix/order-cancellation-payment` | IN PROGRESS | Chưa mở |  |
-| QA-05 | Cả hai | `docs/manual-test-report` | TODO |  |  |
+| QA-05-BE-FIX | BE | `fix/order-cancellation-payment` | DONE | [PR #60](https://github.com/NgocYuh/UTEGear/pull/60) | 2026-10-14 |
+| QA-05 | Cả hai | `docs/manual-test-report` | IN REVIEW | Chưa mở | 2026-10-15 |
 | DOC-01…02 | BE | Xem backlog | TODO |  |  |
 | DOC-03 | FE | `docs/frontend-demo-guide` | TODO |  |  |
 | REL-01 | Cả hai | `release/v1.0.0` | TODO |  |  |

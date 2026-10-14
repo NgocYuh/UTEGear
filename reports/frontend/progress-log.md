@@ -2,48 +2,54 @@
 
 ## QA-05: End-to-end và kiểm thử media thật
 
-- Trạng thái: `BLOCKED` — chưa xác nhận Cloudinary QA, chưa chạy upload/thay/xóa ảnh thật.
-- Frontend: @trongsonho; đề nghị @NgocYuh review và trực tiếp chạy phần media thật.
-- Branch: `feat/admin-media-manager`; phụ thuộc `test/qa04-completion`.
-- Ngày cập nhật: 2026-10-14.
-- Đã kiểm tra: checklist 44 PASS/0 FAIL, media UI 23 PASS/0 FAIL; không mock API/STOMP.
-- Build: Maven clean verify thành công; 182 pass, 3 PostgreSQL skip local.
-- BE cần: chạy live suite trên Cloudinary QA, cập nhật bằng chứng; xác nhận tồn kho khi hủy
-  PENDING và bước thu tiền COD khi COMPLETED. Lỗi BE xử lý trên branch BE riêng.
-- Hướng dẫn và điều kiện hoàn tất: `docs/frontend/qa05-review.md`,
-  `docs/frontend/admin-media-review.md`. QA-04 chờ duyệt, QA-05 chưa DONE.
-- Sau khi phạm vi hoàn tất, tests pass và PR được duyệt: cập nhật DONE trong chính PR trước merge.
+- Trạng thái: `IN REVIEW` — toàn bộ phạm vi chức năng đã PASS, chờ review/merge PR báo cáo.
+- Phụ trách: `@trongsonho` Frontend; `@NgocYuh` review nghiệp vụ và chạy Cloudinary thật.
+- Branch: `docs/manual-test-report`.
+- Ngày cập nhật: 2026-10-15.
+- Commit được kiểm tra: `71a50d2` (main sau khi merge PR #60).
+- Kết quả tổng hợp: `PASS`; checklist `44 PASS`, `0 FAIL`; companion media thật `28 PASS`,
+  `0 FAIL`, `0 BLOCKED`, `realMedia=true`.
+- Cloudinary: upload → render → replace → render → delete đạt; chỉ xóa asset do lượt QA tạo trong
+  folder riêng `utegear-qa/<UUID>`.
+- Nghiệp vụ Backend: hủy đơn PENDING hoàn tồn kho từ số lượng ban đầu `4` về `4`; COD hoàn tất có
+  `paymentStatus=PAID`, `amount=630000` bằng `total=630000`.
+- Quyền/khả dụng: CUSTOMER nhận 403 mà không mất session; responsive 1440/768/390; không có browser
+  exception chưa xử lý. API, STOMP và MediaStorage không bị mock.
+- Bằng chứng local: `.local-reference/storefront-test-artifacts/qa05-live-20261014/`; không commit
+  report, log, screenshot hay credential.
+- Hướng dẫn và kết quả chi tiết: `docs/frontend/qa05-review.md` và
+  `docs/frontend/admin-media-review.md`.
+- Vướng mắc: không còn blocker chức năng; chỉ còn review và merge PR báo cáo.
+- Ngày hoàn tất: chờ merge PR để chuyển sang `DONE` theo quy tắc repository.
 
 ## FE-MEDIA-01: UI quản lý ảnh cho QA-05
 
-- Trạng thái: `IN REVIEW` — FE/UI kiểm thử khả dụng đạt; liveCloudinaryQA chưa cấu hình,
-  chờ BE review/duyệt, không DONE.
+- Trạng thái: `DONE`.
 - Phụ trách: `@trongsonho` Frontend; liên kếtQA05, không tự giao/sửaBackend.
-- Branch: `feat/admin-media-manager`,base8d2d71d, được gửi lên GitHub để BE review, chưa được duyệt.
-- Ngày cập nhật:2026-10-14.
+- Branch: `feat/admin-media-manager`; [PR #59](https://github.com/NgocYuh/UTEGear/pull/59),
+  merge commit `97dc680`.
+- Ngày cập nhật: 2026-10-15.
 - Đã làm: media native details panel tại /admin/orders#product-media, gallery/search activeproducts,
   upload/replace/delete API contract, metadata/primary/receipt, confirmation, role/session/validation,
   loading/duplicate-submit/errorresync/product-change; productdetail ưu tiên primaryimage.
-- Kiểm thử: mediaUI23PASS/0FAIL/1BLOCKED; checklistQA05candidate44PASS/0FAIL/step8liveBLOCKED.
-  Metadata PUT/API thật và card/detail; labels/focus/responsive/negativefiles/offline/role403/logout.
-  Mavencleanverify Java26/ByteBuddy flag BUILDSUCCESS,182pass/3PGskip vì Dockerlocal không chạy.
-- Không gọi Cloudinary chưa xác nhận; 3envkeys chưa có. Đã chuẩn bị real-mode QA folder riêng,
-  PNG hợp lệ/receipts/render/upload/replace/delete và cleanup tài nguyên vừa tạo; nhánhlive chưa chạy.
-  Launcher ép H2mem/driver/credentials/Flywayfalse, không kế thừa datasource môi trường khác.
+- Kiểm thử cuối: media Cloudinary thật `28 PASS`, `0 FAIL`, `0 BLOCKED`; metadata/API thật,
+  card/detail, labels/focus/responsive/negative files/offline/role 403/logout đều đạt.
+- Live suite upload/render/replace/render/delete đạt và cleanup đúng asset QA vừa tạo. Launcher ép
+  H2 tạm và không kế thừa datasource ngoài QA.
 - Review/cách chạy:docs/frontend/admin-media-review.md; artifact
-  D:/UTEGear/.local-reference/storefront-test-artifacts/admin-media-review/, không commit log/ảnh/token.
-- Còn cần:BE xác nhận/cấu hình QACloudinary và reviewcode; review cancellationstock/CODpayment
-  trong checklistQA05 và duyệtPRQA04/FE, không tự chốt nghiệp vụ.
-- Bước tiếp theo:review bản FE cụ thể, BE chạy live khi QA keys được xác nhận, cập nhật bằng chứng rồi review/duyệt.
-- Ngày hoàn tất:Chưa hoàn tất.
+  `.local-reference/storefront-test-artifacts/qa05-live-20261014/`, không commit log/ảnh/token.
+- Vướng mắc: không còn trong phạm vi FE-MEDIA-01.
+- Bước tiếp theo: merge PR báo cáo QA-05 để ghi nhận kết quả tổng hợp.
+- Ngày hoàn tất: 2026-10-15.
 
 ## FE-BIND-01: Binding dữ liệu và realtime FE theo BE
 
-- Trạng thái: `IN REVIEW` (bản FE nguồn đã merge; sửa accessibility/kiểm thử bổ sung chờ PR).
+- Trạng thái: `DONE`.
 - Phụ trách: `@trongsonho`; liên kết INT-01/02/03, QA-04.
 - Source: fix/storefront-bindings, commit 462c9eb, [PR #56](https://github.com/NgocYuh/UTEGear/pull/56), merge 7457eb5.
 - Realtime tests: [PR #57](https://github.com/NgocYuh/UTEGear/pull/57), merge 8d2d71d.
-- Bản tiếp: `test/qa04-completion`, base 8d2d71d, được gửi lên GitHub để BE review, chưa được duyệt.
+- Bản bổ sung: `test/qa04-completion`, [PR #58](https://github.com/NgocYuh/UTEGear/pull/58),
+  merge commit `8614940`.
 - Ngày cập nhật: 2026-10-14.
 - Đã làm: API bindings profile/address/cart/wishlist/catalog/checkout/customer-admin orders;
   policy APPROVED, native STOMP; BE PR #55 đã sửa cart/subscription, kiểm thử thật pass.
@@ -52,15 +58,16 @@
   unit JS 18 PASS. Maven BUILD SUCCESS, 182 pass/3 PostgreSQL skip local (Docker không chạy).
 - Phạm vi/giới hạn: docs/frontend/qa04-completion-review.md; dữ liệu H2 tạm, clock expiry là phía client,
   ảnh SVG fixture không chứng minh Cloudinary upload; PostgreSQL thuộc QA-02 BE, CI đã có bằng chứng.
-- Tiếp theo: review/duyệt cập nhật FE/QA-04; phần QA-05 chuẩn bị trên branch tài liệu riêng.
-- Ngày hoàn tất: Chưa ghi DONE trước khi bản sửa/kiểm thử mới được duyệt.
+- Tiếp theo: dùng kết quả binding/realtime đã merge làm đầu vào cho QA-05.
+- Ngày hoàn tất: 2026-10-14.
 
 ## QA-04: Frontend automated và manual tests
 
-- Trạng thái: `IN REVIEW` — phạm vi kiểm thử FE đạt; chờ review/duyệt bản bổ sung để ghi DONE.
+- Trạng thái: `DONE`.
 - Phụ trách: `@trongsonho` (Frontend).
 - Tooling gốc PR #53 đã merge; bổ sung realtime PR #57 đã merge tại 8d2d71d.
-- Branch tiếp: `test/qa04-completion`, base 8d2d71d, được gửi lên GitHub để BE review, chưa được duyệt.
+- Branch: `test/qa04-completion`; [PR #58](https://github.com/NgocYuh/UTEGear/pull/58),
+  merge commit `8614940`.
 - Ngày cập nhật: 2026-10-14.
 - Đã làm:
   - Real Spring Boot/H2/Chromium, không mock API/STOMP; helper chung và fixture nhiều variant,
@@ -79,9 +86,8 @@
   PostgreSQL/Flyway theo QA-02 của BE; không gán việc Docker local chưa chạy thành blocker FE mới.
 - Bằng chứng/cách chạy: docs/frontend/qa04-completion-review.md;
   artifact D:/UTEGear/.local-reference/storefront-test-artifacts/qa04-ready/, không commit log/ảnh/token.
-- Tiếp theo: PR review/duyệt bản kiểm thử bổ sung rồi cập nhật DONE theo quy tắc repository.
-  QA-05 chuẩn bị trên docs/manual-test-report; chưa xác nhận bước upload/thay/xóa ảnh.
-- Ngày hoàn tất: Chưa ghi DONE trước khi PR được duyệt.
+- Tiếp theo: kết quả QA-04 được dùng làm đầu vào cho QA-05.
+- Ngày hoàn tất: 2026-10-14.
 
 ## FE-INT-FIX: Khôi phục CSS ZIP và đối chiếu INT-01/02/03 với Backend
 

@@ -1,77 +1,47 @@
-# FE-MEDIA-01 — Frontend quản lý ảnh để BE review
+# FE-MEDIA-01 — Kết quả review quản lý ảnh
 
-- Frontend @trongsonho; branch feat/admin-media-manager, base main 8d2d71d.
-- Được gửi lên GitHub để BE review; chưa được duyệt. Không sửa Java/BE/config/migration, không đổi policy phiên.
-- UI mới: /admin/orders#product-media trên MVC route đã có. Chỉ dùng public catalog/detail
-  và POST/PUT/DELETE media contract hiện tại. Không thêm route BE hoặc static admin architecture.
+- Frontend: `@trongsonho`; Backend review và chạy live suite: `@NgocYuh`.
+- UI: `/admin/orders#product-media` trên MVC route hiện có.
+- Commit được kiểm tra: `71a50d2`.
+- Ngày chạy live: 2026-10-15.
+- Kết luận: `28 PASS`, `0 FAIL`, `0 BLOCKED`; `realMedia=true`.
 
-## Đã hoàn thiện FE
+## Phạm vi đã xác nhận
 
-- Tìm/chọn sản phẩm đang hiển thị, gallery API thật; form upload JPEG/PNG/WebP≤ 5 MiB,
-  sửa altText/primary, thay file qua multipart PUT, xóa qua DELETE có confirmation/focus.
-- ADMIN gating ở UI; BE vẫn thực thi role ADMIN. Logout xóa gallery/disablecontrols;
-  DTO render bằng textContent, URL ảnh qua helper safeImage, label/aria-live/loading/error/empty.
-- Chống submit trùng, khóa controls khi loading, đổi sản phẩm xóa file/gallery cũ;
-  lỗi mutation đọc lại server state nếu online, offline giữ gallery/file để retry.
-- API receipt kiểm tra có secureUrl/publicId; không đưa secret vào UI/log/URL.
-- Product detail ưu tiên ảnh primary; catalog/card đã dùng primaryImage từ API.
-- Không sửa hai URLlegacy /admin/products hoặc /admin/products/{id}/edit; chúng vẫn404 trên main.
-  Người dùng quản lý ảnh qua route adminOrders đang hoạt động và native details panel.
+- Tìm/chọn sản phẩm đang hiển thị và đọc gallery từ API thật.
+- Upload JPEG/PNG/WebP tối đa 5 MiB, sửa `altText`/ảnh chính, thay file qua multipart `PUT` và
+  xóa qua `DELETE` có xác nhận/focus.
+- Receipt upload và replace có `secureUrl`/`publicId`; cả ảnh mới và ảnh thay thế đều render được.
+- Replace đổi cả URL lẫn public ID; delete chỉ xóa ảnh do lượt QA tạo.
+- Quyền ADMIN được thực thi ở Backend; `CUSTOMER` nhận 403 mà không mất session.
+- Chống submit trùng, loading/error/empty state, đổi sản phẩm, offline/retry và logout.
+- Responsive 1440/768/390, label/focus hợp lệ và không có uncaught browser exception.
+- Product detail và catalog ưu tiên ảnh primary từ API.
 
-## Bằng chứng
+Không thêm route `/admin/products` hay `/admin/products/{id}/edit`; quản lý media tiếp tục dùng panel
+tại `/admin/orders#product-media`.
 
-- UI/media suite: 23 PASS, 0 FAIL, 1 BLOCKED (Cloudinary live chưa cấu hình).
-- Toàn bộ checklist QA-05 trên FEcandidate: 44 PASS, 0 FAIL,step8liveBLOCKED.
-- Metadata PUT không có file chạy BE thật, kiểm DTO publicId/secureUrl và primary flags/card/detail.
-  Thao tác này không gọi Cloudinary; không coi metadata/fixture PASS là upload/replace/delete live PASS.
-- Empty/MIME/>5MiB validation, rapid-submit, delete-confirm/cancel/focus, responsive1440/768/390,
-  đổi sản phẩm, offlinenetwork, CUSTOMER403 và logout/noexceptions được kiểm trên Chromium.
-- Maven clean verify Java26/ByteBuddy experimental: BUILD SUCCESS,185 tests phát hiện,
-  182 pass / 3 PostgreSQL skip (Docker local không chạy). UnitJS18pass theo suite gốc.
-- Fixture/launcher/testscript H2 riêng; datasource URL/driver/username/password/Flyway được
-  override rõ trong CLI để không kế thừa database ngoài QA từ biến môi trường.
+## Cách chạy lại
 
-Artifact local, không commit:
-D:/UTEGear/.local-reference/storefront-test-artifacts/admin-media-review/qa05-summary.json
-D:/UTEGear/.local-reference/storefront-test-artifacts/admin-media-review/browser/report.json
-D:/UTEGear/.local-reference/storefront-test-artifacts/admin-media-review/browser/media-manager.png
-D:/UTEGear/.local-reference/storefront-test-artifacts/admin-media-final-verify.log
-
-## Cloudinary thật — sẵn lệnh chạy nhưng chưa có credential QA
-
-Không có CLOUDINARY_CLOUD_NAME/CLOUDINARY_API_KEY/CLOUDINARY_API_SECRET ở process/user/machine.
-Không dùng config chưa xác nhận hoặc production; không ghi giá trị các credential vào tài liệu.
-BE cần cấu hình ba biến trên bằng kênh riêng và xác nhận là accountQA.
-
-Có Chromium CDP localhost9238 và Node/JDK/Maven phù hợp repository, chạy ở worktreefeature:
+Chỉ bật chế độ live sau khi người chạy đã xác nhận tài khoản Cloudinary dùng cho QA. Không ghi credential
+vào repository, tài liệu, log hoặc command line.
 
 ```powershell
-$env:QA_MAVEN_CACHE='D:/maven-repository'
 $env:QA_RUN_CHECKLIST='1'
 $env:QA_MEDIA_REAL='1'
 $env:QA_CLOUDINARY_CONFIRMED='1'
-node tests/frontend/run-admin-media-checks.mjs D:/UTEGear/.local-reference/storefront-test-artifacts/media-live-qa
+node tests/frontend/run-admin-media-checks.mjs .local-reference/storefront-test-artifacts/qa05-live
 ```
 
-Chỉ đặt hai flagREAL/CONFIRMED sau khi BE đã xác nhận accountQA. Launcher chặn thiếu keys/confirmation;
-credentials chỉ truyền trong environment/SPRING_APPLICATION_JSON của server, không commandline/file.
-Dùng folder utegear-qa/<UUID>; DB vẫn H2 tạm. Live test chuẩn bị PNG hợp lệ, POST qua UI ->kiểm
-receipt/ảnh render ->PUTfile thay asset ->kiểm URL/publicId mới/render ->DELETE chỉ ảnh do lượt
-QA tạo. Cleanup chỉ ảnh vừa tạo, không xóa ảnh fixture hoặc tài nguyên có sẵn của account.
-Nhánh live chưa thực thi khi thiếu credential, nên chưa xác nhận đủ media/storage end-to-end.
+Launcher dùng H2 tạm và folder Cloudinary `utegear-qa/<UUID>`. Chuỗi kiểm tra là upload qua UI → kiểm
+receipt/render → thay file → kiểm URL/public ID mới/render → xóa ảnh vừa tạo. Cleanup chỉ nhắm tới asset
+do chính lượt QA tạo.
 
-Chế độ mặc định không có flags live: chạy UI/metadata/validation/role/offline và trả BLOCKED cho
-cloudlive, không gọi storage ngoài. QA_RUN_CHECKLIST=1 chạy thêm toàn bộ luồngQA-05;
-summary chỉ xác nhận step8 khi realMedia=true và companion suite actualPASS. Không fake MediaStorage.
+## Bằng chứng local
 
-## BE cần xem/xác nhận
+- `.local-reference/storefront-test-artifacts/qa05-live-20261014/qa05-summary.json`
+- `.local-reference/storefront-test-artifacts/qa05-live-20261014/browser/report.json`
+- `.local-reference/storefront-test-artifacts/qa05-live-20261014/browser/media-manager.png`
 
-1. Review code/contract UI media qua route hiện có, receipt publicId/secureUrl và quyền ADMIN.
-2. BE cấu hình Cloudinary QA và trực tiếp chạy upload → thay → xóa ảnh thật bằng lệnh trên;
-   cập nhật kết quả và bằng chứng theo docs/frontend/qa05-review.md. Không gửi secret trong chat/PR.
-3. Review quan sát QA-05: PENDING cancel stock4->3 vẫn3; COMPLETED COD paymentPENDING.
-   Contract chưa chốt stockrestoration/thu tiềnCOD; không tự sửa BE hoặc xác nhận nghiệp vụ thay BE.
-4. Review/duyệt bảnQA-04 bổ sung và các PR FE trước khi ghi QA-04/QA-05DONE theo quy tắc repo.
-
-Không thể chỉ xác nhận báo cáo mà thay bằng chứng storage live khi accountQA chưa được cung cấp.
-Tài liệu này là bản code/tests cụ thể để review; không khẳng định QA-05DONE.
+Các artifact trên không được commit. QA-05 đã đạt về chức năng và còn chờ review/merge PR báo cáo để
+chuyển trạng thái từ `IN REVIEW` sang `DONE`.
