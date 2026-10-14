@@ -1,5 +1,28 @@
 # Nhật ký tiến độ Frontend
 
+## REL-01: Chuẩn bị UTEGear v1.0.0 release candidate — phần Frontend
+
+- Trạng thái: `IN REVIEW` — bản FE/tài liệu sẵn review; chờ DOC-03 merge và xác nhận hai phía.
+- Phụ trách: `@trongsonho` (FE); phối hợp/review Backend: `@NgocYuh`.
+- Branch: `release/v1.0.0`; chứa DOC-03 `0275bd3`, runtime trùng main `2836a1a`.
+- Ngày cập nhật: 2026-10-15.
+- Đã làm: `docs/release/v1.0.0-candidate.md` ghi scope release, phạm vi chưa triển khai,
+  bằng chứng, điều kiện review/merge và lệnh tạo tag đúng SHA sau merge. Không sửa Backend/runtime.
+- Kiểm tra mới: Maven clean verify BUILD SUCCESS; 187 phát hiện, 184 pass, 3 PostgreSQL skip local;
+  unit JS 18 PASS, syntax PASS. QA-04 summary PASS: 93 public, 39 transaction/realtime, 54 risk checks.
+- QA-05 chạy lại trên main mới: checklist 44 PASS/0 FAIL; media UI 23 PASS/0 FAIL. Local summary
+  BLOCKED duy nhất phần Cloudinary live do chủ động tắt QA_MEDIA_REAL; không báo suite này PASS toàn bộ.
+  Nghiệp vụ quan sát lại: COD COMPLETED có PAID/amount=total=630000; stock PENDING cancel 4 → 4.
+- Bằng chứng live dùng báo cáo BE PR #61: 28 PASS, realMedia=true. Diff `71a50d2..2836a1a`
+  chỉ tài liệu/nhật ký, không đổi source runtime hoặc test; tái sử dụng được cho candidate hiện tại,
+  chờ BE xác nhận trong review. CI main `2836a1a` success:
+  https://github.com/NgocYuh/UTEGear/actions/runs/38607996065 .
+- Artifact local: `.local-reference/storefront-test-artifacts/doc03-rel01-verify.log`,
+  `rel01-qa04/summary.json`, `rel01-qa05/qa05-summary.json`. Không commit report/log/ảnh/secret.
+- Còn cần: DOC-03 review/merge; BE đối soát log Backend và xác nhận candidate/live evidence;
+  review/duyệt PR REL-01, merge, rồi tạo tag. Không tự sửa log Backend hoặc gắn tag trước merge.
+- Bản này gửi lên GitHub để review; chưa PR được duyệt, chưa DONE, chưa tag/release/deploy.
+
 ## DOC-03: Hướng dẫn sử dụng/demo và kiểm tra giao diện
 
 - Trạng thái: `IN REVIEW` — tài liệu và kiểm tra DOC-03 hoàn tất, chờ duyệt.
