@@ -3,9 +3,10 @@
 Tài liệu này chốt ý nghĩa và tên field dùng chung giữa Backend và Frontend. Backend (`@NgocYuh`)
 viết contract; Frontend (`@trongsonho`) review dữ liệu cần hiển thị và tương tác trước khi merge.
 
-Entity persistence không phải response API. API-01 đến API-03 sẽ bổ sung request, response, wrapper,
-phân trang và JSON mẫu cho từng endpoint. Các task implementation không được tự đổi tên hoặc thêm
-field trái với contract đã merge.
+Entity persistence không phải response API. API-01 đến API-03 đã bổ sung request, response, wrapper,
+phân trang và JSON mẫu cho từng miền. Implementation không được tự đổi tên hoặc thêm field trái với
+contract đã merge; trạng thái endpoint thực tế được đối chiếu tại
+[`endpoint-contract.md`](endpoint-contract.md).
 
 Mô hình bảng, khóa và constraint nằm tại
 [`docs/architecture/database-model.md`](../architecture/database-model.md).
@@ -126,14 +127,15 @@ trước khi xác nhận nhận tại cửa hàng hoặc trừ tồn kho cho gia
 - Lịch sử đơn hàng dùng snapshot trong `OrderItem`.
 - Collection rỗng là `[]`; thuộc tính biến thể rỗng là `{}`.
 
-## Phần dành cho API-01 đến API-03
+## Tài liệu contract theo miền
 
-DB-01 chưa chốt envelope HTTP, tên field phân trang, mã lỗi hoặc JSON mẫu endpoint. Backend phải bổ
-sung các phần đó trước khi Frontend bắt đầu UI phụ thuộc:
+1. [`auth-catalog-contract.md`](auth-catalog-contract.md): auth, profile và catalog, gồm product một
+   biến thể mặc định và product nhiều biến thể.
+2. [`store-inventory-media-contract.md`](store-inventory-media-contract.md): store, availability,
+   inventory contract và media quản trị.
+3. [`customer-transaction-realtime-contract.md`](customer-transaction-realtime-contract.md): cart,
+   wishlist, address, checkout, order, notification, review contract và WebSocket payload.
 
-1. API-01: auth, profile và catalog, gồm product một biến thể mặc định và product nhiều biến thể.
-2. API-02: store, inventory và media quản trị.
-3. API-03: cart, wishlist, checkout, order, review và WebSocket payload.
-
-Frontend có thể review ngay các field logic trong tài liệu này, nhưng chỉ dùng JSON mock sau khi task
-contract API tương ứng được merge.
+JSON trong `docs/api/mock/` là fixture phát triển Frontend, không chứng minh endpoint đã được triển khai.
+Khi contract có phạm vi dự kiến chưa có controller, `endpoint-contract.md` phải ghi rõ để demo và test
+không nhầm mock với chức năng đang chạy.

@@ -952,6 +952,32 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Sau merge, đối soát QA-05 thành `DONE` theo quy tắc repository.
 - Ngày hoàn tất: `Chờ merge`
 
+## DOC-01: Hoàn thiện tài liệu API và kiến trúc
+
+- Trạng thái: `IN REVIEW`
+- Branch: `docs/api-architecture`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-15
+- Đã làm:
+  - Đối chiếu toàn bộ REST mapping trong 14 controller với ba contract API đã merge.
+  - Viết lại mục lục API theo 47 endpoint REST đã triển khai và bốn destination/endpoint STOMP.
+  - Tách rõ bảy endpoint đã thiết kế trong contract nhưng chưa có controller để không mô tả sai khi demo.
+  - Cập nhật kiến trúc modular monolith, ranh giới package, JWT/session, transaction, tồn kho theo
+    Store + Variant, Cloudinary, crawler/import, realtime, Flyway và profile chạy.
+  - Sửa phần model contract còn dùng ngôn ngữ trước triển khai và liên kết trạng thái implementation.
+- Kết quả kiểm thử:
+  - Đối chiếu annotation controller bằng `rg`: `PASS`, 47 REST mappings và 20 MVC GET mappings.
+  - Parse ba file JSON mock bằng PowerShell `ConvertFrom-Json`: `PASS`.
+  - Kiểm tra liên kết Markdown nội bộ trong ba tài liệu DOC-01: `PASS`.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `BUILD SUCCESS`,
+    187 test được phát hiện, 184 pass, 0 failure, 0 error và 3 PostgreSQL test skip do Docker local không chạy.
+  - `git diff --check`: `PASS`.
+- Vướng mắc hoặc phần còn thiếu:
+  - Không có blocker nội dung. Nhánh phụ thuộc QA-05 `docs/manual-test-report` phải được merge trước.
+- Bước tiếp theo:
+  - Chạy các kiểm tra cuối, commit, push và mở PR sau QA-05.
+- Ngày hoàn tất: `Chờ merge`
+
 ## Mẫu mục mới
 
 ```md
