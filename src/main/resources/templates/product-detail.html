@@ -4,7 +4,7 @@
 <main layout:fragment="content" class="section"><section class="container" data-page="product-detail" th:data-product-id="${product.id}">
  <a href="/products">Quay lại sản phẩm</a><h1 th:text="${product.name}"></h1>
  <div class="row g-4"><div class="col-md-6">
-  <img id="mainProductImage" class="img-fluid rounded" th:src="${product.images.isEmpty() ? '/images/placeholder.svg' : product.images[0].secureUrl}" th:alt="${product.name}" onerror="this.onerror=null;this.src='/images/placeholder.svg'">
+  <img id="mainProductImage" class="img-fluid rounded" th:with="primaryImage=${product.images.^[primary]}" th:src="${primaryImage != null ? primaryImage.secureUrl : (product.images.isEmpty() ? '/images/placeholder.svg' : product.images[0].secureUrl)}" th:alt="${product.name}" onerror="this.onerror=null;this.src='/images/placeholder.svg'">
   <div class="d-flex flex-wrap gap-2"><button type="button" class="btn btn-outline-primary" th:each="image : ${product.images}" th:data-gallery-url="${image.secureUrl}" th:aria-label="${image.altText != null ? image.altText : product.name}"><img th:src="${image.secureUrl}" th:alt="${image.altText}" width="64" height="64"></button></div>
  </div><div class="col-md-6">
   <p th:text="${product.category.name}"></p><p th:text="${product.brand != null ? product.brand.name : 'UTEGear'}"></p>

@@ -1,5 +1,42 @@
 # Nhật ký tiến độ Frontend
 
+## QA-05: End-to-end và kiểm thử media thật
+
+- Trạng thái: `BLOCKED` — chưa xác nhận Cloudinary QA, chưa chạy upload/thay/xóa ảnh thật.
+- Frontend: @trongsonho; đề nghị @NgocYuh review và trực tiếp chạy phần media thật.
+- Branch: `feat/admin-media-manager`; phụ thuộc `test/qa04-completion`.
+- Ngày cập nhật: 2026-10-14.
+- Đã kiểm tra: checklist 44 PASS/0 FAIL, media UI 23 PASS/0 FAIL; không mock API/STOMP.
+- Build: Maven clean verify thành công; 182 pass, 3 PostgreSQL skip local.
+- BE cần: chạy live suite trên Cloudinary QA, cập nhật bằng chứng; xác nhận tồn kho khi hủy
+  PENDING và bước thu tiền COD khi COMPLETED. Lỗi BE xử lý trên branch BE riêng.
+- Hướng dẫn và điều kiện hoàn tất: `docs/frontend/qa05-review.md`,
+  `docs/frontend/admin-media-review.md`. QA-04 chờ duyệt, QA-05 chưa DONE.
+- Sau khi phạm vi hoàn tất, tests pass và PR được duyệt: cập nhật DONE trong chính PR trước merge.
+
+## FE-MEDIA-01: UI quản lý ảnh cho QA-05
+
+- Trạng thái: `IN REVIEW` — FE/UI kiểm thử khả dụng đạt; liveCloudinaryQA chưa cấu hình,
+  chờ BE review/duyệt, không DONE.
+- Phụ trách: `@trongsonho` Frontend; liên kếtQA05, không tự giao/sửaBackend.
+- Branch: `feat/admin-media-manager`,base8d2d71d, được gửi lên GitHub để BE review, chưa được duyệt.
+- Ngày cập nhật:2026-10-14.
+- Đã làm: media native details panel tại /admin/orders#product-media, gallery/search activeproducts,
+  upload/replace/delete API contract, metadata/primary/receipt, confirmation, role/session/validation,
+  loading/duplicate-submit/errorresync/product-change; productdetail ưu tiên primaryimage.
+- Kiểm thử: mediaUI23PASS/0FAIL/1BLOCKED; checklistQA05candidate44PASS/0FAIL/step8liveBLOCKED.
+  Metadata PUT/API thật và card/detail; labels/focus/responsive/negativefiles/offline/role403/logout.
+  Mavencleanverify Java26/ByteBuddy flag BUILDSUCCESS,182pass/3PGskip vì Dockerlocal không chạy.
+- Không gọi Cloudinary chưa xác nhận; 3envkeys chưa có. Đã chuẩn bị real-mode QA folder riêng,
+  PNG hợp lệ/receipts/render/upload/replace/delete và cleanup tài nguyên vừa tạo; nhánhlive chưa chạy.
+  Launcher ép H2mem/driver/credentials/Flywayfalse, không kế thừa datasource môi trường khác.
+- Review/cách chạy:docs/frontend/admin-media-review.md; artifact
+  D:/UTEGear/.local-reference/storefront-test-artifacts/admin-media-review/, không commit log/ảnh/token.
+- Còn cần:BE xác nhận/cấu hình QACloudinary và reviewcode; review cancellationstock/CODpayment
+  trong checklistQA05 và duyệtPRQA04/FE, không tự chốt nghiệp vụ.
+- Bước tiếp theo:review bản FE cụ thể, BE chạy live khi QA keys được xác nhận, cập nhật bằng chứng rồi review/duyệt.
+- Ngày hoàn tất:Chưa hoàn tất.
+
 ## FE-BIND-01: Binding dữ liệu và realtime FE theo BE
 
 - Trạng thái: `IN REVIEW` (bản FE nguồn đã merge; sửa accessibility/kiểm thử bổ sung chờ PR).
