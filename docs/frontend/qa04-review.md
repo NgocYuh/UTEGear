@@ -1,5 +1,9 @@
 # QA-04 — Bản kiểm thử để FE/BE review
 
+> Bản mới trên test/qa04-completion: xem [kết quả hoàn tất phạm vi FE](qa04-completion-review.md).
+> Có 54 ca bổ sung PASS và sửa quick-view accessibility; chờ review/duyệt PR để ghi DONE.
+> Các ghi chú bên dưới là lịch sử trước bản này.
+
 > Cập nhật sau PR #55, ngày 2026-10-14: cart PUT và STOMP đã PASS, QA-04 chuyển IN PROGRESS.
 > Lượt mới có 39 mục giao dịch PASS, 0 FAIL; 93 mục HTTP/DOM PASS. Đã xác nhận events thật,
 > reconnect và REST resync customer/admin. PR #56 FE đã merge; cập nhật test trên nhánh

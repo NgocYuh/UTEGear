@@ -182,7 +182,7 @@ fs.mkdirSync(path.dirname(output), { recursive: true });
 await browserChecks();
 for (const flow of ['Login/register validation and server errors', 'JWT customer ownership and ADMIN role UI',
     'Cart/wishlist interaction against real API', 'Checkout quote/place and history', 'WebSocket disconnect/reconnect and fresh REST state']) {
-    record(flow, 'BLOCKED', 'Requires implemented rendered UI, approved session policy and dedicated test account/data; HTTP checks do not prove this flow');
+    record(flow, 'BLOCKED', 'Outside this read-only runner; use storefront-browser.mjs and qa04-risks.mjs for real authenticated coverage');
 }
 const summary = { PASS: 0, FAIL: 0, BLOCKED: 0 };
 for (const value of cases) summary[value.status]++;
