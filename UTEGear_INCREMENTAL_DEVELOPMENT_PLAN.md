@@ -1054,6 +1054,7 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | QA-02 | BE | `test/postgresql-integration` | DONE | [PR #48](https://github.com/NgocYuh/UTEGear/pull/48) | 2026-10-13 |
 | QA-03 | BE | `test/security-controller-flows` | DONE | [PR #50](https://github.com/NgocYuh/UTEGear/pull/50) | 2026-10-13 |
 | QA-04 | FE | `test/frontend-flows` | BLOCKED | [PR #53](https://github.com/NgocYuh/UTEGear/pull/53) | 2026-10-14 |
+| QA-04-BE-FIX | BE | `fix/cart-stomp-integration` | IN PROGRESS | Chưa mở |  |
 | QA-05 | Cả hai | `docs/manual-test-report` | TODO |  |  |
 | DOC-01…02 | BE | Xem backlog | TODO |  |  |
 | DOC-03 | FE | `docs/frontend-demo-guide` | TODO |  |  |

@@ -886,6 +886,27 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Commit/push branch; sau đó FE kéo branch/PR này và chạy lại QA-04.
 - Ngày hoàn tất: `Chưa merge`
 
+## QA-04-BE-FIX: Sửa cập nhật giỏ hàng và xác thực STOMP
+
+- Trạng thái: `IN PROGRESS`
+- Branch: `fix/cart-stomp-integration`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-14
+- Đã làm:
+  - Sửa luồng cập nhật/xóa cart item để tải cart cùng collection item theo user, rồi tìm item ngay trong aggregate đã được quản lý bởi Hibernate; request không còn trộn hai instance cart khác nhau.
+  - Giữ nguyên quy tắc sở hữu: cart item không tồn tại hoặc không thuộc cart của user đều trả `404 CART_ITEM_NOT_FOUND`.
+  - Sửa STOMP interceptor để đặt principal lên `StompHeaderAccessor` gốc, cho phép Spring lưu user của phiên CONNECT và dùng lại khi SUBSCRIBE.
+  - Bổ sung regression test cho cả cart ownership và callback lưu STOMP principal.
+  - Commit mã nguồn: `becfcd1` và `7c5d278`.
+- Kết quả kiểm thử:
+  - `mvnw.cmd -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" "-Dtest=CartServiceTest,CartControllerTest,StompJwtChannelInterceptorTest" test`: `PASS` với 14 test, 0 failure, 0 error, 0 skipped.
+  - `mvnw.cmd -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `BUILD SUCCESS` với 185 test được phát hiện, 182 pass, 0 failure, 0 error và 3 PostgreSQL test bị skip do Docker local không chạy.
+- Vướng mắc hoặc phần còn thiếu:
+  - Frontend cần ghép hai commit sửa này với `fix/storefront-bindings` và chạy lại browser QA-04 để xác nhận hai lỗi tái hiện đã hết trong luồng thật.
+- Bước tiếp theo:
+  - Push branch, mở PR, rồi nhờ Frontend chạy lại QA-04 sau khi merge.
+- Ngày hoàn tất: `Chưa merge`
+
 ## Mẫu mục mới
 
 ```md
