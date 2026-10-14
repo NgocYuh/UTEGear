@@ -7,9 +7,8 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -27,7 +26,10 @@ public class StompJwtChannelInterceptor implements ChannelInterceptor {
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+        StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+        if (accessor == null) {
+            throw new MessagingException("Không đọc được STOMP frame");
+        }
         if (accessor.getCommand() == StompCommand.SUBSCRIBE) {
             validateSubscription(accessor);
             return message;
@@ -47,9 +49,8 @@ public class StompJwtChannelInterceptor implements ChannelInterceptor {
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());
-            return MessageBuilder.fromMessage(message)
-                    .setHeader(SimpMessageHeaderAccessor.USER_HEADER, authentication)
-                    .build();
+            accessor.setUser(authentication);
+            return message;
         } catch (RuntimeException exception) {
             if (exception instanceof MessagingException messagingException) {
                 throw messagingException;
