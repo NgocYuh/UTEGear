@@ -1,5 +1,8 @@
 # Phát triển cục bộ
 
+Hướng dẫn đầy đủ về Supabase, Cloudinary, Flyway, tài khoản và kịch bản demo nằm tại
+[`setup-and-demo.md`](setup-and-demo.md). Tài liệu này chỉ giữ phần khởi động nhanh.
+
 ## Yêu cầu
 
 - JDK 21
@@ -33,11 +36,12 @@ Trên Windows PowerShell:
 
 ```powershell
 .\mvnw.cmd -B clean verify
-.\mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=local
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=local"
 ```
 
 Khi triển khai, đặt `SPRING_PROFILES_ACTIVE=prod` cùng các biến bắt buộc trong
 `.env.example`. Không sao chép `application-local.properties` lên production.
 
 Kiểm thử dùng H2 độc lập theo `application-test.properties`, không kết nối Supabase hay
-Cloudinary thật. Migration `V1` sẽ chỉ được tạo sau khi ERD được chốt.
+Cloudinary thật. Schema dùng chung hiện do Flyway `V1` quản lý và `V2` seed hai role; không sửa migration
+đã merge và không bật baseline chỉ để bỏ qua lỗi schema.

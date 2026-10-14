@@ -60,6 +60,9 @@ môi trường; profile `test` luôn dùng H2 trong bộ nhớ.
 
 Trên Windows, thay `./mvnw` bằng `mvnw.cmd`.
 
+Xem [hướng dẫn cài đặt và demo](docs/setup/setup-and-demo.md) để cấu hình Supabase, Cloudinary,
+Flyway và tài khoản QA an toàn. Hướng dẫn không chứa credential thật.
+
 Xem [kế hoạch phát triển](UTEGear_INCREMENTAL_DEVELOPMENT_PLAN.md), [quy trình nhóm](docs/team/workflow.md) và
 [hướng dẫn đóng góp](CONTRIBUTING.md) trước khi bắt đầu một task.
 
