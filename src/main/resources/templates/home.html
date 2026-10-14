@@ -109,36 +109,7 @@
 
             <!-- Dynamic Category Rail from real model categories -->
             <div class="category-rail-container">
-                <th:block th:each="c : ${categories}"
-                          th:with="rawName=${#strings.toLowerCase(c.name)},
-                                   cSlug=${rawName == 'keyboard' ? 'keyboard' :
-                                           (rawName == 'mouse' ? 'mouse' :
-                                           (rawName == 'headset' ? 'headset' :
-                                           (rawName == 'keycap' ? 'keycap' :
-                                           (rawName == 'switch' ? 'switch' :
-                                           (rawName == 'mousepad' ? 'mousepad' :
-                                           (rawName == 'microphone' ? 'microphone' :
-                                           (rawName == 'webcam' ? 'webcam' :
-                                           (rawName == 'adapter' ? 'adapter' :
-                                           (rawName == 'gaming accessories' ? 'gamepad' :
-                                           (#strings.contains(rawName, 'cable') || #strings.contains(rawName, 'hub') ? 'connection-cables' : ''))))))))))}">
-                    <a th:if="${!#strings.isEmpty(cSlug)}"
-                       th:href="@{'/category/' + ${cSlug}}"
-                       class="category-rail-pill">
-                        <i th:if="${cSlug == 'keyboard'}" class="bi bi-keyboard"></i>
-                        <i th:if="${cSlug == 'mouse'}" class="bi bi-mouse"></i>
-                        <i th:if="${cSlug == 'headset'}" class="bi bi-headphones"></i>
-                        <i th:if="${cSlug == 'connection-cables'}" class="bi bi-usb-plug"></i>
-                        <i th:if="${cSlug == 'gamepad'}" class="bi bi-controller"></i>
-                        <i th:if="${cSlug == 'keycap'}" class="bi bi-sliders"></i>
-                        <i th:if="${cSlug == 'switch'}" class="bi bi-cpu"></i>
-                        <i th:if="${cSlug == 'mousepad'}" class="bi bi-square"></i>
-                        <i th:if="${cSlug == 'microphone'}" class="bi bi-mic"></i>
-                        <i th:if="${cSlug == 'webcam'}" class="bi bi-camera-video"></i>
-                        <i th:if="${cSlug == 'adapter'}" class="bi bi-plugin"></i>
-                        <span th:text="${@categoryHelper.getDisplayCategoryName(c)}">Tên danh mục</span>
-                    </a>
-                </th:block>
+                <a th:each="c : ${categories}" th:href="@{/products(categoryId=${c.id})}" class="category-rail-pill"><i class="bi bi-grid"></i><span th:text="${c.name}"></span></a>
             </div>
         </div>
     </section>
@@ -298,7 +269,7 @@
                         <div class="home-showroom-meta">
                             <span><i class="bi bi-pin-map text-danger"></i> <strong th:text="${s.address}">Địa chỉ</strong></span>
                             <span><i class="bi bi-telephone text-primary"></i> Hotline: <strong th:text="${s.phone}">0901234567</strong></span>
-                            <span><i class="bi bi-clock text-muted"></i> Giờ mở cửa: <strong th:text="${s.openTime} + ' - ' + ${s.closeTime}">08:00 - 22:00</strong></span>
+                            <span><i class="bi bi-clock text-muted"></i> Giờ mở cửa: <strong th:text="${s.openingTime} + ' - ' + ${s.closingTime}">08:00 - 22:00</strong></span>
                         </div>
                     </div>
                     <div class="home-showroom-action">

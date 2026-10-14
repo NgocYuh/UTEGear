@@ -1,15 +1,16 @@
 window.UTEGear = window.UTEGear || {};
 
-// Review prototype only: sessionStorage is NOT an approved security decision.
-// See docs/frontend/auth-session-decision.md; BE approval is required before merge.
+// sessionStorage per tab was approved by BE on 2026-10-14 (PR #54).
+// Follow docs/frontend/auth-session-decision.md; no refresh or server token revocation.
 
 UTEGear.Session = {
     key: 'utegear.auth',
     get() {
         try {
             const value = JSON.parse(sessionStorage.getItem(this.key));
+            if (!value) return null;
             if (!value?.accessToken || !Number.isFinite(Date.parse(value.expiresAt))
-                || Date.parse(value.expiresAt) <= Date.now()) return null;
+                || Date.parse(value.expiresAt) <= Date.now()) { this.clear(); return null; }
             return value;
         } catch { return null; }
     },

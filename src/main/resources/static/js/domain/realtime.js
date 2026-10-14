@@ -36,10 +36,11 @@ UTEGear.Realtime = {
             const current = ++generation;
             const url = new URL('/ws', location.origin);
             url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
-            client = Stomp.over(new WebSocket(url.href));
+            client = Stomp.over(new WebSocket(url.href, ['v12.stomp', 'v11.stomp', 'v10.stomp']));
             client.debug = () => {}; // Never log CONNECT frames containing the JWT.
-            const failed = () => {
+            const failed = reason => {
                 if (stopped || current !== generation) return;
+                if (reason?.command === 'ERROR') { stop(); onState('authentication-required'); return; }
                 generation++;
                 client.ws?.close();
                 onState('disconnected');

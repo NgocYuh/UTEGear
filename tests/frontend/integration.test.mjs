@@ -161,3 +161,26 @@ test('STOMP uses native WebSocket, JWT, resync and deduplicated envelopes', asyn
     realtime.stop();
     assert.ok(disconnected);
 });
+
+test('STOMP server refusal stops the socket without scheduling reconnect', () => {
+    const { context, api } = setup();
+    const scheduled = [], states = [];
+    let refused, disconnected = false, closed = false;
+    context.setTimeout = callback => { scheduled.push(callback); return scheduled.length; };
+    context.clearTimeout = () => {};
+    context.WebSocket = class { close() { closed = true; } };
+    context.Stomp = { over: ws => ({ ws, connect(headers, ready, failed) { refused = failed; }, disconnect() { disconnected = true; } }) };
+    api.Realtime.start({ orderId: 8, resync: async () => {}, onEvent() {}, onState: state => states.push(state) });
+    refused({ command: 'ERROR', body: 'subscription refused' });
+    assert.equal(scheduled.length, 1, 'Only the initial token-expiry timer; no reconnect timer');
+    assert.ok(closed && disconnected);
+    assert.equal(states.at(-1), 'authentication-required');
+});
+
+test('Expired local session clears private UI through the logout event', () => {
+    const { context, api, session, events } = setup();
+    context.sessionStorage.setItem(api.Session.key, JSON.stringify({ ...session, expiresAt: '2020-01-01T00:00:00Z' }));
+    assert.equal(api.Session.get(), null);
+    assert.equal(context.sessionStorage.getItem(api.Session.key), null);
+    assert.ok(events.some(event => event.type === 'utegear:logout'));
+});
