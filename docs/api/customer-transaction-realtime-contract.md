@@ -1,7 +1,8 @@
 # Contract API-03: Giao dịch khách hàng và realtime
 
 Contract này phục vụ FE-CART-01, FE-WISH-01, FE-ORD-01, UI-03, FE-WS-01 và các task Backend tương ứng.
-Endpoint chưa được triển khai trong task này. Frontend dùng [`mock/api-03.json`](mock/api-03.json).
+Frontend có thể dùng [`mock/api-03.json`](mock/api-03.json) khi phát triển độc lập; các endpoint cart,
+wishlist, address, checkout, customer/admin order, notification và WebSocket trong tài liệu đã có ở Backend.
 
 Tất cả endpoint trong tài liệu này yêu cầu JWT, trừ danh sách review sản phẩm và kiểm tra coupon được ghi
 rõ là public. Tài nguyên của khách hàng luôn được xác định từ subject JWT; client không gửi `userId` để
@@ -82,6 +83,10 @@ Chuyển trạng thái hợp lệ:
 - `COMPLETED` và `CANCELLED` là trạng thái cuối.
 
 Enum `paymentStatus`: `PENDING`, `PAID`, `FAILED`, `CANCELLED`.
+
+Khách chỉ hủy đơn của chính mình khi transition hiện tại cho phép. Đơn đã có payment `PAID` trả
+`409 PAID_ORDER_CANNOT_CANCEL`; trạng thái không cho hủy trả `409 ORDER_CANNOT_CANCEL`; order không
+thuộc user trả `404 ORDER_NOT_FOUND` để không làm lộ dữ liệu của user khác.
 
 ## Admin order
 

@@ -859,6 +859,20 @@ Frontend.
   - Admin MVC routing được thực hiện ở task riêng sau khi Frontend chốt trang và model cần dùng; không mở route giả chỉ để hết lỗi 404.
 - Commit đề xuất: `feat: add storefront MVC routing`.
 
+#### INT-BE-02 — Account, customer order và admin MVC integration
+
+- Phụ trách: Backend (`@NgocYuh`).
+- Branch: `feat/account-order-integration`.
+- Phụ thuộc: AUTH-03, ORD-01, ORD-03, ORD-04, WS-02 và INT-BE-01 đã merge.
+- Nội dung:
+  - Hoàn thiện API cập nhật profile, đổi mật khẩu và CRUD địa chỉ theo quyền sở hữu từ JWT.
+  - Hoàn thiện API lịch sử/chi tiết/hủy order của khách; không nhận `userId` từ client.
+  - Cung cấp MVC shell cho `/orders` và `/admin/orders`; dữ liệu protected được client tải bằng Bearer JWT.
+  - Duyệt policy `sessionStorage` hiện tại, ghi rõ giới hạn XSS/logout/SSR/STOMP.
+  - Chuẩn bị hướng dẫn tài khoản và dữ liệu QA không chứa secret hoặc dữ liệu production.
+  - Kiểm thử service, security/controller và render route; không sửa thiết kế giao diện của Frontend.
+- Commit đề xuất: `feat: complete account and order integration APIs`.
+
 ### Giai đoạn 4 — Kiểm thử và quality assurance
 
 #### QA-01 — Backend service unit tests
@@ -1034,11 +1048,12 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | WS-02 | BE | `feat/order-notifications` | DONE | [PR #37](https://github.com/NgocYuh/UTEGear/pull/37) | 2026-10-12 |
 | UI-01…03 và các task `FE-*` | FE | Xem backlog | TODO |  |  |
 | INT-01…03 | FE, BE review contract | Xem backlog | TODO |  |  |
-| INT-BE-01 | BE | `feat/mvc-view-routing` | IN REVIEW | Chưa mở | 2026-10-14 |
+| INT-BE-01 | BE | `feat/mvc-view-routing` | DONE | [PR #52](https://github.com/NgocYuh/UTEGear/pull/52) | 2026-10-14 |
+| INT-BE-02 | BE | `feat/account-order-integration` | IN PROGRESS | Chưa mở |  |
 | QA-01 | BE | `test/service-coverage` | DONE | [PR #47](https://github.com/NgocYuh/UTEGear/pull/47) | 2026-10-13 |
 | QA-02 | BE | `test/postgresql-integration` | DONE | [PR #48](https://github.com/NgocYuh/UTEGear/pull/48) | 2026-10-13 |
-| QA-03 | BE | `test/security-controller-flows` | IN REVIEW | Chưa mở |  |
-| QA-04 | FE | `test/frontend-flows` | TODO |  |  |
+| QA-03 | BE | `test/security-controller-flows` | DONE | [PR #50](https://github.com/NgocYuh/UTEGear/pull/50) | 2026-10-13 |
+| QA-04 | FE | `test/frontend-flows` | BLOCKED | [PR #53](https://github.com/NgocYuh/UTEGear/pull/53) | 2026-10-14 |
 | QA-05 | Cả hai | `docs/manual-test-report` | TODO |  |  |
 | DOC-01…02 | BE | Xem backlog | TODO |  |  |
 | DOC-03 | FE | `docs/frontend-demo-guide` | TODO |  |  |
