@@ -1,6 +1,7 @@
 package com.utegear.controller;
 
 import com.utegear.dto.catalog.ProductDtos;
+import com.utegear.dto.order.CustomerOrderDtos;
 import com.utegear.service.BrandService;
 import com.utegear.service.CategoryService;
 import com.utegear.service.ProductCatalogService;
@@ -138,6 +139,18 @@ public class StorefrontViewController {
     @GetMapping("/profile")
     public String profile() {
         return "profile/profile";
+    }
+
+    @GetMapping("/orders")
+    public String orders(Model model) {
+        model.addAttribute("orders", new CustomerOrderDtos.OrderPage(
+                List.of(), 0, 20, 0, 0, true, true, true));
+        return "orders/orders";
+    }
+
+    @GetMapping("/orders/{orderId}")
+    public String orderDetail(@PathVariable Long orderId) {
+        return "redirect:/orders?focus=" + orderId;
     }
 
     private void addCatalogFilters(

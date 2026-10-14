@@ -21,6 +21,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -94,6 +95,8 @@ class SecurityIntegrationTest {
         CustomUserDetails principal = principal(Role.CUSTOMER);
         String token = jwtService.generateToken(principal);
         when(userRepository.findByEmailIgnoreCase(principal.getUsername()))
+                .thenReturn(Optional.of(principal.getUser()));
+        when(userRepository.findById(principal.getUser().getId()))
                 .thenReturn(Optional.of(principal.getUser()));
 
         mockMvc.perform(get("/api/profile")
@@ -206,6 +209,7 @@ class SecurityIntegrationTest {
     private CustomUserDetails principal(String roleName) {
         User user = new User("Test User", "user@example.com", null, "encoded-password");
         user.getRoles().add(new Role(roleName));
+        ReflectionTestUtils.setField(user, "id", 1L);
         return new CustomUserDetails(user);
     }
 

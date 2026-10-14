@@ -68,4 +68,13 @@ class StorefrontViewRenderingTest {
                     .andExpect(content().contentTypeCompatibleWith("text/html"));
         }
     }
+
+    @Test
+    void rendersCustomerAndAdminOrderShells() throws Exception {
+        for (String path : List.of("/orders", "/admin/orders")) {
+            mockMvc.perform(get(path))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentTypeCompatibleWith("text/html"));
+        }
+    }
 }

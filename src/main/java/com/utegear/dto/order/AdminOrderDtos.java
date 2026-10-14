@@ -33,6 +33,11 @@ public final class AdminOrderDtos {
             return new OrderPage(source.getContent().stream().map(Summary::from).toList(),
                     source.getNumber(), source.getSize(), source.getTotalElements(), source.getTotalPages());
         }
+
+        public int number() { return page; }
+        public boolean isFirst() { return page == 0; }
+        public boolean isLast() { return totalPages == 0 || page >= totalPages - 1; }
+        public boolean isEmpty() { return content.isEmpty(); }
     }
 
     public record Detail(Long id, String orderCode, OrderStatus status, Customer customer, Shipping shipping,

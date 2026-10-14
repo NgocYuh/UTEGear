@@ -1,7 +1,7 @@
 # Contract API-01: Auth, profile và catalog
 
-Contract này là nguồn thống nhất cho các task UI-01, FE-AUTH-01 và FE-CAT-01. Endpoint chưa được triển
-khai trong task này. Frontend dùng [`mock/api-01.json`](mock/api-01.json) để làm giao diện độc lập.
+Contract này là nguồn thống nhất cho các task UI-01, FE-AUTH-01 và FE-CAT-01. Frontend có thể dùng
+[`mock/api-01.json`](mock/api-01.json) khi phát triển độc lập; các endpoint trong bảng đã có ở Backend.
 
 ## Quyền truy cập
 
@@ -46,6 +46,8 @@ luôn là `Bearer`, `expiresAt` và `user`. Không trả password, password hash
 | HTTP | Code | Khi nào |
 |---|---|---|
 | 400 | `VALIDATION_FAILED` | Field sai định dạng hoặc password xác nhận không khớp |
+| 400 | `CURRENT_PASSWORD_INVALID` | Mật khẩu hiện tại không đúng |
+| 400 | `PASSWORD_UNCHANGED` | Mật khẩu mới trùng mật khẩu hiện tại |
 | 401 | `INVALID_CREDENTIALS` | Email hoặc password sai |
 | 401 | `UNAUTHORIZED` | Thiếu, sai hoặc hết hạn JWT |
 | 403 | `ACCOUNT_DISABLED` | Tài khoản đã bị vô hiệu hóa |

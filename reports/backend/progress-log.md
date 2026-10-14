@@ -657,7 +657,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## ORD-04: Admin order management
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `IN PROGRESS`
 - Branch: `feat/admin-order-management`
 - Pull Request: `Chưa mở`
 - Ngày cập nhật: 2026-10-12
@@ -850,6 +850,40 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Route customer render được shell HTML nhưng dữ liệu riêng của người dùng vẫn phải được JavaScript gọi API bằng JWT trong `sessionStorage`.
 - Bước tiếp theo:
   - Mở PR để Frontend kéo về hoàn thiện binding còn thiếu rồi chạy lại QA-04.
+- Ngày hoàn tất: `Chưa merge`
+
+## INT-BE-02: Account, customer order và admin MVC integration
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/account-order-integration`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-14
+- Đã làm:
+  - Bổ sung API cập nhật profile và đổi mật khẩu; kiểm tra phone duy nhất, mật khẩu hiện tại,
+    xác nhận mật khẩu mới và không trả password hash.
+  - Bổ sung API danh sách/tạo/sửa/xóa/chọn mặc định cho address; service luôn giới hạn theo user từ JWT.
+  - Bổ sung API danh sách/chi tiết/hủy order của khách; truy vấn và lock theo `orderId + userId`, trả
+    `404` cho tài nguyên không thuộc chủ sở hữu và chặn hủy order đã thanh toán/trạng thái không hợp lệ.
+  - Phát notification và WebSocket event sau khi khách hủy order hợp lệ.
+  - Bổ sung MVC shell cho `/orders`, `/orders/{id}`, `/admin/orders` và `/admin/orders/{id}`. Route detail
+    redirect về shell kèm `focus` để client tải dữ liệu protected bằng Bearer JWT, không đưa JWT vào model SSR.
+  - Duyệt `sessionStorage` theo tab cho phiên JWT hiện tại và ghi rõ hành vi 401/403/logout/STOMP cùng rủi ro XSS.
+  - Thêm hướng dẫn chuẩn bị User A, User B, admin và dữ liệu QA mà không commit password, JWT hoặc dữ liệu production.
+  - Cập nhật contract auth/customer transaction theo endpoint và mã lỗi thực tế.
+  - Commit mã nguồn: `a08f0ec` (`feat: complete account and order integration APIs`).
+- Kết quả kiểm thử:
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" "-Dtest=ProfileServiceTest,CustomerOrderServiceTest,AddressServiceTest,StorefrontViewRenderingTest" test`:
+    `PASS` với 12 test, 0 failure, 0 error, 0 skipped.
+  - `StorefrontViewRenderingTest`: `PASS` với 3 test, gồm render shell `/orders` và `/admin/orders`.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `PASS` với
+    185 test được phát hiện, 182 pass, 0 failure, 0 error và 3 PostgreSQL test bị skip do Docker local không chạy.
+  - `node --test tests/frontend/integration.test.mjs tests/frontend/mock-data.test.mjs`: `PASS`
+    với 16 test, 0 failure.
+- Vướng mắc hoặc phần còn thiếu:
+  - Frontend vẫn cần bind profile/address/order/admin shell với API thật và hoàn tất các ca browser trong QA-04.
+  - Repository chỉ chuẩn bị quy trình dữ liệu QA; mật khẩu dùng một lần và URL môi trường phải gửi ngoài Git.
+- Bước tiếp theo:
+  - Commit/push branch; sau đó FE kéo branch/PR này và chạy lại QA-04.
 - Ngày hoàn tất: `Chưa merge`
 
 ## Mẫu mục mới
