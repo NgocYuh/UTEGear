@@ -16,8 +16,8 @@
 - Kiểm tra mới: Maven clean verify BUILD SUCCESS, 187 phát hiện/184 pass/3 PostgreSQL skip local;
   18 unit JS PASS, syntax JS PASS. QA-04 browser: 93 public/39 giao dịch/54 ca mở rộng PASS, 0 FAIL, summary PASS.
 - Bằng chứng local: `.local-reference/storefront-test-artifacts/doc03-rel01-verify.log`;
-  không commit log, screenshot, credential. Chưa push/PR/duyệt; chưa ghi DONE.
-- Tiếp theo: hoàn tất kiểm tra, review/merge DOC-03 rồi chốt REL-01 trên branch riêng.
+  không commit log, screenshot, credential. Bản này gửi lên GitHub để review; chưa duyệt/DONE.
+- Tiếp theo: review/merge DOC-03 rồi chốt REL-01 trên branch riêng.
 
 ## QA-05: End-to-end và kiểm thử media thật
 
