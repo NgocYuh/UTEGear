@@ -846,6 +846,19 @@ Frontend.
   - Giữ trạng thái mất kết nối/reconnect và lỗi quyền truy cập.
 - Commit đề xuất: `feat: integrate admin and realtime flows`.
 
+#### INT-BE-01 — MVC routing và Thymeleaf runtime
+
+- Phụ trách: Backend (`@NgocYuh`).
+- Branch: `feat/mvc-view-routing`.
+- Phụ thuộc: INT-01, INT-02 và các service/contract Backend tương ứng đã merge.
+- Nội dung:
+  - Bổ sung Thymeleaf Layout Dialect để các template dùng `layout:decorate` được xử lý khi chạy.
+  - Cung cấp `@Controller` và model tối thiểu cho trang public, auth và customer shell hiện có.
+  - Dùng DTO/service đã có; không tạo dữ liệu giả và không sửa thiết kế giao diện của Frontend.
+  - Kiểm thử route, model và khả năng render template ở trạng thái rỗng.
+  - Admin MVC routing được thực hiện ở task riêng sau khi Frontend chốt trang và model cần dùng; không mở route giả chỉ để hết lỗi 404.
+- Commit đề xuất: `feat: add storefront MVC routing`.
+
 ### Giai đoạn 4 — Kiểm thử và quality assurance
 
 #### QA-01 — Backend service unit tests
@@ -1021,6 +1034,7 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | WS-02 | BE | `feat/order-notifications` | DONE | [PR #37](https://github.com/NgocYuh/UTEGear/pull/37) | 2026-10-12 |
 | UI-01…03 và các task `FE-*` | FE | Xem backlog | TODO |  |  |
 | INT-01…03 | FE, BE review contract | Xem backlog | TODO |  |  |
+| INT-BE-01 | BE | `feat/mvc-view-routing` | IN REVIEW | Chưa mở | 2026-10-14 |
 | QA-01 | BE | `test/service-coverage` | DONE | [PR #47](https://github.com/NgocYuh/UTEGear/pull/47) | 2026-10-13 |
 | QA-02 | BE | `test/postgresql-integration` | DONE | [PR #48](https://github.com/NgocYuh/UTEGear/pull/48) | 2026-10-13 |
 | QA-03 | BE | `test/security-controller-flows` | IN REVIEW | Chưa mở |  |

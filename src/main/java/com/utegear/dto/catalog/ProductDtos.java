@@ -77,6 +77,14 @@ public final class ProductDtos {
     public record ProductPage(
             List<Summary> content, int page, int size, long totalElements, int totalPages,
             boolean first, boolean last, boolean empty) {
+        public int number() {
+            return page;
+        }
+
+        public boolean isEmpty() {
+            return empty;
+        }
+
         public static ProductPage from(Page<Product> products, Map<Long, Long> stockByVariant) {
             return new ProductPage(products.getContent().stream()
                     .map(product -> Summary.from(product, stockByVariant)).toList(),
