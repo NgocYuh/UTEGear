@@ -1,3 +1,4 @@
+import { createBrowser as openBrowser } from './browser-harness.mjs';
 // Real browser/API tests. Only run against the disposable H2 QA launcher/fixture.
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
@@ -14,56 +15,15 @@ async function api(route, { method = 'GET', token, body } = {}) {
     let data = null; if (response.status !== 204) data = await response.json();
     return { response, data };
 }
-async function createBrowser() {
-    const target = await (await fetch(cdp + '/json/new?about:blank', { method: 'PUT' })).json();
-    const socket = new WebSocket(target.webSocketDebuggerUrl), pending = new Map(); let serial = 0;
-    await new Promise((resolve,reject) => { socket.onopen=resolve; socket.onerror=reject; });
-    const errors = [], stomp = [], requests = [];
-    socket.onmessage = event => {
-        const value = JSON.parse(event.data); if (value.method === 'Runtime.exceptionThrown') errors.push(value.params.exceptionDetails.text);
-        if (value.method === 'Network.requestWillBeSent') {
-            const route = new URL(value.params.request.url).pathname;
-            if (route.startsWith('/api/orders/') || route.startsWith('/api/admin/orders')) requests.push({ route, method: value.params.request.method });
-        }
-        if (value.method === 'Network.webSocketFrameSent' || value.method === 'Network.webSocketFrameReceived') {
-            const frame = value.params.response.payloadData;
-            // Retain only protocol evidence. Never retain raw frames or JWT header values.
-            const command = frame.split('\n')[0].trim();
-            if (['CONNECT', 'CONNECTED', 'SUBSCRIBE', 'ERROR'].includes(command)) stomp.push({ command, hasAuthorization: command === 'CONNECT' && /\nAuthorization:Bearer /i.test(frame) });
-        }
-        const wait = pending.get(value.id); if (wait) { clearTimeout(wait.timer); pending.delete(value.id); value.error ? wait.reject(Error(value.error.message)) : wait.resolve(value.result); }
-    };
-    const send = (method, params = {}) => new Promise((resolve,reject) => {
-        const id=++serial, timer=setTimeout(()=>{pending.delete(id);reject(Error('CDP timeout'));},15000);
-        pending.set(id,{resolve,reject,timer}); socket.send(JSON.stringify({id,method,params}));
-    });
-    const evaluate = async expression => {
-        const response=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});
-        if(response.exceptionDetails) throw Error('Browser evaluation failed'); return response.result.value;
-    };
-    const wait = async expression => {
-        for(let i=0;i<100;i++){try { if(await evaluate(expression))return; } catch {} await new Promise(resolve=>setTimeout(resolve,100));}
-        throw Error('UI state timeout: ' + expression.slice(0,100));
-    };
-    const navigate = async (route, expected = new URL(route,base).pathname) => {
-        await send('Page.navigate',{url:base+route});
-        await wait(`location.pathname === ${JSON.stringify(expected)} && document.readyState === 'complete' && !!window.UTEGear?.Views`);
-    };
-    const fill = (selector, values) => evaluate(`(()=>{const form=document.querySelector(${JSON.stringify(selector)});for(const [name,value] of Object.entries(${JSON.stringify(values)}))form.elements.namedItem(name).value=value;form.requestSubmit();})()`);
-    const login = async (email,password) => { await navigate('/login'); await fill('[data-auth=login]',{email,password}); await wait(`location.pathname === '/' && !!window.UTEGear?.Session.get() && !document.querySelector('[data-session-controls]').hidden`); };
-    await send('Page.enable'); await send('Runtime.enable'); await send('Network.enable');
-    // Track real native sockets only, to exercise a dropped connection without mocking frames/API.
-    await send('Page.addScriptToEvaluateOnNewDocument', { source: `window.__qaSockets=[];const NativeWebSocket=window.WebSocket;window.WebSocket=class extends NativeWebSocket{constructor(...args){super(...args);window.__qaSockets.push(this);}};` });
-    const browser={send,evaluate,wait,navigate,fill,login,errors,stomp,requests,close:async()=>{for(const task of pending.values())clearTimeout(task.timer);socket.close();await fetch(cdp+'/json/close/'+target.id).catch(()=>{});}};
-    browsers.push(browser); return browser;
-}
+const createBrowser = () => openBrowser({ base, cdp, browsers });
+
 fs.mkdirSync(output,{recursive:true});
 try {
     const seed=await api('/api/products/100'); check(seed.data?.slug==='qa-keyboard-100','Isolated H2 seed present');
     const email='qa-'+randomUUID()+'@example.test', password=randomUUID()+'Ab1!';
     const registered=await api('/api/auth/register',{method:'POST',body:{fullName:'QA Browser',email,password,phone:null}}); check(registered.response.status===201,'Real CUSTOMER registration');
     const A=await createBrowser(); await A.login(email,password); check(true,'Real login form and session/header');
-    await A.navigate('/products'); check(await A.evaluate(`document.querySelector('.product-card').textContent.includes('QA Keyboard <safe>')`),'Catalog DTO and text escaping');
+    await A.navigate('/products'); check(await A.evaluate(`Array.from(document.querySelectorAll('.product-card')).some(el=>el.textContent.includes('QA Keyboard <safe>'))`),'Catalog DTO and text escaping');
     await A.navigate('/products/100'); await A.wait(`document.querySelector('[data-product-availability]').textContent.includes('QA Store')`);
     check(await A.evaluate(`document.querySelector('main').textContent.includes('<script>literal</script>') && !document.querySelector('main script')`),'Description is escaped text');
     await A.evaluate(`document.getElementById('quantity').value='2';document.querySelector('[data-detail-add]').click()`); await A.wait(`!!document.querySelector('.toast-msg')`);
@@ -73,7 +33,7 @@ try {
     await A.wait(`document.querySelector('[data-view-total]').textContent.includes('1.500.000') || document.querySelector('[data-view-status]').classList.contains('text-danger')`);
     if(await A.evaluate(`document.querySelector('[data-view-total]').textContent.includes('1.500.000')`))check(true,'Cart PUT success');
     else { fail('BE cart PUT','PUT cart returned an error; FE restores server quantity, no fake success');check(await A.evaluate(`document.querySelector('[data-view-items] input').value==='2'`),'Cart input rollback on failed PUT'); }
-    await A.navigate('/products');await A.evaluate(`document.querySelector('[data-action=toggle-wishlist]').click()`);await A.wait(`document.querySelector('[data-action=toggle-wishlist]').getAttribute('aria-pressed')==='true'`);
+    await A.navigate('/products');await A.evaluate(`document.querySelector('[data-action=toggle-wishlist][data-product-id="100"]').click()`);await A.wait(`document.querySelector('[data-action=toggle-wishlist][data-product-id="100"]').getAttribute('aria-pressed')==='true'`);
     await A.navigate('/wishlist');await A.wait(`document.querySelector('[data-view-items]').textContent.includes('QA Keyboard')`);check(true,'Wishlist API hydration');
     await A.evaluate(`Array.from(document.querySelectorAll('[data-view-items] button')).find(el=>el.textContent==='Bỏ yêu thích').click()`);await A.wait(`document.querySelector('[data-view-status]').textContent.includes('đang trống')`);check(true,'Wishlist delete');
     await A.navigate('/profile');await A.wait(`!document.querySelector('[data-profile-management]').hidden`);
