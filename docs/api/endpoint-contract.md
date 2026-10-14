@@ -1,41 +1,22 @@
-# Hợp đồng endpoint
+# Hợp đồng endpoint và trạng thái triển khai
 
-Tài liệu này là nơi ghi hợp đồng HTTP trước khi triển khai endpoint. Backend (`@NgocYuh`)
-chịu trách nhiệm viết và cập nhật; Frontend (`@trongsonho`) review khả năng sử dụng trước khi
-contract được merge.
+Tài liệu này là mục lục API của UTEGear tại commit `71a50d2`. Các bảng "Đã triển khai" được đối chiếu
+trực tiếp với controller trong `src/main/java/com/utegear/controller`. Các contract miền vẫn là nguồn
+chi tiết cho request, response, mã lỗi và mock data; endpoint ghi "chưa triển khai" không được mô tả
+như chức năng đang chạy.
 
-Mỗi endpoint phải nêu method, path, quyền truy cập, request, response, mã lỗi, phân trang và
-ví dụ. Nhóm public dự kiến gồm sản phẩm, danh mục, thương hiệu và cửa hàng. Nhóm cần bảo vệ
-gồm giỏ hàng, wishlist, checkout, đơn hàng, đánh giá, người dùng và quản trị. Endpoint admin
-phải yêu cầu role `ADMIN`.
+## Quy ước chung
 
-Mỗi endpoint phải có ít nhất một JSON response thành công, JSON lỗi chính và dữ liệu biên cần
-cho loading/empty/error state. Frontend được dùng chính các JSON này làm mock data và không
-phải chờ implementation Backend hoàn tất.
+- REST base path: `/api`.
+- JSON dùng `application/json`; media/import dùng `multipart/form-data`.
+- Thời gian dùng ISO 8601 kèm offset; tiền dùng JSON number và `BigDecimal` ở Backend.
+- Collection rỗng trả `[]`; `optionValues` rỗng trả `{}`.
+- Phân trang bắt đầu từ `page=0`, `size` mặc định 20 và tối đa 100 khi contract miền không ghi khác.
+- JWT gửi qua `Authorization: Bearer <token>`, không đặt trong query string.
+- `PUBLIC` không cần JWT; `AUTHENTICATED` cần JWT hợp lệ; `ADMIN` cần role `ADMIN`.
+- API không trả entity JPA trực tiếp.
 
-## Quy tắc contract theo biến thể
-
-- Catalog response luôn trả ít nhất một biến thể cho mỗi sản phẩm.
-- JSON mẫu phải có một sản phẩm chỉ có biến thể mặc định và một sản phẩm có nhiều lựa chọn.
-- API tra cứu hoặc cập nhật tồn kho dùng `storeId + variantId`. API admin không được cập nhật
-  tồn kho chỉ bằng `productId`.
-- Cart và checkout nhận `variantId`, kể cả khi sản phẩm chỉ có biến thể mặc định.
-- Response đơn hàng phải giữ thông tin biến thể đã mua cùng snapshot tên, giá và ảnh tại thời
-  điểm đặt hàng.
-- API có trả mức tồn kho tổng ở cấp sản phẩm phải mô tả rõ cách tổng hợp từ các biến thể.
-
-## Quy ước HTTP chung
-
-- Base path của REST API là `/api`.
-- Request và response dùng `application/json`, trừ upload media dùng `multipart/form-data`.
-- Thời gian dùng ISO 8601 UTC, ví dụ `2026-10-11T08:30:00Z`.
-- Tiền là JSON number với tối đa hai chữ số thập phân; Backend dùng `BigDecimal`.
-- Collection rỗng trả `[]`, object thuộc tính biến thể rỗng trả `{}`; không dùng `null` thay cho collection.
-- JWT gửi qua `Authorization: Bearer <token>`. Không đặt token trong query string.
-- Endpoint phân trang nhận `page` bắt đầu từ `0`, `size` mặc định `20`, tối đa `100`, và `sort`
-  theo mẫu `field,direction`.
-
-Response thành công không bọc thêm `success` hoặc `message`. Response lỗi dùng một cấu trúc duy nhất:
+Response lỗi dùng một cấu trúc thống nhất:
 
 ```json
 {
@@ -50,15 +31,133 @@ Response thành công không bọc thêm `success` hoặc `message`. Response l�
 }
 ```
 
-`fieldErrors` chỉ xuất hiện với lỗi validation theo field. `requestId` có thể được bổ sung sau để truy vết,
-nhưng nếu Backend bổ sung thì phải cập nhật contract trước.
+`fieldErrors` chỉ có với lỗi validation theo field. `401` dùng cho thiếu/sai/hết hạn JWT; `403` dùng
+cho tài khoản đã xác thực nhưng thiếu role hoặc không có quyền truy cập tài nguyên.
 
-## Danh mục contract
+## REST API đã triển khai
 
-| Task | Phạm vi | Tài liệu | Mock data |
+### Auth, profile và catalog
+
+| Method | Path | Quyền | Kết quả chính |
 |---|---|---|---|
-| API-01 | Auth, profile, category, brand, product, search | [Auth và Catalog](auth-catalog-contract.md) | [`mock/api-01.json`](mock/api-01.json) |
-| API-02 | Store, inventory, media admin | [Store, Inventory và Media](store-inventory-media-contract.md) | [`mock/api-02.json`](mock/api-02.json) |
-| API-03 | Cart, wishlist, address, coupon, checkout, order, notification, realtime | [Giao dịch và Realtime](customer-transaction-realtime-contract.md) | [`mock/api-03.json`](mock/api-03.json) |
+| POST | `/api/auth/register` | PUBLIC | `201 UserProfile` |
+| POST | `/api/auth/login` | PUBLIC | `200 AuthSession` |
+| POST | `/api/auth/logout` | AUTHENTICATED | `204`; client xóa JWT |
+| GET | `/api/profile` | AUTHENTICATED | `200 UserProfile` |
+| PATCH | `/api/profile` | AUTHENTICATED | `200 UserProfile` |
+| PUT | `/api/profile/password` | AUTHENTICATED | `204` |
+| GET | `/api/categories` | PUBLIC | `200 CategorySummary[]` |
+| GET | `/api/brands` | PUBLIC | `200 BrandSummary[]` |
+| GET | `/api/products` | PUBLIC | `200 ProductPage` |
+| GET | `/api/products/{productId}` | PUBLIC | `200 ProductDetail` |
 
-Mock là dữ liệu phát triển giao diện, không phải dữ liệu production và không được import vào database.
+Chi tiết filter, DTO và lỗi: [`auth-catalog-contract.md`](auth-catalog-contract.md).
+
+### Store và quản trị cửa hàng
+
+| Method | Path | Quyền | Kết quả chính |
+|---|---|---|---|
+| GET | `/api/stores` | PUBLIC | `200 StoreSummary[]` |
+| GET | `/api/stores/{storeId}` | PUBLIC | `200 StoreDetail` |
+| GET | `/api/stores/{storeId}/availability?variantId=...` | PUBLIC | `200 VariantAvailability` |
+| GET | `/api/products/{productId}/availability` | PUBLIC | `200 ProductAvailability` |
+| GET | `/api/admin/stores` | ADMIN | `200 StorePage` |
+| POST | `/api/admin/stores` | ADMIN | `201 StoreDetail` |
+| PUT | `/api/admin/stores/{storeId}` | ADMIN | `200 StoreDetail` |
+| PATCH | `/api/admin/stores/{storeId}/active` | ADMIN | `200 StoreDetail` |
+
+Chi tiết DTO, query và lỗi: [`store-inventory-media-contract.md`](store-inventory-media-contract.md).
+
+### Cart, wishlist và address
+
+| Method | Path | Quyền | Kết quả chính |
+|---|---|---|---|
+| GET | `/api/cart` | AUTHENTICATED | `200 Cart` |
+| POST | `/api/cart/items` | AUTHENTICATED | `201 Cart` |
+| PUT | `/api/cart/items/{itemId}` | AUTHENTICATED | `200 Cart` |
+| DELETE | `/api/cart/items/{itemId}` | AUTHENTICATED | `204` |
+| DELETE | `/api/cart/items` | AUTHENTICATED | `204` |
+| GET | `/api/wishlist` | AUTHENTICATED | `200 WishlistItem[]` |
+| POST | `/api/wishlist/items` | AUTHENTICATED | `201 WishlistItem` |
+| DELETE | `/api/wishlist/items/{productId}` | AUTHENTICATED | `204` |
+| GET | `/api/addresses` | AUTHENTICATED | `200 Address[]` |
+| POST | `/api/addresses` | AUTHENTICATED | `201 Address` |
+| PUT | `/api/addresses/{addressId}` | AUTHENTICATED | `200 Address` |
+| PUT | `/api/addresses/{addressId}/default` | AUTHENTICATED | `200 Address` |
+| DELETE | `/api/addresses/{addressId}` | AUTHENTICATED | `204` |
+
+### Checkout, order và notification
+
+| Method | Path | Quyền | Kết quả chính |
+|---|---|---|---|
+| POST | `/api/checkout/quote` | AUTHENTICATED | `200 CheckoutQuote` |
+| POST | `/api/orders` | AUTHENTICATED | `201 OrderDetail` |
+| GET | `/api/orders` | AUTHENTICATED | `200 OrderPage` của user hiện tại |
+| GET | `/api/orders/{orderId}` | AUTHENTICATED | `200 OrderDetail` nếu sở hữu |
+| POST | `/api/orders/{orderId}/cancel` | AUTHENTICATED | `200 OrderDetail` |
+| GET | `/api/admin/orders` | ADMIN | `200 OrderPage` |
+| GET | `/api/admin/orders/{orderId}` | ADMIN | `200 OrderDetail` |
+| PUT | `/api/admin/orders/{orderId}/status` | ADMIN | `200 OrderDetail` |
+| GET | `/api/notifications` | AUTHENTICATED | `200 NotificationPage` |
+| PUT | `/api/notifications/{notificationId}/read` | AUTHENTICATED | `200 Notification` |
+| PUT | `/api/notifications/read-all` | AUTHENTICATED | `204` |
+
+Chi tiết transition, ownership và error code:
+[`customer-transaction-realtime-contract.md`](customer-transaction-realtime-contract.md).
+
+### Media và import
+
+| Method | Path | Quyền | Kết quả chính |
+|---|---|---|---|
+| POST | `/api/admin/products/{productId}/images` | ADMIN | `201 ProductImage` |
+| PUT | `/api/admin/products/{productId}/images/{imageId}` | ADMIN | `200 ProductImage` |
+| DELETE | `/api/admin/products/{productId}/images/{imageId}` | ADMIN | `204` |
+| PUT | `/api/admin/products/{productId}/images/order` | ADMIN | `200 ProductImage[]` |
+| POST | `/api/admin/products/import` | ADMIN | `200 ProductImportReport` |
+
+Media upload/replace nhận multipart và lưu cả `secureUrl` lẫn `publicId`. Import nhận JSONL UTF-8 theo
+[`data-contract.md`](../crawler/data-contract.md).
+
+## WebSocket/STOMP đã triển khai
+
+| Hành động | Destination | Quyền | Event |
+|---|---|---|---|
+| CONNECT | `/ws` | JWT trong STOMP header | Thiết lập principal |
+| SUBSCRIBE | `/topic/admin/orders` | ADMIN | `ORDER_CREATED` |
+| SUBSCRIBE | `/user/queue/orders` | AUTHENTICATED | `ORDER_STATUS_CHANGED` |
+| SUBSCRIBE | `/user/queue/notifications` | AUTHENTICATED | `NOTIFICATION_CREATED` |
+
+Event dùng envelope `eventId`, `type`, `occurredAt`, `data` và chỉ được publish sau commit. Destination
+khác ba destination trên bị interceptor từ chối.
+
+## Contract đã thiết kế nhưng chưa có controller
+
+Các endpoint sau xuất hiện trong contract miền nhưng chưa được triển khai tại commit được tài liệu hóa:
+
+| Nhóm | Endpoint chưa triển khai |
+|---|---|
+| Coupon | `POST /api/coupons/validate` |
+| Review | `GET /api/products/{productId}/reviews`, `POST /api/reviews`, `POST /api/reviews/{reviewId}/helpful` |
+| Inventory admin | `GET /api/admin/inventory`, `PUT /api/admin/stores/{storeId}/inventory/{variantId}`, `POST /api/admin/inventory/transfers` |
+
+Không gọi các endpoint này trong demo như chức năng hoàn tất. Nếu triển khai sau, cần task Backend,
+test, cập nhật trạng thái tài liệu và JSON mẫu tương ứng. MVC `/forgot-password` cũng chỉ là shell vì
+chưa có contract/API khôi phục mật khẩu.
+
+## Model và mock data
+
+- Model dùng chung: [`model-contract.md`](model-contract.md).
+- Auth/catalog: [`auth-catalog-contract.md`](auth-catalog-contract.md), [`mock/api-01.json`](mock/api-01.json).
+- Store/inventory/media: [`store-inventory-media-contract.md`](store-inventory-media-contract.md),
+  [`mock/api-02.json`](mock/api-02.json).
+- Transaction/realtime: [`customer-transaction-realtime-contract.md`](customer-transaction-realtime-contract.md),
+  [`mock/api-03.json`](mock/api-03.json).
+
+Mock chỉ phục vụ phát triển UI; không phải dữ liệu production và không được import vào database.
+
+## Quy tắc biến thể bắt buộc
+
+- Catalog luôn trả ít nhất một variant cho mỗi product.
+- Tồn kho dùng đồng thời `storeId + variantId`; không cập nhật chỉ bằng `productId`.
+- Cart, checkout và order nhận `variantId`, kể cả sản phẩm chỉ có variant mặc định.
+- Order item hiển thị snapshot lúc mua, không thay bằng dữ liệu catalog hiện tại.

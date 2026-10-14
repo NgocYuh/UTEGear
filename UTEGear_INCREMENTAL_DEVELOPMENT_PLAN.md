@@ -1057,7 +1057,8 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | QA-04-BE-FIX | BE | `fix/cart-stomp-integration` | DONE | [PR #55](https://github.com/NgocYuh/UTEGear/pull/55) | 2026-10-14 |
 | QA-05-BE-FIX | BE | `fix/order-cancellation-payment` | DONE | [PR #60](https://github.com/NgocYuh/UTEGear/pull/60) | 2026-10-14 |
 | QA-05 | Cả hai | `docs/manual-test-report` | IN REVIEW | Chưa mở | 2026-10-15 |
-| DOC-01…02 | BE | Xem backlog | TODO |  |  |
+| DOC-01 | BE | `docs/api-architecture` | IN REVIEW | Chưa mở | 2026-10-15 |
+| DOC-02 | BE | `docs/setup-demo-guide` | TODO |  |  |
 | DOC-03 | FE | `docs/frontend-demo-guide` | TODO |  |  |
 | REL-01 | Cả hai | `release/v1.0.0` | TODO |  |  |
 
