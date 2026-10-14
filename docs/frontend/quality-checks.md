@@ -4,6 +4,11 @@ Người phụ trách: `@trongsonho`. Backend reviewer: `@NgocYuh`.
 
 ## Trạng thái hiện tại
 
+Đối chiếu ngày 2026-10-15: frontend runtime và bộ Node/CDP QA-04/QA-05 đã được triển khai.
+Lệnh chạy và kết quả hiện tại ở [hướng dẫn demo/verification](demo-and-verification.md).
+Workflow manual vẫn chứa bước placeholder và chưa chứng minh FE CI pass. Phần bên dưới là
+tài liệu FND-04 lúc khởi tạo, không mô tả phạm vi runtime hiện tại.
+
 Repository chưa có giao diện nghiệp vụ hoặc bộ công cụ kiểm tra Frontend thật.
 Workflow `.github/workflows/frontend-check.yml` chỉ được kích hoạt bằng
 `workflow_dispatch`; chưa chạy tự động trên Pull Request.
