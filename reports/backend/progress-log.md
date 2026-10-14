@@ -827,6 +827,31 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Chạy toàn bộ suite, commit và push branch để mở Pull Request.
 - Ngày hoàn tất: `Chưa merge`
 
+## INT-BE-01: MVC routing và Thymeleaf runtime
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/mvc-view-routing`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-14
+- Đã làm:
+  - Bổ sung Thymeleaf Layout Dialect để xử lý `layout:decorate` trong các template hiện có.
+  - Thêm MVC controller cho trang chủ, danh sách/tìm kiếm/chi tiết sản phẩm, cửa hàng, auth, trang thông tin và customer shell.
+  - Dùng `CategoryService`, `BrandService`, `ProductCatalogService` và `StoreService` để cấp model server-side; customer shell giữ model rỗng an toàn vì JWT của trình duyệt đang nằm trong `sessionStorage`.
+  - Thêm model mặc định dùng chung cho trạng thái đăng nhập, số lượng cart/wishlist và từ khóa tìm kiếm.
+  - Bổ sung alias phân trang `number()` và `isEmpty()` cho `ProductPage` để khớp contract mà template Thymeleaf đang đọc.
+  - Thêm unit test cho route/model và integration test render các trang public, auth, cart, wishlist, checkout và profile.
+- Kết quả kiểm thử:
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" "-Dtest=StorefrontViewControllerTest,StorefrontViewRenderingTest" test`: `PASS` với 6 test, 0 failure, 0 error, 0 skipped.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `BUILD SUCCESS` với 175 test được phát hiện, 172 pass, 0 failure, 0 error và 3 PostgreSQL test bị skip do Docker local không chạy.
+  - `node --test tests/frontend/integration.test.mjs tests/frontend/mock-data.test.mjs`: `PASS` với 16 test, 0 failure.
+- Vướng mắc hoặc phần còn thiếu:
+  - Một số template sản phẩm/cửa hàng vẫn dùng tên field cũ khi có dữ liệu thật; Frontend cần tiếp tục đồng bộ component với DTO contract hiện tại.
+  - Chưa thêm admin MVC route vì template/model admin chưa có contract hoàn chỉnh; không tạo route hoặc dữ liệu giả để che lỗi thiếu tích hợp.
+  - Route customer render được shell HTML nhưng dữ liệu riêng của người dùng vẫn phải được JavaScript gọi API bằng JWT trong `sessionStorage`.
+- Bước tiếp theo:
+  - Mở PR để Frontend kéo về hoàn thiện binding còn thiếu rồi chạy lại QA-04.
+- Ngày hoàn tất: `Chưa merge`
+
 ## Mẫu mục mới
 
 ```md
