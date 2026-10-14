@@ -14,7 +14,6 @@ import com.utegear.entity.Product;
 import com.utegear.entity.ProductVariant;
 import com.utegear.entity.User;
 import com.utegear.exception.ApiException;
-import com.utegear.repository.CartItemRepository;
 import com.utegear.repository.CartRepository;
 import com.utegear.repository.ProductVariantRepository;
 import java.math.BigDecimal;
@@ -27,7 +26,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 class CartServiceTest {
 
     private CartRepository cartRepository;
-    private CartItemRepository cartItemRepository;
     private ProductVariantRepository variantRepository;
     private CartService service;
     private User user;
@@ -36,9 +34,8 @@ class CartServiceTest {
     @BeforeEach
     void setUp() {
         cartRepository = mock(CartRepository.class);
-        cartItemRepository = mock(CartItemRepository.class);
         variantRepository = mock(ProductVariantRepository.class);
-        service = new CartService(cartRepository, cartItemRepository, variantRepository);
+        service = new CartService(cartRepository, variantRepository);
         user = new User("Nguyễn Văn An", "an@example.test", null, "hash");
         ReflectionTestUtils.setField(user, "id", 7L);
         variant = activeVariant();
@@ -82,7 +79,9 @@ class CartServiceTest {
 
     @Test
     void cannotUpdateAnotherCustomersItem() {
-        when(cartItemRepository.findByIdAndCartUserId(99L, 7L)).thenReturn(Optional.empty());
+        Cart cart = new Cart(user);
+        cart.add(variant, 1);
+        when(cartRepository.findWithItemsByUserId(7L)).thenReturn(Optional.of(cart));
 
         assertThatThrownBy(() -> service.updateQuantity(user, 99L, 2))
                 .isInstanceOf(ApiException.class)
@@ -95,7 +94,7 @@ class CartServiceTest {
         Cart cart = new Cart(user);
         CartItem item = cart.add(variant, 1);
         ReflectionTestUtils.setField(item, "id", 20L);
-        when(cartItemRepository.findByIdAndCartUserId(20L, 7L)).thenReturn(Optional.of(item));
+        when(cartRepository.findWithItemsByUserId(7L)).thenReturn(Optional.of(cart));
         Cart result = service.updateQuantity(user, 20L, 4);
 
         assertThat(result.getItemCount()).isEqualTo(4);

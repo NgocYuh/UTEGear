@@ -11,6 +11,7 @@ import com.utegear.security.CustomUserDetails;
 import com.utegear.security.CustomUserDetailsService;
 import com.utegear.security.JwtService;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -34,6 +35,9 @@ class StompJwtChannelInterceptorTest {
         StompJwtChannelInterceptor interceptor = new StompJwtChannelInterceptor(jwtService, users);
         StompHeaderAccessor accessor = StompHeaderAccessor.create(StompCommand.CONNECT);
         accessor.setNativeHeader("Authorization", "Bearer valid-token");
+        AtomicReference<java.security.Principal> sessionUser = new AtomicReference<>();
+        accessor.setUserChangeCallback(sessionUser::set);
+        accessor.setLeaveMutable(true);
         Message<byte[]> message = MessageBuilder.createMessage(new byte[0], accessor.getMessageHeaders());
 
         Message<?> result = interceptor.preSend(message, mock(MessageChannel.class));
@@ -42,6 +46,7 @@ class StompJwtChannelInterceptorTest {
                 .isInstanceOf(java.security.Principal.class)
                 .extracting(value -> ((java.security.Principal) value).getName())
                 .isEqualTo("owner@example.test");
+        assertThat(sessionUser.get()).isInstanceOf(UsernamePasswordAuthenticationToken.class);
     }
 
     @Test
