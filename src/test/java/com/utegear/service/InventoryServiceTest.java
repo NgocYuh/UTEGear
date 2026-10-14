@@ -10,9 +10,15 @@ import static org.mockito.Mockito.when;
 
 import com.utegear.dto.inventory.InventoryResult;
 import com.utegear.dto.inventory.InventoryTransferResult;
+import com.utegear.entity.Address;
+import com.utegear.entity.Category;
+import com.utegear.entity.Order;
 import com.utegear.entity.ProductVariant;
+import com.utegear.entity.Product;
+import com.utegear.entity.ShippingMethod;
 import com.utegear.entity.Store;
 import com.utegear.entity.StoreInventory;
+import com.utegear.entity.User;
 import com.utegear.exception.ApiException;
 import com.utegear.repository.ProductVariantRepository;
 import com.utegear.repository.StoreInventoryRepository;
@@ -23,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class InventoryServiceTest {
 
@@ -140,6 +147,29 @@ class InventoryServiceTest {
                 .isInstanceOf(ApiException.class)
                 .extracting("code")
                 .isEqualTo("STORE_INACTIVE");
+    }
+
+    @Test
+    void restoresEachReservedOrderLineToItsStoreInventory() {
+        ReflectionTestUtils.setField(source, "id", 1L);
+        Product product = new Product("Chuột M1", "chuot-m1",
+                new Category("Chuột", "chuot", null, 0), null, new BigDecimal("500000"), null);
+        product.addVariant(variant);
+        ReflectionTestUtils.setField(variant, "id", 10L);
+        User user = new User("Nguyễn Văn An", "an@example.test", null, "hash");
+        ReflectionTestUtils.setField(user, "id", 7L);
+        Address address = new Address(user, "Nguyễn Văn An", "0900000001", "01 Võ Văn Ngân",
+                "Linh Chiểu", "Thủ Đức", "TP.HCM", "Nhà");
+        Order order = new Order("UTE-RESTORE-1", user, source, null, address,
+                ShippingMethod.HOME_DELIVERY, null);
+        order.addItem(variant, 2, null);
+        StoreInventory inventory = inventory(source, 3);
+        when(inventoryRepository.findLocked(1L, 10L)).thenReturn(Optional.of(inventory));
+
+        service.restoreReservedStock(order);
+
+        assertThat(inventory.getQuantity()).isEqualTo(5);
+        verify(inventoryRepository).save(inventory);
     }
 
     private StoreInventory inventory(Store store, int quantity) {

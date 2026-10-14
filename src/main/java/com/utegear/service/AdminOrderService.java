@@ -5,6 +5,7 @@ import com.utegear.entity.Order;
 import com.utegear.entity.OrderStatus;
 import com.utegear.entity.Notification;
 import com.utegear.entity.NotificationType;
+import com.utegear.entity.PaymentMethod;
 import com.utegear.entity.PaymentStatus;
 import com.utegear.exception.ApiException;
 import com.utegear.repository.OrderRepository;
@@ -26,12 +27,14 @@ public class AdminOrderService {
     private final OrderRepository orders;
     private final NotificationService notificationService;
     private final OrderRealtimePublisher realtimePublisher;
+    private final InventoryService inventoryService;
 
     public AdminOrderService(OrderRepository orders, NotificationService notificationService,
-            OrderRealtimePublisher realtimePublisher) {
+            OrderRealtimePublisher realtimePublisher, InventoryService inventoryService) {
         this.orders = orders;
         this.notificationService = notificationService;
         this.realtimePublisher = realtimePublisher;
+        this.inventoryService = inventoryService;
     }
 
     @Transactional(readOnly = true)
@@ -65,6 +68,15 @@ public class AdminOrderService {
             if (order.getPayment().getStatus() == PaymentStatus.PENDING) {
                 order.getPayment().cancel();
             }
+        }
+        if (nextStatus == OrderStatus.CANCELLED) {
+            inventoryService.restoreReservedStock(order);
+        }
+        if (nextStatus == OrderStatus.COMPLETED
+                && order.getPayment() != null
+                && order.getPayment().getMethod() == PaymentMethod.COD
+                && order.getPayment().getStatus() == PaymentStatus.PENDING) {
+            order.getPayment().markPaid(null);
         }
         order.transitionTo(nextStatus);
         orders.save(order);

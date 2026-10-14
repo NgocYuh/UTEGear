@@ -36,6 +36,7 @@ class AdminOrderServiceTest {
     private AdminOrderService service;
     private NotificationService notificationService;
     private OrderRealtimePublisher realtimePublisher;
+    private InventoryService inventoryService;
     private Order order;
 
     @BeforeEach
@@ -43,7 +44,8 @@ class AdminOrderServiceTest {
         orders = mock(OrderRepository.class);
         notificationService = mock(NotificationService.class);
         realtimePublisher = mock(OrderRealtimePublisher.class);
-        service = new AdminOrderService(orders, notificationService, realtimePublisher);
+        inventoryService = mock(InventoryService.class);
+        service = new AdminOrderService(orders, notificationService, realtimePublisher, inventoryService);
         User user = new User("Nguyễn Văn An", "an@example.test", null, "hash");
         ReflectionTestUtils.setField(user, "id", 7L);
         Address address = new Address(user, "Nguyễn Văn An", "0900000001", "01 Võ Văn Ngân",
@@ -88,6 +90,20 @@ class AdminOrderServiceTest {
 
         assertThat(response.status()).isEqualTo(OrderStatus.CANCELLED);
         assertThat(response.payment().status()).isEqualTo("CANCELLED");
+        verify(inventoryService).restoreReservedStock(order);
+    }
+
+    @Test
+    void completingCodOrderMarksPaymentPaid() {
+        order.transitionTo(OrderStatus.CONFIRMED);
+        order.transitionTo(OrderStatus.PROCESSING);
+        order.transitionTo(OrderStatus.SHIPPING);
+
+        var response = service.updateStatus(20L, OrderStatus.COMPLETED);
+
+        assertThat(response.status()).isEqualTo(OrderStatus.COMPLETED);
+        assertThat(response.payment().status()).isEqualTo("PAID");
+        assertThat(order.getPayment().getPaidAt()).isNotNull();
     }
 
     @Test

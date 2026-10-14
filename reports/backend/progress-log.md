@@ -854,9 +854,9 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## INT-BE-02: Account, customer order và admin MVC integration
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/account-order-integration`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/54
 - Ngày cập nhật: 2026-10-14
 - Đã làm:
   - Bổ sung API cập nhật profile và đổi mật khẩu; kiểm tra phone duy nhất, mật khẩu hiện tại,
@@ -884,13 +884,13 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Repository chỉ chuẩn bị quy trình dữ liệu QA; mật khẩu dùng một lần và URL môi trường phải gửi ngoài Git.
 - Bước tiếp theo:
   - Commit/push branch; sau đó FE kéo branch/PR này và chạy lại QA-04.
-- Ngày hoàn tất: `Chưa merge`
+- Ngày hoàn tất: 2026-10-14, merge commit `ef285f9`
 
 ## QA-04-BE-FIX: Sửa cập nhật giỏ hàng và xác thực STOMP
 
-- Trạng thái: `IN PROGRESS`
+- Trạng thái: `DONE`
 - Branch: `fix/cart-stomp-integration`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/55
 - Ngày cập nhật: 2026-10-14
 - Đã làm:
   - Sửa luồng cập nhật/xóa cart item để tải cart cùng collection item theo user, rồi tìm item ngay trong aggregate đã được quản lý bởi Hibernate; request không còn trộn hai instance cart khác nhau.
@@ -905,6 +905,27 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Frontend cần ghép hai commit sửa này với `fix/storefront-bindings` và chạy lại browser QA-04 để xác nhận hai lỗi tái hiện đã hết trong luồng thật.
 - Bước tiếp theo:
   - Push branch, mở PR, rồi nhờ Frontend chạy lại QA-04 sau khi merge.
+- Ngày hoàn tất: 2026-10-14, merge commit `70ca4b9`
+
+## QA-05-BE-FIX: Hoàn tồn kho và hoàn tất thanh toán COD
+
+- Trạng thái: `IN PROGRESS`
+- Branch: `fix/order-cancellation-payment`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-14
+- Đã làm:
+  - Khi customer hoặc admin hủy đơn hợp lệ, khóa từng bản ghi tồn kho theo thứ tự variant và hoàn lại số lượng vào đúng cặp `Store + ProductVariant` trong cùng transaction.
+  - Nếu không tìm thấy cửa hàng thực hiện hoặc bản ghi tồn kho đã giữ, trả lỗi conflict và rollback toàn bộ thao tác hủy.
+  - Khi đơn COD chuyển từ `SHIPPING` sang `COMPLETED`, chuyển payment `PENDING` sang `PAID`; không tạo transaction ID giả cho COD.
+  - Cập nhật API contract và bổ sung regression test cho hai hành vi FE phát hiện trong QA-05.
+- Kết quả kiểm thử:
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" "-Dtest=InventoryServiceTest,AdminOrderServiceTest,CustomerOrderServiceTest" test`: `PASS` với 18 test, 0 failure, 0 error, 0 skipped.
+  - `mvn -B --no-transfer-progress "-Dnet.bytebuddy.experimental=true" clean verify`: `BUILD SUCCESS` với 187 test được phát hiện, 184 pass, 0 failure, 0 error và 3 PostgreSQL test bị skip do Docker local không chạy.
+- Vướng mắc hoặc phần còn thiếu:
+  - Frontend cần chạy lại checklist QA-05 để xác nhận tồn kho sau hủy và payment COD sau hoàn tất qua API/browser thật.
+  - Cloudinary live suite vẫn là bước riêng của QA-05, không được thay thế bằng test H2 này.
+- Bước tiếp theo:
+  - Commit/push branch và mở PR để merge; sau đó FE chạy lại hai ca nghiệp vụ cùng Cloudinary live suite.
 - Ngày hoàn tất: `Chưa merge`
 
 ## Mẫu mục mới

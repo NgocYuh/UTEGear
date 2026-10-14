@@ -88,6 +88,11 @@ Khách chỉ hủy đơn của chính mình khi transition hiện tại cho phé
 `409 PAID_ORDER_CANNOT_CANCEL`; trạng thái không cho hủy trả `409 ORDER_CANNOT_CANCEL`; order không
 thuộc user trả `404 ORDER_NOT_FOUND` để không làm lộ dữ liệu của user khác.
 
+Khi đơn bị hủy hợp lệ, server hoàn lại toàn bộ số lượng đã giữ vào tồn kho của đúng
+`fulfillmentStore + ProductVariant` trong cùng transaction. Khi đơn COD chuyển từ `SHIPPING` sang
+`COMPLETED`, server đồng thời chuyển payment `PENDING` sang `PAID`; giao dịch COD không sinh
+`transactionId` từ cổng thanh toán.
+
 ## Admin order
 
 | Method | Path | Quyền | Request | Response |

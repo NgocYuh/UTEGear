@@ -1049,12 +1049,13 @@ Việc chuyển từng phần như trên là quá trình migration có kiểm so
 | UI-01…03 và các task `FE-*` | FE | Xem backlog | TODO |  |  |
 | INT-01…03 | FE, BE review contract | Xem backlog | TODO |  |  |
 | INT-BE-01 | BE | `feat/mvc-view-routing` | DONE | [PR #52](https://github.com/NgocYuh/UTEGear/pull/52) | 2026-10-14 |
-| INT-BE-02 | BE | `feat/account-order-integration` | IN PROGRESS | Chưa mở |  |
+| INT-BE-02 | BE | `feat/account-order-integration` | DONE | [PR #54](https://github.com/NgocYuh/UTEGear/pull/54) | 2026-10-14 |
 | QA-01 | BE | `test/service-coverage` | DONE | [PR #47](https://github.com/NgocYuh/UTEGear/pull/47) | 2026-10-13 |
 | QA-02 | BE | `test/postgresql-integration` | DONE | [PR #48](https://github.com/NgocYuh/UTEGear/pull/48) | 2026-10-13 |
 | QA-03 | BE | `test/security-controller-flows` | DONE | [PR #50](https://github.com/NgocYuh/UTEGear/pull/50) | 2026-10-13 |
 | QA-04 | FE | `test/frontend-flows` | BLOCKED | [PR #53](https://github.com/NgocYuh/UTEGear/pull/53) | 2026-10-14 |
-| QA-04-BE-FIX | BE | `fix/cart-stomp-integration` | IN PROGRESS | Chưa mở |  |
+| QA-04-BE-FIX | BE | `fix/cart-stomp-integration` | DONE | [PR #55](https://github.com/NgocYuh/UTEGear/pull/55) | 2026-10-14 |
+| QA-05-BE-FIX | BE | `fix/order-cancellation-payment` | IN PROGRESS | Chưa mở |  |
 | QA-05 | Cả hai | `docs/manual-test-report` | TODO |  |  |
 | DOC-01…02 | BE | Xem backlog | TODO |  |  |
 | DOC-03 | FE | `docs/frontend-demo-guide` | TODO |  |  |
