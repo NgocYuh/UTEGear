@@ -20,13 +20,17 @@ Thiết lập server, database, tài khoản và dữ liệu QA theo
 | `/checkout` | Địa chỉ, cửa hàng, coupon, quote từ server, tổng tiền và đặt đơn |
 | `/orders` | Lọc/phân trang, xem chi tiết, hủy đơn đủ điều kiện; trạng thái realtime |
 | `/admin/orders` | ADMIN xem/cập nhật đơn; `/admin/orders/{id}` chuyển tới chi tiết trên danh sách |
-| `/admin/orders#product-media` | Mở panel ảnh; tìm/chọn sản phẩm, upload/thay/xóa, altText và primary |
+| `/admin` | Dashboard đọc số liệu thật từ API quản trị |
+| `/admin/products` | Tạo/sửa/đổi trạng thái sản phẩm và biến thể mặc định; panel ảnh Cloudinary nằm cuối trang |
+| `/admin/categories`, `/admin/brands` | Tạo, sửa và ẩn/hiện danh mục, thương hiệu |
+| `/admin/stores` | Tạo/sửa cửa hàng, đặt số lượng tồn và điều chuyển theo Store + Variant |
+| `/admin/coupons`, `/admin/users` | Tạo/sửa coupon; khóa/mở và phân quyền tài khoản |
 
 `/orders/{id}` chuyển tới `/orders?focus={id}`. Các trang riêng tư nạp dữ liệu qua API được bảo vệ;
 việc render được shell admin không chứng minh người dùng có quyền ADMIN.
 
-`/forgot-password` hiện chỉ có shell, chưa có POST recovery. `/admin/products` và trang edit cũ
-không phải lối vào media hiện tại. Các endpoint chưa triển khai được ghi trong
+`/forgot-password` chỉ hiển thị hướng dẫn liên hệ vì chưa có POST recovery. Media được quản lý tại
+`/admin/products#product-media`. Các endpoint chưa triển khai được ghi trong
 [endpoint contract](../api/endpoint-contract.md); không coi chúng là chức năng release đã hoàn tất.
 
 ## Kịch bản demo customer và admin

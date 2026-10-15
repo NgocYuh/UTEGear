@@ -1,6 +1,6 @@
 # Hợp đồng endpoint và trạng thái triển khai
 
-Tài liệu này là mục lục API của UTEGear tại commit `71a50d2`. Các bảng "Đã triển khai" được đối chiếu
+Tài liệu này là mục lục API của UTEGear sau lượt rà soát tích hợp quản trị. Các bảng "Đã triển khai" được đối chiếu
 trực tiếp với controller trong `src/main/java/com/utegear/controller`. Các contract miền vẫn là nguồn
 chi tiết cho request, response, mã lỗi và mock data; endpoint ghi "chưa triển khai" không được mô tả
 như chức năng đang chạy.
@@ -63,10 +63,37 @@ Chi tiết filter, DTO và lỗi: [`auth-catalog-contract.md`](auth-catalog-cont
 | GET | `/api/products/{productId}/availability` | PUBLIC | `200 ProductAvailability` |
 | GET | `/api/admin/stores` | ADMIN | `200 StorePage` |
 | POST | `/api/admin/stores` | ADMIN | `201 StoreDetail` |
+| GET | `/api/admin/stores/{storeId}` | ADMIN | `200 StoreDetail`, gồm cả cửa hàng tạm ngừng |
 | PUT | `/api/admin/stores/{storeId}` | ADMIN | `200 StoreDetail` |
 | PATCH | `/api/admin/stores/{storeId}/active` | ADMIN | `200 StoreDetail` |
+| GET | `/api/admin/inventory?storeId=...` | ADMIN | `200 InventoryView[]` |
+| PUT | `/api/admin/stores/{storeId}/inventory/{variantId}` | ADMIN | `200 InventoryResult` |
+| POST | `/api/admin/inventory/transfers` | ADMIN | `200 InventoryTransferResult` |
 
 Chi tiết DTO, query và lỗi: [`store-inventory-media-contract.md`](store-inventory-media-contract.md).
+
+### Quản trị catalog, coupon, tài khoản và dashboard
+
+| Method | Path | Quyền | Kết quả chính |
+|---|---|---|---|
+| GET, POST | `/api/admin/categories` | ADMIN | Danh sách hoặc `201 CategoryView` |
+| PUT | `/api/admin/categories/{categoryId}` | ADMIN | `200 CategoryView` |
+| GET, POST | `/api/admin/brands` | ADMIN | Danh sách hoặc `201 BrandView` |
+| PUT | `/api/admin/brands/{brandId}` | ADMIN | `200 BrandView` |
+| GET, POST | `/api/admin/products` | ADMIN | `200 ProductPage` hoặc `201 ProductView` |
+| GET, PUT | `/api/admin/products/{productId}` | ADMIN | `200 ProductView` |
+| PATCH | `/api/admin/products/{productId}/status` | ADMIN | `200 ProductView` |
+| GET, POST | `/api/admin/coupons` | ADMIN | Danh sách hoặc `201 CouponView` |
+| PUT | `/api/admin/coupons/{couponId}` | ADMIN | `200 CouponView` |
+| GET | `/api/admin/users` | ADMIN | `200 UserView[]` |
+| GET | `/api/admin/users/{userId}` | ADMIN | `200 UserView` |
+| PATCH | `/api/admin/users/{userId}/enabled` | ADMIN | `200 UserView` |
+| PUT | `/api/admin/users/{userId}/roles` | ADMIN | `200 UserView` |
+| GET | `/api/admin/dashboard` | ADMIN | `200 DashboardSummary` |
+
+Khi tạo sản phẩm, Backend luôn tạo một biến thể mặc định từ `defaultSku` và `optionValues`; không có
+tồn kho gắn trực tiếp với product. Quản trị viên không thể tự khóa tài khoản đang dùng hoặc tự gỡ role
+`ADMIN`; có thể bỏ role `CUSTOMER` nếu vẫn giữ `ADMIN`.
 
 ### Cart, wishlist và address
 
@@ -138,7 +165,6 @@ Các endpoint sau xuất hiện trong contract miền nhưng chưa được tri�
 |---|---|
 | Coupon | `POST /api/coupons/validate` |
 | Review | `GET /api/products/{productId}/reviews`, `POST /api/reviews`, `POST /api/reviews/{reviewId}/helpful` |
-| Inventory admin | `GET /api/admin/inventory`, `PUT /api/admin/stores/{storeId}/inventory/{variantId}`, `POST /api/admin/inventory/transfers` |
 
 Không gọi các endpoint này trong demo như chức năng hoàn tất. Nếu triển khai sau, cần task Backend,
 test, cập nhật trạng thái tài liệu và JSON mẫu tương ứng. MVC `/forgot-password` cũng chỉ là shell vì

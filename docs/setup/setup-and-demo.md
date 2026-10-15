@@ -195,7 +195,7 @@ Mock API chỉ dành cho phát triển giao diện, không phải dữ liệu đ
 5. Đăng nhập admin, cập nhật trạng thái đơn và quan sát customer nhận STOMP event.
 6. Hủy đơn `PENDING` hợp lệ và xác nhận tồn kho được hoàn.
 7. Chuyển đơn COD từ `SHIPPING` sang `COMPLETED` và xác nhận payment là `PAID`.
-8. Tại `/admin/orders#product-media`, upload, thay và xóa một ảnh QA.
+8. Tại `/admin/products#product-media`, upload, thay và xóa một ảnh QA.
 
 Không demo các endpoint được ghi "chưa triển khai" trong
 [`endpoint-contract.md`](../api/endpoint-contract.md).

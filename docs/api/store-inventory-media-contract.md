@@ -1,7 +1,8 @@
 # Contract API-02: Store, inventory và media admin
 
-Contract này là nguồn thống nhất cho FE-STORE-01, UI-02, INV-01 đến INV-03 và MED-01. Endpoint chưa
-được triển khai trong task này. Frontend dùng [`mock/api-02.json`](mock/api-02.json).
+Contract này là nguồn thống nhất cho FE-STORE-01, UI-02, INV-01 đến INV-03 và MED-01. Các endpoint
+store, inventory và media trong bảng dưới đã được triển khai; Frontend có thể dùng
+[`mock/api-02.json`](mock/api-02.json) khi chạy độc lập không có Backend.
 
 ## Store public
 
@@ -34,10 +35,11 @@ Mọi endpoint dưới `/api/admin/**` yêu cầu role `ADMIN`.
 |---|---|---|---|
 | GET | `/api/admin/stores` | Filter `active`, phân trang | `200 StorePage` |
 | POST | `/api/admin/stores` | `StoreUpsertRequest` | `201 StoreDetail` |
+| GET | `/api/admin/stores/{storeId}` | Không có | `200 StoreDetail` |
 | PUT | `/api/admin/stores/{storeId}` | `StoreUpsertRequest` | `200 StoreDetail` |
 | PATCH | `/api/admin/stores/{storeId}/active` | `{ "active": boolean }` | `200 StoreDetail` |
-| GET | `/api/admin/inventory` | `storeId`, `variantId`, `lowStock`, phân trang | `200 InventoryPage` |
-| PUT | `/api/admin/stores/{storeId}/inventory/{variantId}` | `{ "quantity": integer }` | `200 InventoryItem` |
+| GET | `/api/admin/inventory` | `storeId` tùy chọn | `200 InventoryView[]` |
+| PUT | `/api/admin/stores/{storeId}/inventory/{variantId}` | `{ "quantity": integer >= 0 }` | `200 InventoryResult` |
 | POST | `/api/admin/inventory/transfers` | `InventoryTransferRequest` | `200 InventoryTransferResult` |
 
 `StoreUpsertRequest` gồm `name`, `address`, `province`, `district`, `phone`, `email`, `imageUrl`,
