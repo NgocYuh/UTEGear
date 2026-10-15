@@ -1,3 +1,22 @@
+.product-description-copy {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    line-height: 1.8;
+    max-width: 85ch;
+}
+
+.product-specification-table th {
+    width: 32%;
+    min-width: 9rem;
+    font-weight: 600;
+    background: #f4f7fb;
+}
+
+.product-specification-table td {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
 /* =========================================================
    UTEGEAR PRODUCT DETAIL PAGE
    Mature Commercial Architecture: Anti-AI / Human-Designed

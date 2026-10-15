@@ -19,6 +19,13 @@
   <button type="button" class="btn btn-outline-primary" data-action="toggle-wishlist" th:data-product-id="${product.id}">Yêu thích</button>
   <h2 class="h5 mt-4">Tồn kho tại cửa hàng</h2><div data-product-availability role="status" aria-live="polite">Đang tải tồn kho…</div>
  </div></div>
- <h2 class="h4 mt-4">Mô tả</h2><p th:text="${product.description}"></p>
- <h2 class="h4">Thông số kỹ thuật</h2><pre th:text="${product.specifications}" class="text-wrap"></pre>
+ <section class="product-content-section mt-4" aria-labelledby="product-description-title">
+  <h2 id="product-description-title" class="h4">Mô tả</h2>
+  <div class="product-description-copy" th:if="${product.description != null and !#strings.isEmpty(product.description)}" th:text="${product.description}"></div>
+  <p class="text-muted" th:if="${product.description == null or #strings.isEmpty(product.description)}">Mô tả sản phẩm đang được cập nhật.</p>
+ </section>
+ <section class="product-content-section mt-4" aria-labelledby="product-specifications-title">
+  <h2 id="product-specifications-title" class="h4">Thông số kỹ thuật</h2>
+  <th:block th:replace="~{fragments/product/product-specs :: productSpecs(${product})}"></th:block>
+ </section>
 </section></main></body></html>

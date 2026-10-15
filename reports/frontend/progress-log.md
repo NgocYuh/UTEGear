@@ -649,3 +649,25 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Push để review lượt 4; đối chiếu lại nguồn frontend sau merge.
   - Thống nhất xử lý routing, dependency và API trước khi xác nhận tích hợp DONE.
 - Ngày hoàn tất: `Chưa hoàn tất`
+
+## FE-CONTENT-01: Hiển thị mô tả và bảng thông số sản phẩm
+
+- Phụ trách: `@trongsonho`
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/product-content-ui`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-15
+- Task liên kết: `DATA-05-BE` trên branch `codex/product-content-backend`.
+- Đã làm:
+  - Dùng model/JSON response đã chốt của Backend: description là văn bản thuần nhiều đoạn, thông số ở specifications.technicalSpecifications.
+  - Thay JSON thô bằng bảng nhãn/giá trị có caption và row header; không hiển thị metadata crawler cho khách hàng.
+  - Giữ xuống dòng mô tả, thêm empty state và CSS chống tràn trên màn hình nhỏ; dùng th:text cho nội dung nguồn.
+  - Không thay nghiệp vụ hoặc entity/service Backend trong branch giao diện.
+- Kết quả kiểm thử:
+  - `mvnw.cmd -B --no-transfer-progress -Dtest=ProductContentTemplateTest test`: PASS, 3 test render Thymeleaf thật: bảng thông số, escape HTML và empty state/ẩn provenance.
+  - Trình duyệt Edge headless với profile riêng: PASS cho trang sản phẩm thật /products/145, 9 dòng thông số, mô tả nhiều đoạn, row header và không tràn ngang ở 390px.
+- Vướng mắc hoặc phần còn thiếu:
+  - Visual QA desktop 1365px và mobile 390px: PASS, bảng 9 dòng đọc được, không tràn ngang; ảnh kiểm tra nằm trong crawler/data/output/ và bị Git ignore. Chưa mở PR.
+- Bước tiếp theo:
+  - Review giao diện và PR riêng với DATA-05-BE; chỉ đánh dấu DONE sau merge.
+- Ngày hoàn tất: `Chưa hoàn tất`
