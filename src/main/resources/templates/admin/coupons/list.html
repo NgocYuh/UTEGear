@@ -1,116 +1,25 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/admin}">
-<head>
-    <title>Quản lý mã giảm giá - UTEGear Admin</title>
-</head>
+<head><title>Quản lý mã giảm giá - UTEGear</title></head>
 <body>
-
-<main layout:fragment="content">
-
-    <!-- PAGE HEADER -->
-    <div class="admin-page-header">
-        <div class="admin-page-title-group">
-            <span class="admin-badge admin-badge-primary">Hệ thống & Vận hành</span>
-            <h1 class="admin-page-title">Quản lý Mã giảm giá</h1>
-            <p class="admin-page-subtitle">Thiết lập các chương trình khuyến mãi, voucher tri ân và chiết khấu đơn hàng</p>
-        </div>
-    </div>
-
-    <!-- QUICK ADD PANEL -->
-    <div class="admin-card mb-4">
-        <div class="admin-card-header">
-            <div>
-                <h3 class="admin-card-title"><i class="bi bi-ticket-perforated me-2" style="color: var(--admin-accent-primary);"></i>Thêm mã khuyến mãi mới</h3>
-                <div class="admin-card-subtitle">Cấu hình điều kiện chiết khấu và giới hạn áp dụng</div>
-            </div>
-        </div>
-        <div class="admin-card-body">
-            <form th:action="@{/admin/coupons/save}" method="post" class="row g-3 align-items-end">
-                <div class="col-md-2">
-                    <label class="form-label-admin">Mã giảm giá <span class="text-danger">*</span></label>
-                    <input type="text" name="code" class="form-control-admin text-uppercase fw-bold" placeholder="VD: SALE20" required>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label-admin">Loại hình</label>
-                    <select name="type" class="form-control-admin">
-                        <option value="PERCENT">% Theo phần trăm</option>
-                        <option value="FIXED">Số tiền cố định</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label-admin">Mức giảm (%)</label>
-                    <input type="number" name="discountPercent" step="0.01" class="form-control-admin" placeholder="VD: 10">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label-admin">Đơn tối thiểu (₫)</label>
-                    <input type="number" name="minOrderAmount" step="1000" class="form-control-admin" placeholder="VD: 500000">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label-admin">Giảm tối đa (₫)</label>
-                    <input type="number" name="maxDiscount" step="1000" class="form-control-admin" placeholder="VD: 200000">
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn-admin btn-admin-primary w-100 justify-content-center">
-                        <i class="bi bi-plus-lg me-1"></i> Tạo voucher
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- COUPONS TABLE -->
-    <div class="admin-card">
-        <div class="admin-card-header">
-            <div>
-                <h3 class="admin-card-title"><i class="bi bi-tags-fill me-2" style="color: var(--admin-brand-primary);"></i>Danh sách mã giảm giá</h3>
-                <div class="admin-card-subtitle" th:text="'Tổng số: ' + ${#lists.size(coupons)} + ' mã'">0 mã</div>
-            </div>
-        </div>
-        <div class="admin-table-container">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th style="width: 140px;">Mã Coupon</th>
-                        <th style="width: 110px;">Chiết khấu</th>
-                        <th style="width: 150px;">Đơn tối thiểu</th>
-                        <th style="width: 150px;">Giảm tối đa</th>
-                        <th style="width: 140px;">Hạn dùng</th>
-                        <th style="width: 90px;" class="text-end">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:if="${coupons == null or #lists.isEmpty(coupons)}">
-                        <td colspan="6" class="text-center py-4 text-muted">Chưa có mã khuyến mãi nào được tạo</td>
-                    </tr>
-                    <tr th:each="c : ${coupons}">
-                        <td>
-                            <span class="p-1 px-2 rounded font-monospace fw-bold"
-                                  style="background: rgba(6, 26, 61, 0.08); color: var(--admin-brand-primary); font-size: 0.9rem; letter-spacing: 0.05em;"
-                                  th:text="${c.code}">CODE</span>
-                        </td>
-                        <td>
-                            <span class="fw-bold" style="color: var(--admin-accent-primary); font-size: 0.9rem;" th:text="${c.discountPercent} + '%'">10%</span>
-                        </td>
-                        <td style="font-size: 0.85rem; color: var(--admin-text-secondary);" th:text="${@priceFormatter.format(c.minOrderAmount)}">0 ₫</td>
-                        <td style="font-size: 0.85rem; color: var(--admin-text-secondary);" th:text="${@priceFormatter.format(c.maxDiscount)}">0 ₫</td>
-                        <td>
-                            <span style="font-size: 0.825rem; color: var(--admin-text-muted);"
-                                  th:text="${c.validUntil != null ? #temporals.format(c.validUntil, 'dd/MM/yyyy') : 'Vô thời hạn'}">01/01/2026</span>
-                        </td>
-                        <td class="text-end">
-                            <form th:action="@{'/admin/coupons/' + ${c.id} + '/delete'}" method="post" class="d-inline" onsubmit="return confirm('Xác nhận xóa mã giảm giá này?');">
-                                <button type="submit" class="btn-admin-icon btn-admin-danger" title="Xóa mã giảm giá">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
+<main layout:fragment="content" class="admin-content-wrapper" data-admin-page="coupons">
+    <header class="admin-page-header"><div class="admin-page-header-info"><h1 class="admin-page-title">Mã giảm giá</h1><p class="admin-page-subtitle">Thiết lập điều kiện, thời hạn và giới hạn sử dụng.</p></div></header>
+    <p data-admin-status role="status" aria-live="polite">Đang tải mã giảm giá…</p>
+    <section class="admin-panel"><h2 class="admin-panel-title">Thêm hoặc chỉnh sửa mã</h2>
+        <form data-admin-form="coupons" class="row g-3 mt-1"><input type="hidden" name="id">
+            <div class="col-md-3"><label class="form-label" for="coupon-code">Mã</label><input class="form-control" id="coupon-code" name="code" maxlength="50" required></div>
+            <div class="col-md-3"><label class="form-label" for="coupon-type">Loại giảm</label><select class="form-select" id="coupon-type" name="discountType"><option value="PERCENTAGE">Phần trăm</option><option value="FIXED_AMOUNT">Số tiền</option></select></div>
+            <div class="col-md-3"><label class="form-label" for="coupon-value">Giá trị giảm</label><input class="form-control" id="coupon-value" name="discountValue" type="number" min="0" step="0.01" required></div>
+            <div class="col-md-3"><label class="form-label" for="coupon-minimum">Đơn tối thiểu</label><input class="form-control" id="coupon-minimum" name="minimumOrderValue" type="number" min="0" step="0.01" value="0"></div>
+            <div class="col-md-3"><label class="form-label" for="coupon-maximum">Giảm tối đa</label><input class="form-control" id="coupon-maximum" name="maximumDiscount" type="number" min="0" step="0.01"></div>
+            <div class="col-md-3"><label class="form-label" for="coupon-from">Bắt đầu</label><input class="form-control" id="coupon-from" name="validFrom" type="datetime-local" required></div>
+            <div class="col-md-3"><label class="form-label" for="coupon-until">Kết thúc</label><input class="form-control" id="coupon-until" name="validUntil" type="datetime-local" required></div>
+            <div class="col-md-2"><label class="form-label" for="coupon-max-uses">Lượt dùng</label><input class="form-control" id="coupon-max-uses" name="maxUses" type="number" min="0" value="0" required></div>
+            <div class="col-md-1 d-flex align-items-end"><div class="form-check mb-2"><input class="form-check-input" id="coupon-active" name="active" type="checkbox" checked><label class="form-check-label" for="coupon-active">Bật</label></div></div>
+            <div class="col-12 d-flex gap-2"><button class="btn-admin-primary" type="submit">Lưu mã</button><button class="btn-admin-secondary" type="reset" data-admin-reset>Nhập mới</button></div>
+        </form>
+    </section>
+    <section class="admin-panel"><div class="admin-table-container"><table class="admin-table"><thead><tr><th>Mã</th><th>Mức giảm</th><th>Điều kiện</th><th>Hiệu lực</th><th>Đã dùng</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead><tbody data-admin-rows></tbody></table></div><p data-admin-empty hidden>Chưa có mã giảm giá. Hãy tạo mã đầu tiên ở biểu mẫu phía trên.</p></section>
 </main>
-
 </body>
 </html>

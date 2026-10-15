@@ -74,7 +74,7 @@ UTEGear.MediaManager = {
         const loadProduct = async id => {
             const current = ++revision;
             if (!id) { productId = null; title.textContent = ''; host.replaceChildren(); upload.hidden = true; return; }
-            const product = await UTEGear.API.get('/api/products/' + UTEGear.Admin.id(id), { public: true });
+            const product = await UTEGear.API.get('/api/admin/products/' + UTEGear.Admin.id(id));
             if (current !== revision || !authorized()) return;
             productId = product.id; title.textContent = product.name; host.replaceChildren();
             product.images.forEach(image => host.append(row(image)));
@@ -86,7 +86,7 @@ UTEGear.MediaManager = {
             busy = true; controls.disabled = true;
             const current = ++revision; status('Đang tìm sản phẩm…');
             try {
-                const page = await UTEGear.API.get('/api/products?' + new URLSearchParams({ q: query, size: 20, page: 0 }), { public: true });
+                const page = await UTEGear.API.get('/api/admin/products?' + new URLSearchParams({ q: query, size: 20, page: 0 }));
                 if (current !== revision || !authorized()) return;
                 select.replaceChildren(new Option('Chọn sản phẩm', ''));
                 page.content.forEach(product => select.add(new Option(product.name, product.id)));

@@ -12,6 +12,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
 
+    long countByStatus(com.utegear.entity.OrderStatus status);
+
     Optional<Order> findByOrderCode(String orderCode);
 
     Optional<Order> findByIdAndUserId(Long id, Long userId);

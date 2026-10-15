@@ -64,6 +64,14 @@ public class StoreInventory {
         updatedAt = OffsetDateTime.now(ZoneOffset.UTC);
     }
 
+    public void setQuantity(int quantity) {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Tồn kho không được âm");
+        }
+        this.quantity = quantity;
+        updatedAt = OffsetDateTime.now(ZoneOffset.UTC);
+    }
+
     @PrePersist
     @PreUpdate
     void touch() {

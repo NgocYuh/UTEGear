@@ -1,204 +1,59 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <body>
-
-<!--
-  UTEGear Canonical Product Filter Form Fragment
-  UTEGear Product Filter Form Fragment
-  Used in both Desktop Sidebar and Mobile Offcanvas Drawer
-  Parameters:
-    isMobile: boolean - indicates whether rendering inside mobile drawer or desktop sidebar
--->
 <form th:fragment="filterForm(isMobile)"
       th:id="${isMobile} ? 'mobileFilterForm' : 'filterSidebar'"
       th:class="${isMobile} ? '' : 'filter-sidebar'"
       method="get"
-      th:action="${categoryBaseUrl != null ? categoryBaseUrl : (currentCategory != null ? '/category/' + #strings.toLowerCase(currentCategory.name) : '/products')}">
+      th:action="${categoryBaseUrl != null ? categoryBaseUrl : '/products'}">
+    <input type="hidden" name="sort" th:value="${sort != null ? sort : 'createdAt,desc'}">
+    <input type="hidden" name="q" th:if="${keyword != null && !#strings.isEmpty(keyword)}" th:value="${keyword}">
 
-    <!-- Preserved hidden context parameters -->
-    <input type="hidden" name="sort" th:value="${sort != null ? sort : 'latest'}">
-    <input type="hidden" name="q" th:if="${keyword != null}" th:value="${keyword}">
-    <input type="hidden" name="sub" th:if="${selectedSub != null}" th:value="${selectedSub}">
-
-    <!-- Filter Title (Desktop Only) -->
     <div th:unless="${isMobile}" class="filter-title">
         <span><i class="bi bi-funnel text-primary me-1"></i> Bộ lọc sản phẩm</span>
-        <a th:if="${selectedBrandId != null || selectedMinPrice != null || selectedMaxPrice != null || selectedMinRating != null || selectedInStock != null || selectedOnSale != null}"
-           th:href="${categoryBaseUrl != null ? (selectedSub != null ? categoryBaseUrl + '?sub=' + selectedSub : categoryBaseUrl) : '/products'}"
-           class="btn-filter-reset" title="Đặt lại bộ lọc">
-            <i class="bi bi-arrow-counterclockwise"></i> Đặt lại
-        </a>
+        <a th:if="${selectedCategoryId != null || selectedBrandId != null || selectedMinPrice != null || selectedMaxPrice != null || selectedOnSale == true}"
+           th:href="${categoryBaseUrl != null ? categoryBaseUrl : '/products'}"
+           class="btn-filter-reset" title="Đặt lại bộ lọc"><i class="bi bi-arrow-counterclockwise"></i> Đặt lại</a>
     </div>
 
-    <!-- 1. Danh mục sản phẩm (Categories) -->
     <div class="filter-group">
-        <div class="filter-group-header">
-            <i class="bi bi-grid"></i>
-            <span>Danh mục</span>
-        </div>
+        <div class="filter-group-header"><i class="bi bi-grid"></i><span>Danh mục</span></div>
         <div class="filter-options-list">
-            <a th:href="@{/products}" class="filter-link-option"
-               th:classappend="${currentCategory == null && selectedCategoryId == null} ? 'active'">
-                <span>Tất cả sản phẩm</span>
-            </a>
-            <a href="/category/mouse" class="filter-link-option"
-               th:classappend="${currentCategory != null && (currentCategory.name == 'Mouse' || currentCategory.nameVi == 'Chuột')} ? 'active'">
-                <span>Chuột gaming</span>
-            </a>
-            <a href="/category/keyboard" class="filter-link-option"
-               th:classappend="${currentCategory != null && (currentCategory.name == 'Keyboard' || currentCategory.nameVi == 'Bàn phím')} ? 'active'">
-                <span>Bàn phím cơ</span>
-            </a>
-            <a href="/category/headset" class="filter-link-option"
-               th:classappend="${currentCategory != null && (currentCategory.name == 'Headset' || currentCategory.nameVi == 'Tai nghe')} ? 'active'">
-                <span>Tai nghe eSports</span>
-            </a>
-
-            <!-- Dây kết nối (Grouped with nested subcategories) -->
-            <div class="filter-option-group" th:classappend="${isCableCategory == true} ? 'open' : ''">
-                <a href="/category/connection-cables" class="filter-link-option"
-                   th:classappend="${isCableCategory == true && (selectedSub == null || selectedSub == '')} ? 'active'">
-                    <span>Dây kết nối</span>
-                    <i class="bi bi-chevron-down fs-8"></i>
-                </a>
-                <div class="filter-suboptions">
-                    <a href="/category/connection-cables?sub=usb-hub" class="filter-suboption"
-                       th:classappend="${'usb-hub' == selectedSub} ? 'active' : ''">USB Hub</a>
-                    <a href="/category/connection-cables?sub=hdmi" class="filter-suboption"
-                       th:classappend="${'hdmi-cable' == selectedSub || 'hdmi' == selectedSub} ? 'active' : ''">Cáp HDMI</a>
-                    <a href="/category/connection-cables?sub=usb-c" class="filter-suboption"
-                       th:classappend="${'usb-c-cable' == selectedSub || 'usbc' == selectedSub || 'usb-c' == selectedSub} ? 'active' : ''">Cáp USB Type-C</a>
-                    <a href="/category/connection-cables?sub=dp" class="filter-suboption"
-                       th:classappend="${'displayport-cable' == selectedSub || 'dp' == selectedSub} ? 'active' : ''">Cáp DisplayPort</a>
-                </div>
-            </div>
-
-            <!-- Tay cầm -->
-            <a href="/category/gamepad" class="filter-link-option"
-               th:classappend="${isGamepadCategory == true || (currentCategory != null && (currentCategory.name == 'Gamepad' || currentCategory.name == 'Gaming Accessories'))} ? 'active'">
-                <span>Tay cầm chơi game</span>
-            </a>
-
-            <a href="/category/keycap" class="filter-link-option"
-               th:classappend="${currentCategory != null && currentCategory.name == 'Keycap'} ? 'active'">
-                <span>Keycap</span>
-            </a>
-            <a href="/category/switch" class="filter-link-option"
-               th:classappend="${currentCategory != null && currentCategory.name == 'Switch'} ? 'active'">
-                <span>Switch phím cơ</span>
-            </a>
-            <a href="/category/mousepad" class="filter-link-option"
-               th:classappend="${currentCategory != null && (currentCategory.name == 'Mousepad' || currentCategory.nameVi == 'Tấm lót chuột')} ? 'active'">
-                <span>Lót chuột</span>
-            </a>
+            <a th:href="@{/products}" class="filter-link-option" th:classappend="${currentCategory == null && selectedCategoryId == null} ? 'active'">Tất cả sản phẩm</a>
+            <a th:each="category : ${allCategories}"
+               th:href="@{'/category/' + ${category.slug}}"
+               th:text="${category.name}"
+               class="filter-link-option"
+               th:classappend="${currentCategory != null && currentCategory.id == category.id} ? 'active'">Danh mục</a>
         </div>
     </div>
 
-    <!-- 2. Thương hiệu (Brands) -->
     <div class="filter-group">
-        <div class="filter-group-header">
-            <i class="bi bi-award"></i>
-            <span>Thương hiệu</span>
-        </div>
+        <div class="filter-group-header"><i class="bi bi-award"></i><span>Thương hiệu</span></div>
         <div class="filter-options-list">
-            <label class="filter-check-item">
-                <input type="radio" name="brandId" value="" th:checked="${selectedBrandId == null}">
-                <span>Tất cả thương hiệu</span>
-            </label>
-            <th:block th:each="b : ${allBrands}">
-                <label class="filter-check-item">
-                    <input type="radio" name="brandId" th:value="${b.id}" th:checked="${selectedBrandId == b.id}">
-                    <span th:text="${b.name}">Thương hiệu</span>
-                </label>
-            </th:block>
+            <label class="filter-check-item"><input type="radio" name="brandId" value="" th:checked="${selectedBrandId == null}"><span>Tất cả thương hiệu</span></label>
+            <label th:each="brand : ${allBrands}" class="filter-check-item"><input type="radio" name="brandId" th:value="${brand.id}" th:checked="${selectedBrandId == brand.id}"><span th:text="${brand.name}">Thương hiệu</span></label>
         </div>
     </div>
 
-    <!-- 3. Khoảng giá (Price Range) -->
     <div class="filter-group">
-        <div class="filter-group-header">
-            <i class="bi bi-cash-stack"></i>
-            <span>Khoảng giá (₫)</span>
-        </div>
+        <div class="filter-group-header"><i class="bi bi-cash-stack"></i><span>Khoảng giá</span></div>
         <div class="price-inputs-row">
-            <div class="price-input-wrapper">
-                <label th:for="${isMobile} ? 'mobileMinPriceInput' : 'minPriceInput'">Từ</label>
-                <input type="number" th:id="${isMobile} ? 'mobileMinPriceInput' : 'minPriceInput'"
-                       name="minPrice" min="0" step="50000"
-                       th:value="${selectedMinPrice}" placeholder="0"
-                       aria-label="Giá tối thiểu">
-            </div>
+            <div class="price-input-wrapper"><label th:for="${isMobile} ? 'mobileMinPriceInput' : 'minPriceInput'">Từ</label><input type="number" th:id="${isMobile} ? 'mobileMinPriceInput' : 'minPriceInput'" name="minPrice" min="0" step="50000" th:value="${selectedMinPrice}" placeholder="0"></div>
             <span class="price-hyphen">-</span>
-            <div class="price-input-wrapper">
-                <label th:for="${isMobile} ? 'mobileMaxPriceInput' : 'maxPriceInput'">Đến</label>
-                <input type="number" th:id="${isMobile} ? 'mobileMaxPriceInput' : 'maxPriceInput'"
-                       name="maxPrice" min="0" step="50000"
-                       th:value="${selectedMaxPrice}" placeholder="15.000.000"
-                       aria-label="Giá tối đa">
-            </div>
+            <div class="price-input-wrapper"><label th:for="${isMobile} ? 'mobileMaxPriceInput' : 'maxPriceInput'">Đến</label><input type="number" th:id="${isMobile} ? 'mobileMaxPriceInput' : 'maxPriceInput'" name="maxPrice" min="0" step="50000" th:value="${selectedMaxPrice}" placeholder="15000000"></div>
         </div>
     </div>
 
-    <!-- 4. Đánh giá sao (Rating) -->
     <div class="filter-group">
-        <div class="filter-group-header">
-            <i class="bi bi-star"></i>
-            <span>Đánh giá tối thiểu</span>
-        </div>
-        <div class="filter-options-list">
-            <label class="filter-check-item">
-                <input type="radio" name="minRating" value="" th:checked="${selectedMinRating == null}">
-                <span>Tất cả đánh giá</span>
-            </label>
-            <label class="filter-check-item">
-                <input type="radio" name="minRating" value="5" th:checked="${selectedMinRating == 5}">
-                <span class="rating-stars-filter">★★★★★</span>
-                <span class="ms-1 text-muted" style="font-size:0.75rem;">(5 sao)</span>
-            </label>
-            <label class="filter-check-item">
-                <input type="radio" name="minRating" value="4" th:checked="${selectedMinRating == 4}">
-                <span class="rating-stars-filter">★★★★☆</span>
-                <span class="ms-1 text-muted" style="font-size:0.75rem;">(từ 4 sao)</span>
-            </label>
-            <label class="filter-check-item">
-                <input type="radio" name="minRating" value="3" th:checked="${selectedMinRating == 3}">
-                <span class="rating-stars-filter">★★★☆☆</span>
-                <span class="ms-1 text-muted" style="font-size:0.75rem;">(từ 3 sao)</span>
-            </label>
-        </div>
+        <div class="filter-group-header"><i class="bi bi-percent"></i><span>Khuyến mãi</span></div>
+        <label class="filter-check-item"><input type="checkbox" name="onSale" value="true" th:checked="${selectedOnSale == true}"><span>Đang giảm giá</span></label>
     </div>
 
-    <!-- 5. Tình trạng hàng & Khuyến mãi -->
-    <div class="filter-group">
-        <div class="filter-group-header">
-            <i class="bi bi-box-seam"></i>
-            <span>Tình trạng hàng</span>
-        </div>
-        <div class="filter-options-list">
-            <label class="filter-check-item">
-                <input type="checkbox" name="inStock" value="true" th:checked="${selectedInStock == true}">
-                <span>Có sẵn tại cửa hàng</span>
-            </label>
-            <label class="filter-check-item">
-                <input type="checkbox" name="onSale" value="true" th:checked="${selectedOnSale == true}">
-                <span>Đang giảm giá</span>
-            </label>
-        </div>
-    </div>
-
-    <!-- 6. Nút Áp dụng / Đặt lại -->
     <div class="filter-sidebar-actions">
-        <button type="submit" class="btn-filter-apply">
-            <i class="bi bi-funnel me-1"></i> Áp dụng bộ lọc
-        </button>
-        <a th:href="${categoryBaseUrl != null ? (selectedSub != null ? categoryBaseUrl + '?sub=' + selectedSub : categoryBaseUrl) : '/products'}"
-           class="btn-filter-reset">
-            <i class="bi bi-arrow-counterclockwise"></i> Xóa tất cả bộ lọc
-        </a>
+        <button type="submit" class="btn-filter-apply"><i class="bi bi-funnel me-1"></i> Áp dụng bộ lọc</button>
+        <a th:href="${categoryBaseUrl != null ? categoryBaseUrl : '/products'}" class="btn-filter-reset"><i class="bi bi-arrow-counterclockwise"></i> Xóa bộ lọc</a>
     </div>
-
 </form>
-
 </body>
 </html>
-

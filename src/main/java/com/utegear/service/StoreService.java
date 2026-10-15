@@ -56,6 +56,11 @@ public class StoreService {
         return StorePage.from(stores.map(StoreDetail::from));
     }
 
+    @Transactional(readOnly = true)
+    public StoreDetail findAdminDetail(Long id) {
+        return StoreDetail.from(requireStore(id));
+    }
+
     @Transactional
     public StoreDetail create(StoreUpsertRequest request) {
         validateRequest(request);

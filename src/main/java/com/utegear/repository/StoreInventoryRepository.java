@@ -26,6 +26,10 @@ public interface StoreInventoryRepository extends JpaRepository<StoreInventory, 
 
     boolean existsByStoreIdAndVariantId(Long storeId, Long variantId);
 
+    List<StoreInventory> findByStoreIdOrderByVariantProductNameAscVariantSkuAsc(Long storeId);
+
+    List<StoreInventory> findAllByOrderByStoreNameAscVariantProductNameAscVariantSkuAsc();
+
     @Query("""
             select inventory.variant.id as variantId, sum(inventory.quantity) as quantity
             from StoreInventory inventory

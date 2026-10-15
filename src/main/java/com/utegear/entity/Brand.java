@@ -16,6 +16,7 @@ public class Brand {
     @Column(name="updated_at", nullable=false) private OffsetDateTime updatedAt;
     protected Brand() {}
     public Brand(String name, String slug, String description){this.name=name;this.slug=slug;this.description=description;}
+    public void update(String name, String slug, String description, boolean active){this.name=name;this.slug=slug;this.description=description;this.active=active;}
     @PrePersist void create(){createdAt=updatedAt=OffsetDateTime.now(ZoneOffset.UTC);}
     @PreUpdate void update(){updatedAt=OffsetDateTime.now(ZoneOffset.UTC);}
     public Long getId(){return id;} public String getName(){return name;} public String getSlug(){return slug;} public String getLogoUrl(){return logoUrl;} public String getDescription(){return description;} public boolean isActive(){return active;}

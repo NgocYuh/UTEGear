@@ -12,6 +12,8 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
 
     Optional<Coupon> findByCodeIgnoreCase(String code);
 
+    boolean existsByCodeIgnoreCaseAndIdNot(String code, Long id);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select coupon from Coupon coupon where upper(coupon.code) = upper(:code)")
     Optional<Coupon> findLockedByCode(@Param("code") String code);

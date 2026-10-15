@@ -17,6 +17,13 @@ public class Category {
     @Column(name="updated_at", nullable=false) private OffsetDateTime updatedAt;
     protected Category() {}
     public Category(String name, String slug, String description, int sortOrder) { this.name=name; this.slug=slug; this.description=description; this.sortOrder=sortOrder; }
+    public void update(String name, String slug, String description, int sortOrder, boolean active) {
+        this.name = name;
+        this.slug = slug;
+        this.description = description;
+        this.sortOrder = sortOrder;
+        this.active = active;
+    }
     @PrePersist void create(){ createdAt=updatedAt=OffsetDateTime.now(ZoneOffset.UTC); }
     @PreUpdate void update(){ updatedAt=OffsetDateTime.now(ZoneOffset.UTC); }
     public Long getId(){return id;} public String getName(){return name;} public String getSlug(){return slug;} public String getDescription(){return description;} public String getImageUrl(){return imageUrl;} public boolean isActive(){return active;} public int getSortOrder(){return sortOrder;}

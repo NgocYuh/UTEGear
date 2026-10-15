@@ -49,7 +49,7 @@ try {
     else {
         const readReport = file => JSON.parse(fs.readFileSync(path.join(output, file), 'utf8'));
         const publicReport = readReport('public/report.json'), integrationReport = readReport('browser/report.json'), riskReport = readReport('risks/report.json');
-        const delegated = new Set(['Login/register validation and server errors', 'JWT customer ownership and ADMIN role UI',
+        const delegated = new Set(['Browser /admin/orders', 'Login/register validation and server errors', 'JWT customer ownership and ADMIN role UI',
             'Cart/wishlist interaction against real API', 'Checkout quote/place and history', 'WebSocket disconnect/reconnect and fresh REST state']);
         const blocked = publicReport.cases.filter(check => check.status === 'BLOCKED' && !delegated.has(check.id));
         const failed = publicExit === 1 || integrationExit !== 0 || riskExit !== 0;
