@@ -681,6 +681,8 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Ngày cập nhật: 2026-10-16
 - Task liên kết: `FIX-STOCK-API`, branch `codex/fix-store-availability`; dựa trên FE-CONTENT-01 commit local 3e12afb, chưa merge main nên task trước vẫn IN REVIEW.
 - Phạm vi bổ sung theo phản hồi người dùng 2026-10-16: làm rõ thông tin đơn hàng và sản phẩm; liên kết DATA-06-BE để sửa nội dung nguồn. Frontend tiếp tục dùng OrderDetail và ProductDetail đã có, không đổi DTO/API.
+- Bàn giao GitHub: `https://github.com/NgocYuh/UTEGear/tree/codex/customer-checkout-ui`; push theo yêu cầu người dùng, chưa mở PR/merge.
+- Kiểm tra trước push: checkout sạch `e5809d9`, `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` BUILD SUCCESS, 197 test, 0 failure/error, 3 PostgreSQL test skip do Docker không sẵn có; Node PASS 29/29. Thay đổi sau build chỉ cập nhật dòng nhật ký này.
 - Đã làm:
   - Thêm Mua ngay: thêm biến thể/số lượng vào giỏ hiện tại rồi chuyển checkout để khách xác nhận; khách chưa đăng nhập chuyển login với URL quay lại sản phẩm.
   - Đọc tồn kho mới từ availability theo contract Backend. Khóa nút mua khi đang tải, lỗi, hết hàng hoặc số lượng không hợp lệ; cho thử tải lại khi lỗi và ngăn bấm Mua ngay lặp trong cùng yêu cầu.
