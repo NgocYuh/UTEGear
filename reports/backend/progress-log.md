@@ -1205,7 +1205,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Phụ trách: `@NgocYuh` (Backend).
 - Trạng thái: `IN REVIEW`.
 - Branch: `codex/local-demo-tools`.
-- Pull Request: `Chưa mở`.
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/68 (PR tích hợp INT-LOCAL-DEMO).
 - Ngày cập nhật: 2026-10-16.
 - Task liên kết: `INT-LOCAL-DEMO`, `FE-LOCAL-PUBLISH`.
 - Đã làm: Đưa script nhập catalog đã dùng local vào scripts/demo, thêm ValidateOnly và giới hạn loopback/no redirects, nhận đường dẫn dữ liệu cục bộ thay vì commit dataset. Hướng dẫn dùng cùng database đang có để giữ catalog/giá/tồn kho và cách nhập sang database QA mới; không đưa cấu hình hoặc dữ liệu tài khoản/địa chỉ/đơn hàng lên Git. Đồng bộ nhật ký DATA-03/DATA-04 và trạng thái PR #67 từ workspace đang chạy.
