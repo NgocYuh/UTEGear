@@ -15,7 +15,7 @@
     <!-- Unified Master CSS Entry -->
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-<body class="admin-body">
+<body class="admin-body" data-admin-session-guard hidden aria-busy="true">
 
 <div class="admin-layout">
     <!-- Admin Sidebar Backdrop for Mobile -->
@@ -43,7 +43,7 @@
                 </a>
                 <span class="admin-user-pill">
                     <i class="bi bi-person-circle text-primary"></i>
-                    <span th:text="${currentUser != null ? currentUser.fullName : 'Quản trị viên'}">Admin</span>
+                    <span data-session-name>Quản trị viên</span>
                 </span>
             </div>
         </header>

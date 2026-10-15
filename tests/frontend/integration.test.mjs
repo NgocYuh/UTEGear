@@ -21,13 +21,85 @@ function setup() {
         setTimeout, clearTimeout
     });
     context.window = context;
-    for (const file of ['core/api.js', 'domain/cart.js', 'domain/wishlist.js', 'domain/admin.js', 'domain/realtime.js', 'app.js']) {
+    for (const file of ['core/api.js', 'domain/cart.js', 'domain/wishlist.js', 'domain/admin.js', 'domain/realtime.js', 'app.js', 'domain/views.js']) {
         vm.runInContext(fs.readFileSync(new URL('../../src/main/resources/static/js/' + file, import.meta.url), 'utf8'), context, { filename: file });
     }
-    const session = { accessToken: 'test-only-token', tokenType: 'Bearer', expiresAt: new Date(Date.now() + 60000).toISOString(), user: { roles: ['ADMIN'] } };
+    const session = {
+        accessToken: 'test-only-token', tokenType: 'Bearer', expiresAt: new Date(Date.now() + 60000).toISOString(),
+        user: { fullName: 'QA Admin', email: 'qa-admin@example.test', roles: ['ADMIN'] }
+    };
     context.UTEGear.Session.save(session);
     return { context, api: context.UTEGear, calls, responses, events, session };
 }
+
+test('session navigation shows authenticated and admin controls from the stored JWT session', () => {
+    const { context, api } = setup();
+    const guest = { hidden: false }, authenticated = { hidden: true }, admin = { hidden: true };
+    const name = { textContent: '' }, email = { textContent: '' };
+    const label = { textContent: '' }, title = { textContent: '' };
+    const login = {
+        href: '/login', attributes: {},
+        setAttribute(key, value) { this.attributes[key] = value; },
+        querySelector(selector) { return selector === '[data-session-label]' ? label : selector === '.header-action-title' ? title : null; }
+    };
+    const elements = new Map([
+        ['[data-customer-view] a[href="/login"]', []],
+        ['[data-session-guest]', [guest]],
+        ['[data-session-authenticated]', [authenticated]],
+        ['[data-admin-link]', [admin]],
+        ['[data-session-name]', [name]],
+        ['[data-session-email]', [email]],
+        ['[data-session-login]', [login]]
+    ]);
+    context.document.querySelectorAll = selector => elements.get(selector) || [];
+    context.document.querySelector = () => null;
+
+    api.Views.session();
+    assert.equal(guest.hidden, true);
+    assert.equal(authenticated.hidden, false);
+    assert.equal(admin.hidden, false);
+    assert.equal(name.textContent, 'QA Admin');
+    assert.equal(email.textContent, 'qa-admin@example.test');
+    assert.equal(login.href, '/profile');
+    assert.equal(login.attributes['aria-label'], 'Trang cá nhân');
+    assert.equal(label.textContent, 'Xin chào');
+    assert.equal(title.textContent, 'QA Admin');
+
+    api.Session.clear();
+    api.Views.session();
+    assert.equal(guest.hidden, false);
+    assert.equal(authenticated.hidden, true);
+    assert.equal(admin.hidden, true);
+    assert.equal(login.href, '/login');
+});
+
+test('admin page guard requires a stored ADMIN session before revealing the shell', () => {
+    const { context, api, session } = setup();
+    let redirect = null;
+    const body = {
+        hidden: true,
+        matches: selector => selector === '[data-admin-session-guard]',
+        removeAttribute(name) { this.removed = name; }
+    };
+    context.document.body = body;
+    context.location.pathname = '/admin/orders';
+    context.location.search = '?status=PENDING';
+    context.location.replace = value => { redirect = value; };
+
+    assert.equal(api.Views.adminAccess(), true);
+    assert.equal(body.hidden, false);
+    assert.equal(body.removed, 'aria-busy');
+
+    body.hidden = true;
+    api.Session.save({ ...session, user: { ...session.user, roles: ['CUSTOMER'] } });
+    assert.equal(api.Views.adminAccess(), false);
+    assert.equal(redirect, '/?adminAccess=denied');
+    assert.equal(body.hidden, true);
+
+    api.Session.clear();
+    assert.equal(api.Views.adminAccess(), false);
+    assert.equal(redirect, '/login?redirect=%2Fadmin%2Forders%3Fstatus%3DPENDING');
+});
 
 test('API sends JWT, preserves caller headers and handles 204', async () => {
     const { api, calls, responses } = setup();
