@@ -828,15 +828,15 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 ## FE-LOCAL-PUBLISH: Bàn giao giao diện giống bản đang chạy local
 
 - Phụ trách: `@trongsonho` (Frontend).
-- Trạng thái: `IN PROGRESS`.
+- Trạng thái: `IN REVIEW`.
 - Branch: `codex/local-home-ui`.
 - Pull Request: `Chưa mở`.
 - Ngày cập nhật: 2026-10-16.
 - Task liên kết: `INT-LOCAL-DEMO`, `BE-LOCAL-DEMO-TOOLS`, `FE-CHECKOUT-UX`.
 - Đã làm: Đưa đầy đủ header/footer/cards, trang chủ gọn, banner, menu tài khoản, tab sản phẩm và Flash Sale đang chạy local vào commit 91f680f, giữ nguyên nội dung giao diện. Các task giao diện trước trong cùng lượt tinh chỉnh được bàn giao tại đây. Không sửa nghiệp vụ Backend.
-- Kết quả kiểm thử: Đang kiểm tra toàn bộ JS, build sạch và đối chiếu hash templates/static với workspace local trong INT-LOCAL-DEMO.
-- Vướng mắc hoặc phần còn thiếu: Chờ kiểm tra bản tích hợp trước khi push.
-- Bước tiếp theo: Hợp nhất nhánh frontend vào nhánh tích hợp, xác minh trình duyệt và push.
+- Kết quả kiểm thử: JS PASS 41/41; clean verify bản tích hợp BUILD SUCCESS, 202 test, 0 failure/error, 4 PostgreSQL skip (Docker thiếu). 128 templates/static khớp local sau chuẩn hóa line endings; ảnh nhị phân khớp nguyên byte.
+- Vướng mắc hoặc phần còn thiếu: Chưa merge main; bản tích hợp dùng cùng database local để giữ nguyên dữ liệu.
+- Bước tiếp theo: Review trong INT-LOCAL-DEMO và chỉ đánh dấu DONE sau khi merge.
 - Ngày hoàn tất: `Chưa hoàn tất`.
 
 
