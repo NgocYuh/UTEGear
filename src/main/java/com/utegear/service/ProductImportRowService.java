@@ -94,7 +94,19 @@ public class ProductImportRowService implements ProductRowImporter {
         provenance.put("sourceName", record.sourceName().trim());
         provenance.put("sourceUrl", record.sourceUrl().trim());
         provenance.put("crawledAt", record.crawledAt().trim());
-        product.updateSpecifications(provenance);
+        ObjectNode technical = provenance.putObject("technicalSpecifications");
+        if (record.specifications() != null) {
+            record.specifications().forEach((label, value) -> {
+                if (label == null || label.isBlank() || value == null || value.isBlank()
+                        || label.length() > 200 || value.length() > 4000) {
+                    throw invalid("INVALID_SPECIFICATIONS", "Nhãn/giá trị thông số không hợp lệ");
+                }
+                technical.put(label.trim(), value.trim());
+            });
+        }
+        product.update(product.getName(), product.getSlug(), category, brand,
+                record.description() == null ? null : record.description().strip(),
+                record.basePrice(), null, product.getStatus(), provenance);
         addVariants(product, record);
         Product saved = products.saveAndFlush(product);
         addImages(saved, record.imageUrls());

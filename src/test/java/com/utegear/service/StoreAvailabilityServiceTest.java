@@ -4,6 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
 
 import com.utegear.entity.Category;
 import com.utegear.entity.Product;
@@ -81,6 +85,30 @@ class StoreAvailabilityServiceTest {
             assertThat(stock.variantId()).isEqualTo(31L);
             assertThat(stock.availableStores()).hasSize(1);
         });
+    }
+
+    @Test
+    void productWithoutProvinceReturnsStockWithoutBindingNullableProvince() {
+        Product product = product();
+        StoreInventory inventory = new StoreInventory(store(true), product.getVariants().getFirst());
+        inventory.receive(7);
+        when(productRepository.findByIdAndStatus(21L, ProductStatus.ACTIVE)).thenReturn(Optional.of(product));
+        when(inventoryRepository.findProductAvailability(21L)).thenReturn(List.of(inventory));
+
+        assertThat(service.productAvailability(21L, null).totalStock()).isEqualTo(7);
+        verify(inventoryRepository, never()).findProductAvailability(anyLong(), any());
+    }
+
+    @Test
+    void blankProvinceAndEmptyInventoryReturnZeroInsteadOfAnError() {
+        Product product = product();
+        when(productRepository.findByIdAndStatus(21L, ProductStatus.ACTIVE)).thenReturn(Optional.of(product));
+        when(inventoryRepository.findProductAvailability(21L)).thenReturn(List.of());
+
+        var result = service.productAvailability(21L, "   ");
+        assertThat(result.totalStock()).isZero();
+        assertThat(result.variants()).singleElement().satisfies(stock -> assertThat(stock.availableStores()).isEmpty());
+        verify(inventoryRepository, never()).findProductAvailability(anyLong(), any());
     }
 
     @Test

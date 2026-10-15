@@ -1067,6 +1067,35 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Chủ dự án chạy thử bằng cấu hình local/Supabase, review diff; chỉ commit/push khi được đồng ý.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## DATA-05-BE: Bổ sung mô tả và thông số kỹ thuật sản phẩm đã cào
+
+- Phụ trách: `@NgocYuh`
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/product-content-backend`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-15
+- Đã làm:
+  - Chốt model/JSONL contract và JSON response mẫu trong `docs/api/model-contract.md`, `docs/crawler/data-contract.md` trước task phụ thuộc `FE-CONTENT-01`.
+  - Importer lưu mô tả vào Product và thông số nhãn/giá trị vào `specifications.technicalSpecifications`, giữ metadata nguồn ở cấp ngoài; không đổi schema hoặc giá/biến thể/tồn kho.
+  - Parser đọc JSON-LD, specs_table và mô tả public HTML trong RSC Flight; không thực thi JavaScript. Hỗ trợ HTML mô tả/table/bullet của KICAP và giữ đoạn văn thuần.
+  - Chuẩn bị bổ sung nội dung từ cache của 218 sản phẩm, không tải lại/upload ảnh.
+  - Đã cập nhật mô tả và technicalSpecifications cho đủ 218 sản phẩm hiện có bằng sourceUrl; snapshot `crawler/data/output/catalog-2026-10-15/content-before.json` và payload `content-updates.json` ở workspace chính, bị Git ignore.
+  - Ba Razer Seiren V3 Chroma thiếu bảng thông số ở nguồn bán lẻ được bổ sung từ bảng thông số chính hãng Razer dòng RZ19-0506 (24 bit/96 kHz), không dùng dữ liệu dòng 32-Bit DSP.
+  - Bổ sung `products-enriched.jsonl` cho các lần import sau. Không đổi giá, 4 sản phẩm Flash Sale, ảnh, biến thể hoặc tồn kho.
+  - Web local được chạy lại bằng JAR đã verify của worktree Backend, dùng template/static source của workspace Frontend để kiểm tra tích hợp trên cổng 8080.
+- Kết quả kiểm thử:
+  - Parser offline và importer có test hồi quy cho lưu description, nested specs, chống ghi đè provenance, dữ liệu lỗi, chunk UTF-8, timestamp trùng Flight ID và nội dung HTML.
+  - `python -m unittest discover -s crawler/tests -v`: PASS, 13 test.
+  - `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify`: BUILD SUCCESS, 196 test, 193 pass, 0 failure/error, 3 PostgreSQL Testcontainers test skip vì Docker không chạy. Cờ Byte Buddy cần cho JDK 26 theo nhật ký repo; lượt sandbox đầu bị chặn loopback.
+  - Preview + transaction + đối soát sau commit PostgreSQL: PASS, đúng 218 nội dung khớp payload; mô tả không rỗng và technicalSpecifications có dữ liệu ở cả 218 sản phẩm.
+  - API sản phẩm ID 145: PASS, mô tả 2.582 ký tự, 9 thông số, salePrice vẫn 416.000đ; FE-CONTENT-01 kiểm tra trình duyệt desktop/mobile.
+- Vướng mắc hoặc phần còn thiếu:
+  - Có 8 mô tả ngắn do nguồn chỉ cung cấp ít thông tin; giữ đúng dữ kiện có nguồn, không tự bổ sung tính năng hoặc kích thước.
+  - Chưa mở PR; chưa chuyển DONE trước khi review/merge theo quy định repository.
+- Bước tiếp theo:
+  - Review branch Backend riêng, liên kết FE-CONTENT-01; metadata truy vết vẫn lưu trong database nhưng không đưa vào bảng thông số của khách hàng.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md
@@ -1086,3 +1115,30 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - ...
 - Ngày hoàn tất: YYYY-MM-DD hoặc `Chưa hoàn tất`
 ```
+
+## FIX-STOCK-API: Sửa tồn kho public và đối soát checkout
+
+- Phụ trách: `@NgocYuh`
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/fix-store-availability`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-16
+- Task liên kết: `FE-CHECKOUT-UX`; phụ thuộc commit local DATA-05-BE `6dadac9`, chưa merge main nên task trước vẫn IN REVIEW.
+- Bàn giao GitHub: `https://github.com/NgocYuh/UTEGear/tree/codex/fix-store-availability`; push theo yêu cầu người dùng, chưa mở PR/merge.
+- Kiểm tra trước push: checkout sạch efc33e0, `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` BUILD SUCCESS, 199 test, 0 failure/error, 4 PostgreSQL test skip do Docker không sẵn có. Lượt clean đầu bị Windows khóa JAR localhost đang dùng; build lại bằng checkout riêng thành công, giữ ứng dụng đang chạy. Thay đổi sau build chỉ cập nhật nhật ký.
+- Đã làm:
+  - Tái hiện PostgreSQL lower(bytea) khi availability gọi với province null.
+  - Tách query không lọc tỉnh khỏi query lọc tỉnh; không truyền null vào lower(), giữ khóa tồn kho Store + ProductVariant và pessimistic write của thao tác trừ kho.
+  - Cập nhật endpoint contract trước phần frontend: bỏ trống/tỉnh trắng trả tất cả cửa hàng hoạt động; không có inventory trả zero/empty array.
+  - Người dùng đã yêu cầu tạo 1 cửa hàng demo và 10 chiếc mỗi sản phẩm. Tạo UTEGear Demo (id 1), 218 dòng Store + ProductVariant, tổng 2.180 chiếc trong database dùng thử đã cấu hình; kiểm tra bảng cửa hàng/tồn kho rỗng trước khi ghi và dùng transaction, không reset tồn kho có sẵn. Script/báo cáo vận hành nằm trong crawler/data/output bị ignore, không đưa dữ liệu demo vào migration.
+  - Đối chiếu source admin: AdminCatalogService cộng tồn kho từ StoreInventoryRepository; user dùng cùng dữ liệu Store + ProductVariant. Admin quản trị và user mua hàng có giao diện khác theo vai trò.
+- Kết quả kiểm thử:
+  - Bổ sung test province null/trắng, empty inventory và integration PostgreSQL cho query không lọc/case-insensitive.
+  - `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify`: BUILD SUCCESS, 199 test, 0 failure/error, 4 skip vì Docker không sẵn có.
+  - Chạy jar đã build trên localhost:8080: availability không truyền tỉnh, tỉnh rỗng và TP.HCM đều HTTP 200 trước seed (stock 0); sau seed sản phẩm 218 stock 10.
+  - Trình duyệt Edge thật, tài khoản CUSTOMER demo riêng: đăng nhập, mua ngay sản phẩm 218, chọn địa chỉ/cửa hàng demo, quote COD, tạo đơn PENDING UTE-1792084956-0B8A2C88, giỏ rỗng, kho giảm 10 xuống 9; hủy qua chức năng customer thành CANCELLED và kho hoàn lại 10. Không dùng tài khoản/cart của người dùng.
+- Vướng mắc hoặc phần còn thiếu:
+  - PostgreSQL Testcontainers chưa chạy do thiếu Docker; đã kiểm tra API và trừ/hoàn kho trên PostgreSQL local đang cấu hình. Chưa mở PR hoặc merge; không đánh dấu DONE.
+- Bước tiếp theo:
+  - Review backend riêng với FE-CHECKOUT-UX. Runtime hiện dùng jar từ worktree .local-reference/store-availability-backend và templates/static của workspace frontend; chạy lại backend từ branch cũ sẽ không có bản sửa này.
+- Ngày hoàn tất: `Chưa hoàn tất`

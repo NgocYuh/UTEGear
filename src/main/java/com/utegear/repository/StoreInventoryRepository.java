@@ -12,6 +12,18 @@ import org.springframework.data.repository.query.Param;
 
 public interface StoreInventoryRepository extends JpaRepository<StoreInventory, Long> {
 
+    @Query("""
+            select inventory
+            from StoreInventory inventory
+            join fetch inventory.store store
+            join fetch inventory.variant variant
+            join fetch variant.product product
+            where product.id = :productId
+              and store.active = true
+              and variant.active = true
+            """)
+    List<StoreInventory> findProductAvailability(@Param("productId") Long productId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""
             select inventory
@@ -47,7 +59,7 @@ public interface StoreInventoryRepository extends JpaRepository<StoreInventory, 
             where product.id = :productId
               and store.active = true
               and variant.active = true
-              and (:province is null or lower(store.province) = lower(:province))
+              and lower(store.province) = lower(:province)
             """)
     List<StoreInventory> findProductAvailability(
             @Param("productId") Long productId,
