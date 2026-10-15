@@ -2,9 +2,9 @@
 
 ## FE-HOME-COMPACT-01: Triển khai giao diện trang chủ đã duyệt
 
-- Trạng thái: `READY FOR REVIEW` (local; chưa mở PR).
+- Trạng thái: `IN REVIEW` (bàn giao trong FE-LOCAL-PUBLISH; chưa merge).
 - Phụ trách: `@trongsonho` (Frontend).
-- Branch: `codex/remove-topbar` (tiếp tục lượt tinh chỉnh giao diện đã được duyệt).
+- Branch: `codex/local-home-ui` (tiếp tục lượt tinh chỉnh giao diện đã được duyệt).
 - Ngày cập nhật: 2026-10-15.
 - Phạm vi: header/footer/card dùng chung, trang chủ, tab sản phẩm và ảnh banner.
 - Đã làm: header một hàng tìm kiếm/giỏ/tài khoản và một hàng danh mục; hero ảnh không chứa chữ,
@@ -55,9 +55,9 @@
 
 ## FE-ACCOUNT-LAYER-01: Sửa thanh điều hướng đè menu tài khoản
 
-- Trạng thái: `READY FOR REVIEW` (local; chưa mở PR).
+- Trạng thái: `IN REVIEW` (bàn giao trong FE-LOCAL-PUBLISH; chưa merge).
 - Phụ trách: `@trongsonho` (Frontend).
-- Branch: `codex/remove-topbar`.
+- Branch: `codex/local-home-ui`.
 - Ngày cập nhật: 2026-10-15.
 - Nguyên nhân: panel và thanh điều hướng cùng z-index dropdown; thanh điều hướng xuất hiện
   sau trong DOM nên che thông tin tài khoản ở đầu panel.
@@ -69,9 +69,9 @@
 
 ## FE-ACCOUNT-MENU-01: Gom thao tác tài khoản vào menu rê chuột
 
-- Trạng thái: `READY FOR REVIEW` (local; chưa mở PR).
+- Trạng thái: `IN REVIEW` (bàn giao trong FE-LOCAL-PUBLISH; chưa merge).
 - Phụ trách: `@trongsonho` (Frontend).
-- Branch: `codex/remove-topbar` (cùng lượt tinh chỉnh header).
+- Branch: `codex/local-home-ui` (cùng lượt tinh chỉnh header).
 - Ngày cập nhật: 2026-10-15.
 - Đã làm: gom thông tin tên/email, tài khoản, đơn hàng, yêu thích, quản trị và đăng xuất
   vào một menu tài khoản; giữ giỏ hàng riêng. Khách thấy đăng nhập/đăng ký,
@@ -85,9 +85,9 @@
 
 ## FE-FLASH-01: Bộ đếm Flash Sale chạy theo thời điểm kết thúc
 
-- Trạng thái: `READY FOR REVIEW` (local; chưa mở PR).
+- Trạng thái: `IN REVIEW` (bàn giao trong FE-LOCAL-PUBLISH; chưa merge).
 - Phụ trách: `@trongsonho` (Frontend).
-- Branch: `codex/remove-topbar` (cùng lượt tinh chỉnh trang chủ).
+- Branch: `codex/local-home-ui` (cùng lượt tinh chỉnh trang chủ).
 - Ngày cập nhật: 2026-10-15.
 - Đã làm: thay banner ảnh chứa số tĩnh bằng HTML/CSS responsive; đếm ngược mỗi giây đến
   `2026-12-25T23:59:00+07:00` theo thời điểm người dùng xác nhận. Giờ có thể vượt 24;
@@ -100,9 +100,9 @@
 
 ## FE-FOOTER-01: Xóa cột sản phẩm trong footer
 
-- Trạng thái: `READY FOR REVIEW` (local; chưa mở PR).
+- Trạng thái: `IN REVIEW` (bàn giao trong FE-LOCAL-PUBLISH; chưa merge).
 - Phụ trách: `@trongsonho` (Frontend).
-- Branch: `codex/remove-topbar` (cùng lượt tinh chỉnh giao diện theo yêu cầu).
+- Branch: `codex/local-home-ui` (cùng lượt tinh chỉnh giao diện theo yêu cầu).
 - Ngày cập nhật: 2026-10-15.
 - Đã làm: xóa cột Sản phẩm và các liên kết bên trong; chia footer thành ba cột đều
   trên desktop, thương hiệu toàn hàng và hai cột liên kết trên tablet, xếp dọc trên mobile.
@@ -112,9 +112,9 @@
 
 ## FE-HEADER-01: Xóa thanh thông tin trên cùng
 
-- Trạng thái: `READY FOR REVIEW` (local; chưa mở PR).
+- Trạng thái: `IN REVIEW` (bàn giao trong FE-LOCAL-PUBLISH; chưa merge).
 - Phụ trách: `@trongsonho` (Frontend).
-- Branch: `codex/remove-topbar`.
+- Branch: `codex/local-home-ui`.
 - Ngày cập nhật: 2026-10-15.
 - Đã làm: xóa top utility bar trong fragment header dùng chung theo ảnh người dùng cung cấp;
   giữ header chính với logo, tìm kiếm, tài khoản và giỏ hàng.
@@ -823,3 +823,18 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Bước tiếp theo:
   - Review task frontend riêng và liên kết FIX-STOCK-API; chỉ đánh dấu DONE sau merge.
 - Ngày hoàn tất: `Chưa hoàn tất`
+
+
+## FE-LOCAL-PUBLISH: Bàn giao giao diện giống bản đang chạy local
+
+- Phụ trách: `@trongsonho` (Frontend).
+- Trạng thái: `IN PROGRESS`.
+- Branch: `codex/local-home-ui`.
+- Pull Request: `Chưa mở`.
+- Ngày cập nhật: 2026-10-16.
+- Task liên kết: `INT-LOCAL-DEMO`, `BE-LOCAL-DEMO-TOOLS`, `FE-CHECKOUT-UX`.
+- Đã làm: Đưa đầy đủ header/footer/cards, trang chủ gọn, banner, menu tài khoản, tab sản phẩm và Flash Sale đang chạy local vào commit 91f680f, giữ nguyên nội dung giao diện. Các task giao diện trước trong cùng lượt tinh chỉnh được bàn giao tại đây. Không sửa nghiệp vụ Backend.
+- Kết quả kiểm thử: Đang kiểm tra toàn bộ JS, build sạch và đối chiếu hash templates/static với workspace local trong INT-LOCAL-DEMO.
+- Vướng mắc hoặc phần còn thiếu: Chờ kiểm tra bản tích hợp trước khi push.
+- Bước tiếp theo: Hợp nhất nhánh frontend vào nhánh tích hợp, xác minh trình duyệt và push.
+- Ngày hoàn tất: `Chưa hoàn tất`.
