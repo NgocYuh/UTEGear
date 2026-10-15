@@ -91,7 +91,7 @@
 }
 
 .header-primary-row {
-    padding: 14px 0;
+    padding: 12px 0;
     display: flex;
     align-items: center;
     gap: 24px;
@@ -255,6 +255,41 @@
 }
 
 /* Header Action Group (Compact, intentional hierarchy: Account / Wishlist / Cart) */
+/* Keep the account panel above the secondary navigation stacking context. */
+.account-dropdown { position: relative; order: 2; z-index: calc(var(--z-dropdown, 1040) + 1); }
+.account-trigger { cursor: pointer; list-style: none; border: 1px solid #E2E8F0; background: #F8FAFC; }
+.account-trigger .header-action-title { max-width: 125px; }
+.header-actions-group > .cart-action-item { background: transparent; border: 0; padding: 10px; }
+.account-trigger::-webkit-details-marker { display: none; }
+.account-trigger:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+.account-chevron { font-size: .7rem; transition: transform .15s; }
+.account-dropdown[open] .account-chevron { transform: rotate(180deg); }
+.account-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: var(--z-dropdown, 1000);
+    width: min(300px, calc(100vw - 32px));
+    padding: 8px 0;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(15,23,42,.16);
+    color: #1E293B;
+}
+.account-identity { padding: 12px 18px; border-bottom: 1px solid #E2E8F0; }
+.account-identity strong, .account-identity span { display: block; overflow-wrap: anywhere; }
+.account-identity span { margin-top: 4px; font-size: .8rem; color: #64748B; }
+.account-panel a, .account-panel button {
+    display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 18px;
+    border: 0; background: transparent; color: inherit; text-decoration: none; text-align: left; font: inherit; font-size: .9rem;
+}
+.account-panel a:hover, .account-panel button:hover, .account-panel a:focus-visible, .account-panel button:focus-visible { background: #F1F5F9; color: var(--color-primary); }
+.account-panel [hidden] { display: none !important; }
+.account-panel [data-session-logout] { border-top: 1px solid #E2E8F0; }
+.header-actions-group > .cart-action-item { order: 1; }
+.header-actions-group > button { order: 3; }
+
 .header-actions-group {
     display: flex;
     align-items: center;

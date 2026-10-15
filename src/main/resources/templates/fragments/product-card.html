@@ -5,7 +5,10 @@
    <a th:href="@{/products/{id}(id=${p.id})}" class="product-image-link" th:aria-label="${p.name}">
     <img th:src="${p.primaryImage != null ? p.primaryImage.secureUrl : '/images/placeholder.svg'}" th:alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='/images/placeholder.svg'">
    </a>
-   <div class="product-badges"><span class="badge-stock" th:if="${!p.inStock}">Hết hàng</span></div>
+   <div class="product-badges">
+    <span class="badge-discount" th:if="${p.basePrice != null and p.basePrice > 0 and p.effectivePrice < p.basePrice}" th:text="'-' + ${#numbers.formatDecimal((p.basePrice - p.effectivePrice) * 100 / p.basePrice, 1, 0)} + '%' "></span>
+    <span class="badge-stock" th:if="${!p.inStock}">Hết hàng</span>
+   </div>
    <div class="product-actions">
     <button type="button" class="action-btn-icon wishlist-btn" data-action="toggle-wishlist" th:data-product-id="${p.id}" aria-label="Thay đổi yêu thích"><i class="bi bi-heart"></i></button>
     <button type="button" class="action-btn-icon" data-action="quick-view" th:data-product-id="${p.id}" aria-label="Xem nhanh"><i class="bi bi-eye"></i></button>
@@ -14,7 +17,10 @@
   <div class="product-info">
    <div class="product-meta-row"><span class="product-brand" th:text="${p.brand != null ? p.brand.name : 'UTEGear'}"></span><span class="product-category-tag" th:text="${p.category.name}"></span></div>
    <h3 class="product-title-heading"><a class="product-name" th:href="@{/products/{id}(id=${p.id})}" th:text="${p.name}"></a></h3>
-   <div class="product-price"><span class="price current" th:text="${#numbers.formatDecimal(p.effectivePrice,1,'POINT',0,'COMMA')} + ' ₫'"></span></div>
+   <div class="product-price">
+    <span class="price current" th:text="${#numbers.formatDecimal(p.effectivePrice,1,'POINT',0,'COMMA')} + ' ₫'"></span>
+    <del class="price-original" th:if="${p.basePrice != null and p.effectivePrice < p.basePrice}" th:text="${#numbers.formatDecimal(p.basePrice,1,'POINT',0,'COMMA')} + ' ₫'"></del>
+   </div>
    <button type="button" class="btn btn-utama w-100" data-action="add-to-cart" th:data-product-id="${p.id}" th:data-variant-id="${p.defaultVariantId}" th:disabled="${!p.inStock}">Thêm vào giỏ</button>
   </div>
  </div>

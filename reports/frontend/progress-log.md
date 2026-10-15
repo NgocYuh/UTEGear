@@ -1,5 +1,127 @@
 # Nhật ký tiến độ Frontend
 
+## FE-HOME-COMPACT-01: Triển khai giao diện trang chủ đã duyệt
+
+- Trạng thái: `READY FOR REVIEW` (local; chưa mở PR).
+- Phụ trách: `@trongsonho` (Frontend).
+- Branch: `codex/remove-topbar` (tiếp tục lượt tinh chỉnh giao diện đã được duyệt).
+- Ngày cập nhật: 2026-10-15.
+- Phạm vi: header/footer/card dùng chung, trang chủ, tab sản phẩm và ảnh banner.
+- Đã làm: header một hàng tìm kiếm/giỏ/tài khoản và một hàng danh mục; hero ảnh không chứa chữ,
+  hai ô chuột/tai nghe, thanh danh mục từ model thật. Gộp Flash Sale với tối đa bốn sản phẩm
+  giảm giá; ba tab Nổi bật/Bán chạy/Mới về có hỗ trợ bàn phím, mỗi tab tối đa bốn thẻ.
+  Thu gọn dải cam kết và footer ba cột; mobile dùng hai cột sản phẩm và hai cột cam kết.
+  Thẻ giữ thêm giỏ theo variant, yêu thích/xem nhanh; giá gốc và nhãn giảm chỉ hiển thị khi có
+  chênh lệch thật trong DTO. Giữ thời hạn Flash Sale `2026-12-25T23:59:00+07:00`.
+- Dữ liệu: controller hiện trả `bestSellers` rỗng, tab báo chưa có sản phẩm;
+  Mới về dùng `latestProducts` nếu có, nếu thiếu dùng danh sách hiện được controller lấy theo
+  `createdAt,desc`. Không tạo số liệu bán chạy, rating hoặc dữ liệu production.
+- Kiểm tra: 32/32 JS unit tests PASS; syntax JS và git diff --check PASS.
+  Maven `mvnw.cmd -B clean verify -Dnet.bytebuddy.experimental=true`: BUILD SUCCESS,
+  194 tests, 0 failures, 0 errors, 3 PostgreSQL tests skip local.
+  Lượt không có cờ thất bại vì Byte Buddy hiện có hỗ trợ tối đa Java 23, máy dùng Java 26;
+  cờ chỉ áp dụng khi chạy kiểm thử, không sửa dependency hoặc cấu hình repo.
+- Browser: 21 checks PASS trên server H2 riêng `127.0.0.1:18082`, Edge headless:
+  tab/keyboard/empty state, bốn thẻ, giá giảm thật, đăng nhập CUSTOMER/ẩn ADMIN,
+  lớp menu phía trên navigation, thêm giỏ/cập nhật badge và yêu thích qua API thật,
+  không tràn trang/menu ở 1440/768/390, không có browser exception.
+- Bằng chứng local (không commit): `.local-reference/compact-home-verify-final.log`,
+  `.local-reference/compact-home-browser-final/summary.json`, `home-1440.png`, `home-768.png`,
+  `home-390.png` và các ảnh `home-account-*.png` trong cùng thư mục. Ảnh dùng fixture QA,
+  không phải danh mục/ảnh sản phẩm production. Dữ liệu test chỉ tồn tại trong H2 in-memory.
+- Ảnh banner mới: `src/main/resources/static/images/banners/home-compact-hero.png`,
+  `src/main/resources/static/images/banners/home-compact-mouse.png`,
+  `src/main/resources/static/images/banners/home-compact-headset.png`.
+  Dùng công cụ image_gen tích hợp, kiểm tra trực quan cả ba ảnh, không ghi đè ảnh cũ.
+- Prompt ảnh (bộ prompt cuối):
+  - Hero: Wide cinematic realistic ecommerce photograph for UTEGear gaming peripherals website hero.
+    1536x1024 landscape. Black mechanical keyboard with muted cream and navy blue keycaps, blue
+    backlight, on dark navy desk in a tasteful gaming desk setting. Keyboard on right half and bottom,
+    out-of-focus monitor and plant behind. Left half is dark clean navy negative space for white HTML
+    headline added separately. Professional product photography, crisp keys, blue ambient lighting,
+    restrained, no people, no lettering, no text, no logo, no watermarks. Must look like a real high
+    quality product photo.
+  - Mouse: Realistic studio product photograph for gaming shop website rectangular landscape promo
+    tile. Black wireless gaming mouse on right half of dark charcoal navy desk, side profile three
+    quarter view, restrained red accent light, subtle texture, left bottom dark empty negative space
+    for an HTML category title added separately. Wide landscape 3:2 composition, sophisticated product
+    photography, clean high detail, no text no logo no watermarks no people.
+  - Headset: Realistic studio product photograph for gaming shop website rectangular landscape promo
+    tile. Black over-ear gaming headset with tasteful red accent trim on right half of dark charcoal
+    navy surface, three quarter view, excellent materials soft lighting, bottom left dark empty
+    negative space for HTML category title added separately. Wide landscape 3:2 composition,
+    professional ecommerce photography, no text no logo no watermarks no people.
+- Pull Request: chưa mở; chưa push.
+
+## FE-ACCOUNT-LAYER-01: Sửa thanh điều hướng đè menu tài khoản
+
+- Trạng thái: `READY FOR REVIEW` (local; chưa mở PR).
+- Phụ trách: `@trongsonho` (Frontend).
+- Branch: `codex/remove-topbar`.
+- Ngày cập nhật: 2026-10-15.
+- Nguyên nhân: panel và thanh điều hướng cùng z-index dropdown; thanh điều hướng xuất hiện
+  sau trong DOM nên che thông tin tài khoản ở đầu panel.
+- Đã làm: đặt stacking context của cụm tài khoản cao hơn thanh điều hướng một mức,
+  vẫn nằm trong stacking context sticky header. Không đổi vị trí hoặc tương tác menu.
+- Kiểm tra: đối chiếu CSS stacking context và git diff --check PASS;
+  4/4 tests tương tác menu PASS. Chưa xác minh trực tiếp bằng trình duyệt.
+- Pull Request: chưa mở; chưa push.
+
+## FE-ACCOUNT-MENU-01: Gom thao tác tài khoản vào menu rê chuột
+
+- Trạng thái: `READY FOR REVIEW` (local; chưa mở PR).
+- Phụ trách: `@trongsonho` (Frontend).
+- Branch: `codex/remove-topbar` (cùng lượt tinh chỉnh header).
+- Ngày cập nhật: 2026-10-15.
+- Đã làm: gom thông tin tên/email, tài khoản, đơn hàng, yêu thích, quản trị và đăng xuất
+  vào một menu tài khoản; giữ giỏ hàng riêng. Khách thấy đăng nhập/đăng ký,
+  quản trị chỉ hiện cho ADMIN theo session hiện có. Bỏ thanh đăng xuất riêng dưới header.
+- Tương tác: rê chuột mở menu; bấm/chạm hoặc Enter/Space dùng disclosure HTML native;
+  Escape đóng và trả focus, bấm ngoài/rời focus đóng; không đóng khi đang thao tác trong menu.
+- Kiểm tra: 29/29 tests Frontend PASS, gồm 4 tests mới cho hover, touch/native toggle,
+  bàn phím/focus, bấm ngoài và logout; JavaScript syntax và git diff --check PASS.
+  Route đơn hàng đã đối chiếu `/orders`. Chưa kiểm tra trình duyệt hoặc Maven build.
+- Pull Request: chưa mở; chưa push.
+
+## FE-FLASH-01: Bộ đếm Flash Sale chạy theo thời điểm kết thúc
+
+- Trạng thái: `READY FOR REVIEW` (local; chưa mở PR).
+- Phụ trách: `@trongsonho` (Frontend).
+- Branch: `codex/remove-topbar` (cùng lượt tinh chỉnh trang chủ).
+- Ngày cập nhật: 2026-10-15.
+- Đã làm: thay banner ảnh chứa số tĩnh bằng HTML/CSS responsive; đếm ngược mỗi giây đến
+  `2026-12-25T23:59:00+07:00` theo thời điểm người dùng xác nhận. Giờ có thể vượt 24;
+  tải lại trang không đặt lại thời hạn. Hết giờ dừng ở 0, báo đã kết thúc và đổi CTA.
+- Kiểm tra: 25/25 tests Frontend PASS, trong đó 5 tests bộ đếm kiểm tra múi giờ,
+  chuyển phút, tab tạm dừng, tải lại, hết hạn và cấu hình không hợp lệ.
+  JavaScript syntax và git diff --check PASS. Chưa kiểm tra trình duyệt hoặc Maven build.
+- Bộ đếm dùng đồng hồ thiết bị; đây là hiển thị Frontend, không thay đổi giá hoặc thời hạn ưu đãi Backend.
+- Pull Request: chưa mở; chưa push.
+
+## FE-FOOTER-01: Xóa cột sản phẩm trong footer
+
+- Trạng thái: `READY FOR REVIEW` (local; chưa mở PR).
+- Phụ trách: `@trongsonho` (Frontend).
+- Branch: `codex/remove-topbar` (cùng lượt tinh chỉnh giao diện theo yêu cầu).
+- Ngày cập nhật: 2026-10-15.
+- Đã làm: xóa cột Sản phẩm và các liên kết bên trong; chia footer thành ba cột đều
+  trên desktop, thương hiệu toàn hàng và hai cột liên kết trên tablet, xếp dọc trên mobile.
+- Kiểm tra: kiểm tra tĩnh nội dung và Bootstrap grid PASS; 20/20 tests Frontend PASS;
+  git diff --check PASS. Chưa kiểm tra bằng trình duyệt.
+- Pull Request: chưa mở; chưa push.
+
+## FE-HEADER-01: Xóa thanh thông tin trên cùng
+
+- Trạng thái: `READY FOR REVIEW` (local; chưa mở PR).
+- Phụ trách: `@trongsonho` (Frontend).
+- Branch: `codex/remove-topbar`.
+- Ngày cập nhật: 2026-10-15.
+- Đã làm: xóa top utility bar trong fragment header dùng chung theo ảnh người dùng cung cấp;
+  giữ header chính với logo, tìm kiếm, tài khoản và giỏ hàng.
+- Kiểm tra: 20/20 tests Frontend PASS; kiểm tra tĩnh xác nhận topbar đã xóa,
+  các phần chính còn nguyên; git diff --check PASS. Chưa kiểm tra bằng trình duyệt.
+- Pull Request: chưa mở; chưa push.
+
 ## REL-01: Chuẩn bị UTEGear v1.0.0 release candidate — phần Frontend
 
 - Trạng thái: `IN REVIEW` — bản FE/tài liệu sẵn review; chờ DOC-03 merge và xác nhận hai phía.
