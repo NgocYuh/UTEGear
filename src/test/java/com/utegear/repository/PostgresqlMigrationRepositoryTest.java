@@ -83,6 +83,20 @@ class PostgresqlMigrationRepositoryTest {
     }
 
     @Test
+    void productAvailabilitySupportsUnfilteredAndCaseInsensitiveProvinceQueries() {
+        Product product = persistProduct();
+        Store store = storeRepository.saveAndFlush(store());
+        StoreInventory stock = new StoreInventory(store, product.getVariants().getFirst());
+        stock.receive(4);
+        inventoryRepository.saveAndFlush(stock);
+
+        assertThat(inventoryRepository.findProductAvailability(product.getId())).hasSize(1);
+        assertThat(inventoryRepository.findProductAvailability(product.getId(), store.getProvince().toLowerCase()))
+                .hasSize(1);
+        assertThat(inventoryRepository.findProductAvailability(product.getId(), "Other Province")).isEmpty();
+    }
+
+    @Test
     void inventoryRepositoryUsesStoreAndVariantAndDatabaseRejectsDuplicate() {
         Product product = persistProduct();
         Store store = storeRepository.saveAndFlush(store());

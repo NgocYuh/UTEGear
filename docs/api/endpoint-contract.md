@@ -148,6 +148,11 @@ JSONL có thể gửi `description` nhiều đoạn và `specifications` nhãn �
 `GET /api/products/{id}` trả thông số ở `specifications.technicalSpecifications`; metadata crawler
 ở object ngoài phục vụ truy vết, không dùng làm nội dung bảng thông số (`DATA-05-BE` / `FE-CONTENT-01`).
 
+### Tồn kho công khai
+`GET /api/products/{productId}/availability` nhận `province` tùy chọn. Bỏ trống hoặc chỉ có
+khoảng trắng trả tồn kho ở tất cả cửa hàng hoạt động; không có inventory trả `totalStock: 0`
+và `availableStores: []`, không trả HTTP 500 (`FIX-STOCK-API`, phụ thuộc `FE-CHECKOUT-UX`).
+
 ## WebSocket/STOMP đã triển khai
 
 | Hành động | Destination | Quyền | Event |

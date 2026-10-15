@@ -59,8 +59,9 @@ public class StoreAvailabilityService {
                 .orElseThrow(() -> new ApiException(
                         HttpStatus.NOT_FOUND, "PRODUCT_NOT_FOUND", "Không tìm thấy sản phẩm"));
         String normalizedProvince = normalize(province);
-        List<StoreInventory> inventories = inventoryRepository.findProductAvailability(
-                productId, normalizedProvince);
+        List<StoreInventory> inventories = normalizedProvince == null
+                ? inventoryRepository.findProductAvailability(productId)
+                : inventoryRepository.findProductAvailability(productId, normalizedProvince);
         Map<Long, List<StoreInventory>> inventoryByVariant = inventories.stream()
                 .collect(Collectors.groupingBy(inventory -> inventory.getVariant().getId()));
 

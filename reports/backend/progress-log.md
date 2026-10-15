@@ -1115,3 +1115,28 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - ...
 - Ngày hoàn tất: YYYY-MM-DD hoặc `Chưa hoàn tất`
 ```
+
+## FIX-STOCK-API: Sửa tồn kho public và đối soát checkout
+
+- Phụ trách: `@NgocYuh`
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/fix-store-availability`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-16
+- Task liên kết: `FE-CHECKOUT-UX`; phụ thuộc commit local DATA-05-BE `6dadac9`, chưa merge main nên task trước vẫn IN REVIEW.
+- Đã làm:
+  - Tái hiện PostgreSQL lower(bytea) khi availability gọi với province null.
+  - Tách query không lọc tỉnh khỏi query lọc tỉnh; không truyền null vào lower(), giữ khóa tồn kho Store + ProductVariant và pessimistic write của thao tác trừ kho.
+  - Cập nhật endpoint contract trước phần frontend: bỏ trống/tỉnh trắng trả tất cả cửa hàng hoạt động; không có inventory trả zero/empty array.
+  - Người dùng đã yêu cầu tạo 1 cửa hàng demo và 10 chiếc mỗi sản phẩm. Tạo UTEGear Demo (id 1), 218 dòng Store + ProductVariant, tổng 2.180 chiếc trong database dùng thử đã cấu hình; kiểm tra bảng cửa hàng/tồn kho rỗng trước khi ghi và dùng transaction, không reset tồn kho có sẵn. Script/báo cáo vận hành nằm trong crawler/data/output bị ignore, không đưa dữ liệu demo vào migration.
+  - Đối chiếu source admin: AdminCatalogService cộng tồn kho từ StoreInventoryRepository; user dùng cùng dữ liệu Store + ProductVariant. Admin quản trị và user mua hàng có giao diện khác theo vai trò.
+- Kết quả kiểm thử:
+  - Bổ sung test province null/trắng, empty inventory và integration PostgreSQL cho query không lọc/case-insensitive.
+  - `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify`: BUILD SUCCESS, 199 test, 0 failure/error, 4 skip vì Docker không sẵn có.
+  - Chạy jar đã build trên localhost:8080: availability không truyền tỉnh, tỉnh rỗng và TP.HCM đều HTTP 200 trước seed (stock 0); sau seed sản phẩm 218 stock 10.
+  - Trình duyệt Edge thật, tài khoản CUSTOMER demo riêng: đăng nhập, mua ngay sản phẩm 218, chọn địa chỉ/cửa hàng demo, quote COD, tạo đơn PENDING UTE-1792084956-0B8A2C88, giỏ rỗng, kho giảm 10 xuống 9; hủy qua chức năng customer thành CANCELLED và kho hoàn lại 10. Không dùng tài khoản/cart của người dùng.
+- Vướng mắc hoặc phần còn thiếu:
+  - PostgreSQL Testcontainers chưa chạy do thiếu Docker; đã kiểm tra API và trừ/hoàn kho trên PostgreSQL local đang cấu hình. Chưa mở PR hoặc merge; không đánh dấu DONE.
+- Bước tiếp theo:
+  - Review backend riêng với FE-CHECKOUT-UX. Runtime hiện dùng jar từ worktree .local-reference/store-availability-backend và templates/static của workspace frontend; chạy lại backend từ branch cũ sẽ không có bản sửa này.
+- Ngày hoàn tất: `Chưa hoàn tất`
