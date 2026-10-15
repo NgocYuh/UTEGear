@@ -71,7 +71,10 @@ try {
             await admin.wait(`document.querySelector('[data-admin-page="${page}"]') && !document.querySelector('[data-admin-status]').textContent.endsWith('…')`);
             check(await admin.evaluate(`!document.body.hidden && !document.querySelector('[data-admin-status]').classList.contains('text-danger')`),`ADMIN ${page} page loads its real API without integration errors`);
         }
+        await admin.navigate('/');
+        check(await admin.evaluate(`UTEGear.Session.get()?.user?.roles?.includes('ADMIN') && !document.querySelector('[data-admin-link]').hidden`),'ADMIN keeps the same JWT session on the storefront');
         await admin.navigate('/admin/orders');await admin.wait(`document.querySelector('[data-view-items]').textContent.includes('UTE-')`);
+        check(await admin.evaluate(`UTEGear.Session.get()?.user?.roles?.includes('ADMIN') && !document.body.hidden`),'ADMIN returns to administration without signing in again');
         await admin.wait(`document.querySelector('[data-realtime-status]').textContent.includes('Đã kết nối') || document.querySelector('[data-realtime-status]').textContent.includes('bị từ chối') || document.querySelector('[data-realtime-status]').textContent.includes('Chưa tải')`);
         check(admin.stomp.some(frame=>frame.command==='CONNECT' && frame.hasAuthorization),'Admin JWT sent only in STOMP CONNECT');
         if(await admin.evaluate(`document.querySelector('[data-realtime-status]').textContent.includes('Đã kết nối')`))check(true,'Real ADMIN STOMP CONNECT/subscription/resync');else fail('Admin STOMP',await admin.evaluate(`document.querySelector('[data-realtime-status]').textContent`));

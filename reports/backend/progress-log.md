@@ -1042,6 +1042,8 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
     chuyển thao tác theo biến thể, kể cả sản phẩm có nhiều biến thể.
   - Chặn quản trị viên tự khóa tài khoản hoặc tự gỡ vai trò `ADMIN`; khách hàng truy cập trang quản
     trị được chuyển hướng an toàn mà không mất phiên.
+  - Cho phép quản trị viên chuyển từ trang quản trị sang storefront trong cùng tab và quay lại
+    `/admin` bằng cùng phiên JWT, không phải đăng nhập lại.
   - Chuyển trình quản lý ảnh sang `/admin/products#product-media`, đồng bộ runner QA và tài liệu;
     bổ sung lọc khuyến mãi, route danh mục và dữ liệu cửa hàng/sản phẩm trang chủ.
   - Sửa Maven wrapper trên Windows khi thư mục `.m2` không phải symbolic link hoặc biến `HOME`
@@ -1053,7 +1055,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - `node --test tests/frontend/integration.test.mjs tests/frontend/mock-data.test.mjs`: `PASS`,
     20/20 test.
   - Kiểm tra cú pháp JavaScript: `PASS`, 32 file.
-  - QA-04 bằng Edge headless + H2 cô lập: `PASS`; 87 public, 46 authenticated/integration và
+  - QA-04 bằng Edge headless + H2 cô lập: `PASS`; 87 public, 48 authenticated/integration và
     54 risk checks, không có `FAIL` hoặc `BLOCKED` trong kết quả tổng hợp.
   - `git diff --check`: `PASS` (chỉ có cảnh báo chuyển LF sang CRLF trên Windows).
 - Vướng mắc hoặc phần còn thiếu:
