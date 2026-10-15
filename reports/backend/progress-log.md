@@ -929,11 +929,34 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Ghi nhận kết quả QA-05 tổng hợp trên branch `docs/manual-test-report`.
 - Ngày hoàn tất: 2026-10-14
 
+## REL-01-BE-REVIEW: Đối soát release candidate phía Backend
+
+- Trạng thái: `IN PROGRESS`
+- Branch release được review: `release/v1.0.0`, commit `0156b4e`.
+- Branch cập nhật trạng thái: `docs/release-status-reconciliation`.
+- Pull Request REL-01: `Chưa mở`.
+- Ngày cập nhật: 2026-10-15.
+- Đã làm:
+  - Xác nhận QA-05, DOC-01, DOC-02 và DOC-03 đã lần lượt merge qua PR #61 đến PR #64.
+  - Review phạm vi REL-01: branch chỉ đổi tài liệu release và nhật ký Frontend, không đổi source runtime.
+  - Đối chiếu CI được dẫn trong hồ sơ và xác nhận run `38607996065` thành công trên `2836a1a`.
+- Kết quả kiểm thử trên commit release `0156b4e`:
+  - Maven `clean verify`: `BUILD SUCCESS`; 187 test được phát hiện, 184 pass, 3 PostgreSQL test skip.
+  - Frontend unit test: 18 pass, 0 fail; kiểm tra cú pháp JavaScript: `PASS`.
+  - `git diff --check` và kiểm tra liên kết Markdown nội bộ trong phần thay đổi: `PASS`.
+- Vướng mắc hoặc phần còn thiếu:
+  - Branch release được tạo trước merge DOC-03 nên còn ghi main `2836a1a` và chờ DOC-03; FE cần đồng bộ
+    `main` hiện tại `ba1e777`, cập nhật hồ sơ/nhật ký FE rồi mới mở PR REL-01.
+  - Chưa có PR REL-01 và chưa có tag `v1.0.0` tại thời điểm review.
+- Bước tiếp theo:
+  - Merge PR đối soát trạng thái này; FE đồng bộ branch release, sửa thông tin lỗi thời và mở PR REL-01.
+  - Chỉ chuyển REL-01 sang `IN REVIEW` khi PR đã mở; chỉ tạo annotated tag sau khi PR được merge.
+
 ## QA-05-REVIEW: Xác nhận end-to-end và Cloudinary thật
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `docs/manual-test-report`
-- Pull Request: `Chưa mở`
+- Pull Request: [PR #61](https://github.com/NgocYuh/UTEGear/pull/61), merge commit `56b9e0a`
 - Ngày cập nhật: 2026-10-15
 - Đã làm:
   - Chạy checklist giao dịch/realtime và companion media suite trên commit main `71a50d2`.
@@ -947,16 +970,16 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Đơn COD COMPLETED: `paymentStatus=PAID`, `amount=630000`, `total=630000`.
   - Responsive 1440/768/390, CUSTOMER 403 không mất session và không có browser exception chưa xử lý.
 - Vướng mắc hoặc phần còn thiếu:
-  - Không còn blocker chức năng; chờ review và merge PR báo cáo.
+  - Không còn blocker chức năng; PR báo cáo đã merge.
 - Bước tiếp theo:
-  - Sau merge, đối soát QA-05 thành `DONE` theo quy tắc repository.
-- Ngày hoàn tất: `Chờ merge`
+  - Dùng kết quả đã merge làm bằng chứng cho DOC-01, DOC-02, DOC-03 và REL-01.
+- Ngày hoàn tất: 2026-10-15
 
 ## DOC-01: Hoàn thiện tài liệu API và kiến trúc
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `docs/api-architecture`
-- Pull Request: `Chưa mở`
+- Pull Request: [PR #62](https://github.com/NgocYuh/UTEGear/pull/62), merge commit `cfac801`
 - Ngày cập nhật: 2026-10-15
 - Đã làm:
   - Đối chiếu toàn bộ REST mapping trong 14 controller với ba contract API đã merge.
@@ -973,16 +996,16 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
     187 test được phát hiện, 184 pass, 0 failure, 0 error và 3 PostgreSQL test skip do Docker local không chạy.
   - `git diff --check`: `PASS`.
 - Vướng mắc hoặc phần còn thiếu:
-  - Không có blocker nội dung. Nhánh phụ thuộc QA-05 `docs/manual-test-report` phải được merge trước.
+  - Không còn blocker; QA-05 và DOC-01 đã merge đúng thứ tự phụ thuộc.
 - Bước tiếp theo:
-  - Chạy các kiểm tra cuối, commit, push và mở PR sau QA-05.
-- Ngày hoàn tất: `Chờ merge`
+  - Dùng tài liệu đã merge làm đầu vào cho DOC-02, DOC-03 và REL-01.
+- Ngày hoàn tất: 2026-10-15
 
 ## DOC-02: Hướng dẫn cài đặt và demo
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `docs/setup-demo-guide`
-- Pull Request: `Chưa mở`
+- Pull Request: [PR #63](https://github.com/NgocYuh/UTEGear/pull/63), merge commit `2836a1a`
 - Ngày cập nhật: 2026-10-15
 - Đã làm:
   - Viết hướng dẫn Windows PowerShell cho JDK/Maven, cấu hình local và nguyên tắc không commit secret.
@@ -998,10 +1021,10 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
     187 test được phát hiện, 184 pass, 0 failure, 0 error và 3 PostgreSQL test skip do Docker local không chạy.
   - `git diff --check`: `PASS`.
 - Vướng mắc hoặc phần còn thiếu:
-  - Không có blocker nội dung. Nhánh xếp sau QA-05 và DOC-01 trong chuỗi merge.
+  - Không còn blocker; QA-05, DOC-01 và DOC-02 đã merge đúng thứ tự phụ thuộc.
 - Bước tiếp theo:
-  - Chạy kiểm tra cuối, commit, push và mở PR sau DOC-01.
-- Ngày hoàn tất: `Chờ merge`
+  - Dùng hướng dẫn đã merge làm đầu vào cho DOC-03 và REL-01.
+- Ngày hoàn tất: 2026-10-15
 
 ## Mẫu mục mới
 
