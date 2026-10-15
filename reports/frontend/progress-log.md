@@ -843,13 +843,13 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 ## INT-LOCAL-DEMO: Tích hợp đúng bản đang chạy local
 
 - Phụ trách: `@trongsonho` (frontend).
-- Trạng thái: `IN PROGRESS`.
+- Trạng thái: `IN REVIEW`.
 - Branch: `codex/local-demo-integration`.
 - Pull Request: `Chưa mở`.
 - Ngày cập nhật: 2026-10-16.
 - Task liên kết: `FE-LOCAL-PUBLISH`, `BE-LOCAL-DEMO-TOOLS`, `FE-CHECKOUT-UX`, `FIX-STOCK-API`, `DATA-06-BE`.
 - Đã làm: Hợp nhất các task Backend/Frontend từ nhánh riêng vào một checkout hoàn chỉnh; không thay đổi kiến trúc, API hoặc schema. Toàn bộ 128 file templates/static có SHA-256 khớp workspace local đang chạy sau chuẩn hóa CRLF/LF theo Git; ảnh nhị phân khớp nguyên byte. Giữ secret, catalog crawler, tài khoản và đơn hàng ngoài Git. Hướng dẫn ở docs/setup/local-demo-parity.md.
-- Kết quả kiểm thử: JS PASS 41/41, script import ValidateOnly PASS 218 sản phẩm/6 category/45 brand; đang chạy clean verify và đối chiếu JAR đóng gói.
-- Vướng mắc hoặc phần còn thiếu: Chờ build/browser trước push; chưa merge main.
-- Bước tiếp theo: Kiểm tra JAR tự phục vụ templates/static, cập nhật kết quả và push nhánh tích hợp.
+- Kết quả kiểm thử: clean verify BUILD SUCCESS, 202 test, 0 failure/error, 4 PostgreSQL skip do thiếu Docker; JS PASS 41/41, crawler PASS 14/14, script PowerShell PASS. JAR chạy riêng cổng 18083 không override templates/static: 4 public API trả dữ liệu giống localhost:8080, 10 asset đóng gói (JS/CSS/banner) khớp local; API admin vẫn bảo vệ, home desktop/mobile và Lexar 8 thông số đúng, không tràn ngang, không có browser exception. Đã xem ảnh screenshot; kiểm tra chỉ đọc, không tạo/đổi đơn hàng hoặc tồn kho. Harness cần tải eager ảnh lazy để chụp toàn trang.
+- Vướng mắc hoặc phần còn thiếu: Chưa merge main. GitHub chứa đầy đủ code và hướng dẫn; dùng cùng cấu hình/database development hiện có để giữ sản phẩm, ảnh, Flash Sale và tồn kho. Dataset không nằm trong Git.
+- Bước tiếp theo: Push nhánh tích hợp, mở PR review và chỉ đánh dấu DONE sau merge. Sau build chỉ sửa nhật ký, không đổi runtime source.
 - Ngày hoàn tất: `Chưa hoàn tất`.
