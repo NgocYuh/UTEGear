@@ -1,11 +1,11 @@
 <!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
 <head><title>Đơn hàng của bạn - UTEGear</title></head><body>
-<main layout:fragment="content" class="section"><section class="container" data-orders-view="customer">
+<main layout:fragment="content" class="section orders-section"><section class="container" data-orders-view="customer">
  <h1>Đơn hàng của bạn</h1>
  <p data-view-status role="status" aria-live="polite">Đang tải đơn hàng…</p>
  <p data-realtime-status role="status" aria-live="polite"></p>
- <label for="order-filter" class="form-label">Trạng thái</label><select id="order-filter" data-order-filter class="form-select mb-3"><option value="">Tất cả</option><option>PENDING</option><option>CONFIRMED</option><option>PROCESSING</option><option>SHIPPING</option><option>COMPLETED</option><option>CANCELLED</option></select>
+ <label for="order-filter" class="form-label">Lọc theo trạng thái</label><select id="order-filter" data-order-filter class="form-select mb-3"><option value="">Tất cả đơn hàng</option><option value="PENDING">Chờ xác nhận</option><option value="CONFIRMED">Đã xác nhận</option><option value="PROCESSING">Đang chuẩn bị hàng</option><option value="SHIPPING">Đang giao hàng</option><option value="COMPLETED">Hoàn tất</option><option value="CANCELLED">Đã hủy</option></select>
  <div data-view-items></div><nav data-order-pagination aria-label="Phân trang" class="d-flex gap-2"></nav>
- <section data-order-detail class="surface-card p-3 mt-3" aria-label="Chi tiết đơn hàng"></section>
+ <section data-order-detail class="surface-card p-3 p-md-4 mt-4" aria-label="Chi tiết đơn hàng" hidden></section>
  <a href="/login" class="btn btn-outline-primary mt-3">Đăng nhập</a>
 </section></main></body></html>

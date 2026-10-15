@@ -6,10 +6,10 @@
    ========================================================= */
 
 .site-footer {
-    background-color: #0F172A;
-    color: #94A3B8;
+    background-color: #082B66;
+    color: #CBD5E1;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
-    margin-top: var(--space-12);
+    margin-top: 24px;
     font-size: 0.86rem;
 }
 
@@ -19,7 +19,7 @@
 .footer-trust-strip {
     background-color: rgba(255, 255, 255, 0.02);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding: 24px 0;
+    padding: 16px 0;
 }
 
 .trust-item {
@@ -55,7 +55,7 @@
 }
 
 .trust-item-content p {
-    color: #64748B;
+    color: #CBD5E1;
     font-size: 0.78rem;
     margin: 0;
 }
@@ -64,7 +64,7 @@
    2. MAIN FOOTER NAVIGATION (Asymmetrical columns)
    --------------------------------------------------------- */
 .footer-main-area {
-    padding: 48px 0 36px;
+    padding: 28px 0;
 }
 
 .footer-brand-col {
@@ -120,7 +120,7 @@
 }
 
 .footer-desc {
-    color: #94A3B8;
+    color: #CBD5E1;
     font-size: 0.84rem;
     line-height: 1.6;
     margin-bottom: 20px;
@@ -157,7 +157,7 @@
     font-size: 0.82rem;
     font-weight: 800;
     color: #FFFFFF;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -172,7 +172,7 @@
 }
 
 .footer-links a {
-    color: #94A3B8;
+    color: #CBD5E1;
     font-size: 0.84rem;
     font-weight: 500;
     text-decoration: none;
@@ -197,7 +197,7 @@
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    color: #94A3B8;
+    color: #CBD5E1;
     font-size: 0.84rem;
     line-height: 1.45;
 }
@@ -217,9 +217,9 @@
    3. BOTTOM BAR (Payment methods, Security, Copyright)
    --------------------------------------------------------- */
 .footer-bottom {
-    background-color: #0B0F19;
+    background-color: #082B66;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 18px 0;
+    padding: 12px 0;
     font-size: 0.78rem;
     color: #64748B;
 }
@@ -236,7 +236,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    color: #94A3B8;
+    color: #CBD5E1;
 }
 
 .footer-bottom-badges span {
@@ -253,7 +253,7 @@
 @media (max-width: 991.98px) {
     .footer-brand-col {
         padding-right: 0;
-        margin-bottom: 24px;
+        margin-bottom: 0;
     }
     
     .footer-trust-strip {
@@ -271,3 +271,21 @@
     }
 }
 
+
+/* Compact service strip and footer matching the storefront. */
+.footer-trust-strip { background: #F8FAFC; border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; }
+.trust-item { justify-content: center; gap: 10px; }
+.trust-item-icon, .trust-item-icon.accent { width: 32px; height: 32px; font-size: 1.5rem; border: 0; background: transparent; color: #082B66; }
+.trust-item-content h6 { color: #082B66; font-size: .8rem; margin: 0; font-weight: 500; }
+.footer-brand .brand-name { font-size: 1.6rem; }
+.footer-desc { margin-bottom: 12px; }
+.footer-col-title { text-transform: none; letter-spacing: 0; }
+.footer-links { gap: 6px; }
+.footer-contact-list { gap: 10px; }
+.footer-contact-item i { color: #CBD5E1; }
+.social-icons a { width: 28px; height: 28px; border: 0; background: transparent; }
+@media (max-width: 575.98px) {
+    .trust-item { justify-content: flex-start; margin-bottom: 0; }
+    .trust-item-content h6 { font-size: .72rem; }
+    .footer-main-area { padding: 24px 0; }
+}

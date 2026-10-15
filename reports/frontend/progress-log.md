@@ -1,5 +1,127 @@
 # Nhật ký tiến độ Frontend
 
+## FE-HOME-COMPACT-01: Triển khai giao diện trang chủ đã duyệt
+
+- Trạng thái: `IN REVIEW` (bàn giao trong FE-LOCAL-PUBLISH; chưa merge).
+- Phụ trách: `@trongsonho` (Frontend).
+- Branch: `codex/local-home-ui` (tiếp tục lượt tinh chỉnh giao diện đã được duyệt).
+- Ngày cập nhật: 2026-10-15.
+- Phạm vi: header/footer/card dùng chung, trang chủ, tab sản phẩm và ảnh banner.
+- Đã làm: header một hàng tìm kiếm/giỏ/tài khoản và một hàng danh mục; hero ảnh không chứa chữ,
+  hai ô chuột/tai nghe, thanh danh mục từ model thật. Gộp Flash Sale với tối đa bốn sản phẩm
+  giảm giá; ba tab Nổi bật/Bán chạy/Mới về có hỗ trợ bàn phím, mỗi tab tối đa bốn thẻ.
+  Thu gọn dải cam kết và footer ba cột; mobile dùng hai cột sản phẩm và hai cột cam kết.
+  Thẻ giữ thêm giỏ theo variant, yêu thích/xem nhanh; giá gốc và nhãn giảm chỉ hiển thị khi có
+  chênh lệch thật trong DTO. Giữ thời hạn Flash Sale `2026-12-25T23:59:00+07:00`.
+- Dữ liệu: controller hiện trả `bestSellers` rỗng, tab báo chưa có sản phẩm;
+  Mới về dùng `latestProducts` nếu có, nếu thiếu dùng danh sách hiện được controller lấy theo
+  `createdAt,desc`. Không tạo số liệu bán chạy, rating hoặc dữ liệu production.
+- Kiểm tra: 32/32 JS unit tests PASS; syntax JS và git diff --check PASS.
+  Maven `mvnw.cmd -B clean verify -Dnet.bytebuddy.experimental=true`: BUILD SUCCESS,
+  194 tests, 0 failures, 0 errors, 3 PostgreSQL tests skip local.
+  Lượt không có cờ thất bại vì Byte Buddy hiện có hỗ trợ tối đa Java 23, máy dùng Java 26;
+  cờ chỉ áp dụng khi chạy kiểm thử, không sửa dependency hoặc cấu hình repo.
+- Browser: 21 checks PASS trên server H2 riêng `127.0.0.1:18082`, Edge headless:
+  tab/keyboard/empty state, bốn thẻ, giá giảm thật, đăng nhập CUSTOMER/ẩn ADMIN,
+  lớp menu phía trên navigation, thêm giỏ/cập nhật badge và yêu thích qua API thật,
+  không tràn trang/menu ở 1440/768/390, không có browser exception.
+- Bằng chứng local (không commit): `.local-reference/compact-home-verify-final.log`,
+  `.local-reference/compact-home-browser-final/summary.json`, `home-1440.png`, `home-768.png`,
+  `home-390.png` và các ảnh `home-account-*.png` trong cùng thư mục. Ảnh dùng fixture QA,
+  không phải danh mục/ảnh sản phẩm production. Dữ liệu test chỉ tồn tại trong H2 in-memory.
+- Ảnh banner mới: `src/main/resources/static/images/banners/home-compact-hero.png`,
+  `src/main/resources/static/images/banners/home-compact-mouse.png`,
+  `src/main/resources/static/images/banners/home-compact-headset.png`.
+  Dùng công cụ image_gen tích hợp, kiểm tra trực quan cả ba ảnh, không ghi đè ảnh cũ.
+- Prompt ảnh (bộ prompt cuối):
+  - Hero: Wide cinematic realistic ecommerce photograph for UTEGear gaming peripherals website hero.
+    1536x1024 landscape. Black mechanical keyboard with muted cream and navy blue keycaps, blue
+    backlight, on dark navy desk in a tasteful gaming desk setting. Keyboard on right half and bottom,
+    out-of-focus monitor and plant behind. Left half is dark clean navy negative space for white HTML
+    headline added separately. Professional product photography, crisp keys, blue ambient lighting,
+    restrained, no people, no lettering, no text, no logo, no watermarks. Must look like a real high
+    quality product photo.
+  - Mouse: Realistic studio product photograph for gaming shop website rectangular landscape promo
+    tile. Black wireless gaming mouse on right half of dark charcoal navy desk, side profile three
+    quarter view, restrained red accent light, subtle texture, left bottom dark empty negative space
+    for an HTML category title added separately. Wide landscape 3:2 composition, sophisticated product
+    photography, clean high detail, no text no logo no watermarks no people.
+  - Headset: Realistic studio product photograph for gaming shop website rectangular landscape promo
+    tile. Black over-ear gaming headset with tasteful red accent trim on right half of dark charcoal
+    navy surface, three quarter view, excellent materials soft lighting, bottom left dark empty
+    negative space for HTML category title added separately. Wide landscape 3:2 composition,
+    professional ecommerce photography, no text no logo no watermarks no people.
+- Pull Request: chưa mở; chưa push.
+
+## FE-ACCOUNT-LAYER-01: Sửa thanh điều hướng đè menu tài khoản
+
+- Trạng thái: `IN REVIEW` (bàn giao trong FE-LOCAL-PUBLISH; chưa merge).
+- Phụ trách: `@trongsonho` (Frontend).
+- Branch: `codex/local-home-ui`.
+- Ngày cập nhật: 2026-10-15.
+- Nguyên nhân: panel và thanh điều hướng cùng z-index dropdown; thanh điều hướng xuất hiện
+  sau trong DOM nên che thông tin tài khoản ở đầu panel.
+- Đã làm: đặt stacking context của cụm tài khoản cao hơn thanh điều hướng một mức,
+  vẫn nằm trong stacking context sticky header. Không đổi vị trí hoặc tương tác menu.
+- Kiểm tra: đối chiếu CSS stacking context và git diff --check PASS;
+  4/4 tests tương tác menu PASS. Chưa xác minh trực tiếp bằng trình duyệt.
+- Pull Request: chưa mở; chưa push.
+
+## FE-ACCOUNT-MENU-01: Gom thao tác tài khoản vào menu rê chuột
+
+- Trạng thái: `IN REVIEW` (bàn giao trong FE-LOCAL-PUBLISH; chưa merge).
+- Phụ trách: `@trongsonho` (Frontend).
+- Branch: `codex/local-home-ui` (cùng lượt tinh chỉnh header).
+- Ngày cập nhật: 2026-10-15.
+- Đã làm: gom thông tin tên/email, tài khoản, đơn hàng, yêu thích, quản trị và đăng xuất
+  vào một menu tài khoản; giữ giỏ hàng riêng. Khách thấy đăng nhập/đăng ký,
+  quản trị chỉ hiện cho ADMIN theo session hiện có. Bỏ thanh đăng xuất riêng dưới header.
+- Tương tác: rê chuột mở menu; bấm/chạm hoặc Enter/Space dùng disclosure HTML native;
+  Escape đóng và trả focus, bấm ngoài/rời focus đóng; không đóng khi đang thao tác trong menu.
+- Kiểm tra: 29/29 tests Frontend PASS, gồm 4 tests mới cho hover, touch/native toggle,
+  bàn phím/focus, bấm ngoài và logout; JavaScript syntax và git diff --check PASS.
+  Route đơn hàng đã đối chiếu `/orders`. Chưa kiểm tra trình duyệt hoặc Maven build.
+- Pull Request: chưa mở; chưa push.
+
+## FE-FLASH-01: Bộ đếm Flash Sale chạy theo thời điểm kết thúc
+
+- Trạng thái: `IN REVIEW` (bàn giao trong FE-LOCAL-PUBLISH; chưa merge).
+- Phụ trách: `@trongsonho` (Frontend).
+- Branch: `codex/local-home-ui` (cùng lượt tinh chỉnh trang chủ).
+- Ngày cập nhật: 2026-10-15.
+- Đã làm: thay banner ảnh chứa số tĩnh bằng HTML/CSS responsive; đếm ngược mỗi giây đến
+  `2026-12-25T23:59:00+07:00` theo thời điểm người dùng xác nhận. Giờ có thể vượt 24;
+  tải lại trang không đặt lại thời hạn. Hết giờ dừng ở 0, báo đã kết thúc và đổi CTA.
+- Kiểm tra: 25/25 tests Frontend PASS, trong đó 5 tests bộ đếm kiểm tra múi giờ,
+  chuyển phút, tab tạm dừng, tải lại, hết hạn và cấu hình không hợp lệ.
+  JavaScript syntax và git diff --check PASS. Chưa kiểm tra trình duyệt hoặc Maven build.
+- Bộ đếm dùng đồng hồ thiết bị; đây là hiển thị Frontend, không thay đổi giá hoặc thời hạn ưu đãi Backend.
+- Pull Request: chưa mở; chưa push.
+
+## FE-FOOTER-01: Xóa cột sản phẩm trong footer
+
+- Trạng thái: `IN REVIEW` (bàn giao trong FE-LOCAL-PUBLISH; chưa merge).
+- Phụ trách: `@trongsonho` (Frontend).
+- Branch: `codex/local-home-ui` (cùng lượt tinh chỉnh giao diện theo yêu cầu).
+- Ngày cập nhật: 2026-10-15.
+- Đã làm: xóa cột Sản phẩm và các liên kết bên trong; chia footer thành ba cột đều
+  trên desktop, thương hiệu toàn hàng và hai cột liên kết trên tablet, xếp dọc trên mobile.
+- Kiểm tra: kiểm tra tĩnh nội dung và Bootstrap grid PASS; 20/20 tests Frontend PASS;
+  git diff --check PASS. Chưa kiểm tra bằng trình duyệt.
+- Pull Request: chưa mở; chưa push.
+
+## FE-HEADER-01: Xóa thanh thông tin trên cùng
+
+- Trạng thái: `IN REVIEW` (bàn giao trong FE-LOCAL-PUBLISH; chưa merge).
+- Phụ trách: `@trongsonho` (Frontend).
+- Branch: `codex/local-home-ui`.
+- Ngày cập nhật: 2026-10-15.
+- Đã làm: xóa top utility bar trong fragment header dùng chung theo ảnh người dùng cung cấp;
+  giữ header chính với logo, tìm kiếm, tài khoản và giỏ hàng.
+- Kiểm tra: 20/20 tests Frontend PASS; kiểm tra tĩnh xác nhận topbar đã xóa,
+  các phần chính còn nguyên; git diff --check PASS. Chưa kiểm tra bằng trình duyệt.
+- Pull Request: chưa mở; chưa push.
+
 ## REL-01: Chuẩn bị UTEGear v1.0.0 release candidate — phần Frontend
 
 - Trạng thái: `IN REVIEW` — bản FE/tài liệu sẵn review; chờ DOC-03 merge và xác nhận hai phía.
@@ -649,3 +771,70 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Push để review lượt 4; đối chiếu lại nguồn frontend sau merge.
   - Thống nhất xử lý routing, dependency và API trước khi xác nhận tích hợp DONE.
 - Ngày hoàn tất: `Chưa hoàn tất`
+
+## FE-CONTENT-01: Hiển thị mô tả và bảng thông số sản phẩm
+
+- Phụ trách: `@trongsonho`
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/product-content-ui`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-15
+- Task liên kết: `DATA-05-BE` trên branch `codex/product-content-backend`.
+- Đã làm:
+  - Dùng model/JSON response đã chốt của Backend: description là văn bản thuần nhiều đoạn, thông số ở specifications.technicalSpecifications.
+  - Thay JSON thô bằng bảng nhãn/giá trị có caption và row header; không hiển thị metadata crawler cho khách hàng.
+  - Giữ xuống dòng mô tả, thêm empty state và CSS chống tràn trên màn hình nhỏ; dùng th:text cho nội dung nguồn.
+  - Không thay nghiệp vụ hoặc entity/service Backend trong branch giao diện.
+- Kết quả kiểm thử:
+  - `mvnw.cmd -B --no-transfer-progress -Dtest=ProductContentTemplateTest test`: PASS, 3 test render Thymeleaf thật: bảng thông số, escape HTML và empty state/ẩn provenance.
+  - Trình duyệt Edge headless với profile riêng: PASS cho trang sản phẩm thật /products/145, 9 dòng thông số, mô tả nhiều đoạn, row header và không tràn ngang ở 390px.
+- Vướng mắc hoặc phần còn thiếu:
+  - Visual QA desktop 1365px và mobile 390px: PASS, bảng 9 dòng đọc được, không tràn ngang; ảnh kiểm tra nằm trong crawler/data/output/ và bị Git ignore. Chưa mở PR.
+- Bước tiếp theo:
+  - Review giao diện và PR riêng với DATA-05-BE; chỉ đánh dấu DONE sau merge.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
+## FE-CHECKOUT-UX: Mua ngay và thông tin đơn hàng, sản phẩm
+
+- Phụ trách: `@trongsonho`
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/customer-checkout-ui`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-16
+- Task liên kết: `FIX-STOCK-API`, branch `codex/fix-store-availability`; dựa trên FE-CONTENT-01 commit local 3e12afb, chưa merge main nên task trước vẫn IN REVIEW.
+- Phạm vi bổ sung theo phản hồi người dùng 2026-10-16: làm rõ thông tin đơn hàng và sản phẩm; liên kết DATA-06-BE để sửa nội dung nguồn. Frontend tiếp tục dùng OrderDetail và ProductDetail đã có, không đổi DTO/API.
+- Bàn giao GitHub: `https://github.com/NgocYuh/UTEGear/tree/codex/customer-checkout-ui`; push theo yêu cầu người dùng, chưa mở PR/merge.
+- Kiểm tra trước push: checkout sạch `e5809d9`, `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` BUILD SUCCESS, 197 test, 0 failure/error, 3 PostgreSQL test skip do Docker không sẵn có; Node PASS 29/29. Thay đổi sau build chỉ cập nhật dòng nhật ký này.
+- Đã làm:
+  - Thêm Mua ngay: thêm biến thể/số lượng vào giỏ hiện tại rồi chuyển checkout để khách xác nhận; khách chưa đăng nhập chuyển login với URL quay lại sản phẩm.
+  - Đọc tồn kho mới từ availability theo contract Backend. Khóa nút mua khi đang tải, lỗi, hết hàng hoặc số lượng không hợp lệ; cho thử tải lại khi lỗi và ngăn bấm Mua ngay lặp trong cùng yêu cầu.
+  - Hiển thị biến thể mặc định bằng Mặc định thay cho SKU kèm JSON rỗng; giữ giao diện quản trị và khách hàng theo đúng vai trò.
+  - Chỉ sửa template/JavaScript và kiểm thử frontend; Backend và dữ liệu demo do FIX-STOCK-API xử lý riêng.
+  - Bổ sung giao diện chi tiết đơn: trạng thái tiếng Việt, ngày giờ Việt Nam, ảnh/tên/mã/biến thể/số lượng/đơn giá/thành tiền, người nhận/điện thoại/địa chỉ, cửa hàng, phương thức và trạng thái thanh toán, tiền hàng/phí vận chuyển/giảm giá/tổng và ghi chú. Đưa hủy đơn vào mục mở rộng; đổi bộ lọc sẽ đóng chi tiết đơn cũ, ẩn Đăng nhập sau khi đã đăng nhập.
+  - Trang sản phẩm có breadcrumb, nhãn thương hiệu/danh mục, mã sản phẩm đồng bộ biến thể, khối giá và vùng mua hàng rõ ràng, liên kết đến mô tả và thông số; bố cục nội dung 2 cột desktop/1 cột mobile. Không sửa layout/header/footer hoặc nội dung home đang có thay đổi riêng.
+- Kết quả kiểm thử:
+  - `node --test tests/frontend/integration.test.mjs tests/frontend/mock-data.test.mjs`: PASS 25/25, gồm 5 ca Mua ngay, guest login, vượt kho, bấm lặp và lỗi giỏ hàng.
+  - Edge headless với profile riêng, API thật localhost: PASS trang /products/218, label Mặc định, còn 10, Mua ngay, checkout COD, quote và xác nhận đơn, giỏ rỗng, xem/hủy đơn khách hàng và kho hoàn về 10. Không có lỗi JavaScript runtime.
+  - Desktop 1365px và mobile 390px: nút mua và trang checkout hoạt động, sản phẩm không tràn ngang; ảnh/báo cáo trong crawler/data/output bị Git ignore.
+  - Phạm vi bổ sung: `node --test tests/frontend/order-information.test.mjs tests/frontend/integration.test.mjs tests/frontend/mock-data.test.mjs`: PASS 29/29, gồm nội dung đơn, coupon/biến thể, missing payment, escape nội dung không tin cậy và ngày giờ/status.
+  - Browser thật với API local sau DATA-06-BE: PASS Lexar H31 có 8 dòng thông số và mô tả >1.000 ký tự; đơn demo UTE-1792085983-BEC9842A hiển thị thông tin nhận hàng, ảnh sản phẩm, COD, phí 30.000đ/tổng 780.000đ; lọc PENDING/CANCELLED đúng và không giữ chi tiết cũ. Đơn QA đã hủy, tồn kho trở về 9 đúng mức trước lượt QA, giữ đơn người dùng đang chờ. Không có lỗi JavaScript. Đã xem ảnh toàn trang sản phẩm/đơn hàng desktop và mobile, không tràn ngang.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa mở PR hoặc merge. Runtime dùng jar backend FIX-STOCK-API; worktree frontend không chứa thay đổi nghiệp vụ backend.
+- Bước tiếp theo:
+  - Review task frontend riêng và liên kết FIX-STOCK-API; chỉ đánh dấu DONE sau merge.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
+
+## FE-LOCAL-PUBLISH: Bàn giao giao diện giống bản đang chạy local
+
+- Phụ trách: `@trongsonho` (Frontend).
+- Trạng thái: `IN PROGRESS`.
+- Branch: `codex/local-home-ui`.
+- Pull Request: `Chưa mở`.
+- Ngày cập nhật: 2026-10-16.
+- Task liên kết: `INT-LOCAL-DEMO`, `BE-LOCAL-DEMO-TOOLS`, `FE-CHECKOUT-UX`.
+- Đã làm: Đưa đầy đủ header/footer/cards, trang chủ gọn, banner, menu tài khoản, tab sản phẩm và Flash Sale đang chạy local vào commit 91f680f, giữ nguyên nội dung giao diện. Các task giao diện trước trong cùng lượt tinh chỉnh được bàn giao tại đây. Không sửa nghiệp vụ Backend.
+- Kết quả kiểm thử: Đang kiểm tra toàn bộ JS, build sạch và đối chiếu hash templates/static với workspace local trong INT-LOCAL-DEMO.
+- Vướng mắc hoặc phần còn thiếu: Chờ kiểm tra bản tích hợp trước khi push.
+- Bước tiếp theo: Hợp nhất nhánh frontend vào nhánh tích hợp, xác minh trình duyệt và push.
+- Ngày hoàn tất: `Chưa hoàn tất`.

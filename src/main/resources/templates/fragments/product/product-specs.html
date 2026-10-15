@@ -1,1 +1,18 @@
-<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org"><body><div th:fragment="productSpecs(product)" class="product-specs-wrapper"><pre class="text-wrap" th:text="${product.specifications}"></pre></div></body></html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"><body>
+<div th:fragment="productSpecs(product)" class="product-specs-wrapper"
+     th:with="technical=${product.specifications != null ? product.specifications.get('technicalSpecifications') : null}">
+ <div class="table-responsive" th:if="${technical != null and technical.isObject() and !technical.isEmpty()}">
+  <table class="table table-bordered product-specification-table">
+   <caption class="visually-hidden" th:text="'Thông số kỹ thuật của ' + ${product.name}">Thông số sản phẩm</caption>
+   <tbody>
+    <tr th:each="entry : ${technical.fields()}">
+     <th scope="row" th:text="${entry.key}"></th>
+     <td th:text="${entry.value.asText()}"></td>
+    </tr>
+   </tbody>
+  </table>
+ </div>
+ <p class="text-muted" th:if="${technical == null or !technical.isObject() or technical.isEmpty()}">Thông số kỹ thuật đang được cập nhật.</p>
+</div>
+</body></html>

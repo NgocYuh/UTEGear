@@ -319,3 +319,37 @@
         align-items: flex-start;
     }
 }
+
+/* Customer order information */
+.order-summary-row { display:flex; flex-wrap:wrap; align-items:center; gap:16px; }
+.order-summary-meta { display:flex; flex-direction:column; gap:4px; flex:1; min-width:180px; overflow-wrap:anywhere; }
+.order-summary-total { display:flex; flex-direction:column; gap:4px; text-align:right; }
+.order-detail-heading { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; padding-bottom:20px; border-bottom:1px solid #e2e8f0; margin-bottom:20px; }
+.order-detail-heading h2 { overflow-wrap:anywhere; }
+.order-information-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.order-information-block { min-width:0; padding:0 0 20px; margin-bottom:20px; border-bottom:1px solid #e2e8f0; overflow-wrap:anywhere; }
+.order-information-block h3 { margin-bottom:14px; font-weight:700; }
+.order-information-block p { margin:6px 0; }
+.order-shipping-address { line-height:1.7; }
+.order-product-row { display:grid; grid-template-columns:80px minmax(0,1fr) auto; gap:16px; align-items:center; padding:16px 0; }
+.order-product-row + .order-product-row { border-top:1px solid #e2e8f0; }
+.order-product-copy p { margin:4px 0; }
+.order-product-amount { display:flex; flex-direction:column; gap:4px; text-align:right; }
+.order-totals dl { margin:0; }
+.order-totals dl > div { display:flex; justify-content:space-between; gap:16px; margin:10px 0; }
+.order-totals dt { font-weight:400; }
+.order-totals dd { margin:0; white-space:nowrap; }
+.order-grand-total { border-top:1px solid #e2e8f0; padding-top:14px; font-size:1.1rem; font-weight:700; }
+.order-grand-total dt { font-weight:700; }
+.order-grand-total dd { color:#d71920; }
+.order-cancel-panel { margin-top:8px; }
+.order-cancel-panel summary { cursor:pointer; font-weight:600; }
+.order-cancel-panel button { margin-top:12px; }
+@media (max-width:575.98px) {
+ .order-information-grid { grid-template-columns:1fr; gap:0; }
+ .order-summary-total { text-align:left; }
+ .order-product-row { grid-template-columns:64px minmax(0,1fr); gap:12px; }
+ .order-product-row img { width:64px; height:64px; }
+ .order-product-amount { grid-column:2; text-align:left; }
+ .order-detail-heading h2 { font-size:1.1rem; }
+}
