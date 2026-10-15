@@ -1115,3 +1115,22 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - ...
 - Ngày hoàn tất: YYYY-MM-DD hoặc `Chưa hoàn tất`
 ```
+
+## DATA-06-BE: Sửa đọc nội dung Flight và tách bảng thông số
+
+- Phụ trách: `@NgocYuh`
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/fix-product-content-records`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-16
+- Task liên kết: `FE-CHECKOUT-UX` (phần hiển thị đơn hàng/sản phẩm); tiếp nối DATA-05-BE commit local 6dadac9 chưa merge nên task trước vẫn IN REVIEW.
+- Đã làm: Xác định record Flight dạng JSON đóng ngay trước text record không có newline; cập nhật nhận diện boundary và tách bảng thông số khỏi mô tả. API/model contract không thay đổi.
+- Kết quả kiểm thử:
+  - Crawler unittest: PASS 14/14; regression record ngay sau JSON, UTF-8 byte length, timestamp boundary, tách bảng khỏi mô tả, giữ labelled notes. Test xuất file ban đầu bị sandbox chặn thư mục temp hệ thống; chạy lại bằng TMP/TEMP trong crawler/data/raw thành công.
+  - Đọc lại 218 trang cache, chỉ chuẩn bị 82 bản ghi có thay đổi; đối chiếu tên/source URL trước khi update. Transaction cập nhật description và technicalSpecifications, giữ nguyên giá/ảnh/biến thể/tồn kho/đơn hàng; snapshot trước ghi trong crawler/data/output/catalog-readable-2026-10-16/content-before.json bị ignore. Chạy verify JDBC sau ghi: VERIFIED 82/82.
+  - Lexar H31: từ đoạn tóm tắt bị cắt và 1 dòng sai thành mô tả nhiều đoạn và 8 thông số (model, màu, bảo hành, chất liệu, kích thước, tương thích, thương hiệu, cổng kết nối), lấy từ cache đúng sản phẩm, không tự thêm khả năng.
+  - File import 218 sản phẩm đã đồng bộ ở crawler/data/output/catalog-readable-2026-10-16/products-enriched.jsonl (ignored). Không thay đổi model/endpoint/JSON contract.
+  - FE-CHECKOUT-UX đã kiểm tra trình duyệt thật desktop/mobile: 8 dòng và mô tả >1.000 ký tự hiển thị đúng. Python-only change nên không chạy lại Maven; không push.
+- Vướng mắc hoặc phần còn thiếu: Chưa mở PR/merge, task giữ IN REVIEW. Nội dung phụ thuộc độ đầy đủ/chính xác của nguồn đã cào.
+- Bước tiếp theo: Review riêng DATA-06-BE và liên kết FE-CHECKOUT-UX; chỉ đánh dấu DONE sau merge.
+- Ngày hoàn tất: `Chưa hoàn tất`
