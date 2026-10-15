@@ -29,26 +29,21 @@
 
                 <span class="topbar-divider" aria-hidden="true"></span>
 
-                <th:block th:if="${isAuthenticated}">
-                    <a href="/profile">
-                        <i class="bi bi-person-check-fill text-success"></i>
-                        <span th:text="${currentUser != null ? currentUser.fullName : 'Tài khoản'}">Tài khoản</span>
-                    </a>
-                    <a th:if="${currentUser != null && currentUser.isAdmin()}" href="/admin" class="ms-2" style="background: rgba(226, 27, 35, 0.15); color: #F87171; padding: 2px 8px; border-radius: 3px; font-weight: 700; text-decoration: none;">
-                        <i class="bi bi-speedometer2 me-1"></i> Trang Quản Trị
-                    </a>
-                </th:block>
-
-                <th:block th:unless="${isAuthenticated}">
-                    <a href="/login">
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        <span>Đăng nhập</span>
-                    </a>
-                    <a href="/register" class="topbar-register">
-                        <i class="bi bi-person-plus"></i>
-                        <span>Đăng ký</span>
-                    </a>
-                </th:block>
+                <a href="/profile" data-session-authenticated hidden>
+                    <i class="bi bi-person-check-fill text-success"></i>
+                    <span data-session-name>Tài khoản</span>
+                </a>
+                <a href="/admin" data-admin-link hidden class="ms-2" style="background: rgba(226, 27, 35, 0.15); color: #F87171; padding: 2px 8px; border-radius: 3px; font-weight: 700; text-decoration: none;">
+                    <i class="bi bi-speedometer2 me-1"></i> Trang Quản Trị
+                </a>
+                <a href="/login" data-session-guest>
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span>Đăng nhập</span>
+                </a>
+                <a href="/register" data-session-guest class="topbar-register">
+                    <i class="bi bi-person-plus"></i>
+                    <span>Đăng ký</span>
+                </a>
             </div>
 
         </div>
@@ -99,21 +94,20 @@
                 <div class="header-actions-group">
 
                     <!-- Account Action (Desktop) -->
-                    <a th:href="${isAuthenticated ? '/profile' : '/login'}" class="header-action-item d-none d-sm-inline-flex"
-                       th:aria-label="${isAuthenticated ? 'Trang cá nhân' : 'Đăng nhập tài khoản'}">
+                    <a href="/login" data-session-login class="header-action-item d-none d-sm-inline-flex"
+                       aria-label="Đăng nhập tài khoản">
                         <div class="header-action-icon">
                             <i class="bi bi-person"></i>
                         </div>
                         <div class="header-action-text">
-                            <span class="header-action-label" th:text="${isAuthenticated ? 'Xin chào' : 'Tài khoản'}">Tài khoản</span>
-                            <span class="header-action-title"
-                                  th:text="${isAuthenticated && currentUser != null ? currentUser.fullName : 'Đăng nhập'}">Đăng nhập</span>
+                            <span class="header-action-label" data-session-label>Tài khoản</span>
+                            <span class="header-action-title">Đăng nhập</span>
                         </div>
                     </a>
 
                     <!-- Admin Operations Center Quick Entry (Admin Only) -->
-                    <a th:if="${isAuthenticated && currentUser != null && currentUser.isAdmin()}"
-                       href="/admin" class="header-action-item d-none d-sm-inline-flex" style="background: rgba(6, 26, 61, 0.05); border: 1px solid rgba(6, 26, 61, 0.15);"
+                    <a href="/admin" data-admin-link hidden
+                       class="header-action-item d-none d-sm-inline-flex" style="display: none !important; background: rgba(6, 26, 61, 0.05); border: 1px solid rgba(6, 26, 61, 0.15);"
                        aria-label="Khu vực quản trị" title="Khu vực quản trị UTEGear">
                         <div class="header-action-icon" style="color: var(--color-primary);">
                             <i class="bi bi-shield-lock-fill"></i>
@@ -196,7 +190,7 @@
                                             <li><a href="/category/keyboard?sort=price_asc">Bàn phím phổ thông</a></li>
                                             <li><a href="/category/keycap" class="sub-item">Keycap custom</a></li>
                                             <li><a href="/category/switch" class="sub-item">Switch cơ học</a></li>
-                                            <li><a href="/category/keyboard?wireless=true">Bàn phím không dây</a></li>
+                                            <li><a href="/category/keyboard?q=wireless">Bàn phím không dây</a></li>
                                         </ul>
                                     </div>
 
@@ -208,9 +202,9 @@
                                         </div>
                                         <ul class="mega-menu-links">
                                             <li><a href="/category/mouse">Tất cả chuột gaming</a></li>
-                                            <li><a href="/category/mouse?wireless=true">Chuột không dây eSports</a></li>
+                                            <li><a href="/category/mouse?q=wireless">Chuột không dây eSports</a></li>
                                             <li><a href="/category/mousepad">Lót chuột Speed / Control</a></li>
-                                            <li><a href="/category/mouse?sort=price_asc">Chuột công thái học</a></li>
+                                            <li><a href="/category/mouse?q=ergonomic&amp;sort=price_asc">Chuột công thái học</a></li>
                                         </ul>
                                     </div>
 
@@ -222,7 +216,7 @@
                                         </div>
                                         <ul class="mega-menu-links">
                                             <li><a href="/category/headset">Tai nghe gaming 7.1</a></li>
-                                            <li><a href="/category/headset?wireless=true">Tai nghe không dây</a></li>
+                                            <li><a href="/category/headset?q=wireless">Tai nghe không dây</a></li>
                                             <li><a href="/category/microphone">Microphone stream / podcast</a></li>
                                         </ul>
                                     </div>
@@ -235,10 +229,10 @@
                                         </div>
                                         <ul class="mega-menu-links">
                                             <li><a href="/category/connection-cables">Tất cả dây kết nối</a></li>
-                                            <li><a href="/category/connection-cables?sub=usb-hub" class="sub-item">Bộ chia USB Hub</a></li>
-                                            <li><a href="/category/connection-cables?sub=hdmi" class="sub-item">Cáp HDMI 2.1 4K/8K</a></li>
-                                            <li><a href="/category/connection-cables?sub=usb-c" class="sub-item">Cáp Type-C sạc &amp; data</a></li>
-                                            <li><a href="/category/connection-cables?sub=dp" class="sub-item">Cáp DisplayPort 1.4/2.0</a></li>
+                                            <li><a href="/category/connection-cables?q=hub" class="sub-item">Bộ chia USB Hub</a></li>
+                                            <li><a href="/category/connection-cables?q=HDMI" class="sub-item">Cáp HDMI 2.1 4K/8K</a></li>
+                                            <li><a href="/category/connection-cables?q=Type-C" class="sub-item">Cáp Type-C sạc &amp; data</a></li>
+                                            <li><a href="/category/connection-cables?q=DisplayPort" class="sub-item">Cáp DisplayPort 1.4/2.0</a></li>
                                             <li><a href="/category/gamepad">Tay cầm chơi game</a></li>
                                         </ul>
                                     </div>
@@ -341,22 +335,21 @@
 
             <!-- Mobile Auth Card -->
             <div class="mobile-user-status">
-                <th:block th:if="${isAuthenticated}">
+                <div data-session-authenticated hidden>
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <i class="bi bi-person-circle fs-4 text-primary"></i>
                         <div>
-                            <div class="fw-bold text-dark fs-7" th:text="${currentUser != null ? currentUser.fullName : 'Tài khoản'}">Người dùng</div>
-                            <small class="text-muted fs-8" th:text="${currentUser != null ? currentUser.email : ''}">user@email.com</small>
+                            <div class="fw-bold text-dark fs-7" data-session-name>Tài khoản</div>
+                            <small class="text-muted fs-8" data-session-email></small>
                         </div>
                     </div>
                     <a href="/profile" class="btn btn-sm btn-outline-primary w-100 mb-1">Quản lý tài khoản</a>
-                </th:block>
-                <th:block th:unless="${isAuthenticated}">
-                    <div class="d-flex gap-2">
-                        <a href="/login" class="btn btn-sm btn-outline-primary flex-fill">Đăng nhập</a>
-                        <a href="/register" class="btn btn-sm btn-utama flex-fill">Đăng ký</a>
-                    </div>
-                </th:block>
+                    <a href="/admin" data-admin-link hidden class="btn btn-sm btn-primary w-100">Trang quản trị</a>
+                </div>
+                <div class="d-flex gap-2" data-session-guest>
+                    <a href="/login" class="btn btn-sm btn-outline-primary flex-fill">Đăng nhập</a>
+                    <a href="/register" class="btn btn-sm btn-utama flex-fill">Đăng ký</a>
+                </div>
             </div>
 
             <!-- Categories -->

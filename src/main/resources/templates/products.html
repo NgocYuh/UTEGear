@@ -10,14 +10,15 @@
   <div class="col-md-4"><label for="catalog-min" class="form-label">Giá tối thiểu</label><input id="catalog-min" name="minPrice" type="number" min="0" th:value="${selectedMinPrice}" class="form-control"></div>
   <div class="col-md-4"><label for="catalog-max" class="form-label">Giá tối đa</label><input id="catalog-max" name="maxPrice" type="number" min="0" th:value="${selectedMaxPrice}" class="form-control"></div>
   <div class="col-md-4"><label for="catalog-sort" class="form-label">Sắp xếp</label><select id="catalog-sort" name="sort" class="form-select"><option value="createdAt,desc" th:selected="${sort == 'createdAt,desc'}">Mới nhất</option><option value="effectivePrice,asc" th:selected="${sort == 'effectivePrice,asc'}">Giá tăng dần</option><option value="effectivePrice,desc" th:selected="${sort == 'effectivePrice,desc'}">Giá giảm dần</option><option value="name,asc" th:selected="${sort == 'name,asc'}">Tên A–Z</option></select></div>
+  <div class="col-md-4 d-flex align-items-end"><div class="form-check mb-2"><input id="catalog-on-sale" name="onSale" value="true" type="checkbox" class="form-check-input" th:checked="${selectedOnSale == true}"><label for="catalog-on-sale" class="form-check-label">Chỉ sản phẩm đang giảm giá</label></div></div>
   <div><button class="btn btn-utama" type="submit">Áp dụng bộ lọc</button> <a href="/products" class="btn btn-outline-primary">Xóa bộ lọc</a></div>
  </form>
  <p th:text="${products.totalElements} + ' sản phẩm'"></p>
  <p class="surface-card p-4" th:if="${products.empty}">Không tìm thấy sản phẩm phù hợp.</p>
  <div class="product-grid"><th:block th:each="p : ${products.content}"><div th:replace="~{fragments/product-card :: productCard(${p})}"></div></th:block></div>
  <nav th:if="${products.totalPages > 1}" aria-label="Phân trang" class="d-flex gap-3 my-4">
-  <a th:if="${!products.first}" th:href="@{/products(q=${keyword},categoryId=${selectedCategoryId},brandId=${selectedBrandId},minPrice=${selectedMinPrice},maxPrice=${selectedMaxPrice},sort=${sort},page=${products.page - 1})}">Trang trước</a>
+  <a th:if="${!products.first}" th:href="@{/products(q=${keyword},categoryId=${selectedCategoryId},brandId=${selectedBrandId},minPrice=${selectedMinPrice},maxPrice=${selectedMaxPrice},onSale=${selectedOnSale},sort=${sort},page=${products.page - 1})}">Trang trước</a>
   <span th:text="(${products.page} + 1) + ' / ' + ${products.totalPages}"></span>
-  <a th:if="${!products.last}" th:href="@{/products(q=${keyword},categoryId=${selectedCategoryId},brandId=${selectedBrandId},minPrice=${selectedMinPrice},maxPrice=${selectedMaxPrice},sort=${sort},page=${products.page + 1})}">Trang sau</a>
+  <a th:if="${!products.last}" th:href="@{/products(q=${keyword},categoryId=${selectedCategoryId},brandId=${selectedBrandId},minPrice=${selectedMinPrice},maxPrice=${selectedMaxPrice},onSale=${selectedOnSale},sort=${sort},page=${products.page + 1})}">Trang sau</a>
  </nav>
 </section></main></body></html>

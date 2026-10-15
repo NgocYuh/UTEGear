@@ -1026,6 +1026,47 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Dùng hướng dẫn đã merge làm đầu vào cho DOC-03 và REL-01.
 - Ngày hoàn tất: 2026-10-15
 
+## FIX-ADMIN-INTEGRATION: Hoàn thiện liên kết quản trị và kiểm tra tích hợp toàn hệ thống
+
+- Trạng thái: `IN PROGRESS`
+- Branch: `fix/system-integration`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-15
+- Đã làm:
+  - Bổ sung MVC route và giao diện chạy thật cho tổng quan, đơn hàng, sản phẩm, danh mục,
+    thương hiệu, cửa hàng + tồn kho, mã giảm giá và tài khoản quản trị; bỏ các liên kết sidebar
+    dẫn tới 404.
+  - Bổ sung API/service/DTO quản trị cho catalog, dashboard, coupon, inventory và user; toàn bộ
+    endpoint nằm dưới `/api/admin/**` và tiếp tục yêu cầu vai trò `ADMIN`.
+  - Giữ mô hình `Store + ProductVariant`: sản phẩm mới luôn có biến thể mặc định; tồn kho và điều
+    chuyển thao tác theo biến thể, kể cả sản phẩm có nhiều biến thể.
+  - Chặn quản trị viên tự khóa tài khoản hoặc tự gỡ vai trò `ADMIN`; khách hàng truy cập trang quản
+    trị được chuyển hướng an toàn mà không mất phiên.
+  - Cho phép quản trị viên chuyển từ trang quản trị sang storefront trong cùng tab và quay lại
+    `/admin` bằng cùng phiên JWT, không phải đăng nhập lại.
+  - Chuyển trình quản lý ảnh sang `/admin/products#product-media`, đồng bộ runner QA và tài liệu;
+    bổ sung lọc khuyến mãi, route danh mục và dữ liệu cửa hàng/sản phẩm trang chủ.
+  - Sửa Maven wrapper trên Windows khi thư mục `.m2` không phải symbolic link hoặc biến `HOME`
+    không được truyền vào tiến trình PowerShell con.
+  - Commit mã nguồn và kiểm thử: `160c524` (`feat: complete admin system integration`).
+- Kết quả kiểm thử:
+  - `mvn ... verify`: `BUILD SUCCESS`; 194 test được phát hiện, 191 pass, 0 failure, 0 error và
+    3 PostgreSQL Testcontainers test skip vì Docker không chạy.
+  - `node --test tests/frontend/integration.test.mjs tests/frontend/mock-data.test.mjs`: `PASS`,
+    20/20 test.
+  - Kiểm tra cú pháp JavaScript: `PASS`, 32 file.
+  - QA-04 bằng Edge headless + H2 cô lập: `PASS`; 87 public, 48 authenticated/integration và
+    54 risk checks, không có `FAIL` hoặc `BLOCKED` trong kết quả tổng hợp.
+  - `git diff --check`: `PASS` (chỉ có cảnh báo chuyển LF sang CRLF trên Windows).
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa kiểm tra mutation Cloudinary thật hoặc Supabase production trong lượt này; QA trình duyệt
+    dùng H2 và tài khoản dùng một lần để không chạm secret/dữ liệu cá nhân.
+  - Lệnh `clean` trong sandbox từng gặp `AccessDeniedException` khi JDK 26 đóng JAR trong cache
+    người dùng; chạy `verify` sau biên dịch thành công và toàn bộ test đã pass. Dự án vẫn đặt Java 21.
+- Bước tiếp theo:
+  - Chủ dự án chạy thử bằng cấu hình local/Supabase, review diff; chỉ commit/push khi được đồng ý.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md

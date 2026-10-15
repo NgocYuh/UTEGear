@@ -165,9 +165,25 @@ UTEGear.Views = {
         });
         this.status(root, 'Chọn địa chỉ và cửa hàng, sau đó tính tổng tiền.');
     },
+    visible(element, visible) {
+        element.hidden = !visible;
+        if (visible) element.style?.removeProperty('display');
+        else element.style?.setProperty('display', 'none', 'important');
+    },
     session() {
         const session = UTEGear.Session.get();
+        const authenticated = !!session;
+        const admin = session?.user?.roles?.includes('ADMIN') === true;
         document.querySelectorAll('[data-customer-view] a[href="/login"]').forEach(link => { link.hidden = !!session; });
+        document.querySelectorAll('[data-session-guest]').forEach(element => this.visible(element, !authenticated));
+        document.querySelectorAll('[data-session-authenticated]').forEach(element => this.visible(element, authenticated));
+        document.querySelectorAll('[data-admin-link]').forEach(link => this.visible(link, admin));
+        document.querySelectorAll('[data-session-name]').forEach(element => {
+            element.textContent = session?.user?.fullName || 'Tài khoản';
+        });
+        document.querySelectorAll('[data-session-email]').forEach(element => {
+            element.textContent = session?.user?.email || '';
+        });
         const controls = document.querySelector('[data-session-controls]');
         if (controls) {
             controls.hidden = !session;
@@ -176,11 +192,32 @@ UTEGear.Views = {
         }
         document.querySelectorAll('[data-session-login]').forEach(link => {
             link.href = session ? '/profile' : '/login';
+            link.setAttribute('aria-label', session ? 'Trang cá nhân' : 'Đăng nhập tài khoản');
+            const label = link.querySelector('[data-session-label]');
+            if (label) label.textContent = session ? 'Xin chào' : 'Tài khoản';
             const title = link.querySelector('.header-action-title');
             if (title) title.textContent = session?.user?.fullName || 'Đăng nhập';
         });
     },
+    adminAccess() {
+        const page = document.body;
+        if (!page?.matches?.('[data-admin-session-guard]')) return true;
+        const session = UTEGear.Session.get();
+        const target = location.pathname + location.search;
+        if (!session) {
+            location.replace('/login?redirect=' + encodeURIComponent(target));
+            return false;
+        }
+        if (!session.user?.roles?.includes('ADMIN')) {
+            location.replace('/?adminAccess=denied');
+            return false;
+        }
+        page.hidden = false;
+        page.removeAttribute('aria-busy');
+        return true;
+    },
     init() {
+        if (!this.adminAccess()) return;
         document.querySelectorAll('header a[href="/login"], .topbar a[href="/login"], .mobile-nav-offcanvas a[href="/login"]').forEach(link => { link.dataset.sessionLogin = ''; });
         this.session();
         window.addEventListener('utegear:logout', () => {

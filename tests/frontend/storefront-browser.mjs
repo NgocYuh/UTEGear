@@ -44,7 +44,8 @@ try {
     await A.evaluate(`Array.from(document.querySelectorAll('[data-address-items] button')).find(el=>el.textContent==='Đặt mặc định').click()`);await A.wait(`document.querySelector('[data-address-items]').textContent.includes('mặc định')`);check(true,'Address default API');
     await A.evaluate(`document.querySelector('[data-address-items] article button').click()`);await A.fill('[data-address-form]',{...address,street:'QA Updated Street'});await A.wait(`document.querySelector('[data-address-items]').textContent.includes('QA Updated Street')`);check(true,'Address PUT edit');
     await A.evaluate(`Array.from(document.querySelectorAll('[data-address-items] article'))[1].querySelectorAll('button')[1].click()`);await A.wait(`document.querySelectorAll('[data-address-items] article').length===1`);check(true,'Address DELETE');
-    await A.navigate('/admin/orders');await A.wait(`document.querySelector('[data-view-status]').classList.contains('text-danger')`);check(await A.evaluate(`!!UTEGear.Session.get()`),'Customer ADMIN denial preserves session (403)');
+    await A.navigate('/admin/orders','/');
+    check(await A.evaluate(`!!UTEGear.Session.get() && new URLSearchParams(location.search).get('adminAccess') === 'denied'`),'Customer ADMIN denial redirects safely and preserves session');
     await A.navigate('/checkout');await A.wait(`!document.querySelector('[data-quote]').disabled`);
     await A.evaluate(`document.querySelector('[name=addressId]').selectedIndex=1;document.querySelector('[name=fulfillmentStoreId]').value='100';document.querySelector('[data-quote]').click()`);await A.wait(`!document.querySelector('[data-place]').disabled`);check(true,'Real checkout quote');
     await A.evaluate(`document.querySelector('[name=note]').value='QA changed';document.querySelector('[name=note]').dispatchEvent(new Event('input',{bubbles:true}))`);check(await A.evaluate(`document.querySelector('[data-place]').disabled`),'Changing checkout invalidates quote');
@@ -65,6 +66,15 @@ try {
         await A.evaluate(`document.querySelector('[name=addressId]').selectedIndex=1;document.querySelector('[name=fulfillmentStoreId]').value='100';document.querySelector('[data-quote]').click()`);await A.wait(`!document.querySelector('[data-place]').disabled`);await A.evaluate(`document.querySelector('[data-place]').click()`);await A.wait(`document.querySelector('[data-view-status]').textContent.includes('Đã đặt đơn')`);
         const secondId=await A.evaluate(`Number(new URL(Array.from(document.querySelectorAll('a')).find(el=>el.textContent==='Xem đơn hàng').href).searchParams.get('focus'))`);
         const admin=await createBrowser();await admin.login(process.env.QA_ADMIN_EMAIL,process.env.QA_ADMIN_PASSWORD);await admin.navigate('/admin/orders');await admin.wait(`document.querySelector('[data-view-items]').textContent.includes('UTE-')`);check(true,'Real ADMIN order list');
+        for (const [route,page] of [['/admin','dashboard'],['/admin/products','products'],['/admin/categories','categories'],['/admin/brands','brands'],['/admin/stores','stores'],['/admin/coupons','coupons'],['/admin/users','users']]) {
+            await admin.navigate(route);
+            await admin.wait(`document.querySelector('[data-admin-page="${page}"]') && !document.querySelector('[data-admin-status]').textContent.endsWith('…')`);
+            check(await admin.evaluate(`!document.body.hidden && !document.querySelector('[data-admin-status]').classList.contains('text-danger')`),`ADMIN ${page} page loads its real API without integration errors`);
+        }
+        await admin.navigate('/');
+        check(await admin.evaluate(`UTEGear.Session.get()?.user?.roles?.includes('ADMIN') && !document.querySelector('[data-admin-link]').hidden`),'ADMIN keeps the same JWT session on the storefront');
+        await admin.navigate('/admin/orders');await admin.wait(`document.querySelector('[data-view-items]').textContent.includes('UTE-')`);
+        check(await admin.evaluate(`UTEGear.Session.get()?.user?.roles?.includes('ADMIN') && !document.body.hidden`),'ADMIN returns to administration without signing in again');
         await admin.wait(`document.querySelector('[data-realtime-status]').textContent.includes('Đã kết nối') || document.querySelector('[data-realtime-status]').textContent.includes('bị từ chối') || document.querySelector('[data-realtime-status]').textContent.includes('Chưa tải')`);
         check(admin.stomp.some(frame=>frame.command==='CONNECT' && frame.hasAuthorization),'Admin JWT sent only in STOMP CONNECT');
         if(await admin.evaluate(`document.querySelector('[data-realtime-status]').textContent.includes('Đã kết nối')`))check(true,'Real ADMIN STOMP CONNECT/subscription/resync');else fail('Admin STOMP',await admin.evaluate(`document.querySelector('[data-realtime-status]').textContent`));

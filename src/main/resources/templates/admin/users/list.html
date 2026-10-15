@@ -1,87 +1,11 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/admin}">
-<head>
-    <title>Quản lý người dùng - UTEGear Admin</title>
-</head>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/admin}">
+<head><title>Quản lý tài khoản - UTEGear</title></head>
 <body>
-
-<main layout:fragment="content">
-
-    <!-- PAGE HEADER -->
-    <div class="admin-page-header">
-        <div class="admin-page-title-group">
-            <span class="admin-badge admin-badge-primary">Hệ thống & Vận hành</span>
-            <h1 class="admin-page-title">Quản lý Người dùng &amp; Phân quyền</h1>
-            <p class="admin-page-subtitle">Kiểm soát danh sách tài khoản khách hàng, nhân sự quản trị và phân quyền hệ thống</p>
-        </div>
-    </div>
-
-    <!-- USERS TABLE -->
-    <div class="admin-card">
-        <div class="admin-card-header">
-            <div>
-                <h3 class="admin-card-title"><i class="bi bi-people-fill me-2" style="color: var(--admin-brand-primary);"></i>Danh sách tài khoản</h3>
-                <div class="admin-card-subtitle" th:text="'Tổng số: ' + ${users.totalElements} + ' tài khoản | Trang ' + (${users.number} + 1) + '/' + ${users.totalPages}">0 tài khoản</div>
-            </div>
-        </div>
-        <div class="admin-table-container">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th style="width: 80px;">ID</th>
-                        <th>Họ và tên</th>
-                        <th>Email liên hệ</th>
-                        <th style="width: 140px;">Điện thoại</th>
-                        <th style="width: 130px;">Vai trò</th>
-                        <th style="width: 120px;">Trạng thái</th>
-                        <th style="width: 110px;" class="text-end">Hồ sơ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:if="${users.content.empty}">
-                        <td colspan="7" class="text-center py-4 text-muted">Chưa có tài khoản người dùng nào</td>
-                    </tr>
-                    <tr th:each="u : ${users.content}">
-                        <td>
-                            <span class="font-monospace fw-bold" style="color: var(--admin-text-muted);" th:text="'#' + ${u.id}">#1</span>
-                        </td>
-                        <td>
-                            <div class="d-flex align-items-center gap-2">
-                                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--admin-bg-hover); display: flex; align-items: center; justify-content: center; color: var(--admin-brand-primary); font-size: 0.85rem; font-weight: 700;">
-                                    <i class="bi bi-person"></i>
-                                </div>
-                                <div>
-                                    <div class="fw-bold" style="color: var(--admin-text-primary);" th:text="${u.fullName}">Tên người dùng</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td style="font-size: 0.85rem; color: var(--admin-text-secondary);" th:text="${u.email}">email@example.com</td>
-                        <td style="font-size: 0.85rem; color: var(--admin-text-secondary);" th:text="${u.phone != null && !u.phone.isEmpty() ? u.phone : '—'}">0900000000</td>
-                        <td>
-                            <span class="admin-badge"
-                                  th:style="${u.isAdmin()} ? 'background: #061A3D; color: #FFFFFF;' : 'background: #E2E8F0; color: #1E293B;'"
-                                  th:text="${u.isAdmin()} ? 'QUẢN TRỊ' : 'KHÁCH HÀNG'">KHÁCH HÀNG</span>
-                        </td>
-                        <td>
-                            <span class="badge-status" th:classappend="${u.enabled} ? 'status-active' : 'status-inactive'"
-                                  th:text="${u.enabled} ? 'Hoạt động' : 'Tạm khóa'">Hoạt động</span>
-                        </td>
-                        <td class="text-end">
-                            <a th:href="@{'/admin/users/' + ${u.id}}" class="btn-admin btn-admin-secondary btn-admin-sm" title="Xem thông tin chi tiết">
-                                <i class="bi bi-person-lines-fill me-1"></i> Chi tiết
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- PAGINATION -->
-    <div th:replace="~{fragments/pagination :: pagination(${users}, '/admin/users', '')}"></div>
-
+<main layout:fragment="content" class="admin-content-wrapper" data-admin-page="users">
+    <header class="admin-page-header"><div class="admin-page-header-info"><h1 class="admin-page-title">Tài khoản</h1><p class="admin-page-subtitle">Bật hoặc khóa tài khoản và phân quyền CUSTOMER/ADMIN.</p></div></header>
+    <p data-admin-status role="status" aria-live="polite">Đang tải tài khoản…</p>
+    <section class="admin-panel"><div class="admin-table-container"><table class="admin-table"><thead><tr><th>Người dùng</th><th>Liên hệ</th><th>Vai trò</th><th>Trạng thái</th><th>Ngày tạo</th><th class="text-end">Thao tác</th></tr></thead><tbody data-admin-rows></tbody></table></div><p data-admin-empty hidden>Chưa có tài khoản trong hệ thống.</p></section>
 </main>
 </body>
 </html>

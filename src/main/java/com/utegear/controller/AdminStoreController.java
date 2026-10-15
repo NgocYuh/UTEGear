@@ -42,6 +42,11 @@ public class AdminStoreController {
         return service.create(request);
     }
 
+    @GetMapping("/{storeId}")
+    public StoreDetail find(@PathVariable Long storeId) {
+        return service.findAdminDetail(storeId);
+    }
+
     @PutMapping("/{storeId}")
     public StoreDetail update(
             @PathVariable Long storeId,

@@ -34,6 +34,8 @@ public class Product {
  public Product(String name,String slug,Category category,Brand brand,BigDecimal basePrice,BigDecimal salePrice){this.name=name;this.slug=slug;this.category=category;this.brand=brand;this.basePrice=basePrice;this.salePrice=salePrice;validatePrice();}
  public void addVariant(ProductVariant variant){variant.attach(this);variants.add(variant);}
  public void addImage(ProductImage image){image.attach(this);images.add(image);}
+ public void update(String name,String slug,Category category,Brand brand,String description,BigDecimal basePrice,BigDecimal salePrice,ProductStatus status,JsonNode specifications){this.name=name;this.slug=slug;this.category=category;this.brand=brand;this.description=description;this.basePrice=basePrice;this.salePrice=salePrice;this.status=status;updateSpecifications(specifications);validatePrice();}
+ public void changeStatus(ProductStatus status){this.status=status;}
  public void updateSpecifications(JsonNode specifications){if(specifications==null||!specifications.isObject())throw new IllegalArgumentException("Thông số sản phẩm phải là JSON object");this.specifications=specifications.deepCopy();}
  @PrePersist void create(){validate();createdAt=updatedAt=OffsetDateTime.now(ZoneOffset.UTC);}
  @PreUpdate void update(){validate();updatedAt=OffsetDateTime.now(ZoneOffset.UTC);}

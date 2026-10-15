@@ -14,6 +14,7 @@ import com.utegear.repository.StoreRepository;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Comparator;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +55,28 @@ public class InventoryService {
         requireActiveVariant(variantId);
         StoreInventory inventory = requireInventory(storeId, variantId);
         decreaseOrThrow(inventory, quantity);
+        return InventoryResult.from(inventoryRepository.save(inventory));
+    }
+
+    @Transactional(readOnly = true)
+    public List<com.utegear.dto.admin.AdminDtos.InventoryView> findAll(Long storeId) {
+        List<StoreInventory> inventories = storeId == null
+                ? inventoryRepository.findAllByOrderByStoreNameAscVariantProductNameAscVariantSkuAsc()
+                : inventoryRepository.findByStoreIdOrderByVariantProductNameAscVariantSkuAsc(storeId);
+        return inventories.stream().map(com.utegear.dto.admin.AdminDtos.InventoryView::from).toList();
+    }
+
+    @Transactional
+    public InventoryResult setQuantity(Long storeId, Long variantId, int quantity) {
+        requireIds(storeId, variantId);
+        if (quantity < 0) {
+            throw validation("Tồn kho phải là số nguyên không âm");
+        }
+        Store store = requireActiveStore(storeId);
+        ProductVariant variant = requireActiveVariant(variantId);
+        StoreInventory inventory = inventoryRepository.findLocked(storeId, variantId)
+                .orElseGet(() -> new StoreInventory(store, variant));
+        inventory.setQuantity(quantity);
         return InventoryResult.from(inventoryRepository.save(inventory));
     }
 

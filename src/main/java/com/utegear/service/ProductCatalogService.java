@@ -40,10 +40,17 @@ public class ProductCatalogService {
     public ProductDtos.ProductPage search(
             String query, Long categoryId, Long brandId, BigDecimal minPrice, BigDecimal maxPrice,
             int page, int size, String sort) {
+        return search(query, categoryId, brandId, minPrice, maxPrice, null, page, size, sort);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductDtos.ProductPage search(
+            String query, Long categoryId, Long brandId, BigDecimal minPrice, BigDecimal maxPrice,
+            Boolean onSale, int page, int size, String sort) {
         validateFilters(minPrice, maxPrice, page, size);
         String[] sortParts = parseSort(sort);
         Specification<Product> specification = specification(
-                query, categoryId, brandId, minPrice, maxPrice, sortParts);
+                query, categoryId, brandId, minPrice, maxPrice, onSale, sortParts);
         Page<Product> products = productRepository.findAll(specification, PageRequest.of(page, size));
         return ProductDtos.ProductPage.from(products, stockFor(products.getContent()));
     }
@@ -58,7 +65,7 @@ public class ProductCatalogService {
 
     private Specification<Product> specification(
             String query, Long categoryId, Long brandId, BigDecimal minPrice, BigDecimal maxPrice,
-            String[] sortParts) {
+            Boolean onSale, String[] sortParts) {
         return (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.equal(root.get("status"), ProductStatus.ACTIVE));
@@ -71,6 +78,10 @@ public class ProductCatalogService {
             }
             if (brandId != null) {
                 predicates.add(criteriaBuilder.equal(root.get("brand").get("id"), brandId));
+            }
+            if (Boolean.TRUE.equals(onSale)) {
+                predicates.add(criteriaBuilder.isNotNull(root.get("salePrice")));
+                predicates.add(criteriaBuilder.lessThan(root.get("salePrice"), root.get("basePrice")));
             }
             Expression<BigDecimal> price = criteriaBuilder.<BigDecimal>coalesce()
                     .value(root.get("salePrice")).value(root.get("basePrice"));

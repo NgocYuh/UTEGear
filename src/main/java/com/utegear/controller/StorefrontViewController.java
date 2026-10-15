@@ -2,6 +2,7 @@ package com.utegear.controller;
 
 import com.utegear.dto.catalog.ProductDtos;
 import com.utegear.dto.order.CustomerOrderDtos;
+import com.utegear.exception.ApiException;
 import com.utegear.service.BrandService;
 import com.utegear.service.CategoryService;
 import com.utegear.service.ProductCatalogService;
@@ -37,10 +38,13 @@ public class StorefrontViewController {
     public String home(Model model) {
         ProductDtos.ProductPage products = productCatalogService.search(
                 null, null, null, null, null, 0, 8, "createdAt,desc");
+        ProductDtos.ProductPage onSaleProducts = productCatalogService.search(
+                null, null, null, null, null, true, 0, 8, "createdAt,desc");
         model.addAttribute("categories", categoryService.active());
         model.addAttribute("featuredProducts", products.content());
-        model.addAttribute("onSaleProducts", List.of());
+        model.addAttribute("onSaleProducts", onSaleProducts == null ? List.of() : onSaleProducts.content());
         model.addAttribute("bestSellers", List.of());
+        model.addAttribute("stores", storeService.findPublic(true, null));
         return "home";
     }
 
@@ -51,13 +55,63 @@ public class StorefrontViewController {
             @RequestParam(required = false) Long brandId,
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) Boolean onSale,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "createdAt,desc") String sort,
             Model model) {
+        sort = normalizeSort(sort);
+        ProductDtos.ProductPage products = onSale == null
+                ? productCatalogService.search(q, categoryId, brandId, minPrice, maxPrice, page, size, sort)
+                : productCatalogService.search(q, categoryId, brandId, minPrice, maxPrice, onSale, page, size, sort);
+        model.addAttribute("products", products);
+        addCatalogFilters(model, q, categoryId, brandId, minPrice, maxPrice, onSale, sort);
+        return "products";
+    }
+
+    String products(
+            String q,
+            Long categoryId,
+            Long brandId,
+            BigDecimal minPrice,
+            BigDecimal maxPrice,
+            int page,
+            int size,
+            String sort,
+            Model model) {
         model.addAttribute("products", productCatalogService.search(
                 q, categoryId, brandId, minPrice, maxPrice, page, size, sort));
-        addCatalogFilters(model, q, categoryId, brandId, minPrice, maxPrice, sort);
+        addCatalogFilters(model, q, categoryId, brandId, minPrice, maxPrice, null, sort);
+        return "products";
+    }
+
+    @GetMapping("/category/{slug}")
+    public String category(
+            @PathVariable String slug,
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) Boolean onSale,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "createdAt,desc") String sort,
+            Model model) {
+        sort = normalizeSort(sort);
+        com.utegear.dto.catalog.CategorySummary category;
+        try {
+            category = categoryService.activeBySlug(slug);
+        } catch (ApiException exception) {
+            String fallbackQuery = q == null || q.isBlank() ? slug.replace('-', ' ') : q;
+            model.addAttribute("products", productCatalogService.search(
+                    fallbackQuery, null, null, minPrice, maxPrice, onSale, page, size, sort));
+            addCatalogFilters(model, fallbackQuery, null, null, minPrice, maxPrice, onSale, sort);
+            return "products";
+        }
+        model.addAttribute("products", productCatalogService.search(
+                q, category.id(), null, minPrice, maxPrice, onSale, page, size, sort));
+        addCatalogFilters(model, q, category.id(), null, minPrice, maxPrice, onSale, sort);
+        model.addAttribute("currentCategory", category);
+        model.addAttribute("categoryBaseUrl", "/category/" + category.slug());
         return "products";
     }
 
@@ -160,6 +214,7 @@ public class StorefrontViewController {
             Long brandId,
             BigDecimal minPrice,
             BigDecimal maxPrice,
+            Boolean onSale,
             String sort) {
         model.addAttribute("keyword", keyword);
         model.addAttribute("allCategories", categoryService.active());
@@ -170,7 +225,7 @@ public class StorefrontViewController {
         model.addAttribute("selectedMaxPrice", maxPrice);
         model.addAttribute("selectedMinRating", null);
         model.addAttribute("selectedInStock", null);
-        model.addAttribute("selectedOnSale", null);
+        model.addAttribute("selectedOnSale", onSale);
         model.addAttribute("selectedSub", null);
         model.addAttribute("currentCategory", null);
         model.addAttribute("categoryBaseUrl", null);
@@ -178,5 +233,14 @@ public class StorefrontViewController {
         model.addAttribute("isGamepadCategory", false);
         model.addAttribute("cableSubcategories", List.of());
         model.addAttribute("sort", sort);
+    }
+
+    private String normalizeSort(String sort) {
+        return switch (sort) {
+            case "price_asc" -> "effectivePrice,asc";
+            case "price_desc" -> "effectivePrice,desc";
+            case "latest" -> "createdAt,desc";
+            default -> sort;
+        };
     }
 }

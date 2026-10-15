@@ -77,4 +77,15 @@ class StorefrontViewRenderingTest {
                     .andExpect(content().contentTypeCompatibleWith("text/html"));
         }
     }
+
+    @Test
+    void rendersEveryAdminNavigationTarget() throws Exception {
+        for (String path : List.of("/admin", "/admin/orders", "/admin/products",
+                "/admin/categories", "/admin/brands", "/admin/stores",
+                "/admin/coupons", "/admin/users")) {
+            mockMvc.perform(get(path))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentTypeCompatibleWith("text/html"));
+        }
+    }
 }

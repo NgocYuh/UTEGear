@@ -1,107 +1,32 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/admin}">
-<head>
-    <title>Quản lý cửa hàng - UTEGear Admin</title>
-</head>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/admin}">
+<head><title>Quản lý cửa hàng và kho - UTEGear</title></head>
 <body>
-
-<main layout:fragment="content">
-
-    <!-- PAGE HEADER -->
-    <div class="admin-page-header">
-        <div class="admin-page-title-group">
-            <span class="admin-badge admin-badge-primary">Hệ thống & Vận hành</span>
-            <h1 class="admin-page-title">Quản lý Cửa hàng &amp; Kho hàng</h1>
-            <p class="admin-page-subtitle">Quản lý hệ thống showroom trưng bày, điểm bán hàng và kiểm kê tồn kho theo chi nhánh</p>
-        </div>
-    </div>
-
-    <!-- QUICK ADD PANEL -->
-    <div class="admin-card mb-4">
-        <div class="admin-card-header">
-            <div>
-                <h3 class="admin-card-title"><i class="bi bi-shop-window me-2" style="color: var(--admin-accent-primary);"></i>Thêm chi nhánh showroom mới</h3>
-                <div class="admin-card-subtitle">Khai báo điểm bán hàng và kho phân phối cục bộ</div>
-            </div>
-        </div>
-        <div class="admin-card-body">
-            <form th:action="@{/admin/stores/save}" method="post" class="row g-3 align-items-end">
-                <div class="col-md-3">
-                    <label class="form-label-admin">Tên cửa hàng / Showroom <span class="text-danger">*</span></label>
-                    <input type="text" name="name" class="form-control-admin" placeholder="VD: UTEGear Thủ Đức" required>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label-admin">Địa chỉ chi nhánh</label>
-                    <input type="text" name="address" class="form-control-admin" placeholder="Số nhà, đường, quận/huyện...">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label-admin">Hotline liên hệ</label>
-                    <input type="text" name="phone" class="form-control-admin" placeholder="028.xxxx.xxxx">
-                </div>
-                <div class="col-md-1">
-                    <label class="form-label-admin">Mở cửa</label>
-                    <input type="text" name="openTime" class="form-control-admin" placeholder="08:00">
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn-admin btn-admin-primary w-100 justify-content-center">
-                        <i class="bi bi-plus-lg me-1"></i> Thêm chi nhánh
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- STORES TABLE -->
-    <div class="admin-card">
-        <div class="admin-card-header">
-            <div>
-                <h3 class="admin-card-title"><i class="bi bi-geo-alt-fill me-2" style="color: var(--admin-brand-primary);"></i>Chi nhánh đang hoạt động</h3>
-                <div class="admin-card-subtitle" th:text="'Tổng số: ' + ${#lists.size(stores)} + ' điểm bán'">0 điểm bán</div>
-            </div>
-        </div>
-        <div class="admin-table-container">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th style="width: 80px;">ID</th>
-                        <th style="width: 240px;">Tên chi nhánh</th>
-                        <th>Địa chỉ</th>
-                        <th style="width: 140px;">Điện thoại</th>
-                        <th style="width: 120px;">Trạng thái</th>
-                        <th style="width: 140px;" class="text-end">Kiểm kê kho</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:if="${stores == null or #lists.isEmpty(stores)}">
-                        <td colspan="6" class="text-center py-4 text-muted">Chưa có chi nhánh nào được kích hoạt</td>
-                    </tr>
-                    <tr th:each="s : ${stores}">
-                        <td>
-                            <span class="font-monospace fw-bold" style="color: var(--admin-text-muted);" th:text="'#' + ${s.id}">#1</span>
-                        </td>
-                        <td>
-                            <div class="fw-bold" style="color: var(--admin-text-primary); font-size: 0.95rem;" th:text="${s.name}">UTEGear HCM</div>
-                            <div style="font-size: 0.775rem; color: var(--admin-text-muted);" th:if="${s.openTime != null}" th:text="'Giờ phục vụ: ' + ${s.openTime}">08:00 - 21:00</div>
-                        </td>
-                        <td style="font-size: 0.85rem; color: var(--admin-text-secondary);" th:text="${s.address}">Địa chỉ chi nhánh</td>
-                        <td style="font-size: 0.85rem; color: var(--admin-text-secondary);" th:text="${s.phone != null && !s.phone.isEmpty() ? s.phone : '—'}">0900000000</td>
-                        <td>
-                            <span class="badge-status" th:classappend="${s.active} ? 'status-active' : 'status-inactive'"
-                                  th:text="${s.active} ? 'Mở cửa' : 'Tạm đóng'">Mở cửa</span>
-                        </td>
-                        <td class="text-end">
-                            <a th:href="@{'/admin/stores/' + ${s.id}}" class="btn-admin btn-admin-secondary btn-admin-sm" title="Quản lý tồn kho">
-                                <i class="bi bi-box-seam me-1"></i> Tồn kho
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
+<main layout:fragment="content" class="admin-content-wrapper" data-admin-page="stores">
+    <header class="admin-page-header"><div class="admin-page-header-info"><h1 class="admin-page-title">Cửa hàng và tồn kho</h1><p class="admin-page-subtitle">Tồn kho luôn gắn với một cửa hàng và một biến thể sản phẩm.</p></div></header>
+    <p data-admin-status role="status" aria-live="polite">Đang tải cửa hàng…</p>
+    <section class="admin-panel"><h2 class="admin-panel-title">Thêm hoặc chỉnh sửa cửa hàng</h2>
+        <form data-admin-form="stores" class="row g-3 mt-1"><input type="hidden" name="id">
+            <div class="col-md-4"><label class="form-label" for="store-name">Tên cửa hàng</label><input class="form-control" id="store-name" name="name" maxlength="200" required></div>
+            <div class="col-md-5"><label class="form-label" for="store-address">Địa chỉ</label><input class="form-control" id="store-address" name="address" maxlength="255" required></div>
+            <div class="col-md-3"><label class="form-label" for="store-province">Tỉnh/Thành phố</label><input class="form-control" id="store-province" name="province" maxlength="100" required></div>
+            <div class="col-md-3"><label class="form-label" for="store-district">Quận/Huyện</label><input class="form-control" id="store-district" name="district" maxlength="100"></div>
+            <div class="col-md-3"><label class="form-label" for="store-phone">Điện thoại</label><input class="form-control" id="store-phone" name="phone" maxlength="20"></div>
+            <div class="col-md-3"><label class="form-label" for="store-email">Email</label><input class="form-control" id="store-email" name="email" type="email" maxlength="100"></div>
+            <div class="col-md-3"><label class="form-label" for="store-image">URL ảnh</label><input class="form-control" id="store-image" name="imageUrl" type="url" maxlength="500"></div>
+            <div class="col-md-3"><label class="form-label" for="store-opening">Giờ mở cửa</label><input class="form-control" id="store-opening" name="openingTime" type="time" value="08:00" required></div>
+            <div class="col-md-3"><label class="form-label" for="store-closing">Giờ đóng cửa</label><input class="form-control" id="store-closing" name="closingTime" type="time" value="21:00" required></div>
+            <div class="col-md-3 d-flex align-items-end"><div class="form-check mb-2"><input class="form-check-input" id="store-active" name="active" type="checkbox" checked><label class="form-check-label" for="store-active">Hoạt động</label></div></div>
+            <div class="col-12"><label class="form-label" for="store-description">Mô tả</label><textarea class="form-control" id="store-description" name="description" rows="2"></textarea></div>
+            <div class="col-12 d-flex gap-2"><button class="btn-admin-primary" type="submit">Lưu cửa hàng</button><button class="btn-admin-secondary" type="reset" data-admin-reset>Nhập mới</button></div>
+        </form>
+    </section>
+    <section class="admin-panel"><div class="admin-table-container"><table class="admin-table"><thead><tr><th>Cửa hàng</th><th>Địa chỉ</th><th>Giờ mở cửa</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead><tbody data-admin-rows></tbody></table></div><p data-admin-empty hidden>Chưa có cửa hàng. Hãy tạo cửa hàng trước khi nhập tồn kho.</p></section>
+    <section class="admin-panel" data-inventory-panel><h2 class="admin-panel-title">Tồn kho theo biến thể</h2>
+        <div class="row g-3 mt-1"><div class="col-md-4"><label class="form-label" for="inventory-store">Cửa hàng</label><select id="inventory-store" class="form-select" data-inventory-store><option value="">Chọn cửa hàng</option></select></div><div class="col-md-5"><label class="form-label" for="inventory-variant">Biến thể</label><select id="inventory-variant" class="form-select" data-inventory-variant><option value="">Chọn biến thể</option></select></div><div class="col-md-3"><label class="form-label" for="inventory-quantity">Số lượng mới</label><div class="input-group"><input id="inventory-quantity" class="form-control" data-inventory-quantity type="number" min="0" value="0"><button class="btn-admin-primary" type="button" data-inventory-save>Lưu tồn</button></div></div></div>
+        <div class="admin-table-container mt-3"><table class="admin-table"><thead><tr><th>Cửa hàng</th><th>Sản phẩm</th><th>SKU</th><th>Số lượng</th><th>Cập nhật</th></tr></thead><tbody data-inventory-rows></tbody></table></div><p data-inventory-empty hidden>Chưa có bản ghi tồn kho cho cửa hàng đã chọn. Chọn biến thể và nhập số lượng để khởi tạo.</p>
+        <form class="row g-3 mt-3" data-transfer-form><h3 class="h6">Điều chuyển tồn kho</h3><div class="col-md-3"><label class="form-label" for="transfer-source">Cửa hàng nguồn</label><select id="transfer-source" class="form-select" name="sourceStoreId" required></select></div><div class="col-md-3"><label class="form-label" for="transfer-destination">Cửa hàng đích</label><select id="transfer-destination" class="form-select" name="destinationStoreId" required></select></div><div class="col-md-4"><label class="form-label" for="transfer-variant">Biến thể</label><select id="transfer-variant" class="form-select" name="variantId" required></select></div><div class="col-md-2"><label class="form-label" for="transfer-quantity">Số lượng</label><div class="input-group"><input id="transfer-quantity" class="form-control" name="quantity" type="number" min="1" value="1" required><button class="btn-admin-secondary" type="submit">Chuyển</button></div></div></form>
+    </section>
 </main>
 </body>
 </html>

@@ -92,6 +92,28 @@ public class Coupon {
         usedCount++;
     }
 
+    public void update(
+            String code,
+            DiscountType discountType,
+            BigDecimal discountValue,
+            BigDecimal minimumOrderValue,
+            BigDecimal maximumDiscount,
+            OffsetDateTime validFrom,
+            OffsetDateTime validUntil,
+            int maxUses,
+            boolean active) {
+        this.code = requireCode(code);
+        this.discountType = discountType;
+        this.discountValue = discountValue;
+        this.minimumOrderValue = minimumOrderValue == null ? BigDecimal.ZERO : minimumOrderValue;
+        this.maximumDiscount = maximumDiscount;
+        this.validFrom = validFrom;
+        this.validUntil = validUntil;
+        this.maxUses = maxUses;
+        this.active = active;
+        validateDefinition();
+    }
+
     private void validateFor(BigDecimal subtotal, OffsetDateTime now) {
         if (subtotal == null || subtotal.signum() < 0 || now == null) {
             throw invalid("Giá trị đơn hàng hoặc thời điểm không hợp lệ");

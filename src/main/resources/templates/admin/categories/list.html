@@ -1,102 +1,20 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/admin}">
-<head>
-    <title>Quản lý danh mục - UTEGear Admin</title>
-</head>
+<head><title>Quản lý danh mục - UTEGear</title></head>
 <body>
-
-<main layout:fragment="content">
-
-    <!-- PAGE HEADER -->
-    <div class="admin-page-header">
-        <div class="admin-page-title-group">
-            <span class="admin-badge admin-badge-primary">Bán hàng & Kho</span>
-            <h1 class="admin-page-title">Quản lý Danh mục</h1>
-            <p class="admin-page-subtitle">Quản lý cây danh mục sản phẩm phụ kiện gaming, linh kiện và thiết bị công nghệ</p>
-        </div>
-    </div>
-
-    <!-- QUICK ADD PANEL -->
-    <div class="admin-card mb-4">
-        <div class="admin-card-header">
-            <div>
-                <h3 class="admin-card-title"><i class="bi bi-folder-plus me-2" style="color: var(--admin-accent-primary);"></i>Thêm danh mục mới</h3>
-                <div class="admin-card-subtitle">Khai báo danh mục sản phẩm vào cơ sở dữ liệu</div>
-            </div>
-        </div>
-        <div class="admin-card-body">
-            <form th:action="@{/admin/categories/save}" method="post" class="row g-3 align-items-end">
-                <div class="col-md-3">
-                    <label class="form-label-admin">Tên danh mục (EN) <span class="text-danger">*</span></label>
-                    <input type="text" name="name" class="form-control-admin" placeholder="VD: Mechanical Keyboards" required>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label-admin">Tên tiếng Việt (VI)</label>
-                    <input type="text" name="nameVi" class="form-control-admin" placeholder="VD: Bàn phím cơ">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label-admin">Mô tả tóm tắt</label>
-                    <input type="text" name="description" class="form-control-admin" placeholder="Ghi chú phân loại...">
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn-admin btn-admin-primary w-100 justify-content-center">
-                        <i class="bi bi-plus-lg me-1"></i> Thêm danh mục
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- CATEGORIES TABLE -->
-    <div class="admin-card">
-        <div class="admin-card-header">
-            <div>
-                <h3 class="admin-card-title"><i class="bi bi-diagram-3 me-2" style="color: var(--admin-brand-primary);"></i>Danh mục hiện có</h3>
-                <div class="admin-card-subtitle" th:text="'Tổng số: ' + ${#lists.size(categories)} + ' danh mục'">0 danh mục</div>
-            </div>
-        </div>
-        <div class="admin-table-container">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th style="width: 80px;">ID</th>
-                        <th style="width: 260px;">Tên danh mục</th>
-                        <th>Mô tả</th>
-                        <th style="width: 140px;">Trạng thái</th>
-                        <th style="width: 100px;" class="text-end">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:if="${categories == null or #lists.isEmpty(categories)}">
-                        <td colspan="5" class="text-center py-4 text-muted">Chưa có danh mục nào trong hệ thống</td>
-                    </tr>
-                    <tr th:each="c : ${categories}">
-                        <td>
-                            <span class="font-monospace fw-bold" style="color: var(--admin-text-muted);" th:text="'#' + ${c.id}">#1</span>
-                        </td>
-                        <td>
-                            <div class="fw-bold" style="color: var(--admin-text-primary);" th:text="${c.name}">Tên EN</div>
-                            <div style="font-size: 0.8rem; color: var(--admin-text-secondary);" th:if="${c.nameVi != null && !c.nameVi.isEmpty()}" th:text="${c.nameVi}">Tên VI</div>
-                        </td>
-                        <td style="font-size: 0.85rem; color: var(--admin-text-secondary);" th:text="${c.description != null && !c.description.isEmpty() ? c.description : '—'}">Mô tả</td>
-                        <td>
-                            <span class="badge-status" th:classappend="${c.active} ? 'status-active' : 'status-inactive'"
-                                  th:text="${c.active} ? 'Hoạt động' : 'Tạm khóa'">Hoạt động</span>
-                        </td>
-                        <td class="text-end">
-                            <form th:action="@{'/admin/categories/' + ${c.id} + '/delete'}" method="post" class="d-inline" onsubmit="return confirm('Xác nhận xóa danh mục này?');">
-                                <button type="submit" class="btn-admin-icon btn-admin-danger" title="Xóa danh mục">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
+<main layout:fragment="content" class="admin-content-wrapper" data-admin-page="categories">
+    <header class="admin-page-header"><div class="admin-page-header-info"><h1 class="admin-page-title">Danh mục</h1><p class="admin-page-subtitle">Phân nhóm sản phẩm hiển thị tại cửa hàng.</p></div></header>
+    <p data-admin-status role="status" aria-live="polite">Đang tải danh mục…</p>
+    <section class="admin-panel"><h2 class="admin-panel-title">Thêm hoặc chỉnh sửa danh mục</h2>
+        <form data-admin-form="categories" class="row g-3 mt-1"><input type="hidden" name="id">
+            <div class="col-md-4"><label class="form-label" for="category-name">Tên danh mục</label><input class="form-control" id="category-name" name="name" maxlength="100" required></div>
+            <div class="col-md-2"><label class="form-label" for="category-sort">Thứ tự</label><input class="form-control" id="category-sort" name="sortOrder" type="number" min="0" value="0" required></div>
+            <div class="col-md-4"><label class="form-label" for="category-description">Mô tả</label><input class="form-control" id="category-description" name="description" maxlength="500"></div>
+            <div class="col-md-2 d-flex align-items-end"><div class="form-check mb-2"><input class="form-check-input" id="category-active" name="active" type="checkbox" checked><label class="form-check-label" for="category-active">Hoạt động</label></div></div>
+            <div class="col-12 d-flex gap-2"><button class="btn-admin-primary" type="submit">Lưu danh mục</button><button class="btn-admin-secondary" type="reset" data-admin-reset>Nhập mới</button></div>
+        </form>
+    </section>
+    <section class="admin-panel"><div class="admin-table-container"><table class="admin-table"><thead><tr><th>Tên</th><th>Slug</th><th>Thứ tự</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead><tbody data-admin-rows></tbody></table></div><p data-admin-empty hidden>Chưa có danh mục. Hãy tạo danh mục đầu tiên ở biểu mẫu phía trên.</p></section>
 </main>
-
 </body>
 </html>
