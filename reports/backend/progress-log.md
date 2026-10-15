@@ -1067,6 +1067,35 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Chủ dự án chạy thử bằng cấu hình local/Supabase, review diff; chỉ commit/push khi được đồng ý.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
+## DATA-05-BE: Bổ sung mô tả và thông số kỹ thuật sản phẩm đã cào
+
+- Phụ trách: `@NgocYuh`
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/product-content-backend`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-15
+- Đã làm:
+  - Chốt model/JSONL contract và JSON response mẫu trong `docs/api/model-contract.md`, `docs/crawler/data-contract.md` trước task phụ thuộc `FE-CONTENT-01`.
+  - Importer lưu mô tả vào Product và thông số nhãn/giá trị vào `specifications.technicalSpecifications`, giữ metadata nguồn ở cấp ngoài; không đổi schema hoặc giá/biến thể/tồn kho.
+  - Parser đọc JSON-LD, specs_table và mô tả public HTML trong RSC Flight; không thực thi JavaScript. Hỗ trợ HTML mô tả/table/bullet của KICAP và giữ đoạn văn thuần.
+  - Chuẩn bị bổ sung nội dung từ cache của 218 sản phẩm, không tải lại/upload ảnh.
+  - Đã cập nhật mô tả và technicalSpecifications cho đủ 218 sản phẩm hiện có bằng sourceUrl; snapshot `crawler/data/output/catalog-2026-10-15/content-before.json` và payload `content-updates.json` ở workspace chính, bị Git ignore.
+  - Ba Razer Seiren V3 Chroma thiếu bảng thông số ở nguồn bán lẻ được bổ sung từ bảng thông số chính hãng Razer dòng RZ19-0506 (24 bit/96 kHz), không dùng dữ liệu dòng 32-Bit DSP.
+  - Bổ sung `products-enriched.jsonl` cho các lần import sau. Không đổi giá, 4 sản phẩm Flash Sale, ảnh, biến thể hoặc tồn kho.
+  - Web local được chạy lại bằng JAR đã verify của worktree Backend, dùng template/static source của workspace Frontend để kiểm tra tích hợp trên cổng 8080.
+- Kết quả kiểm thử:
+  - Parser offline và importer có test hồi quy cho lưu description, nested specs, chống ghi đè provenance, dữ liệu lỗi, chunk UTF-8, timestamp trùng Flight ID và nội dung HTML.
+  - `python -m unittest discover -s crawler/tests -v`: PASS, 13 test.
+  - `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify`: BUILD SUCCESS, 196 test, 193 pass, 0 failure/error, 3 PostgreSQL Testcontainers test skip vì Docker không chạy. Cờ Byte Buddy cần cho JDK 26 theo nhật ký repo; lượt sandbox đầu bị chặn loopback.
+  - Preview + transaction + đối soát sau commit PostgreSQL: PASS, đúng 218 nội dung khớp payload; mô tả không rỗng và technicalSpecifications có dữ liệu ở cả 218 sản phẩm.
+  - API sản phẩm ID 145: PASS, mô tả 2.582 ký tự, 9 thông số, salePrice vẫn 416.000đ; FE-CONTENT-01 kiểm tra trình duyệt desktop/mobile.
+- Vướng mắc hoặc phần còn thiếu:
+  - Có 8 mô tả ngắn do nguồn chỉ cung cấp ít thông tin; giữ đúng dữ kiện có nguồn, không tự bổ sung tính năng hoặc kích thước.
+  - Chưa mở PR; chưa chuyển DONE trước khi review/merge theo quy định repository.
+- Bước tiếp theo:
+  - Review branch Backend riêng, liên kết FE-CONTENT-01; metadata truy vết vẫn lưu trong database nhưng không đưa vào bảng thông số của khách hàng.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
 ## Mẫu mục mới
 
 ```md

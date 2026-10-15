@@ -30,7 +30,7 @@ Mô hình bảng, khóa và constraint nằm tại
 | `id` | integer 64 bit | Có | ID product |
 | `name` | string | Có | Tên chung của sản phẩm |
 | `description` | string | Không | Mô tả dài |
-| `specifications` | string hoặc object đọc | Không | Thông số; API-01 chốt dạng JSON đọc |
+| `specifications` | object | Không | `technicalSpecifications` là object nhãn → chuỗi thông số; các khóa truy vết nguồn được giữ riêng trong object ngoài |
 | `basePrice` | decimal | Có | Giá cơ sở, không âm |
 | `salePrice` | decimal | Không | Giá khuyến mãi ở cấp product, nhỏ hơn hoặc bằng `basePrice` |
 | `status` | enum | Có | `ACTIVE`, `INACTIVE` hoặc `DELETED` |

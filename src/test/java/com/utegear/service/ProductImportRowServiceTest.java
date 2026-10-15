@@ -86,6 +86,7 @@ class ProductImportRowServiceTest {
         verify(products).save(productCaptor.capture());
         Product product = productCaptor.getValue();
         assertThat(product.getSlug()).isEqualTo("ban-phim-co-e-dra-ek384");
+        assertThat(product.getDescription()).isEqualTo("Bàn phím cơ layout 84 phím.");
         assertThat(product.getSpecifications().get("sourceName").asText()).isEqualTo("gearvn");
         assertThat(product.getSpecifications().get("sourceUrl").asText()).contains("gearvn.com/products/");
         assertThat(product.getVariants()).singleElement().satisfies(variant -> {
@@ -97,6 +98,32 @@ class ProductImportRowServiceTest {
             assertThat(image.getPublicId()).isEqualTo("utegear/keyboard");
             assertThat(image.isPrimary()).isTrue();
         });
+    }
+
+    @Test
+    void importsTechnicalSpecificationsWithoutOverwritingSourceProvenance() {
+        ProductImportRecord valid = validRecord();
+        ProductImportRecord record = new ProductImportRecord(
+                valid.sourceName(), valid.sourceUrl(), valid.crawledAt(), valid.name(), "Đoạn một.\n\nĐoạn hai.",
+                valid.brand(), valid.category(), valid.basePrice(), valid.imageUrls(), valid.variants(),
+                Map.of("Kết nối", "USB Type-C", "sourceUrl", "Giá trị thông số"));
+        service.importRecord(record);
+        ArgumentCaptor<Product> captured = ArgumentCaptor.forClass(Product.class);
+        verify(products).save(captured.capture());
+        assertThat(captured.getValue().getDescription()).isEqualTo("Đoạn một.\n\nĐoạn hai.");
+        assertThat(captured.getValue().getSpecifications().path("technicalSpecifications").path("Kết nối").asText())
+                .isEqualTo("USB Type-C");
+        assertThat(captured.getValue().getSpecifications().path("sourceUrl").asText()).isEqualTo(valid.sourceUrl());
+    }
+
+    @Test
+    void rejectsBlankTechnicalSpecificationBeforePersistingOrUploading() {
+        ProductImportRecord valid = validRecord();
+        assertCode(new ProductImportRecord(valid.sourceName(), valid.sourceUrl(), valid.crawledAt(), valid.name(),
+                valid.description(), valid.brand(), valid.category(), valid.basePrice(), valid.imageUrls(),
+                valid.variants(), Map.of("Kết nối", " ")), "INVALID_SPECIFICATIONS");
+        verify(products, never()).saveAndFlush(any());
+        verify(imageFetcher, never()).fetch(any());
     }
 
     @Test

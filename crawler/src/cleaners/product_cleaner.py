@@ -38,12 +38,13 @@ class ProductCleaner:
             source_url=raw.source_url,
             crawled_at=datetime.now(timezone.utc).isoformat(),
             name=name,
-            description=self._text(raw.description),
+            description=raw.description.strip() if raw.description and raw.description.strip() else None,
             brand=self._text(raw.brand),
             category=category,
             base_price=min((variant.price for variant in variants), default=0),
             image_urls=list(dict.fromkeys(url.strip() for url in raw.images if url and url.strip())),
             variants=variants,
+            specifications=raw.specifications.copy(),
         )
 
     def _category(self, source_category: str | None, name: str) -> str:
