@@ -1230,15 +1230,15 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 ## BE-LOCAL-DEMO-TOOLS: Bàn giao cách chạy và nhập dữ liệu demo local
 
 - Phụ trách: `@NgocYuh` (Backend).
-- Trạng thái: `IN PROGRESS`.
+- Trạng thái: `IN REVIEW`.
 - Branch: `codex/local-demo-tools`.
 - Pull Request: `Chưa mở`.
 - Ngày cập nhật: 2026-10-16.
 - Task liên kết: `INT-LOCAL-DEMO`, `FE-LOCAL-PUBLISH`.
 - Đã làm: Đưa script nhập catalog đã dùng local vào scripts/demo, thêm ValidateOnly và giới hạn loopback/no redirects, nhận đường dẫn dữ liệu cục bộ thay vì commit dataset. Hướng dẫn dùng cùng database đang có để giữ catalog/giá/tồn kho và cách nhập sang database QA mới; không đưa cấu hình hoặc dữ liệu tài khoản/địa chỉ/đơn hàng lên Git. Đồng bộ nhật ký DATA-03/DATA-04 và trạng thái PR #67 từ workspace đang chạy.
-- Kết quả kiểm thử: Đang chạy kiểm tra PowerShell và kiểm thử toàn bộ bản tích hợp.
+- Kết quả kiểm thử: PowerShell script: PASS syntax, ValidateOnly không gọi mạng/đăng nhập, giới hạn số dòng, chặn 3 URL không an toàn và catalog rỗng; dữ liệu cục bộ kiểm tra đủ 218 sản phẩm/6 category/45 brand. Python PASS 14/14; clean verify bản tích hợp BUILD SUCCESS, 202 test, 0 failure/error, 4 PostgreSQL skip do thiếu Docker.
 - Vướng mắc hoặc phần còn thiếu: Dữ liệu crawler nằm ở output bị ignore; máy mới cần cấu hình riêng và bản sao file JSONL/reference-data nếu dùng database mới.
-- Bước tiếp theo: Kiểm tra script, merge công cụ vào nhánh tích hợp và clean verify trước push.
+- Bước tiếp theo: Review trong INT-LOCAL-DEMO và chỉ đánh dấu DONE sau khi merge.
 - Ngày hoàn tất: `Chưa hoàn tất`.
 
 
