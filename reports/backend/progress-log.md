@@ -1124,6 +1124,8 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Pull Request: `Chưa mở`
 - Ngày cập nhật: 2026-10-16
 - Task liên kết: `FE-CHECKOUT-UX`; phụ thuộc commit local DATA-05-BE `6dadac9`, chưa merge main nên task trước vẫn IN REVIEW.
+- Bàn giao GitHub: `https://github.com/NgocYuh/UTEGear/tree/codex/fix-store-availability`; push theo yêu cầu người dùng, chưa mở PR/merge.
+- Kiểm tra trước push: checkout sạch efc33e0, `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` BUILD SUCCESS, 199 test, 0 failure/error, 4 PostgreSQL test skip do Docker không sẵn có. Lượt clean đầu bị Windows khóa JAR localhost đang dùng; build lại bằng checkout riêng thành công, giữ ứng dụng đang chạy. Thay đổi sau build chỉ cập nhật nhật ký.
 - Đã làm:
   - Tái hiện PostgreSQL lower(bytea) khi availability gọi với province null.
   - Tách query không lọc tỉnh khỏi query lọc tỉnh; không truyền null vào lower(), giữ khóa tồn kho Store + ProductVariant và pessimistic write của thao tác trừ kho.
