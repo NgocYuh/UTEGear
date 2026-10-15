@@ -830,7 +830,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Phụ trách: `@trongsonho` (Frontend).
 - Trạng thái: `IN REVIEW`.
 - Branch: `codex/local-home-ui`.
-- Pull Request: `Chưa mở`.
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/68 (PR tích hợp INT-LOCAL-DEMO).
 - Ngày cập nhật: 2026-10-16.
 - Task liên kết: `INT-LOCAL-DEMO`, `BE-LOCAL-DEMO-TOOLS`, `FE-CHECKOUT-UX`.
 - Đã làm: Đưa đầy đủ header/footer/cards, trang chủ gọn, banner, menu tài khoản, tab sản phẩm và Flash Sale đang chạy local vào commit 91f680f, giữ nguyên nội dung giao diện. Các task giao diện trước trong cùng lượt tinh chỉnh được bàn giao tại đây. Không sửa nghiệp vụ Backend.
