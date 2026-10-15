@@ -8,6 +8,16 @@ from parsers.product_content import read_product_content
 
 
 class ProductContentTest(unittest.TestCase):
+    def test_reads_text_record_immediately_after_json_record(self):
+        body = '<h2>THÔNG SỐ KĨ THUẬT</h2><table><tr><td>Model</td><td>H31</td></tr><tr><td>Cổng</td><td><ul><li>USB-C</li><li>HDMI</li></ul></td></tr></table><p>Hub dùng để kết nối nhiều thiết bị.</p>'
+        stream = '1:' + json.dumps({'descriptionBody': '$33'}) + '33:T' + format(len(body.encode()), 'x') + ',' + body
+        html = '<script>self.__next_f.push(' + json.dumps([1, stream]) + ')</script>'
+        description, specs = read_product_content(html, {'name': 'Hub', 'description': 'Tóm tắt bị cắt…'})
+        self.assertEqual('H31', specs['Model'])
+        self.assertEqual('USB-C\n\nHDMI', specs['Cổng'])
+        self.assertEqual('Hub dùng để kết nối nhiều thiết bị.', description)
+        self.assertNotIn('Tóm tắt', description)
+
     def test_decodes_split_flight_text_with_utf8_byte_length_and_full_specs(self):
         body = '<h2>Mô tả</h2><p>Vải chống nước.</p><p>Đế cao su.</p>'
         stream = '1:' + json.dumps({'product': {'name': 'Pad', 'specs_table': [

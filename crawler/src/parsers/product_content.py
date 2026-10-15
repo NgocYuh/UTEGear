@@ -95,7 +95,7 @@ def read_product_content(html, product):
             if isinstance(value, str) and not value.startswith("$"):
                 body = value
             elif isinstance(value, str) and re.fullmatch(r'\$[0-9a-f]+', value):
-                record = re.search(r'(?:^|\n|(?<=>))' + value[1:] + r':', stream)
+                record = re.search(r'(?:^|\n|(?<=[>}\]]))' + value[1:] + r':', stream)
                 if record:
                     remainder = stream[record.end():]
                     text_header = re.match(r'T([0-9a-f]+),', remainder)
@@ -117,7 +117,18 @@ def read_product_content(html, product):
             key, value = (plain(cell) for cell in cells)
             if key and value and len(key) <= 200:
                 specs.setdefault(key.rstrip(":"), value)
-    content = plain(body) or plain(product.get("description"))
+    # Preserve labelled notes and dimensions within table values as well.
+    for part in plain(body).split("\n\n"):
+        if ":" in part and not re.search(r'gearvn|kicap|hotline|mua ngay|đặt hàng', part, re.I):
+            key, value = part.lstrip("-• ").split(":", 1)
+            if 1 < len(key.strip()) <= 80 and value.strip():
+                specs.setdefault(key.strip(), value.strip())
+    # Technical table cells belong in the specification map, not in narrative copy.
+    narrative = re.sub(r'<table\b[^>]*>.*?</table>', '', body, flags=re.I | re.DOTALL)
+    narrative = re.sub(r'<h[1-6]\b[^>]*>.*?</h[1-6]>',
+                       lambda match: '' if re.search(r'thông số', plain(match.group(0)), re.I) else match.group(0),
+                       narrative, flags=re.I | re.DOTALL)
+    content = plain(narrative) or ('' if specs else plain(product.get("description")))
     paragraphs = []
     for part in content.split("\n\n"):
         # Exclude source-store adverts, shipping instructions and purchase calls.
