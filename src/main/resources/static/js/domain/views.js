@@ -20,6 +20,32 @@ UTEGear.Views = {
         catch (error) { this.status(root, error.message, true); }
         finally { button.disabled = false; }
     },
+    async buyNow(root) {
+        const button = root.querySelector('[data-detail-buy-now]');
+        if (!button || button.disabled || root.dataset.purchaseBusy) return;
+        if (!UTEGear.Session.get()) {
+            location.href = '/login?redirect=' + encodeURIComponent(location.pathname + location.search);
+            return;
+        }
+        const option = root.querySelector('[data-detail-variant]').selectedOptions[0];
+        const quantity = Number(root.querySelector('#quantity').value);
+        if (root.dataset.stockReady !== 'true' || !option || !Number.isInteger(quantity)
+            || quantity < 1 || quantity > Number(option.dataset.stock)) {
+            this.status(root, 'Vui lòng chọn số lượng phù hợp với tồn kho.', true);
+            return;
+        }
+        root.dataset.purchaseBusy = 'true';
+        const add = root.querySelector('[data-detail-add]');
+        button.disabled = true; add.disabled = true;
+        try {
+            await UTEGear.Cart.add({ productId: root.dataset.productId, variantId: option.value, quantity });
+            location.href = '/checkout';
+        } catch (error) { this.status(root, error.message, true); }
+        finally {
+            delete root.dataset.purchaseBusy;
+            root.syncPurchaseButtons?.();
+        }
+    },
     button(text, work, root, className = 'btn btn-outline-primary') {
         const button = this.node('button', text, className);
         button.type = 'button';
@@ -241,27 +267,59 @@ UTEGear.Views = {
         const detail = document.querySelector('[data-page="product-detail"]');
         if (detail) {
             const select = detail.querySelector('[data-detail-variant]');
+            const add = detail.querySelector('[data-detail-add]');
+            const buy = detail.querySelector('[data-detail-buy-now]');
+            const quantity = detail.querySelector('#quantity');
+            const retry = detail.querySelector('[data-stock-retry]');
+            detail.syncPurchaseButtons = () => {
+                const stock = Number(select.selectedOptions[0]?.dataset.stock || 0);
+                const value = Number(quantity.value);
+                const disabled = detail.dataset.stockReady !== 'true' || !!detail.dataset.purchaseBusy
+                    || !Number.isInteger(value) || value < 1 || value > stock;
+                add.disabled = disabled;
+                if (buy) buy.disabled = disabled;
+                if (stock > 0) quantity.max = String(stock);
+                else quantity.removeAttribute('max');
+            };
+            quantity.addEventListener('input', detail.syncPurchaseButtons);
+            buy?.addEventListener('click', () => this.buyNow(detail));
             let generation = 0;
             const update = async () => {
                 const current = ++generation, option = select.selectedOptions[0];
                 if (!option) return;
-                const add = detail.querySelector('[data-detail-add]');
                 add.dataset.variantId = option.value;
-                add.disabled = Number(option.dataset.stock) <= 0;
+                const sku = detail.querySelector('[data-detail-sku]');
+                if (sku) sku.textContent = option.dataset.sku || '—';
+                detail.dataset.stockReady = 'false';
+                detail.syncPurchaseButtons();
+                if (retry) retry.hidden = true;
                 detail.querySelector('[data-variant-price]').textContent = this.money(option.dataset.price);
-                detail.querySelector('[data-variant-stock]').textContent = Number(option.dataset.stock) > 0 ? 'Còn ' + option.dataset.stock + ' sản phẩm' : 'Hết hàng';
+                detail.querySelector('[data-variant-stock]').textContent = 'Đang kiểm tra tồn kho…';
                 const host = detail.querySelector('[data-product-availability]'); host.textContent = 'Đang tải tồn kho…';
                 try {
                     const data = await UTEGear.API.get('/api/products/' + UTEGear.Cart.id(detail.dataset.productId) + '/availability', { public: true });
                     if (current !== generation) return;
                     const variant = data.variants.find(item => Number(item.variantId) === Number(option.value));
+                    option.dataset.stock = String(variant?.totalStock || 0);
+                    detail.dataset.stockReady = 'true';
+                    detail.querySelector('[data-variant-stock]').textContent = Number(option.dataset.stock) > 0
+                        ? 'Còn ' + option.dataset.stock + ' sản phẩm' : 'Hết hàng';
+                    detail.syncPurchaseButtons();
                     host.replaceChildren();
                     for (const store of variant?.availableStores || []) {
                         if (store.active) host.append(this.node('p', `${store.storeName}: ${store.quantity} sản phẩm`));
                     }
                     if (!host.childNodes.length) host.textContent = 'Chưa có hàng tại cửa hàng đang hoạt động.';
-                } catch (error) { if (current === generation) host.textContent = error.message; }
+                } catch (error) {
+                    if (current !== generation) return;
+                    detail.dataset.stockReady = 'false';
+                    detail.syncPurchaseButtons();
+                    detail.querySelector('[data-variant-stock]').textContent = 'Chưa kiểm tra được tồn kho';
+                    host.textContent = 'Không tải được tồn kho. Vui lòng thử lại.';
+                    if (retry) retry.hidden = false;
+                }
             };
+            retry?.addEventListener('click', update);
             select.addEventListener('change', update); update();
             detail.querySelectorAll('[data-gallery-url]').forEach(button => button.addEventListener('click', () => {
                 const url = this.image(button.dataset.galleryUrl, '').src;

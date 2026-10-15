@@ -1,31 +1,40 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
 <head><title th:text="${product.name} + ' - UTEGear'">Sản phẩm - UTEGear</title></head><body>
-<main layout:fragment="content" class="section"><section class="container" data-page="product-detail" th:data-product-id="${product.id}">
- <a href="/products">Quay lại sản phẩm</a><h1 th:text="${product.name}"></h1>
- <div class="row g-4"><div class="col-md-6">
+<main layout:fragment="content" class="section product-detail-section"><section class="container" data-page="product-detail" th:data-product-id="${product.id}">
+ <nav class="product-breadcrumb mb-3" aria-label="Đường dẫn"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/">Trang chủ</a></li><li class="breadcrumb-item"><a href="/products">Sản phẩm</a></li><li class="breadcrumb-item active" aria-current="page" th:text="${product.category.name}"></li></ol></nav>
+ <div class="row g-4 product-detail-hero"><div class="col-md-6 product-detail-gallery">
   <img id="mainProductImage" class="img-fluid rounded" th:with="primaryImage=${product.images.^[primary]}" th:src="${primaryImage != null ? primaryImage.secureUrl : (product.images.isEmpty() ? '/images/placeholder.svg' : product.images[0].secureUrl)}" th:alt="${product.name}" onerror="this.onerror=null;this.src='/images/placeholder.svg'">
-  <div class="d-flex flex-wrap gap-2"><button type="button" class="btn btn-outline-primary" th:each="image : ${product.images}" th:data-gallery-url="${image.secureUrl}" th:aria-label="${image.altText != null ? image.altText : product.name}"><img th:src="${image.secureUrl}" th:alt="${image.altText}" width="64" height="64"></button></div>
- </div><div class="col-md-6">
-  <p th:text="${product.category.name}"></p><p th:text="${product.brand != null ? product.brand.name : 'UTEGear'}"></p>
-  <p class="price current" data-variant-price th:text="${#numbers.formatDecimal(product.effectivePrice,1,'POINT',0,'COMMA')} + ' ₫'"></p>
+  <div class="d-flex flex-wrap gap-2 product-detail-thumbnails"><button type="button" class="btn btn-outline-primary" th:each="image : ${product.images}" th:data-gallery-url="${image.secureUrl}" th:aria-label="${image.altText != null ? image.altText : product.name}"><img th:src="${image.secureUrl}" th:alt="${image.altText}" width="64" height="64"></button></div>
+ </div><div class="col-md-6 product-detail-information">
+  <div class="product-meta-tags"><span class="product-category-badge" th:text="${product.category.name}"></span><span class="product-brand-link" th:text="${product.brand != null ? product.brand.name : 'UTEGear'}"></span></div>
+  <h1 class="product-title" th:text="${product.name}"></h1>
+  <p class="text-muted small">Mã sản phẩm: <span data-detail-sku th:text="${product.variants.isEmpty() ? '—' : product.variants[0].sku}"></span></p>
+  <div class="product-detail-price"><span class="small text-muted">Giá bán</span><p class="price current mb-0" data-variant-price th:text="${#numbers.formatDecimal(product.effectivePrice,1,'POINT',0,'COMMA')} + ' ₫'"></p></div>
   <label for="detail-variant" class="form-label">Biến thể</label>
   <select id="detail-variant" class="form-select mb-3" data-detail-variant>
-   <option th:each="variant : ${product.variants}" th:value="${variant.id}" th:selected="${variant.id == product.defaultVariantId}" th:data-price="${variant.effectivePrice}" th:data-stock="${variant.totalStock}" th:text="${variant.sku} + ' — ' + ${variant.optionValues}"></option>
+   <option th:each="variant : ${product.variants}" th:value="${variant.id}" th:selected="${variant.id == product.defaultVariantId}" th:data-sku="${variant.sku}" th:data-price="${variant.effectivePrice}" th:data-stock="${variant.totalStock}" th:text="${variant.optionValues.isEmpty() ? 'Mặc định' : #strings.listJoin(variant.optionValues.values(), ' / ')}"></option>
   </select>
   <p data-variant-stock role="status" aria-live="polite"></p>
   <label for="quantity" class="form-label">Số lượng</label><input id="quantity" type="number" min="1" step="1" value="1" class="form-control mb-3">
-  <button type="button" class="btn btn-utama" data-detail-add data-action="add-to-cart" th:data-product-id="${product.id}" data-quantity-target="quantity">Thêm vào giỏ</button>
-  <button type="button" class="btn btn-outline-primary" data-action="toggle-wishlist" th:data-product-id="${product.id}">Yêu thích</button>
-  <h2 class="h5 mt-4">Tồn kho tại cửa hàng</h2><div data-product-availability role="status" aria-live="polite">Đang tải tồn kho…</div>
+  <div class="d-flex flex-wrap gap-2 product-purchase-actions">
+   <button type="button" class="btn btn-primary" data-detail-buy-now disabled>Mua ngay</button>
+   <button type="button" class="btn btn-outline-primary" data-detail-add data-action="add-to-cart" th:data-product-id="${product.id}" data-quantity-target="quantity" disabled>Thêm vào giỏ</button>
+   <button type="button" class="btn btn-outline-primary" data-action="toggle-wishlist" th:data-product-id="${product.id}">Yêu thích</button>
+  </div>
+  <p class="mt-2" data-view-status role="status" aria-live="polite"></p>
+  <h2 class="h6 mt-4">Tình trạng tại cửa hàng</h2><div data-product-availability role="status" aria-live="polite">Đang tải tồn kho…</div>
+  <button type="button" class="btn btn-outline-primary mt-2" data-stock-retry hidden>Thử lại</button>
  </div></div>
- <section class="product-content-section mt-4" aria-labelledby="product-description-title">
-  <h2 id="product-description-title" class="h4">Mô tả</h2>
+ <nav class="product-content-navigation" aria-label="Thông tin sản phẩm"><a href="#product-description-title">Mô tả sản phẩm</a><a href="#product-specifications-title">Thông số kỹ thuật</a></nav>
+ <div class="product-detail-content-grid">
+ <section class="product-content-section" aria-labelledby="product-description-title">
+  <h2 id="product-description-title" class="h4">Mô tả sản phẩm</h2>
   <div class="product-description-copy" th:if="${product.description != null and !#strings.isEmpty(product.description)}" th:text="${product.description}"></div>
   <p class="text-muted" th:if="${product.description == null or #strings.isEmpty(product.description)}">Mô tả sản phẩm đang được cập nhật.</p>
  </section>
- <section class="product-content-section mt-4" aria-labelledby="product-specifications-title">
+ <section class="product-content-section" aria-labelledby="product-specifications-title">
   <h2 id="product-specifications-title" class="h4">Thông số kỹ thuật</h2>
   <th:block th:replace="~{fragments/product/product-specs :: productSpecs(${product})}"></th:block>
- </section>
+ </section></div>
 </section></main></body></html>

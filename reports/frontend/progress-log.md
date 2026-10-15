@@ -671,3 +671,31 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Bước tiếp theo:
   - Review giao diện và PR riêng với DATA-05-BE; chỉ đánh dấu DONE sau merge.
 - Ngày hoàn tất: `Chưa hoàn tất`
+
+## FE-CHECKOUT-UX: Mua ngay và thông tin đơn hàng, sản phẩm
+
+- Phụ trách: `@trongsonho`
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/customer-checkout-ui`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-16
+- Task liên kết: `FIX-STOCK-API`, branch `codex/fix-store-availability`; dựa trên FE-CONTENT-01 commit local 3e12afb, chưa merge main nên task trước vẫn IN REVIEW.
+- Phạm vi bổ sung theo phản hồi người dùng 2026-10-16: làm rõ thông tin đơn hàng và sản phẩm; liên kết DATA-06-BE để sửa nội dung nguồn. Frontend tiếp tục dùng OrderDetail và ProductDetail đã có, không đổi DTO/API.
+- Đã làm:
+  - Thêm Mua ngay: thêm biến thể/số lượng vào giỏ hiện tại rồi chuyển checkout để khách xác nhận; khách chưa đăng nhập chuyển login với URL quay lại sản phẩm.
+  - Đọc tồn kho mới từ availability theo contract Backend. Khóa nút mua khi đang tải, lỗi, hết hàng hoặc số lượng không hợp lệ; cho thử tải lại khi lỗi và ngăn bấm Mua ngay lặp trong cùng yêu cầu.
+  - Hiển thị biến thể mặc định bằng Mặc định thay cho SKU kèm JSON rỗng; giữ giao diện quản trị và khách hàng theo đúng vai trò.
+  - Chỉ sửa template/JavaScript và kiểm thử frontend; Backend và dữ liệu demo do FIX-STOCK-API xử lý riêng.
+  - Bổ sung giao diện chi tiết đơn: trạng thái tiếng Việt, ngày giờ Việt Nam, ảnh/tên/mã/biến thể/số lượng/đơn giá/thành tiền, người nhận/điện thoại/địa chỉ, cửa hàng, phương thức và trạng thái thanh toán, tiền hàng/phí vận chuyển/giảm giá/tổng và ghi chú. Đưa hủy đơn vào mục mở rộng; đổi bộ lọc sẽ đóng chi tiết đơn cũ, ẩn Đăng nhập sau khi đã đăng nhập.
+  - Trang sản phẩm có breadcrumb, nhãn thương hiệu/danh mục, mã sản phẩm đồng bộ biến thể, khối giá và vùng mua hàng rõ ràng, liên kết đến mô tả và thông số; bố cục nội dung 2 cột desktop/1 cột mobile. Không sửa layout/header/footer hoặc nội dung home đang có thay đổi riêng.
+- Kết quả kiểm thử:
+  - `node --test tests/frontend/integration.test.mjs tests/frontend/mock-data.test.mjs`: PASS 25/25, gồm 5 ca Mua ngay, guest login, vượt kho, bấm lặp và lỗi giỏ hàng.
+  - Edge headless với profile riêng, API thật localhost: PASS trang /products/218, label Mặc định, còn 10, Mua ngay, checkout COD, quote và xác nhận đơn, giỏ rỗng, xem/hủy đơn khách hàng và kho hoàn về 10. Không có lỗi JavaScript runtime.
+  - Desktop 1365px và mobile 390px: nút mua và trang checkout hoạt động, sản phẩm không tràn ngang; ảnh/báo cáo trong crawler/data/output bị Git ignore.
+  - Phạm vi bổ sung: `node --test tests/frontend/order-information.test.mjs tests/frontend/integration.test.mjs tests/frontend/mock-data.test.mjs`: PASS 29/29, gồm nội dung đơn, coupon/biến thể, missing payment, escape nội dung không tin cậy và ngày giờ/status.
+  - Browser thật với API local sau DATA-06-BE: PASS Lexar H31 có 8 dòng thông số và mô tả >1.000 ký tự; đơn demo UTE-1792085983-BEC9842A hiển thị thông tin nhận hàng, ảnh sản phẩm, COD, phí 30.000đ/tổng 780.000đ; lọc PENDING/CANCELLED đúng và không giữ chi tiết cũ. Đơn QA đã hủy, tồn kho trở về 9 đúng mức trước lượt QA, giữ đơn người dùng đang chờ. Không có lỗi JavaScript. Đã xem ảnh toàn trang sản phẩm/đơn hàng desktop và mobile, không tràn ngang.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa mở PR hoặc merge. Runtime dùng jar backend FIX-STOCK-API; worktree frontend không chứa thay đổi nghiệp vụ backend.
+- Bước tiếp theo:
+  - Review task frontend riêng và liên kết FIX-STOCK-API; chỉ đánh dấu DONE sau merge.
+- Ngày hoàn tất: `Chưa hoàn tất`
