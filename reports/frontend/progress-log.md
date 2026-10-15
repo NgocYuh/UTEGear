@@ -838,3 +838,18 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc hoặc phần còn thiếu: Chờ kiểm tra bản tích hợp trước khi push.
 - Bước tiếp theo: Hợp nhất nhánh frontend vào nhánh tích hợp, xác minh trình duyệt và push.
 - Ngày hoàn tất: `Chưa hoàn tất`.
+
+
+## INT-LOCAL-DEMO: Tích hợp đúng bản đang chạy local
+
+- Phụ trách: `@trongsonho` (frontend).
+- Trạng thái: `IN PROGRESS`.
+- Branch: `codex/local-demo-integration`.
+- Pull Request: `Chưa mở`.
+- Ngày cập nhật: 2026-10-16.
+- Task liên kết: `FE-LOCAL-PUBLISH`, `BE-LOCAL-DEMO-TOOLS`, `FE-CHECKOUT-UX`, `FIX-STOCK-API`, `DATA-06-BE`.
+- Đã làm: Hợp nhất các task Backend/Frontend từ nhánh riêng vào một checkout hoàn chỉnh; không thay đổi kiến trúc, API hoặc schema. Toàn bộ 128 file templates/static có SHA-256 khớp workspace local đang chạy sau chuẩn hóa CRLF/LF theo Git; ảnh nhị phân khớp nguyên byte. Giữ secret, catalog crawler, tài khoản và đơn hàng ngoài Git. Hướng dẫn ở docs/setup/local-demo-parity.md.
+- Kết quả kiểm thử: JS PASS 41/41, script import ValidateOnly PASS 218 sản phẩm/6 category/45 brand; đang chạy clean verify và đối chiếu JAR đóng gói.
+- Vướng mắc hoặc phần còn thiếu: Chờ build/browser trước push; chưa merge main.
+- Bước tiếp theo: Kiểm tra JAR tự phục vụ templates/static, cập nhật kết quả và push nhánh tích hợp.
+- Ngày hoàn tất: `Chưa hoàn tất`.
