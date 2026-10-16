@@ -1280,7 +1280,9 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Task liên kết: `CHAT-FE-02` (@trongsonho); contract/model/JSON mẫu đã bàn giao trước phần frontend.
 - Người dùng xác nhận development/demo; giữ chi nhánh cũ, thêm Hà Nội/Đà Nẵng, ba nhân viên mỗi chi nhánh. Runner chỉ local, opt-in kèm xác nhận development; transaction khóa ghi, không reset dữ liệu cũ, mật khẩu ngẫu nhiên/hash, report local bị ignore, tái chạy giữ ID/password.
 - Contract: `docs/api/support-chat-contract.md`, `docs/api/mock/support-chat.json`, `docs/setup/demo-branches-staff.md`. Mã CN-/NV- suy ra từ ID thật, không đổi schema.
-- Kiểm thử: đang chạy clean verify; có test đủ 3/9, password hash, rerun và rollback khi xung đột.
-- Vướng mắc: chưa áp dụng database và chưa kiểm tra đăng nhập/API thật.
-- Bước tiếp theo: build, chạy setup development, xác minh bảng ID và chín tài khoản trước bàn giao.
+- Kiểm thử: `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` BUILD SUCCESS, 208 test, 0 failure/error, 4 PostgreSQL skip do Docker thiếu. Bốn test mới kiểm tra đủ 3/9, password hash, rerun giữ ID/password, rollback xung đột và từ chối cấu hình cửa hàng không đúng.
+- Database development đã áp dụng: CN-1 giữ UTEGear Demo, CN-2 UTEGear Demo Hà Nội, CN-3 UTEGear Demo Đà Nẵng; nhân viên lần lượt NV-7..9, NV-10..12, NV-13..15. Không chỉnh kho, catalog hoặc đơn hàng. Mật khẩu ngẫu nhiên ở `crawler/data/output/demo-accounts/employee-accounts.csv` và report JSON cùng thư mục bị ignore, không ghi mật khẩu vào log/repo.
+- API thật localhost: PASS 9/9 đăng nhập EMPLOYEE, 9/9 từ chối API admin, 3 hội thoại đúng chi nhánh, 9/9 từ chối đọc/gửi/nhận chat khác chi nhánh, khách không truy cập inbox nhân viên. Tin nhắn hai chiều và lịch sử đúng; tài khoản QA riêng, không dùng session khách hiện có.
+- Vướng mắc: chưa mở PR/push; kiểm thử PostgreSQL bằng Testcontainers chưa chạy vì thiếu Docker. PostgreSQL development được xác minh qua API thật.
+- Bước tiếp theo: review backend riêng, liên kết CHAT-FE-02; chỉ đổi DONE sau merge.
 - Ngày hoàn tất: Chưa hoàn tất.
