@@ -1028,9 +1028,10 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## FIX-ADMIN-INTEGRATION: Hoàn thiện liên kết quản trị và kiểm tra tích hợp toàn hệ thống
 
-- Trạng thái: `IN PROGRESS`
+- Trạng thái: `DONE`
 - Branch: `fix/system-integration`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/67
+- Merge commit: `5c84f4283455ca264f1cfaf92f86be75f25b4e62`
 - Ngày cập nhật: 2026-10-15
 - Đã làm:
   - Bổ sung MVC route và giao diện chạy thật cho tổng quan, đơn hàng, sản phẩm, danh mục,
@@ -1064,7 +1065,97 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - Lệnh `clean` trong sandbox từng gặp `AccessDeniedException` khi JDK 26 đóng JAR trong cache
     người dùng; chạy `verify` sau biên dịch thành công và toàn bộ test đã pass. Dự án vẫn đặt Java 21.
 - Bước tiếp theo:
-  - Chủ dự án chạy thử bằng cấu hình local/Supabase, review diff; chỉ commit/push khi được đồng ý.
+  - Đã đối soát `main` khi bắt đầu DATA-03: merge PR #67 chứa commit `160c524`; tiếp tục task dữ liệu riêng.
+- Ngày hoàn tất: 2026-10-15
+
+## DATA-03: Thu thập catalog 20–30 sản phẩm mỗi danh mục
+
+- Phụ trách: `@NgocYuh` (Backend)
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/data-03-catalog-collection`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-15
+- Đã làm:
+  - Đối chiếu contract: `ban-phim`, `chuot`, `tai-nghe`, `keycap`, `switch`, `phu-kien`; mục tiêu 20–30 sản phẩm cho mỗi loại trên menu, ưu tiên 25.
+  - Người dùng xác nhận lấy toàn bộ menu: bàn phím, chuột, tai nghe, keycap, switch, lót chuột, microphone, dây cáp/hub và tay cầm; bốn nhóm cuối dùng category canonical `phu-kien` và được tách file theo nhóm.
+  - Chuẩn bị Python 3.12 riêng trong `crawler/.venv/`, không thay đổi cấu hình ứng dụng.
+  - Review robots GEARVN/KICAP: chỉ lấy HTML sản phẩm/danh mục công khai, không gọi API, giỏ hàng hoặc tài khoản.
+  - Review `https://kicap.vn/dieu-khoan`: nguồn giới hạn việc sử dụng thương mại khi chưa có cho phép bằng văn bản; dataset lượt này chỉ chuẩn bị cục bộ cho review/demo, chưa cấp quyền xuất bản lại nội dung/ảnh.
+  - Dữ liệu và script vận hành đặt trong các thư mục `crawler/data/` đã ignore; không commit dữ liệu thật.
+  - Hoàn tất 218 sản phẩm: bàn phím 25, chuột 24, tai nghe 24, keycap 25, switch 25, lót chuột 25, microphone 21, dây cáp/hub 29, tay cầm 20. Tổng category `phu-kien` là 95 sản phẩm thuộc bốn nhóm trên menu.
+  - Dùng HTML sản phẩm/JSON-LD và sitemap công khai; giãn request tối thiểu 2 giây, cache HTML và kiểm tra robots trước khi tải. Adapter KICAP chỉ dùng trong script vận hành cục bộ của lượt này.
+  - Loại 3 bản trùng model (Acer Cestus 330, Acer Galea 550, Ugreen 50570); chuẩn hóa 1 brand AKKO dựa trên tên nguồn và ghi dấu vết thay đổi trong `normalization-report.json`.
+  - Loại URL ảnh GIF ở hai record có ảnh PNG thay thế; tách riêng 5 tay cầm chỉ có GIF vì importer chỉ hỗ trợ JPEG/PNG/WebP. Không sửa extension hoặc tự tạo ảnh thay thế.
+  - Bàn giao cục bộ: `crawler/data/output/catalog-2026-10-15/products.jsonl`, 9 file JSONL theo nhóm, `catalog-preview.md`, `reference-data.json`, `collection-report.json`, `validation-report.json` và `normalization-report.json`.
+  - Bổ sung script vận hành bị ignore `crawler/data/output/import-local.ps1`: đăng nhập ADMIN bằng prompt, tạo category/brand còn thiếu, mặc định import thử 3 record; `-Limit 0` chọn toàn bộ dataset. Chỉ cho phép địa chỉ localhost; không ghi token hoặc mật khẩu vào file.
+  - Đối soát task trước `FIX-ADMIN-INTEGRATION` với `main`, cập nhật `DONE` cùng PR #67, merge commit và ngày hoàn tất theo quy tắc repository.
+- Kết quả kiểm thử:
+  - `python -m unittest discover -s crawler/tests -v`: `PASS`, 7 test; dùng TEMP trong workspace để tránh giới hạn sandbox.
+  - Audit 218 record: `PASS`, không có lỗi; cả 9 nhóm đạt 20–30 sản phẩm, file tách khớp file tổng; URL nguồn/SKU/slug duy nhất, giá VND dương, brand bắt buộc, có ảnh HTTPS, thời gian có timezone, đúng một biến thể mặc định và đáp ứng giới hạn độ dài field trong schema.
+  - SHA-256 `products.jsonl`: `ba1673fd9ff8926a31d4c7e1649e3ca12d58f2c8b595e0e44a10ff4538729d8d`.
+  - Helper PowerShell: syntax `PASS`; kiểm tra bằng API mock cô lập `PASS` cho reference data UTF-8, header ADMIN, multipart 3 record và xuất report. Chưa gọi API import thật.
+  - `git diff --check`: `PASS`; dữ liệu, HTML cache, script vận hành và Python runtime đều nằm trong đường dẫn Git ignore.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa import database, tạo inventory hoặc upload Cloudinary; chưa kiểm tra HTTP/MIME/dung lượng từng ảnh. Không chạy build Java vì không thay đổi mã ứng dụng và không push.
+  - Trước import local/test cần category và brand active theo `reference-data.json`, cấu hình Cloudinary và review allowlist ảnh: `cdn.hstatic.net`, `product.hstatic.net`, `bizweb.dktcdn.net` (bổ sung host cần thiết qua cấu hình môi trường local).
+  - Một số URL timeout/lỗi TLS hoặc là trang danh mục bị bỏ qua; chi tiết lưu trong `collection-report.json`. Trạng thái tồn tại nguồn được lưu riêng, không quy đổi thành tồn kho UTEGear.
+  - Chưa mở PR nhật ký; không chuyển `DONE` trước khi hoàn tất quy trình review/merge của repository.
+- Bước tiếp theo:
+  - Review catalog cục bộ và nhật ký. Việc import local/test, cấp quyền sử dụng nội dung/ảnh khi xuất bản và tạo tồn kho thuộc task vận hành tiếp theo.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
+## DATA-04: Đưa sản phẩm demo vào Flash Sale
+
+- Phụ trách: `@NgocYuh` (Backend)
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/demo-flash-sale`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-15
+- Đã làm:
+  - Người dùng yêu cầu chọn một vài sản phẩm đã import cho Flash Sale; chọn 4 sản phẩm thuộc bàn phím, chuột, tai nghe và lót chuột.
+  - Đối chiếu controller/template: Flash Sale dùng sản phẩm ACTIVE có `salePrice < basePrice`; không có bảng chiến dịch riêng.
+  - Chuẩn bị giá giảm khoảng 15%, làm tròn xuống nghìn đồng: ID 18 → 1.010.000đ, ID 44 → 340.000đ, ID 67 → 756.000đ, ID 145 → 416.000đ.
+  - Script vận hành và snapshot trước thay đổi nằm trong `crawler/data/output/`, bị Git ignore; đọc cấu hình local trong tiến trình, không ghi hoặc in credential.
+  - Đã commit transaction dữ liệu, cập nhật đúng `sale_price` và `updated_at` của 4 sản phẩm đã chọn; không đổi schema hoặc mã ứng dụng.
+- Kết quả kiểm thử:
+  - Preview PostgreSQL read-only: `PASS`; đúng 4 sản phẩm ACTIVE, giá gốc khớp public API, chưa có sale price và giá mới dương/thấp hơn giá gốc.
+  - Transaction PostgreSQL: `PASS`, đúng 4 dòng được cập nhật; có điều kiện giá cũ/trạng thái, row lock và rollback toàn bộ khi điều kiện không khớp.
+  - `GET /api/products?onSale=true`: `PASS`, trả đúng 4 ID 18/44/67/145 và sale price dự kiến.
+  - HTML trang chủ: `PASS`, section Flash Sale render đủ AULA F75, Logitech G102, AKKO GH300 và HyperWork Fable.
+  - `git diff --check` cho nhật ký: `PASS`; không chạy build Java vì không sửa mã ứng dụng và không push.
+- Vướng mắc hoặc phần còn thiếu:
+  - Chưa mở PR nhật ký; chỉ chuyển `DONE` sau quy trình review/merge theo quy định repository.
+- Bước tiếp theo:
+  - Người dùng tải lại trang chủ để xem 4 sản phẩm; review nhật ký. Thay đổi giá này chưa có lịch tự hết hạn vì hệ thống hiện dùng `salePrice` cho mục Flash Sale.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
+## DATA-05-BE: Bổ sung mô tả và thông số kỹ thuật sản phẩm đã cào
+
+- Phụ trách: `@NgocYuh`
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/product-content-backend`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-15
+- Đã làm:
+  - Chốt model/JSONL contract và JSON response mẫu trong `docs/api/model-contract.md`, `docs/crawler/data-contract.md` trước task phụ thuộc `FE-CONTENT-01`.
+  - Importer lưu mô tả vào Product và thông số nhãn/giá trị vào `specifications.technicalSpecifications`, giữ metadata nguồn ở cấp ngoài; không đổi schema hoặc giá/biến thể/tồn kho.
+  - Parser đọc JSON-LD, specs_table và mô tả public HTML trong RSC Flight; không thực thi JavaScript. Hỗ trợ HTML mô tả/table/bullet của KICAP và giữ đoạn văn thuần.
+  - Chuẩn bị bổ sung nội dung từ cache của 218 sản phẩm, không tải lại/upload ảnh.
+  - Đã cập nhật mô tả và technicalSpecifications cho đủ 218 sản phẩm hiện có bằng sourceUrl; snapshot `crawler/data/output/catalog-2026-10-15/content-before.json` và payload `content-updates.json` ở workspace chính, bị Git ignore.
+  - Ba Razer Seiren V3 Chroma thiếu bảng thông số ở nguồn bán lẻ được bổ sung từ bảng thông số chính hãng Razer dòng RZ19-0506 (24 bit/96 kHz), không dùng dữ liệu dòng 32-Bit DSP.
+  - Bổ sung `products-enriched.jsonl` cho các lần import sau. Không đổi giá, 4 sản phẩm Flash Sale, ảnh, biến thể hoặc tồn kho.
+  - Web local được chạy lại bằng JAR đã verify của worktree Backend, dùng template/static source của workspace Frontend để kiểm tra tích hợp trên cổng 8080.
+- Kết quả kiểm thử:
+  - Parser offline và importer có test hồi quy cho lưu description, nested specs, chống ghi đè provenance, dữ liệu lỗi, chunk UTF-8, timestamp trùng Flight ID và nội dung HTML.
+  - `python -m unittest discover -s crawler/tests -v`: PASS, 13 test.
+  - `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify`: BUILD SUCCESS, 196 test, 193 pass, 0 failure/error, 3 PostgreSQL Testcontainers test skip vì Docker không chạy. Cờ Byte Buddy cần cho JDK 26 theo nhật ký repo; lượt sandbox đầu bị chặn loopback.
+  - Preview + transaction + đối soát sau commit PostgreSQL: PASS, đúng 218 nội dung khớp payload; mô tả không rỗng và technicalSpecifications có dữ liệu ở cả 218 sản phẩm.
+  - API sản phẩm ID 145: PASS, mô tả 2.582 ký tự, 9 thông số, salePrice vẫn 416.000đ; FE-CONTENT-01 kiểm tra trình duyệt desktop/mobile.
+- Vướng mắc hoặc phần còn thiếu:
+  - Có 8 mô tả ngắn do nguồn chỉ cung cấp ít thông tin; giữ đúng dữ kiện có nguồn, không tự bổ sung tính năng hoặc kích thước.
+  - Chưa mở PR; chưa chuyển DONE trước khi review/merge theo quy định repository.
+- Bước tiếp theo:
+  - Review branch Backend riêng, liên kết FE-CONTENT-01; metadata truy vết vẫn lưu trong database nhưng không đưa vào bảng thông số của khách hàng.
 - Ngày hoàn tất: `Chưa hoàn tất`
 
 ## Mẫu mục mới
@@ -1086,3 +1177,81 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - ...
 - Ngày hoàn tất: YYYY-MM-DD hoặc `Chưa hoàn tất`
 ```
+
+## FIX-STOCK-API: Sửa tồn kho public và đối soát checkout
+
+- Phụ trách: `@NgocYuh`
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/fix-store-availability`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-16
+- Task liên kết: `FE-CHECKOUT-UX`; phụ thuộc commit local DATA-05-BE `6dadac9`, chưa merge main nên task trước vẫn IN REVIEW.
+- Bàn giao GitHub: `https://github.com/NgocYuh/UTEGear/tree/codex/fix-store-availability`; push theo yêu cầu người dùng, chưa mở PR/merge.
+- Kiểm tra trước push: checkout sạch efc33e0, `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` BUILD SUCCESS, 199 test, 0 failure/error, 4 PostgreSQL test skip do Docker không sẵn có. Lượt clean đầu bị Windows khóa JAR localhost đang dùng; build lại bằng checkout riêng thành công, giữ ứng dụng đang chạy. Thay đổi sau build chỉ cập nhật nhật ký.
+- Đã làm:
+  - Tái hiện PostgreSQL lower(bytea) khi availability gọi với province null.
+  - Tách query không lọc tỉnh khỏi query lọc tỉnh; không truyền null vào lower(), giữ khóa tồn kho Store + ProductVariant và pessimistic write của thao tác trừ kho.
+  - Cập nhật endpoint contract trước phần frontend: bỏ trống/tỉnh trắng trả tất cả cửa hàng hoạt động; không có inventory trả zero/empty array.
+  - Người dùng đã yêu cầu tạo 1 cửa hàng demo và 10 chiếc mỗi sản phẩm. Tạo UTEGear Demo (id 1), 218 dòng Store + ProductVariant, tổng 2.180 chiếc trong database dùng thử đã cấu hình; kiểm tra bảng cửa hàng/tồn kho rỗng trước khi ghi và dùng transaction, không reset tồn kho có sẵn. Script/báo cáo vận hành nằm trong crawler/data/output bị ignore, không đưa dữ liệu demo vào migration.
+  - Đối chiếu source admin: AdminCatalogService cộng tồn kho từ StoreInventoryRepository; user dùng cùng dữ liệu Store + ProductVariant. Admin quản trị và user mua hàng có giao diện khác theo vai trò.
+- Kết quả kiểm thử:
+  - Bổ sung test province null/trắng, empty inventory và integration PostgreSQL cho query không lọc/case-insensitive.
+  - `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify`: BUILD SUCCESS, 199 test, 0 failure/error, 4 skip vì Docker không sẵn có.
+  - Chạy jar đã build trên localhost:8080: availability không truyền tỉnh, tỉnh rỗng và TP.HCM đều HTTP 200 trước seed (stock 0); sau seed sản phẩm 218 stock 10.
+  - Trình duyệt Edge thật, tài khoản CUSTOMER demo riêng: đăng nhập, mua ngay sản phẩm 218, chọn địa chỉ/cửa hàng demo, quote COD, tạo đơn PENDING UTE-1792084956-0B8A2C88, giỏ rỗng, kho giảm 10 xuống 9; hủy qua chức năng customer thành CANCELLED và kho hoàn lại 10. Không dùng tài khoản/cart của người dùng.
+- Vướng mắc hoặc phần còn thiếu:
+  - PostgreSQL Testcontainers chưa chạy do thiếu Docker; đã kiểm tra API và trừ/hoàn kho trên PostgreSQL local đang cấu hình. Chưa mở PR hoặc merge; không đánh dấu DONE.
+- Bước tiếp theo:
+  - Review backend riêng với FE-CHECKOUT-UX. Runtime hiện dùng jar từ worktree .local-reference/store-availability-backend và templates/static của workspace frontend; chạy lại backend từ branch cũ sẽ không có bản sửa này.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
+## DATA-06-BE: Sửa đọc nội dung Flight và tách bảng thông số
+
+- Phụ trách: `@NgocYuh`
+- Trạng thái: `IN REVIEW`
+- Branch: `codex/fix-product-content-records`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-16
+- Task liên kết: `FE-CHECKOUT-UX` (phần hiển thị đơn hàng/sản phẩm); tiếp nối DATA-05-BE commit local 6dadac9 chưa merge nên task trước vẫn IN REVIEW.
+- Đã làm: Xác định record Flight dạng JSON đóng ngay trước text record không có newline; cập nhật nhận diện boundary và tách bảng thông số khỏi mô tả. API/model contract không thay đổi.
+- Bàn giao GitHub: `https://github.com/NgocYuh/UTEGear/tree/codex/fix-product-content-records`; push theo yêu cầu người dùng, chưa mở PR/merge.
+- Kiểm tra trước push: `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` BUILD SUCCESS tại commit 35258be, 196 test, 0 failure/error, 3 PostgreSQL test skip do Docker không sẵn có; Python PASS 14/14. Thay đổi sau build chỉ cập nhật nhật ký.
+- Kết quả kiểm thử:
+  - Crawler unittest: PASS 14/14; regression record ngay sau JSON, UTF-8 byte length, timestamp boundary, tách bảng khỏi mô tả, giữ labelled notes. Test xuất file ban đầu bị sandbox chặn thư mục temp hệ thống; chạy lại bằng TMP/TEMP trong crawler/data/raw thành công.
+  - Đọc lại 218 trang cache, chỉ chuẩn bị 82 bản ghi có thay đổi; đối chiếu tên/source URL trước khi update. Transaction cập nhật description và technicalSpecifications, giữ nguyên giá/ảnh/biến thể/tồn kho/đơn hàng; snapshot trước ghi trong crawler/data/output/catalog-readable-2026-10-16/content-before.json bị ignore. Chạy verify JDBC sau ghi: VERIFIED 82/82.
+  - Lexar H31: từ đoạn tóm tắt bị cắt và 1 dòng sai thành mô tả nhiều đoạn và 8 thông số (model, màu, bảo hành, chất liệu, kích thước, tương thích, thương hiệu, cổng kết nối), lấy từ cache đúng sản phẩm, không tự thêm khả năng.
+  - File import 218 sản phẩm đã đồng bộ ở crawler/data/output/catalog-readable-2026-10-16/products-enriched.jsonl (ignored). Không thay đổi model/endpoint/JSON contract.
+  - FE-CHECKOUT-UX đã kiểm tra trình duyệt thật desktop/mobile: 8 dòng và mô tả >1.000 ký tự hiển thị đúng. Lượt triển khai local trước yêu cầu push chỉ sửa Python nên chưa chạy lại Maven; đã chạy clean verify trước bàn giao GitHub như ghi ở trên.
+- Vướng mắc hoặc phần còn thiếu: Chưa mở PR/merge, task giữ IN REVIEW. Nội dung phụ thuộc độ đầy đủ/chính xác của nguồn đã cào.
+- Bước tiếp theo: Review riêng DATA-06-BE và liên kết FE-CHECKOUT-UX; chỉ đánh dấu DONE sau merge.
+- Ngày hoàn tất: `Chưa hoàn tất`
+
+
+## BE-LOCAL-DEMO-TOOLS: Bàn giao cách chạy và nhập dữ liệu demo local
+
+- Phụ trách: `@NgocYuh` (Backend).
+- Trạng thái: `IN REVIEW`.
+- Branch: `codex/local-demo-tools`.
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/68 (PR tích hợp INT-LOCAL-DEMO).
+- Ngày cập nhật: 2026-10-16.
+- Task liên kết: `INT-LOCAL-DEMO`, `FE-LOCAL-PUBLISH`.
+- Đã làm: Đưa script nhập catalog đã dùng local vào scripts/demo, thêm ValidateOnly và giới hạn loopback/no redirects, nhận đường dẫn dữ liệu cục bộ thay vì commit dataset. Hướng dẫn dùng cùng database đang có để giữ catalog/giá/tồn kho và cách nhập sang database QA mới; không đưa cấu hình hoặc dữ liệu tài khoản/địa chỉ/đơn hàng lên Git. Đồng bộ nhật ký DATA-03/DATA-04 và trạng thái PR #67 từ workspace đang chạy.
+- Kết quả kiểm thử: PowerShell script: PASS syntax, ValidateOnly không gọi mạng/đăng nhập, giới hạn số dòng, chặn 3 URL không an toàn và catalog rỗng; dữ liệu cục bộ kiểm tra đủ 218 sản phẩm/6 category/45 brand. Python PASS 14/14; clean verify bản tích hợp BUILD SUCCESS, 202 test, 0 failure/error, 4 PostgreSQL skip do thiếu Docker.
+- Vướng mắc hoặc phần còn thiếu: Dữ liệu crawler nằm ở output bị ignore; máy mới cần cấu hình riêng và bản sao file JSONL/reference-data nếu dùng database mới.
+- Bước tiếp theo: Review trong INT-LOCAL-DEMO và chỉ đánh dấu DONE sau khi merge.
+- Ngày hoàn tất: `Chưa hoàn tất`.
+
+
+## INT-LOCAL-DEMO: Tích hợp đúng bản đang chạy local
+
+- Phụ trách: `@NgocYuh` (backend).
+- Trạng thái: `IN REVIEW`.
+- Branch: `codex/local-demo-integration`.
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/68.
+- Ngày cập nhật: 2026-10-16.
+- Task liên kết: `FE-LOCAL-PUBLISH`, `BE-LOCAL-DEMO-TOOLS`, `FE-CHECKOUT-UX`, `FIX-STOCK-API`, `DATA-06-BE`.
+- Đã làm: Hợp nhất các task Backend/Frontend từ nhánh riêng vào một checkout hoàn chỉnh; không thay đổi kiến trúc, API hoặc schema. Toàn bộ 128 file templates/static có SHA-256 khớp workspace local đang chạy sau chuẩn hóa CRLF/LF theo Git; ảnh nhị phân khớp nguyên byte. Giữ secret, catalog crawler, tài khoản và đơn hàng ngoài Git. Hướng dẫn ở docs/setup/local-demo-parity.md.
+- Kết quả kiểm thử: clean verify BUILD SUCCESS, 202 test, 0 failure/error, 4 PostgreSQL skip do thiếu Docker; JS PASS 41/41, crawler PASS 14/14, script PowerShell PASS. JAR chạy riêng cổng 18083 không override templates/static: 4 public API trả dữ liệu giống localhost:8080, 10 asset đóng gói (JS/CSS/banner) khớp local; API admin vẫn bảo vệ, home desktop/mobile và Lexar 8 thông số đúng, không tràn ngang, không có browser exception. Đã xem ảnh screenshot; kiểm tra chỉ đọc, không tạo/đổi đơn hàng hoặc tồn kho. Harness cần tải eager ảnh lazy để chụp toàn trang.
+- Vướng mắc hoặc phần còn thiếu: Chưa merge main. GitHub chứa đầy đủ code và hướng dẫn; dùng cùng cấu hình/database development hiện có để giữ sản phẩm, ảnh, Flash Sale và tồn kho. Dataset không nằm trong Git.
+- Bước tiếp theo: Review PR #68; chỉ đánh dấu DONE sau merge. Nhánh tích hợp đã push, sau build chỉ sửa nhật ký và merge các cập nhật nhật ký, không đổi runtime source.
+- Ngày hoàn tất: `Chưa hoàn tất`.

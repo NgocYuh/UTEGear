@@ -5,65 +5,15 @@
 
 <th:block th:fragment="header">
 
-    <!-- =====================================================
-         1. TOP UTILITY BAR (Secondary trust and quick links)
-         ===================================================== -->
-    <div class="topbar d-none d-md-block">
-        <div class="container d-flex justify-content-between align-items-center">
-
-            <div class="topbar-slogan">
-                <span class="slogan-tag">Official</span>
-                <span>UTEGear &mdash; Phụ kiện gaming &amp; công nghệ chính hãng. Miễn phí vận chuyển từ 500K!</span>
-            </div>
-
-            <div class="topbar-links">
-                <a href="/stores">
-                    <i class="bi bi-geo-alt"></i>
-                    <span>Hệ thống cửa hàng</span>
-                </a>
-
-                <a href="/contact">
-                    <i class="bi bi-headset"></i>
-                    <span>Hỗ trợ khách hàng</span>
-                </a>
-
-                <span class="topbar-divider" aria-hidden="true"></span>
-
-                <a href="/profile" data-session-authenticated hidden>
-                    <i class="bi bi-person-check-fill text-success"></i>
-                    <span data-session-name>Tài khoản</span>
-                </a>
-                <a href="/admin" data-admin-link hidden class="ms-2" style="background: rgba(226, 27, 35, 0.15); color: #F87171; padding: 2px 8px; border-radius: 3px; font-weight: 700; text-decoration: none;">
-                    <i class="bi bi-speedometer2 me-1"></i> Trang Quản Trị
-                </a>
-                <a href="/login" data-session-guest>
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    <span>Đăng nhập</span>
-                </a>
-                <a href="/register" data-session-guest class="topbar-register">
-                    <i class="bi bi-person-plus"></i>
-                    <span>Đăng ký</span>
-                </a>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- =====================================================
-         2. MAIN COMMERCIAL HEADER ROW (Logo, Large Search, Actions)
-         ===================================================== -->
+    <!-- Main header: logo, search and account actions -->
     <header class="main-navbar">
         <div class="container">
             <div class="header-primary-row">
 
                 <!-- Brand / Logo -->
                 <a class="brand" href="/" aria-label="UTEGear Trang chủ">
-                    <div class="brand-icon" aria-hidden="true">
-                        <i class="bi bi-controller"></i>
-                    </div>
                     <div class="brand-text">
                         <span class="brand-name">UTE<span class="brand-accent">Gear</span></span>
-                        <span class="brand-slogan">Gear up. Game on.</span>
                     </div>
                 </a>
 
@@ -71,20 +21,12 @@
                 <div class="header-search-region d-none d-lg-block">
                     <form class="header-search-form" action="/search" method="get" role="search">
                         <div class="search-input-group">
-                            <span class="search-category-badge">
-                                <i class="bi bi-grid-fill"></i>
-                                <span>Tất cả</span>
-                            </span>
                             <input class="search-input" type="search" name="q"
                                    th:value="${keyword}"
-                                   placeholder="Tìm bàn phím cơ, chuột không dây, tai nghe eSports..."
+                                   placeholder="Bạn cần tìm gì?"
                                    aria-label="Tìm kiếm sản phẩm" autocomplete="off">
-                            <span class="search-shortcut-hint" aria-hidden="true" title="Phím tắt: nhấn '/' để tìm kiếm">
-                                <kbd>/</kbd>
-                            </span>
                             <button type="submit" class="search-submit-btn" aria-label="Tìm kiếm">
                                 <i class="bi bi-search"></i>
-                                <span>Tìm kiếm</span>
                             </button>
                         </div>
                     </form>
@@ -93,57 +35,39 @@
                 <!-- Commercial Header Actions (Account, Wishlist, Cart) -->
                 <div class="header-actions-group">
 
-                    <!-- Account Action (Desktop) -->
-                    <a href="/login" data-session-login class="header-action-item d-none d-sm-inline-flex"
-                       aria-label="Đăng nhập tài khoản">
-                        <div class="header-action-icon">
-                            <i class="bi bi-person"></i>
+                    <details class="account-dropdown" data-account-dropdown>
+                        <summary class="header-action-item account-trigger" aria-controls="headerAccountPanel" aria-expanded="false">
+                            <span class="header-action-icon"><i class="bi bi-person-circle" aria-hidden="true"></i></span>
+                            <span class="header-action-text">
+                                <span class="header-action-title" data-session-name>Đăng nhập</span>
+                            </span>
+                            <i class="bi bi-chevron-down account-chevron" aria-hidden="true"></i>
+                        </summary>
+                        <div class="account-panel" id="headerAccountPanel">
+                            <div class="account-identity" data-session-controls data-session-authenticated hidden>
+                                <strong data-session-name></strong>
+                                <span data-session-email></span>
+                            </div>
+                            <div class="account-guest" data-session-guest>
+                                <a href="/login"><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>Đăng nhập</a>
+                                <a href="/register"><i class="bi bi-person-plus" aria-hidden="true"></i>Đăng ký</a>
+                            </div>
+                            <a href="/profile" data-session-authenticated hidden><i class="bi bi-person" aria-hidden="true"></i>Tài khoản của tôi</a>
+                            <a href="/orders" data-session-authenticated hidden><i class="bi bi-bag" aria-hidden="true"></i>Đơn hàng của tôi</a>
+                            <a href="/wishlist"><i class="bi bi-heart" aria-hidden="true"></i>Danh sách yêu thích</a>
+                            <a href="/admin" data-admin-link hidden><i class="bi bi-shield-lock" aria-hidden="true"></i>Quản trị</a>
+                            <button type="button" data-session-logout data-session-authenticated hidden><i class="bi bi-box-arrow-right" aria-hidden="true"></i>Đăng xuất</button>
                         </div>
-                        <div class="header-action-text">
-                            <span class="header-action-label" data-session-label>Tài khoản</span>
-                            <span class="header-action-title">Đăng nhập</span>
-                        </div>
-                    </a>
-
-                    <!-- Admin Operations Center Quick Entry (Admin Only) -->
-                    <a href="/admin" data-admin-link hidden
-                       class="header-action-item d-none d-sm-inline-flex" style="display: none !important; background: rgba(6, 26, 61, 0.05); border: 1px solid rgba(6, 26, 61, 0.15);"
-                       aria-label="Khu vực quản trị" title="Khu vực quản trị UTEGear">
-                        <div class="header-action-icon" style="color: var(--color-primary);">
-                            <i class="bi bi-shield-lock-fill"></i>
-                        </div>
-                        <div class="header-action-text">
-                            <span class="header-action-label" style="color: var(--color-accent); font-weight: 700;">Hệ thống</span>
-                            <span class="header-action-title">Quản trị</span>
-                        </div>
-                    </a>
-
-                    <!-- Wishlist Action -->
-                    <a href="/wishlist" class="header-action-item" aria-label="Danh sách yêu thích" title="Danh sách yêu thích">
-                        <div class="header-action-icon">
-                            <i class="bi bi-heart"></i>
-                            <span class="action-count-badge" id="wishlistCount"
-                                  th:if="${wishlistCount != null && wishlistCount > 0}"
-                                  th:text="${wishlistCount}">0</span>
-                        </div>
-                        <div class="header-action-text d-none d-xl-flex">
-                            <span class="header-action-label">Yêu thích</span>
-                            <span class="header-action-title">Bộ sưu tập</span>
-                        </div>
-                    </a>
+                    </details>
 
                     <!-- Cart Action (Higher Transactional Prominence) -->
                     <a href="/cart" class="header-action-item cart-action-item" aria-label="Giỏ hàng" title="Giỏ hàng mua sắm">
                         <div class="header-action-icon">
                             <i class="bi bi-cart3"></i>
                             <span class="action-count-badge" id="cartCount"
-                                  th:if="${cartCount != null && cartCount > 0}"
-                                  th:text="${cartCount}">0</span>
+                                  th:text="${cartCount != null ? cartCount : 0}">0</span>
                         </div>
-                        <div class="header-action-text d-none d-sm-flex">
-                            <span class="header-action-label">Giỏ hàng</span>
-                            <span class="header-action-title">Thanh toán</span>
-                        </div>
+
                     </a>
 
                     <!-- Mobile Drawer Toggler (< 992px) -->
@@ -170,7 +94,7 @@
                         <a class="nav-link all-products-link" th:href="@{/products}"
                            th:classappend="${activePage == 'products'} ? 'active'">
                             <i class="bi bi-grid-3x3-gap-fill"></i>
-                            <span>Danh mục sản phẩm</span>
+                            <span>Danh mục</span>
                             <i class="bi bi-chevron-down ms-1" style="font-size: 0.7rem;"></i>
                         </a>
 
@@ -269,17 +193,10 @@
                         <a class="nav-link" th:href="@{/category/headset}">Tai nghe</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/category/connection-cables}">Dây kết nối</a>
+                        <a class="nav-link" th:href="@{/category/connection-cables}">Phụ kiện</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/category/gamepad}">Tay cầm</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-sale" th:href="@{/products?onSale=true}">
-                            <i class="bi bi-percent"></i>
-                            <span>Khuyến mãi</span>
-                        </a>
-                    </li>
+
+
                 </ul>
 
                 <div class="nav-secondary-badges">
@@ -287,10 +204,7 @@
                         <i class="bi bi-shop"></i>
                         <span>Showroom</span>
                     </a>
-                    <a href="/about">
-                        <i class="bi bi-shield-check"></i>
-                        <span>Bảo hành chính hãng</span>
-                    </a>
+
                 </div>
 
             </div>

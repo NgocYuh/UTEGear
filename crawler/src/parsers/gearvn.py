@@ -7,6 +7,7 @@ from html.parser import HTMLParser
 from typing import Any
 
 from models import RawOffer, RawProduct
+from parsers.product_content import read_product_content
 
 
 class _JsonLdCollector(HTMLParser):
@@ -48,15 +49,17 @@ class GearvnProductParser:
             images = [images]
         brand_value = product.get("brand")
         brand = brand_value.get("name") if isinstance(brand_value, dict) else brand_value
+        description, specifications = read_product_content(html, product)
         return RawProduct(
             source_name=self.source_name,
             source_url=source_url,
             name=product.get("name"),
-            description=product.get("description"),
+            description=description,
             brand=brand,
             category=product.get("category"),
             images=[str(image) for image in images if image],
             offers=self._parse_offers(product),
+            specifications=specifications,
         )
 
     def _find_product(self, documents: list[str]) -> dict[str, Any] | None:

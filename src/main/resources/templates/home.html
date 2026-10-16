@@ -1,287 +1,65 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
-<head>
-    <title>UTEGear - Thiết bị Gaming &amp; Linh kiện Công nghệ Chính hãng</title>
-</head>
+<head><title>UTEGear - Phụ kiện gaming chính hãng</title></head>
 <body>
-
-<main layout:fragment="content">
-
-    <!-- =====================================================
-         1. COMMERCIAL E-COMMERCE HERO BANNER SECTION (75% / 25% Split)
-         ===================================================== -->
-    <section class="hero-banner-section" aria-label="Khuyến mãi nổi bật">
-        <div class="container">
-            <div class="hero-banner-grid">
-                
-                <!-- Main Dominant Promotional Banner (~73-75% width) -->
-                <div class="main-banner-container">
-                    <div id="homeHeroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4500">
-                        <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#homeHeroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Banner 1"></button>
-                            <button type="button" data-bs-target="#homeHeroCarousel" data-bs-slide-to="1" aria-label="Banner 2"></button>
-                        </div>
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <a href="/products" class="main-banner-link" aria-label="Xem chương trình Đại tiệc Gaming Gear">
-                                    <img th:src="${mainBannerUrl != null ? mainBannerUrl : '/images/banners/home-main.jpg'}"
-                                         src="/images/banners/home-main.jpg"
-                                         alt="Đại tiệc Gaming Gear UTEGear"
-                                         class="banner-img"
-                                         onerror="this.src='/images/placeholder.png'">
-                                </a>
-                            </div>
-                            <div class="carousel-item">
-                                <a href="/category/keyboard" class="main-banner-link" aria-label="Xem bộ sưu tập Bàn phím cơ Custom">
-                                    <img src="/images/banners/home-main.jpg"
-                                         alt="Bàn phím cơ Custom cao cấp UTEGear"
-                                         class="banner-img"
-                                         onerror="this.src='/images/placeholder.png'">
-                                </a>
-                            </div>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#homeHeroCarousel" data-bs-slide="prev" aria-label="Banner trước">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Trước</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#homeHeroCarousel" data-bs-slide="next" aria-label="Banner kế tiếp">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Sau</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Secondary Side Stack (2 Promotional Banners with Equal Height) -->
-                <div class="side-banners-stack">
-                    <a href="/category/headset" class="side-banner-item" aria-label="Khuyến mãi Tai nghe Esports">
-                        <img th:src="${sideBannerTopUrl != null ? sideBannerTopUrl : '/images/banners/home-side-top.jpg'}"
-                             src="/images/banners/home-side-top.jpg"
-                             alt="Tai nghe Esports chính hãng"
-                             class="banner-img"
-                             onerror="this.src='/images/placeholder.png'">
-                    </a>
-                    <a href="/category/keycap" class="side-banner-item" aria-label="Khuyến mãi Keycap và Phụ kiện Custom">
-                        <img th:src="${sideBannerBottomUrl != null ? sideBannerBottomUrl : '/images/banners/home-side-bottom.jpg'}"
-                             src="/images/banners/home-side-bottom.jpg"
-                             alt="Keycap và Phụ kiện Custom"
-                             class="banner-img"
-                             onerror="this.src='/images/placeholder.png'">
-                    </a>
-                </div>
-
-            </div>
+<main layout:fragment="content" class="home-compact">
+    <section class="home-hero container" aria-label="Khuyến mãi nổi bật">
+        <a href="/products" class="home-hero-main">
+            <img src="/images/banners/home-compact-hero.png" th:src="${mainBannerUrl != null ? mainBannerUrl : '/images/banners/home-compact-hero.png'}" alt="Bàn phím cơ trong góc chơi gaming" width="1536" height="1024" fetchpriority="high" onerror="this.onerror=null;this.src='/images/placeholder.svg'">
+            <div class="home-hero-copy"><h1>NÂNG CẤP<br>GÓC CHƠI</h1><p>Gear chính hãng. Trải nghiệm khác biệt.</p><span class="home-hero-cta">Khám phá ngay <i class="bi bi-arrow-right" aria-hidden="true"></i></span></div>
+        </a>
+        <div class="home-hero-side">
+            <a href="/category/mouse" class="home-hero-tile"><img src="/images/banners/home-compact-mouse.png" alt="Chuột gaming" width="1536" height="1024" onerror="this.onerror=null;this.src='/images/placeholder.svg'"><span>Chuột gaming <i class="bi bi-arrow-right-circle" aria-hidden="true"></i></span></a>
+            <a href="/category/headset" class="home-hero-tile"><img src="/images/banners/home-compact-headset.png" alt="Tai nghe gaming" width="1536" height="1024" onerror="this.onerror=null;this.src='/images/placeholder.svg'"><span>Tai nghe <i class="bi bi-arrow-right-circle" aria-hidden="true"></i></span></a>
         </div>
     </section>
-
-    <!-- =====================================================
-         2. FULL-WIDTH PROMOTIONAL FLASH SALE BANNER
-         ===================================================== -->
-    <section class="flash-sale-promo-section" aria-label="Flash Sale Giờ Vàng">
-        <div class="container">
-            <div class="flash-sale-banner">
-                <a href="/products" class="flash-sale-banner-link" aria-label="Săn deal Flash Sale ngay">
-                    <img th:src="${flashSaleBannerUrl != null ? flashSaleBannerUrl : '/images/banners/home-flash-sale.jpg'}"
-                         src="/images/banners/home-flash-sale.jpg"
-                         alt="Flash Sale UTEGear - Ưu đãi linh kiện gaming giá tốt"
-                         class="flash-sale-img"
-                         width="1240"
-                         height="130"
-                         loading="eager"
-                         onerror="this.onerror=null; this.src='/images/banners/home-flash-sale.jpg';">
-                </a>
+    <nav class="container home-categories" aria-label="Danh mục phổ biến">
+        <a th:each="c, item : ${categories}" th:if="${item.index &lt; 6}" th:href="@{/products(categoryId=${c.id})}"><i class="bi" th:classappend="${c.slug == 'keyboard' ? 'bi-keyboard' : (c.slug == 'mouse' ? 'bi-mouse' : (c.slug == 'headset' ? 'bi-headphones' : 'bi-grid'))}" aria-hidden="true"></i><span th:text="${c.name}"></span></a>
+        <a href="/products" th:if="${categories == null or categories.isEmpty()}"><i class="bi bi-grid" aria-hidden="true"></i>Tất cả sản phẩm</a>
+    </nav>
+    <section class="container home-sale" aria-label="Flash Sale">
+        <div class="flash-sale-banner" data-flash-sale data-ends-at="2026-12-25T23:59:00+07:00">
+            <div class="flash-sale-copy"><h2><i class="bi bi-lightning-charge-fill" aria-hidden="true"></i> FLASH SALE</h2><p>Kết thúc lúc 23:59 ngày 25/12/2026 (giờ Việt Nam)</p></div>
+            <div class="flash-sale-timer" role="timer" aria-label="Thời gian còn lại của Flash Sale" aria-live="off" hidden>
+                <span class="flash-sale-time"><strong data-countdown-hours>--</strong><small>GIỜ</small></span>
+                <span class="flash-sale-time"><strong data-countdown-minutes>--</strong><small>PHÚT</small></span>
+                <span class="flash-sale-time"><strong data-countdown-seconds>--</strong><small>GIÂY</small></span>
             </div>
+            <span class="flash-sale-status" data-countdown-status role="status"></span>
+            <a href="/products?onSale=true" class="flash-sale-cta">Xem tất cả <span aria-hidden="true">→</span></a>
         </div>
-    </section>
-
-    <!-- =====================================================
-         3. COMPACT CATEGORY DISCOVERY RAIL (Horizontal Scroll)
-         ===================================================== -->
-    <section class="category-rail-section" aria-label="Danh mục phổ biến">
-        <div class="container">
-            <div class="category-rail-header">
-                <h2 class="category-rail-title">
-                    <i class="bi bi-grid-fill"></i> Danh mục mua sắm phổ biến
-                </h2>
-                <a href="/products" class="home-section-link">
-                    Xem tất cả danh mục <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-
-            <!-- Dynamic Category Rail from real model categories -->
-            <div class="category-rail-container">
-                <a th:each="c : ${categories}" th:href="@{/products(categoryId=${c.id})}" class="category-rail-pill"><i class="bi bi-grid"></i><span th:text="${c.name}"></span></a>
-            </div>
+        <div class="product-grid" th:if="${onSaleProducts != null and !onSaleProducts.isEmpty()}">
+            <th:block th:each="p, item : ${onSaleProducts}" th:if="${item.index &lt; 4}"><th:block th:replace="~{fragments/product-card :: productCard(${p})}"></th:block></th:block>
         </div>
+        <p class="home-empty" th:if="${onSaleProducts == null or onSaleProducts.isEmpty()}">Chưa có sản phẩm giảm giá. <a href="/products">Khám phá sản phẩm →</a></p>
     </section>
-
-    <!-- =====================================================
-         3. SECTION: SẢN PHẨM NỔI BẬT (Featured Products)
-         Dense 4-Column Grid Reusing Canonical Product Card
-         Dense 4-Column Product Grid
-         ===================================================== -->
-    <section class="products-section section" th:if="${featuredProducts != null && !featuredProducts.isEmpty()}">
-        <div class="container">
-            <div class="home-section-header">
-                <div class="home-section-header-left">
-                    <span class="home-section-eyebrow">Được cộng đồng đánh giá cao</span>
-                    <h2 class="home-section-title">
-                        <i class="bi bi-stars"></i> Sản phẩm nổi bật
-                    </h2>
-                    <p class="home-section-desc">Thiết bị công nghệ được tuyển chọn kỹ lưỡng theo hiệu năng và độ bền thực tế</p>
-                </div>
-                <a href="/products" class="home-section-link">
-                    Xem tất cả sản phẩm <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-
-            <div class="product-grid">
-                <th:block th:each="p : ${featuredProducts}">
-                    <div th:replace="~{fragments/product-card :: productCard(${p})}"></div>
-                </th:block>
-            </div>
-        </div>
+    <section class="container home-discovery" data-product-tabs aria-label="Khám phá sản phẩm">
+        <div class="home-discovery-heading"><div role="tablist" aria-label="Nhóm sản phẩm"><button type="button" id="tab-featured" role="tab" aria-controls="panel-featured" aria-selected="true" tabindex="0">Nổi bật</button>
+<button type="button" id="tab-bestsellers" role="tab" aria-controls="panel-bestsellers" aria-selected="false" tabindex="-1">Bán chạy</button>
+<button type="button" id="tab-latest" role="tab" aria-controls="panel-latest" aria-selected="false" tabindex="-1">Mới về</button></div><a href="/products" class="home-view-all">Xem tất cả →</a></div>
+        <section id="panel-featured" role="tabpanel" aria-labelledby="tab-featured" tabindex="0">
+    <div class="product-grid" th:if="${featuredProducts != null and !featuredProducts.isEmpty()}">
+        <th:block th:each="p, item : ${featuredProducts}" th:if="${item.index &lt; 4}"><th:block th:replace="~{fragments/product-card :: productCard(${p})}"></th:block></th:block>
+    </div>
+    <p class="home-empty" th:if="${featuredProducts == null or featuredProducts.isEmpty()}">Chưa có sản phẩm trong mục này. <a href="/products">Khám phá tất cả sản phẩm →</a></p>
+</section>
+<section id="panel-bestsellers" role="tabpanel" aria-labelledby="tab-bestsellers" tabindex="0" hidden>
+    <div class="product-grid" th:if="${bestSellers != null and !bestSellers.isEmpty()}">
+        <th:block th:each="p, item : ${bestSellers}" th:if="${item.index &lt; 4}"><th:block th:replace="~{fragments/product-card :: productCard(${p})}"></th:block></th:block>
+    </div>
+    <p class="home-empty" th:if="${bestSellers == null or bestSellers.isEmpty()}">Chưa có sản phẩm trong mục này. <a href="/products">Khám phá tất cả sản phẩm →</a></p>
+</section>
+<section id="panel-latest" th:with="latest=${latestProducts != null ? latestProducts : featuredProducts}" role="tabpanel" aria-labelledby="tab-latest" tabindex="0" hidden>
+    <div class="product-grid" th:if="${latest != null and !latest.isEmpty()}">
+        <th:block th:each="p, item : ${latest}" th:if="${item.index &lt; 4}"><th:block th:replace="~{fragments/product-card :: productCard(${p})}"></th:block></th:block>
+    </div>
+    <p class="home-empty" th:if="${latest == null or latest.isEmpty()}">Chưa có sản phẩm trong mục này. <a href="/products">Khám phá tất cả sản phẩm →</a></p>
+</section>
     </section>
-
-    <!-- =====================================================
-         4. INTENTIONAL ASYMMETRIC MERCHANDISING SPOTLIGHT
-         Left Editorial Curation Panel (360px) + Right 3-4 Products
-         ===================================================== -->
-    <section class="asymmetric-spotlight-section" th:if="${onSaleProducts != null && !onSaleProducts.isEmpty()}">
-        <div class="container">
-            <div class="asymmetric-spotlight-grid">
-                
-                <!-- Left Merchandising Context -->
-                <div class="spotlight-curation-panel">
-                    <div class="spotlight-curation-content">
-                        <span class="curation-badge">
-                            <i class="bi bi-lightning-charge-fill text-danger me-1"></i> Giá tốt trong tuần
-                        </span>
-                        <h2 class="curation-title">Ưu đãi linh kiện &amp; phụ kiện chính hãng</h2>
-                        <p class="curation-desc">
-                            Cơ hội nâng cấp dàn máy gaming và phụ kiện làm việc chuyên nghiệp với mức giá hấp dẫn nhất.
-                        </p>
-                        <ul class="curation-highlights">
-                            <li><i class="bi bi-check-circle-fill"></i> 100% Linh kiện mới nguyên seal</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Bảo hành chính hãng nhà phân phối</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Hỗ trợ trả góp &amp; giao hàng toàn quốc</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <a href="/products?onSale=true" class="btn btn-utama w-100">
-                            Xem tất cả ưu đãi <i class="bi bi-arrow-right ms-1"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Right Cluster of Real On-Sale Products -->
-                <div class="spotlight-products-cluster">
-                    <th:block th:each="p : ${onSaleProducts}">
-                        <div th:replace="~{fragments/product-card :: productCard(${p})}"></div>
-                    </th:block>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         5. SECTION: SẢN PHẨM BÁN CHẠY (Best Sellers)
-         Dense Product Grid Reusing Canonical Product Card
-         Dense Product Grid Layout
-         ===================================================== -->
-    <section class="products-section section" th:if="${bestSellers != null && !bestSellers.isEmpty()}">
-        <div class="container">
-            <div class="home-section-header">
-                <div class="home-section-header-left">
-                    <span class="home-section-eyebrow">Xu hướng thị trường</span>
-                    <h2 class="home-section-title">
-                        <i class="bi bi-fire"></i> Sản phẩm bán chạy nhất
-                    </h2>
-                    <p class="home-section-desc">Những dòng bàn phím, chuột và tai nghe có số lượng đơn hàng cao nhất</p>
-                </div>
-                <a href="/products" class="home-section-link">
-                    Xem bảng xếp hạng <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-
-            <div class="product-grid">
-                <th:block th:each="p : ${bestSellers}">
-                    <div th:replace="~{fragments/product-card :: productCard(${p})}"></div>
-                </th:block>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         6. SECTION: SẢN PHẨM MỚI VỀ (Latest Arrivals)
-         Dense Product Grid Reusing Canonical Product Card
-         Dense Product Grid Layout
-         ===================================================== -->
-    <section class="products-section section" th:if="${latestProducts != null && !latestProducts.isEmpty()}">
-        <div class="container">
-            <div class="home-section-header">
-                <div class="home-section-header-left">
-                    <span class="home-section-eyebrow">Hàng mới cập nhật</span>
-                    <h2 class="home-section-title">
-                        <i class="bi bi-clock-history"></i> Sản phẩm mới về kho
-                    </h2>
-                    <p class="home-section-desc">Các mã sản phẩm mới nhất vừa được nhập về hệ thống kho UTEGear</p>
-                </div>
-                <a href="/products" class="home-section-link">
-                    Xem tất cả hàng mới <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-
-            <div class="product-grid">
-                <th:block th:each="p : ${latestProducts}">
-                    <div th:replace="~{fragments/product-card :: productCard(${p})}"></div>
-                </th:block>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         7. SHOWROOMS & TRẢI NGHIỆM THỰC TẾ (Real Store Data)
-         Commercial Showroom Discovery Cards
-         ===================================================== -->
-    <section class="home-showrooms-section section" th:if="${stores != null && !stores.isEmpty()}">
-        <div class="container">
-            <div class="home-section-header">
-                <div class="home-section-header-left">
-                    <span class="home-section-eyebrow">Trực tiếp trải nghiệm</span>
-                    <h2 class="home-section-title">
-                        <i class="bi bi-shop"></i> Hệ thống Showroom UTEGear
-                    </h2>
-                    <p class="home-section-desc">Ghé thăm showroom gần bạn nhất để gõ thử switch bàn phím, cầm thử chuột và nhận hàng trực tiếp</p>
-                </div>
-                <a href="/stores" class="home-section-link">
-                    Xem tất cả điểm bán <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-
-            <div class="home-showrooms-grid">
-                <a th:each="s : ${stores}" th:href="@{'/stores/' + ${s.id}}" class="home-showroom-card">
-                    <div>
-                        <div class="home-showroom-header">
-                            <i class="bi bi-geo-alt-fill"></i>
-                            <h3 th:text="${s.name}">Showroom UTEGear</h3>
-                        </div>
-                        <div class="home-showroom-meta">
-                            <span><i class="bi bi-pin-map text-danger"></i> <strong th:text="${s.address}">Địa chỉ</strong></span>
-                            <span><i class="bi bi-telephone text-primary"></i> Hotline: <strong th:text="${s.phone}">0901234567</strong></span>
-                            <span><i class="bi bi-clock text-muted"></i> Giờ mở cửa: <strong th:text="${s.openingTime} + ' - ' + ${s.closingTime}">08:00 - 22:00</strong></span>
-                        </div>
-                    </div>
-                    <div class="home-showroom-action">
-                        <span>Chi tiết showroom &amp; sản phẩm có sẵn</span>
-                        <i class="bi bi-chevron-right ms-auto"></i>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
 </main>
-
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/domain/flash-sale.js}" defer></script>
+    <script th:src="@{/js/components/product-tabs.js}" defer></script>
+</th:block>
 </body>
 </html>

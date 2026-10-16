@@ -256,3 +256,68 @@ test('Expired local session clears private UI through the logout event', () => {
     assert.equal(context.sessionStorage.getItem(api.Session.key), null);
     assert.ok(events.some(event => event.type === 'utegear:logout'));
 });
+
+function purchaseFixture(quantity = '2', stock = '5') {
+    const buy = { disabled: false }, add = { disabled: false };
+    const option = { value: '77', dataset: { stock } };
+    const status = { textContent: '', classList: { toggle() {} } };
+    const nodes = new Map([
+        ['[data-detail-buy-now]', buy], ['[data-detail-add]', add],
+        ['[data-detail-variant]', { selectedOptions: [option] }],
+        ['#quantity', { value: quantity }], ['[data-view-status]', status]
+    ]);
+    return { buy, add, status, root: {
+        dataset: { productId: '22', stockReady: 'true' },
+        querySelector: key => nodes.get(key), setAttribute() {},
+        syncPurchaseButtons() { buy.disabled = false; add.disabled = false; }
+    } };
+}
+
+test('Buy now adds the selected variant then opens checkout without placing an order', async () => {
+    const { context, api, calls, responses } = setup();
+    const { root } = purchaseFixture();
+    responses.push({ status: 200, data: { itemCount: 2, items: [] } });
+    await api.Views.buyNow(root);
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].url, '/api/cart/items');
+    assert.deepEqual(JSON.parse(calls[0].body), { variantId: 77, quantity: 2 });
+    assert.equal(context.location.href, '/checkout');
+});
+
+test('Buy now asks guests to log in with a product-page return URL', async () => {
+    const { context, api, calls } = setup();
+    api.Session.clear(); context.location.pathname = '/products/22';
+    await api.Views.buyNow(purchaseFixture().root);
+    assert.equal(context.location.href, '/login?redirect=%2Fproducts%2F22');
+    assert.equal(calls.length, 0);
+});
+
+test('Buy now rejects quantities above verified stock without changing the cart', async () => {
+    const { api, calls } = setup();
+    const { root, status } = purchaseFixture('6', '5');
+    await api.Views.buyNow(root);
+    assert.equal(calls.length, 0);
+    assert.match(status.textContent, /tồn kho/);
+});
+
+test('Buy now prevents duplicate requests while the first click is pending', async () => {
+    const { context, api } = setup();
+    const { root } = purchaseFixture();
+    let finish, requests = 0;
+    api.Cart.add = async () => { requests++; await new Promise(resolve => { finish = resolve; }); };
+    const first = api.Views.buyNow(root);
+    await api.Views.buyNow(root);
+    assert.equal(requests, 1);
+    finish(); await first;
+    assert.equal(context.location.href, '/checkout');
+});
+
+test('A cart error keeps the customer on the product page and permits retry', async () => {
+    const { context, api, responses } = setup();
+    const { root, status, buy } = purchaseFixture();
+    responses.push({ status: 409, data: { message: 'Không đủ tồn kho' } });
+    await api.Views.buyNow(root);
+    assert.equal(context.location.href, undefined);
+    assert.equal(buy.disabled, false);
+    assert.match(status.textContent, /Không đủ tồn kho/);
+});

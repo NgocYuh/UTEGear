@@ -23,6 +23,7 @@ class RawProduct:
     category: str | None
     images: list[str] = field(default_factory=list)
     offers: list[RawOffer] = field(default_factory=list)
+    specifications: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -45,6 +46,7 @@ class ProductRecord:
     base_price: int
     image_urls: list[str]
     variants: list[ProductVariantRecord]
+    specifications: dict[str, str] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

@@ -21,6 +21,8 @@
     min-width: 0;
 }
 
+.price-original { font-size: .72rem; color: #64748B; font-weight: 400; }
+
 .product-card:hover {
     border-color: #CBD5E1;
     box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);

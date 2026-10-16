@@ -20,6 +20,29 @@ Mỗi dòng UTF-8 là một object với các field:
 - `name`, `description`, `brand`, `category`, `base_price`: dữ liệu sản phẩm đã làm sạch.
 - `image_urls`: URL ảnh nguồn, không phải file ảnh tải về.
 - `variants`: danh sách gồm `sku`, `option_values`, `price`, `is_default`.
+- `specifications` (tùy chọn): object nhãn → chuỗi giá trị kỹ thuật lấy từ nguồn, không chứa HTML.
+
+## Bổ sung nội dung DATA-05-BE / FE-CONTENT-01
+
+`description` là văn bản thuần, giữ xuống dòng giữa đoạn. Importer lưu mô tả vào Product.
+Các field `specifications` của JSONL được lưu trong `Product.specifications.technicalSpecifications`;
+`sourceName`, `sourceUrl`, `crawledAt` tiếp tục ở object ngoài và không phải thông số hiển thị.
+Frontend hiển thị bảng nhãn/giá trị từ `technicalSpecifications`, dùng text escaping cho cả hai cột.
+Không suy đoán thông số khi nguồn không cung cấp; thiếu thông số thì hiển thị trạng thái chưa cập nhật.
+
+Ví dụ response chi tiết `/api/products/{id}` (các field còn lại giữ nguyên contract):
+
+```json
+{
+  "description": "Lót chuột có bề mặt vải Cordura.\n\nKích thước 900 x 400 x 5 mm.",
+  "specifications": {
+    "technicalSpecifications": {"Kích thước": "900 x 400 x 5 mm", "Chất liệu": "Vải Cordura"},
+    "sourceName": "gearvn",
+    "sourceUrl": "https://gearvn.com/products/example",
+    "crawledAt": "2026-10-15T00:00:00Z"
+  }
+}
+```
 
 `category` chỉ nhận `ban-phim`, `chuot`, `tai-nghe`, `keycap`, `switch`, `phu-kien`. Giá dùng số
 nguyên VND dương. Mỗi sản phẩm phải có ít nhất một biến thể, SKU không rỗng/không trùng và đúng
