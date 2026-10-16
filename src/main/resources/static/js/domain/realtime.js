@@ -2,13 +2,16 @@ window.UTEGear = window.UTEGear || {};
 
 // Stomp is supplied by the page. BE /ws is native WebSocket, not SockJS.
 UTEGear.Realtime = {
-    start({ admin = false, orderId = null, resync, onEvent, onState = () => {} }) {
+    start({ admin = false, support = false, orderId = null, resync, onEvent, onState = () => {} }) {
         if (typeof resync !== 'function') throw new Error('Cần tải lại REST state trước khi nhận realtime');
         let client, retry, expiry, stopped = false, attempt = 0, generation = 0;
         const seen = new Set();
         const accepts = event => {
             if (!event || typeof event.eventId !== 'string' || !event.eventId
                 || !Number.isFinite(Date.parse(event.occurredAt)) || !event.data) return false;
+            if (support) return (event.type === 'SUPPORT_MESSAGE_CREATED'
+                && Number.isSafeInteger(event.data.id) && Number.isSafeInteger(event.data.conversationId))
+                || (event.type === 'SUPPORT_CONVERSATION_ASSIGNED' && Number.isSafeInteger(event.data.id));
             if (admin) return event.type === 'ORDER_CREATED' && Number.isSafeInteger(event.data.orderId);
             return event.type === 'ORDER_STATUS_CHANGED' && Number(event.data.orderId) === Number(orderId)
                 && ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPING', 'COMPLETED', 'CANCELLED'].includes(event.data.status);
@@ -58,7 +61,7 @@ UTEGear.Realtime = {
                         if (seen.size > 500) seen.delete(seen.values().next().value);
                         onEvent(event);
                     };
-                    client.subscribe(admin ? '/topic/admin/orders' : '/user/queue/orders', frame => {
+                    client.subscribe(support ? '/user/queue/support' : admin ? '/topic/admin/orders' : '/user/queue/orders', frame => {
                         if (stopped || current !== generation) return;
                         try {
                             const event = JSON.parse(frame.body);

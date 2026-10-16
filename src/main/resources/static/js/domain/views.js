@@ -204,6 +204,8 @@ UTEGear.Views = {
         document.querySelectorAll('[data-session-guest]').forEach(element => this.visible(element, !authenticated));
         document.querySelectorAll('[data-session-authenticated]').forEach(element => this.visible(element, authenticated));
         document.querySelectorAll('[data-admin-link]').forEach(link => this.visible(link, admin));
+        document.querySelectorAll('[data-support-link]').forEach(link => this.visible(link,
+            admin || session?.user?.roles?.includes('EMPLOYEE') === true));
         document.querySelectorAll('[data-session-name]').forEach(element => {
             element.textContent = session?.user?.fullName || 'Tài khoản';
         });
