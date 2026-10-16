@@ -21,6 +21,7 @@
 @import url('components/skeleton.css');
 @import url('components/empty-state.css');
 @import url('components/pagination.css');
+@import url('components/support-chat.css');
 
 /* 3. Page Layouts */
 @import url('pages/home.css');
