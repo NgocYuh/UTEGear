@@ -1310,6 +1310,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Phụ trách: `@NgocYuh` (Backend).
 - Trạng thái: `IN PROGRESS`.
 - Branch: `codex/fix-showroom-stock-list`.
+- Bàn giao GitHub theo yêu cầu người dùng: https://github.com/NgocYuh/UTEGear/tree/codex/fix-showroom-stock-list. Source đã kiểm tra tại `5bf4597`; trước push chỉ thêm dòng nhật ký này, không thay đổi runtime. Chưa mở PR/merge; nhánh chứa các commit phụ thuộc chi nhánh/tồn kho/checkout đã kiểm tra trước đó.
 - Pull Request: Chưa mở.
 - Ngày cập nhật: 2026-10-17.
 - Nguyên nhân: StorefrontViewController.store luôn gán products=List.of(), nên trang chi nhánh hiện 0 sản phẩm dù kho đã có hàng. Lượt QA trước chỉ kiểm tra kho và checkout, bỏ sót route showroom.
