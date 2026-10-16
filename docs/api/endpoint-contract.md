@@ -55,6 +55,10 @@ Chi tiết filter, DTO và lỗi: [`auth-catalog-contract.md`](auth-catalog-cont
 
 ### Store và quản trị cửa hàng
 
+Checkout theo chi nhánh (`DEMO-STOCK-BE-03` → `CHECKOUT-BRANCH-FE-03`): người mua chọn
+`fulfillmentStoreId` ở cả quote và tạo đơn. Quote trả `fulfillmentStore: {id, name}`;
+đổi chi nhánh phải quote lại. Không thay đổi endpoint/model; tồn kho trừ/hoàn theo chi nhánh của đơn.
+
 | Method | Path | Quyền | Kết quả chính |
 |---|---|---|---|
 | GET | `/api/stores` | PUBLIC | `200 StoreSummary[]` |

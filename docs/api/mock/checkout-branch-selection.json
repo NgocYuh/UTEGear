@@ -1,0 +1,12 @@
+{
+  "request": {
+    "addressId": 1,
+    "fulfillmentStoreId": 2,
+    "paymentMethod": "COD",
+    "couponCode": null,
+    "note": null,
+    "items": [{ "variantId": 218, "quantity": 1 }]
+  },
+  "quoteStore": { "id": 2, "name": "UTEGear Demo Hà Nội" },
+  "changedStoreRequiresNewQuote": true
+}

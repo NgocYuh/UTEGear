@@ -1286,3 +1286,18 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc: chưa mở PR/push; kiểm thử PostgreSQL bằng Testcontainers chưa chạy vì thiếu Docker. PostgreSQL development được xác minh qua API thật.
 - Bước tiếp theo: review backend riêng, liên kết CHAT-FE-02; chỉ đổi DONE sau merge.
 - Ngày hoàn tất: Chưa hoàn tất.
+
+## DEMO-STOCK-BE-03: Bổ sung kho hai chi nhánh development
+
+- Phụ trách: `@NgocYuh` (Backend).
+- Trạng thái: `IN PROGRESS`.
+- Branch: `codex/demo-branch-inventory`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-16.
+- Task liên kết: `CHECKOUT-BRANCH-FE-03` (@trongsonho). Bàn giao trước frontend: endpoint/model contract và `docs/api/mock/checkout-branch-selection.json`.
+- Đã làm: Runner local opt-in xác nhận development; nhập 10 chiếc mỗi biến thể đang bán có kho ở CN-1 vào CN-2/CN-3. Chỉ thêm cặp Store + ProductVariant chưa có; transaction khóa ghi bảng kho, giữ nguyên kho đã bán và CN-1; không sửa schema/migration.
+- Database demo: CN-2 thêm 218 dòng, 2.180 chiếc; CN-3 thêm 218 dòng, 2.180 chiếc. Lệnh bật seeder không lưu trong cấu hình mặc định. CN-1 trước thao tác: 218 dòng, 2.179 chiếc.
+- Kiểm thử: DemoBranchInventoryTest PASS 3/3 gồm nhập đúng chi nhánh/biến thể active, giữ kho cũ và rerun không reset hàng đã bán/hết hàng; từ chối store không đúng demo. Đang kiểm tra quote/place/cancel trên API thật. Checkout hiện có đã gắn fulfillmentStoreId và từ chối đổi store của quote.
+- Vướng mắc: giới hạn session pool development khi hai ứng dụng cùng chạy; server QA được giảm pool xuống 2, giữ nguyên ứng dụng người dùng.
+- Bước tiếp theo: xác minh tồn kho và đặt/hủy đơn đúng chi nhánh; full verify bản cuối, review backend riêng.
+- Ngày hoàn tất: Chưa hoàn tất.
