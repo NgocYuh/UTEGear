@@ -9,6 +9,7 @@ UTEGear.AdminPages = {
     },
     roleLabels: {
         CUSTOMER: 'Khách hàng',
+        EMPLOYEE: 'Nhân viên',
         ADMIN: 'Quản trị viên'
     },
 
@@ -402,12 +403,12 @@ UTEGear.AdminPages = {
         const rows = root.querySelector('[data-admin-rows]');
         const currentEmail = UTEGear.Session.get()?.user?.email?.toLowerCase();
         const load = async () => {
-            const items = await UTEGear.API.get('/api/admin/users?page=0&size=100'); rows.replaceChildren();
+            const [items, storePage] = await Promise.all([UTEGear.API.get('/api/admin/users?page=0&size=100'), UTEGear.API.get('/api/admin/stores?page=0&size=100')]); rows.replaceChildren();
             for (const item of items) {
                 const row = this.node('tr'); this.cell(row, item.fullName);
                 this.cell(row, `${item.email}${item.phone ? ' · ' + item.phone : ''}`);
                 const roles = this.node('div', null, 'd-flex gap-2 flex-wrap');
-                for (const role of ['CUSTOMER', 'ADMIN']) {
+                for (const role of ['CUSTOMER', 'EMPLOYEE', 'ADMIN']) {
                     const label = this.node('label', null, 'form-check form-check-inline');
                     const input = this.node('input'); input.type = 'checkbox'; input.className = 'form-check-input'; input.value = role; input.checked = item.roles.includes(role);
                     if (item.email.toLowerCase() === currentEmail && role === 'ADMIN') {
@@ -417,13 +418,22 @@ UTEGear.AdminPages = {
                     }
                     label.append(input, document.createTextNode(' ' + this.roleLabels[role])); roles.append(label);
                 }
-                this.cell(row, roles); this.cell(row, this.badge(item.enabled, 'Đang dùng', 'Đã khóa'));
+                this.cell(row, roles);
+                const assignment = document.createElement('select'); assignment.className = 'form-select form-select-sm';
+                assignment.add(new Option('Chưa phân công', ''));
+                storePage.content.filter(store => store.active).forEach(store => assignment.add(new Option(store.name, store.id)));
+                assignment.value = item.assignedStoreId || '';
+                assignment.disabled = !item.roles.includes('EMPLOYEE');
+                roles.querySelector('input[value="EMPLOYEE"]').addEventListener('change', event => { assignment.disabled = !event.target.checked; if (assignment.disabled) assignment.value = ''; });
+                this.cell(row, assignment); this.cell(row, this.badge(item.enabled, 'Đang dùng', 'Đã khóa'));
                 this.cell(row, new Date(item.createdAt).toLocaleDateString('vi-VN'));
                 const actions = this.emptyCell(row, 'text-end admin-actions-cell');
                 const ownAccount = item.email.toLowerCase() === currentEmail;
                 const saveRoles = this.button('Lưu quyền', async () => {
                     const selected = [...roles.querySelectorAll('input:checked')].map(input => input.value);
-                    await UTEGear.API.put(`/api/admin/users/${item.id}/roles`, { roles: selected }); await load();
+                    await UTEGear.API.put(`/api/admin/users/${item.id}/roles`, { roles: selected });
+                    if (selected.includes('EMPLOYEE')) await UTEGear.API.put(`/api/admin/users/${item.id}/assigned-store`, { storeId: assignment.value ? Number(assignment.value) : null });
+                    await load();
                     this.status(root, 'Đã cập nhật vai trò. Người dùng cần đăng nhập lại để áp dụng quyền mới.');
                 });
                 saveRoles.title = ownAccount ? 'Có thể bỏ vai trò Khách hàng nhưng phải giữ vai trò Quản trị viên cho phiên đang dùng' : '';
