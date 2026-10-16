@@ -25,3 +25,14 @@ Authenticated STOMP clients subscribe to `/user/queue/support`. The server emits
 - `SUPPORT_CONVERSATION_ASSIGNED`: a `ConversationView` for the employee.
 
 The client must fetch the conversation detail again after reconnecting; WebSocket events are notifications, not the source of truth.
+
+## Development handoff DEMO-STAFF-BE-02 → CHAT-FE-02
+
+Không thêm trường API: frontend hiển thị `CN-<storeId>` và `NV-<employeeId>` từ ID thật,
+không hardcode ID fixture. Demo gồm 3 chi nhánh, 3 EMPLOYEE/chi nhánh; email đăng nhập
+`employee.cn<storeId>.<1..3>@demo.utegear.test`. Mật khẩu nằm trong report local bị ignore,
+không có trong JSON mẫu. Xem `docs/setup/demo-branches-staff.md`.
+
+Chatbox/inbox nhận `SUPPORT_MESSAGE_CREATED` theo `data.conversationId`; lọc trùng bằng
+message `id` và tải lại lịch sử REST sau reconnect. Chuyển chi nhánh phải vô hiệu hóa gửi
+cho đến khi conversation mới tải xong, bỏ response muộn của chi nhánh cũ.
