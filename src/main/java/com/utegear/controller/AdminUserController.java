@@ -47,4 +47,11 @@ public class AdminUserController {
             @Valid @RequestBody AdminDtos.UserRolesRequest request) {
         return service.changeRoles(id, request.roles(), principal.getUser().getId());
     }
+
+    @PutMapping("/{id}/assigned-store")
+    public AdminDtos.UserView changeAssignedStore(
+            @PathVariable Long id,
+            @Valid @RequestBody AdminDtos.UserStoreAssignmentRequest request) {
+        return service.changeAssignedStore(id, request.storeId());
+    }
 }

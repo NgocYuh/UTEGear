@@ -77,7 +77,7 @@ class PostgresqlMigrationRepositoryTest {
                                     'uk_product_images_one_primary')
                 """, Integer.class);
 
-        assertThat(migrationCount).isEqualTo(2);
+        assertThat(migrationCount).isEqualTo(3);
         assertThat(jsonbColumns).isGreaterThanOrEqualTo(3);
         assertThat(partialIndexes).isEqualTo(3);
     }

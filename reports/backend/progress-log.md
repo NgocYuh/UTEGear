@@ -1255,3 +1255,17 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc hoặc phần còn thiếu: Chưa merge main. GitHub chứa đầy đủ code và hướng dẫn; dùng cùng cấu hình/database development hiện có để giữ sản phẩm, ảnh, Flash Sale và tồn kho. Dataset không nằm trong Git.
 - Bước tiếp theo: Review PR #68; chỉ đánh dấu DONE sau merge. Nhánh tích hợp đã push, sau build chỉ sửa nhật ký và merge các cập nhật nhật ký, không đổi runtime source.
 - Ngày hoàn tất: `Chưa hoàn tất`.
+
+## CHAT-BE-01: Nhân viên cửa hàng và nền tảng chat hỗ trợ
+
+- Phụ trách: `@NgocYuh` (Backend).
+- Trạng thái: `IN PROGRESS`.
+- Branch: `feat/employee-support-chat-backend`.
+- Pull Request: `Chưa mở`.
+- Ngày cập nhật: 2026-10-16.
+- Đã làm: Tạo migration V3 thêm role `EMPLOYEE`, gán một nhân viên theo cửa hàng, bảng hội thoại/tin nhắn và index PostgreSQL. Thêm API mở/xem/nhận/gửi/đóng hội thoại, API admin phân công cửa hàng cho nhân viên, và realtime `/user/queue/support` publish sau commit.
+- Contract: `docs/api/support-chat-contract.md`, `docs/api/mock/support-chat.json`; endpoint/model contract đã liên kết trước khi Frontend bắt đầu task giao diện.
+- Kết quả kiểm thử: `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify`: BUILD SUCCESS; toàn bộ Surefire report không có failure/error, 4 test PostgreSQL skip vì Docker không sẵn có. Test riêng phân quyền Admin và STOMP queue: PASS 8/8.
+- Vướng mắc hoặc phần còn thiếu: Giao diện chat nổi, inbox nhân viên, JavaScript/STOMP client và responsive/accessibility là task Frontend riêng `CHAT-FE-01`, phụ thuộc contract này. Không có dữ liệu nhân viên production được seed.
+- Bước tiếp theo: Chạy full verify backend, mở PR `CHAT-BE-01`; sau đó Frontend triển khai `CHAT-FE-01` trên contract đã chốt.
+- Ngày hoàn tất: `Chưa hoàn tất`.

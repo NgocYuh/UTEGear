@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -54,6 +55,10 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_store_id")
+    private Store assignedStore;
 
     protected User() {
     }
@@ -135,5 +140,13 @@ public class User {
 
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    public Store getAssignedStore() {
+        return assignedStore;
+    }
+
+    public void setAssignedStore(Store assignedStore) {
+        this.assignedStore = assignedStore;
     }
 }

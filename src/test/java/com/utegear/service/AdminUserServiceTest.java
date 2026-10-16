@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import com.utegear.entity.Role;
 import com.utegear.exception.ApiException;
 import com.utegear.repository.RoleRepository;
+import com.utegear.repository.StoreRepository;
 import com.utegear.repository.UserRepository;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,7 @@ class AdminUserServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new AdminUserService(mock(UserRepository.class), mock(RoleRepository.class));
+        service = new AdminUserService(mock(UserRepository.class), mock(RoleRepository.class), mock(StoreRepository.class));
     }
 
     @Test

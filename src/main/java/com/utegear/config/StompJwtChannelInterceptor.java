@@ -73,7 +73,8 @@ public class StompJwtChannelInterceptor implements ChannelInterceptor {
             return;
         }
         if (!"/user/queue/orders".equals(destination)
-                && !"/user/queue/notifications".equals(destination)) {
+                && !"/user/queue/notifications".equals(destination)
+                && !"/user/queue/support".equals(destination)) {
             throw new MessagingException("STOMP destination không được phép");
         }
     }
