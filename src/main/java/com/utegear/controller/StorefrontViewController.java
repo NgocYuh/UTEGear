@@ -147,7 +147,7 @@ public class StorefrontViewController {
     @GetMapping("/stores/{storeId}")
     public String store(@PathVariable Long storeId, Model model) {
         model.addAttribute("store", storeService.findPublicDetail(storeId));
-        model.addAttribute("products", List.of());
+        model.addAttribute("products", productCatalogService.inStockAtStore(storeId));
         return "stores/store-detail";
     }
 

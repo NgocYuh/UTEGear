@@ -141,3 +141,11 @@ trước khi xác nhận nhận tại cửa hàng hoặc trừ tồn kho cho gia
 JSON trong `docs/api/mock/` là fixture phát triển Frontend, không chứng minh endpoint đã được triển khai.
 Khi contract có phạm vi dự kiến chưa có controller, `endpoint-contract.md` phải ghi rõ để demo và test
 không nhầm mock với chức năng đang chạy.
+
+## Checkout chọn chi nhánh — DEMO-STOCK-BE-03
+
+Giữ model hiện có: CheckoutRequest và PlaceOrderRequest nhận fulfillmentStoreId bắt buộc;
+CheckoutQuoteResponse.fulfillmentStore là {id, name}. ID trong JSON mẫu
+`docs/api/mock/checkout-branch-selection.json` chỉ minh họa, không hardcode trên frontend.
+Mã CN-<id> dùng ID thật. Thay đổi chi nhánh phải lấy quote mới; tồn kho luôn theo Store + ProductVariant.
+Task frontend phụ thuộc: CHECKOUT-BRANCH-FE-03.

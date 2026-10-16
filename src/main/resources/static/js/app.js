@@ -74,7 +74,9 @@ UTEGear.Auth = {
                     const fields = Object.fromEntries(new FormData(form));
                     if (form.dataset.auth === 'login') {
                         await this.login(fields.email, fields.password);
-                        location.href = UTEGear.Session.redirectTarget(new URLSearchParams(location.search).get('redirect'));
+                        const requested = new URLSearchParams(location.search).get('redirect');
+                        const roles = UTEGear.Session.get()?.user?.roles || [];
+                        location.href = UTEGear.Session.redirectTarget(requested || (roles.includes('EMPLOYEE') ? '/admin/support' : '/'));
                     } else {
                         await this.register(fields);
                         location.href = '/login';

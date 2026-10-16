@@ -842,15 +842,15 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 ## CHAT-FE-01: Chatbox hỗ trợ khách hàng
 
 - Phụ trách: `@trongsonho` (frontend).
-- Trạng thái: `IN REVIEW`.
+- Trạng thái: `DONE`.
 - Branch: `feat/employee-support-chat-ui`.
-- Pull Request: `Chưa mở`.
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/70.
 - Ngày cập nhật: 2026-10-16.
 - Đã làm: Thêm nút chat tròn nhận diện UTEGear (headset và tín hiệu đỏ), hộp chat có chọn cửa hàng, trạng thái đăng nhập, gửi tin nhắn, Escape/focus, mobile layout và kết nối REST theo contract `CHAT-BE-01`. Thêm inbox `/admin/support` cho nhân viên nhận chat chờ xử lý, đọc lịch sử và phản hồi; Admin có thể cấp `EMPLOYEE` và chọn cửa hàng phụ trách từ màn quản lý tài khoản.
 - Kết quả kiểm thử: `node --check src/main/resources/static/js/domain/support-chat.js`: PASS; stylesheet/layout đã lint whitespace bằng `git diff --check` trước commit.
 - Vướng mắc hoặc phần còn thiếu: Chưa kiểm thử trình duyệt thật hoặc phát STOMP end-to-end; widget phụ thuộc backend migration V3 và tài khoản EMPLOYEE đã được gán cửa hàng.
 - Bước tiếp theo: Review UI trên browser sau khi backend branch được tích hợp; bổ sung inbox nhân viên trong task UI riêng nếu nhóm cần màn hình vận hành chuyên biệt.
-- Ngày hoàn tất: `Chưa hoàn tất`.
+- Ngày hoàn tất: 2026-10-16; đối soát main trong CHAT-FE-02, merge commit `aea495369e4a1fb84f2ce80282d492524e61d293`.
 
 
 ## INT-LOCAL-DEMO: Tích hợp đúng bản đang chạy local
@@ -866,3 +866,35 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc hoặc phần còn thiếu: Chưa merge main. GitHub chứa đầy đủ code và hướng dẫn; dùng cùng cấu hình/database development hiện có để giữ sản phẩm, ảnh, Flash Sale và tồn kho. Dataset không nằm trong Git.
 - Bước tiếp theo: Review PR #68; chỉ đánh dấu DONE sau merge. Nhánh tích hợp đã push, sau build chỉ sửa nhật ký và merge các cập nhật nhật ký, không đổi runtime source.
 - Ngày hoàn tất: `Chưa hoàn tất`.
+
+## CHAT-FE-02: Hoàn thiện chat theo chi nhánh và mã nhân viên
+
+- Phụ trách: `@trongsonho` (Frontend).
+- Trạng thái: `IN PROGRESS` (triển khai và QA local hoàn tất; chưa mở PR).
+- Branch: `codex/chatbox-branches-staff`, phụ thuộc backend `codex/demo-branches-staff`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-16.
+- Task liên kết: `DEMO-STAFF-BE-02`; dùng contract và JSON mẫu bàn giao trước frontend tại `docs/api/support-chat-contract.md`, `docs/api/mock/support-chat.json`. Nhánh frontend chỉ sửa templates/static và kiểm thử frontend.
+- Đã làm: Chatbox chọn chi nhánh có CN-ID, hiển thị NV-ID và tên nhân viên, lịch sử và đăng nhập; nhận tin qua private STOMP, reconnect resync REST, polling dự phòng, lọc trùng message ID, chống gửi lặp và response muộn khi đổi chi nhánh. Sửa hidden/flex, tương phản tiêu đề, mobile/word-wrap và nội dung không tin cậy dùng textContent.
+- Inbox nhân viên nhận/đọc/gửi/đóng hội thoại, làm mới tự động, hiển thị ID chi nhánh/nhân viên/hội thoại, trạng thái mở/đóng. Nhân viên đăng nhập mặc định vào /admin/support, có liên kết Hộp thư hỗ trợ trên menu desktop/mobile.
+- Kiểm thử: node --test tests/frontend/*.test.mjs PASS 47/47, gồm guest, branch race, gửi lặp, XSS plain text, private support queue và reconnect buffering. Edge thật với API PostgreSQL development: PASS đăng nhập nhân viên/redirect, ba chi nhánh, gửi/nhận hai chiều, có SUPPORT_MESSAGE_CREATED trên socket của cả khách và nhân viên, SUBSCRIBE riêng, một message/mã, reconnect, đóng/mở hội thoại mới. Màn 390px không tràn ngang; đã xem ảnh QA tại crawler/data/output/demo-chat-browser (ignored).
+- Bản đóng gói cuối tại a6d5e2c: `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` BUILD SUCCESS, 208 test, 0 failure/error, 4 PostgreSQL Testcontainers skip do thiếu Docker. JAR chạy tại localhost:8080 không override template/static; lặp lại Edge E2E PASS hai chiều/STOMP/reconnect/mobile trên chính JAR này. Đã đóng riêng các hội thoại QA, giữ hội thoại khách hiện có. JS PASS 47/47.
+- Vướng mắc: Chưa PR/push; không đánh dấu DONE trước merge.
+- Bước tiếp theo: review riêng frontend sau backend; mật khẩu chỉ ở file local bị ignore, không trong report Git.
+- Ngày hoàn tất: Chưa hoàn tất.
+
+## CHECKOUT-BRANCH-FE-03: Khách chọn chi nhánh khi đặt hàng
+
+- Phụ trách: `@trongsonho` (Frontend).
+- Trạng thái: `IN PROGRESS` (triển khai và QA local hoàn tất, chưa PR).
+- Branch: `codex/checkout-branch-choice`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-17.
+- Task liên kết: `DEMO-STOCK-BE-03`; contract endpoint/model và JSON mẫu `docs/api/mock/checkout-branch-selection.json` đã bàn giao trước frontend. Backend giữ riêng nhánh `codex/demo-branch-inventory`.
+- Đã làm: Checkout hiển thị ba chi nhánh bằng mã CN-ID, tên/địa chỉ, nhãn chọn chi nhánh xuất hàng và giải thích giao hàng. Hiển thị chi nhánh trong tổng kết báo giá và sau khi đặt đơn. Đổi input/change xóa quote/tổng tiền, khóa xác nhận đến khi tính lại; bỏ response báo giá muộn, từ chối quote trả nhầm chi nhánh, kiểm tra lại ID chi nhánh trước submit.
+- Kiểm thử: node --test tests/frontend/*.test.mjs PASS 52/52, thêm 5 ca chọn ba chi nhánh, chặn submit chưa quote, đổi chi nhánh xóa quote, response muộn, mismatched quote và payload quote/place cùng chi nhánh. Full clean verify BUILD SUCCESS: 211 test, 0 failure/error, 4 PostgreSQL Testcontainers skip do thiếu Docker.
+- Edge thật + PostgreSQL development tại localhost:18086: PASS đặt COD tại CN-2 và CN-3, order detail đúng fulfillmentStore, chỉ kho chi nhánh được chọn giảm 1, hủy đơn hoàn đúng lượng; đổi store với quote cũ bị QUOTE_CHANGED, vượt kho bị INSUFFICIENT_STOCK. Không dùng tài khoản/cart/đơn người dùng. Tài khoản QA riêng; đơn thử đã hủy, giỏ QA đã dọn, snapshot kho ba chi nhánh khớp trước test.
+- Đã xem ảnh desktop 1365px/mobile 390px, không tràn ngang; ảnh nằm trong crawler/data/output/checkout-branch-browser bị ignore. Đã dừng riêng server QA, không khởi động nền thêm vào cổng 8080; người dùng restart ứng dụng để nạp template mới.
+- Vướng mắc: Chưa PR/push; task giữ IN PROGRESS trước review/merge. Không thay đổi API/schema trong task frontend.
+- Bước tiếp theo: review frontend riêng sau backend.
+- Ngày hoàn tất: Chưa hoàn tất.

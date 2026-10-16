@@ -1259,13 +1259,66 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 ## CHAT-BE-01: Nhân viên cửa hàng và nền tảng chat hỗ trợ
 
 - Phụ trách: `@NgocYuh` (Backend).
-- Trạng thái: `IN PROGRESS`.
+- Trạng thái: `DONE`.
 - Branch: `feat/employee-support-chat-backend`.
-- Pull Request: `Chưa mở`.
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/69.
 - Ngày cập nhật: 2026-10-16.
 - Đã làm: Tạo migration V3 thêm role `EMPLOYEE`, gán một nhân viên theo cửa hàng, bảng hội thoại/tin nhắn và index PostgreSQL. Thêm API mở/xem/nhận/gửi/đóng hội thoại, API admin phân công cửa hàng cho nhân viên, và realtime `/user/queue/support` publish sau commit.
 - Contract: `docs/api/support-chat-contract.md`, `docs/api/mock/support-chat.json`; endpoint/model contract đã liên kết trước khi Frontend bắt đầu task giao diện.
 - Kết quả kiểm thử: `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify`: BUILD SUCCESS; toàn bộ Surefire report không có failure/error, 4 test PostgreSQL skip vì Docker không sẵn có. Test riêng phân quyền Admin và STOMP queue: PASS 8/8.
 - Vướng mắc hoặc phần còn thiếu: Giao diện chat nổi, inbox nhân viên, JavaScript/STOMP client và responsive/accessibility là task Frontend riêng `CHAT-FE-01`, phụ thuộc contract này. Không có dữ liệu nhân viên production được seed.
 - Bước tiếp theo: Chạy full verify backend, mở PR `CHAT-BE-01`; sau đó Frontend triển khai `CHAT-FE-01` trên contract đã chốt.
-- Ngày hoàn tất: `Chưa hoàn tất`.
+- Ngày hoàn tất: 2026-10-16; đối soát main trong DEMO-STAFF-BE-02, merge commit `7b7f59aa988e68f7911e852b94587752019842e6`. Phần frontend được merge riêng PR #70.
+
+## DEMO-STAFF-BE-02: Ba chi nhánh và chín tài khoản nhân viên demo
+
+- Phụ trách: `@NgocYuh` (Backend).
+- Trạng thái: `IN PROGRESS`.
+- Branch: `codex/demo-branches-staff`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-16.
+- Task liên kết: `CHAT-FE-02` (@trongsonho); contract/model/JSON mẫu đã bàn giao trước phần frontend.
+- Người dùng xác nhận development/demo; giữ chi nhánh cũ, thêm Hà Nội/Đà Nẵng, ba nhân viên mỗi chi nhánh. Runner chỉ local, opt-in kèm xác nhận development; transaction khóa ghi, không reset dữ liệu cũ, mật khẩu ngẫu nhiên/hash, report local bị ignore, tái chạy giữ ID/password.
+- Contract: `docs/api/support-chat-contract.md`, `docs/api/mock/support-chat.json`, `docs/setup/demo-branches-staff.md`. Mã CN-/NV- suy ra từ ID thật, không đổi schema.
+- Kiểm thử: `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` BUILD SUCCESS, 208 test, 0 failure/error, 4 PostgreSQL skip do Docker thiếu. Bốn test mới kiểm tra đủ 3/9, password hash, rerun giữ ID/password, rollback xung đột và từ chối cấu hình cửa hàng không đúng.
+- Database development đã áp dụng: CN-1 giữ UTEGear Demo, CN-2 UTEGear Demo Hà Nội, CN-3 UTEGear Demo Đà Nẵng; nhân viên lần lượt NV-7..9, NV-10..12, NV-13..15. Không chỉnh kho, catalog hoặc đơn hàng. Mật khẩu ngẫu nhiên ở `crawler/data/output/demo-accounts/employee-accounts.csv` và report JSON cùng thư mục bị ignore, không ghi mật khẩu vào log/repo.
+- API thật localhost: PASS 9/9 đăng nhập EMPLOYEE, 9/9 từ chối API admin, 3 hội thoại đúng chi nhánh, 9/9 từ chối đọc/gửi/nhận chat khác chi nhánh, khách không truy cập inbox nhân viên. Tin nhắn hai chiều và lịch sử đúng; tài khoản QA riêng, không dùng session khách hiện có.
+- Vướng mắc: chưa mở PR/push; kiểm thử PostgreSQL bằng Testcontainers chưa chạy vì thiếu Docker. PostgreSQL development được xác minh qua API thật.
+- Bước tiếp theo: review backend riêng, liên kết CHAT-FE-02; chỉ đổi DONE sau merge.
+- Ngày hoàn tất: Chưa hoàn tất.
+
+## DEMO-STOCK-BE-03: Bổ sung kho hai chi nhánh development
+
+- Phụ trách: `@NgocYuh` (Backend).
+- Trạng thái: `IN PROGRESS`.
+- Branch: `codex/demo-branch-inventory`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-16.
+- Task liên kết: `CHECKOUT-BRANCH-FE-03` (@trongsonho). Bàn giao trước frontend: endpoint/model contract và `docs/api/mock/checkout-branch-selection.json`.
+- Đã làm: Runner local opt-in xác nhận development; nhập 10 chiếc mỗi biến thể đang bán có kho ở CN-1 vào CN-2/CN-3. Chỉ thêm cặp Store + ProductVariant chưa có; transaction khóa ghi bảng kho, giữ nguyên kho đã bán và CN-1; không sửa schema/migration.
+- Database demo: CN-2 thêm 218 dòng, 2.180 chiếc; CN-3 thêm 218 dòng, 2.180 chiếc. Lệnh bật seeder không lưu trong cấu hình mặc định. CN-1 trước thao tác: 218 dòng, 2.179 chiếc.
+- Kiểm thử: DemoBranchInventoryTest PASS 3/3 gồm nhập đúng chi nhánh/biến thể active, giữ kho cũ và rerun không reset hàng đã bán/hết hàng; từ chối store không đúng demo. Query PostgreSQL xác nhận CN-1 218 sản phẩm/2.179 chiếc không đổi; CN-2/CN-3 mỗi nơi 218 sản phẩm/2.180 chiếc. Rerun thực tế thêm 0 dòng/chi nhánh.
+- API và Edge thật: đặt một đơn CN-2 và một đơn CN-3 bằng tài khoản QA riêng, xác nhận fulfillmentStore của từng đơn và kho chỉ giảm tại chi nhánh được chọn; hủy đơn hoàn đúng kho, đối soát cả ba chi nhánh trở lại snapshot ban đầu. Đổi chi nhánh với quote cũ bị QUOTE_CHANGED; vượt kho bị INSUFFICIENT_STOCK. Không dùng cart/đơn của người dùng.
+- Cập nhật xác minh: 2026-10-17. Server QA đã dừng sau kiểm thử; giới hạn session pool được xử lý bằng pool 2 trên riêng server QA, không đổi cấu hình ứng dụng người dùng.
+- Full verify bản tích hợp backend + frontend ngày 2026-10-17: `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` BUILD SUCCESS, 211 test, 0 failure/error, 4 PostgreSQL Testcontainers skip do thiếu Docker. PostgreSQL demo đã được kiểm tra bằng query/API và đặt-hủy đơn thật.
+- Vướng mắc: Chưa mở PR/push; không đánh dấu DONE trước merge.
+- Bước tiếp theo: review backend riêng, liên kết CHECKOUT-BRANCH-FE-03.
+- Ngày hoàn tất: Chưa hoàn tất.
+
+## FIX-SHOWROOM-BE-04: Hiển thị sản phẩm từ kho thật tại trang showroom
+
+- Phụ trách: `@NgocYuh` (Backend).
+- Trạng thái: `IN PROGRESS`.
+- Branch: `codex/fix-showroom-stock-list`.
+- Bàn giao GitHub theo yêu cầu người dùng: https://github.com/NgocYuh/UTEGear/tree/codex/fix-showroom-stock-list. Source đã kiểm tra tại `5bf4597`; trước push chỉ thêm dòng nhật ký này, không thay đổi runtime. Chưa mở PR/merge; nhánh chứa các commit phụ thuộc chi nhánh/tồn kho/checkout đã kiểm tra trước đó.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-17.
+- Nguyên nhân: StorefrontViewController.store luôn gán products=List.of(), nên trang chi nhánh hiện 0 sản phẩm dù kho đã có hàng. Lượt QA trước chỉ kiểm tra kho và checkout, bỏ sót route showroom.
+- Đã làm: Lấy sản phẩm ACTIVE có biến thể active còn hàng tại đúng cửa hàng active; gộp biến thể về một thẻ sản phẩm, DTO Summary dùng số kho của riêng chi nhánh. Tải variants và images bằng hai query riêng để tránh multiple-bag fetch và truy vấn từng sản phẩm. Không sửa dữ liệu kho, schema/migration hoặc giao diện; tiếp tục view model ProductDtos.Summary hiện có.
+- Kiểm thử: thêm regression controller cho route showroom, unit service cho stock theo store và empty store, repository H2 PostgreSQL mode cho scope store/trạng thái/số lượng 0/nhiều biến thể/ảnh. Lượt đầu test repository thiếu PostgreSQL mode (H2 không tạo bảng JSONB), đã cấu hình H2 riêng cho test và chạy lại full verify.
+- Kết quả: `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` BUILD SUCCESS, 215 test, 0 failure/error, 4 PostgreSQL Testcontainers skip do thiếu Docker. Regression controller/service và repository H2 đã qua.
+- Edge thật với JAR đóng gói và database development: cả /stores/1, /stores/2, /stores/3 trả đúng 218 thẻ sản phẩm, không còn empty state, nút mua có variant ID và được bật; ảnh đầu trang tải đúng, không lỗi JavaScript, desktop 1365px/mobile 390px không tràn ngang. Đã xem ảnh QA trong crawler/data/output/showroom-stock-*.png (ignored). Kiểm tra chỉ đọc, không sửa kho/đơn/tài khoản.
+- Môi trường QA: session pool đủ 15 client nên dùng transaction pool của cùng project, prepareThreshold=0, pool 1; bỏ riêng Flyway trên server QA sau khi schema V3 đã validate, Hibernate vẫn validate. Không lưu các override này vào cấu hình ứng dụng. Server QA được dừng sau kiểm tra; giữ ứng dụng người dùng trên 8080.
+- Vướng mắc: Chưa PR/push; không đánh dấu DONE trước merge.
+- Bước tiếp theo: người dùng restart backend để nạp controller/service mới; review backend riêng.
+- Ngày hoàn tất: Chưa hoàn tất.
