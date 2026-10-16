@@ -63,7 +63,7 @@ UTEGear.Orders = {
         const host = root.querySelector('[data-order-detail]'); host.replaceChildren();
         if (!admin) this.customerDetail(host, detail);
         else {
-            host.append(V.node('h2', 'Đơn hàng ' + detail.orderCode, 'h4'), V.node('p', 'Trạng thái: ' + detail.status));
+            host.append(V.node('h2', 'Đơn hàng ' + detail.orderCode, 'h4'), V.node('p', 'Trạng thái: ' + (this.labels[detail.status] || 'Đang cập nhật')));
             if (detail.customer) host.append(V.node('p', `${detail.customer.name} · ${detail.customer.email}`));
             for (const item of detail.items) host.append(V.node('p', `${item.productName} · ${item.sku} · ${item.quantity} × ${V.money(item.unitPrice)}`));
             host.append(V.node('strong', 'Tổng tiền: ' + V.money(detail.total)));
@@ -72,7 +72,7 @@ UTEGear.Orders = {
         if (admin && this.allowed[detail.status]?.length) {
             const label = V.node('label', 'Trạng thái mới', 'form-label'); label.htmlFor = 'order-next-status';
             const select = V.node('select'); select.id = 'order-next-status'; select.className = 'form-select';
-            for (const value of this.allowed[detail.status]) select.add(new Option(value, value));
+            for (const value of this.allowed[detail.status]) select.add(new Option(this.labels[value] || 'Đang cập nhật', value));
             form.append(label, select, V.button('Cập nhật trạng thái', async () => {
                 await UTEGear.Admin.status(id, select.value); await this.load(root, Number(root.dataset.page || 0));
             }, root)); host.append(form);

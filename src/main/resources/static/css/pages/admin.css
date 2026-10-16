@@ -425,6 +425,17 @@
     text-align: center;
 }
 
+.admin-table .admin-index-cell {
+    width: 64px;
+    min-width: 64px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-table .admin-actions-cell {
+    min-width: 148px;
+}
+
 /* Table Specific Cell Elements */
 .admin-product-thumb {
     width: 44px;

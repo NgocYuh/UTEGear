@@ -1,8 +1,10 @@
 package com.utegear.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.utegear.dto.catalog.CategorySummary;
 import com.utegear.dto.catalog.ProductDtos;
 import com.utegear.service.BrandService;
 import com.utegear.service.CategoryService;
@@ -60,6 +62,26 @@ class StorefrontViewControllerTest {
         assertThat(model.getAttribute("products")).isSameAs(emptyProducts);
         assertThat(model.getAttribute("keyword")).isEqualTo("mouse");
         assertThat(model.getAttribute("allBrands")).isEqualTo(List.of());
+    }
+
+    @Test
+    void categoryAliasesResolveLegacyNavigationSlugs() {
+        CategorySummary keyboard = new CategorySummary(1L, "Bàn phím", "ban-phim", 0);
+        when(categoryService.activeBySlug("ban-phim")).thenReturn(keyboard);
+        when(productCatalogService.search(
+                null, 1L, null, null, null, null, 0, 20, "createdAt,desc"))
+                .thenReturn(emptyProducts);
+        when(categoryService.active()).thenReturn(List.of(keyboard));
+        when(brandService.active()).thenReturn(List.of());
+        ConcurrentModel model = new ConcurrentModel();
+
+        assertThat(controller.category(
+                "keyboard", null, null, null, null, 0, 20, "createdAt,desc", model))
+                .isEqualTo("products");
+        assertThat(model.getAttribute("selectedCategoryId")).isEqualTo(1L);
+        assertThat(model.getAttribute("currentCategory")).isEqualTo(keyboard);
+        assertThat(model.getAttribute("categoryBaseUrl")).isEqualTo("/category/ban-phim");
+        verify(categoryService).activeBySlug("ban-phim");
     }
 
     @Test

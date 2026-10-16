@@ -3,29 +3,29 @@
 <head><title>Quản lý sản phẩm - UTEGear</title></head>
 <body>
 <main layout:fragment="content" class="admin-content-wrapper" data-admin-page="products">
-    <header class="admin-page-header"><div class="admin-page-header-info"><h1 class="admin-page-title">Sản phẩm và biến thể mặc định</h1><p class="admin-page-subtitle">Mỗi sản phẩm luôn có một biến thể mặc định; tồn kho được quản lý riêng theo cửa hàng và biến thể.</p></div></header>
+    <header class="admin-page-header"><div class="admin-page-header-info"><h1 class="admin-page-title">Quản lý sản phẩm</h1></div></header>
     <p data-admin-status role="status" aria-live="polite">Đang tải sản phẩm…</p>
-    <section class="admin-panel"><h2 class="admin-panel-title">Thêm hoặc chỉnh sửa sản phẩm</h2>
+    <section class="admin-panel"><h2 class="admin-panel-title">Thông tin sản phẩm</h2>
         <form data-admin-form="products" class="row g-3 mt-1"><input type="hidden" name="id">
             <div class="col-md-6"><label class="form-label" for="product-name">Tên sản phẩm</label><input class="form-control" id="product-name" name="name" maxlength="200" required></div>
             <div class="col-md-3"><label class="form-label" for="product-category">Danh mục</label><select class="form-select" id="product-category" name="categoryId" required><option value="">Chọn danh mục</option></select></div>
             <div class="col-md-3"><label class="form-label" for="product-brand">Thương hiệu</label><select class="form-select" id="product-brand" name="brandId"><option value="">Không có</option></select></div>
             <div class="col-md-3"><label class="form-label" for="product-base-price">Giá gốc</label><input class="form-control" id="product-base-price" name="basePrice" type="number" min="0" step="1000" required></div>
             <div class="col-md-3"><label class="form-label" for="product-sale-price">Giá khuyến mãi</label><input class="form-control" id="product-sale-price" name="salePrice" type="number" min="0" step="1000"></div>
-            <div class="col-md-3"><label class="form-label" for="product-sku">SKU biến thể mặc định</label><input class="form-control" id="product-sku" name="defaultSku" maxlength="50" required></div>
-            <div class="col-md-3"><label class="form-label" for="product-status">Trạng thái</label><select class="form-select" id="product-status" name="status"><option value="ACTIVE">Đang bán</option><option value="INACTIVE">Tạm ẩn</option><option value="DELETED">Ngừng kinh doanh</option></select></div>
-            <div class="col-md-6"><label class="form-label" for="product-options">Lựa chọn biến thể mặc định (JSON)</label><textarea class="form-control" id="product-options" name="optionValues" rows="3" placeholder='{"Màu":"Đen"}'>{}</textarea></div>
-            <div class="col-md-6"><label class="form-label" for="product-specifications">Thông số sản phẩm (JSON)</label><textarea class="form-control" id="product-specifications" name="specifications" rows="3" placeholder='{"Kết nối":"USB-C"}'>{}</textarea></div>
+            <div class="col-md-3"><label class="form-label" for="product-sku">Mã sản phẩm (SKU)</label><input class="form-control" id="product-sku" name="defaultSku" maxlength="50" required></div>
+            <div class="col-md-3"><label class="form-label" for="product-status">Trạng thái</label><select class="form-select" id="product-status" name="status"><option value="ACTIVE">Hoạt động</option><option value="INACTIVE">Tạm ẩn</option><option value="DELETED">Ngừng kinh doanh</option></select></div>
+            <div class="col-md-6"><label class="form-label" for="product-options">Thuộc tính phiên bản</label><textarea class="form-control" id="product-options" name="optionValues" rows="3" placeholder='{"Màu":"Đen"}' aria-describedby="product-options-help">{}</textarea><small id="product-options-help" class="form-text text-muted">Dùng định dạng tên và giá trị, ví dụ: {"Màu":"Đen"}</small></div>
+            <div class="col-md-6"><label class="form-label" for="product-specifications">Thông số kỹ thuật</label><textarea class="form-control" id="product-specifications" name="specifications" rows="3" placeholder='{"Kết nối":"USB-C"}' aria-describedby="product-specifications-help">{}</textarea><small id="product-specifications-help" class="form-text text-muted">Dùng định dạng tên và giá trị, ví dụ: {"Kết nối":"USB-C"}</small></div>
             <div class="col-12"><label class="form-label" for="product-description">Mô tả</label><textarea class="form-control" id="product-description" name="description" rows="3" maxlength="10000"></textarea></div>
             <div class="col-12 d-flex gap-2"><button class="btn-admin-primary" type="submit">Lưu sản phẩm</button><button class="btn-admin-secondary" type="reset" data-admin-reset>Nhập mới</button></div>
         </form>
     </section>
     <section class="admin-panel">
         <form data-admin-search="products" class="admin-toolbar-search"><label class="visually-hidden" for="admin-product-search">Tìm sản phẩm</label><input class="form-control" id="admin-product-search" name="q" placeholder="Tìm theo tên sản phẩm"><button class="btn-admin-secondary" type="submit">Tìm</button></form>
-        <div class="admin-table-container"><table class="admin-table"><thead><tr><th>Sản phẩm</th><th>SKU mặc định</th><th>Giá</th><th>Tổng tồn</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead><tbody data-admin-rows></tbody></table></div><p data-admin-empty hidden>Chưa có sản phẩm phù hợp. Hãy thêm sản phẩm hoặc đổi từ khóa tìm kiếm.</p>
+        <div class="admin-table-container"><table class="admin-table"><thead><tr><th class="admin-index-cell">STT</th><th>Sản phẩm</th><th>SKU mặc định</th><th>Giá</th><th>Tổng tồn</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead><tbody data-admin-rows></tbody></table></div><p data-admin-empty hidden>Chưa có sản phẩm phù hợp. Hãy thêm sản phẩm hoặc đổi từ khóa tìm kiếm.</p>
     </section>
     <details id="product-media" class="admin-panel" data-media-manager>
-        <summary class="admin-panel-title">Quản lý ảnh sản phẩm trên Cloudinary</summary>
+        <summary class="admin-panel-title">Thư viện ảnh sản phẩm</summary>
         <p data-media-status role="status" aria-live="polite">Đang tải sản phẩm…</p>
         <fieldset data-media-controls disabled>
             <form data-media-search class="row g-2 my-3"><div class="col-md-9"><label for="media-search" class="form-label">Tìm sản phẩm</label><input id="media-search" name="q" maxlength="200" class="form-control"></div><div class="col-md-3 align-self-end"><button type="submit" class="btn-admin-secondary">Tìm</button></div></form>

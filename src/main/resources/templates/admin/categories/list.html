@@ -3,18 +3,18 @@
 <head><title>Quản lý danh mục - UTEGear</title></head>
 <body>
 <main layout:fragment="content" class="admin-content-wrapper" data-admin-page="categories">
-    <header class="admin-page-header"><div class="admin-page-header-info"><h1 class="admin-page-title">Danh mục</h1><p class="admin-page-subtitle">Phân nhóm sản phẩm hiển thị tại cửa hàng.</p></div></header>
+    <header class="admin-page-header"><div class="admin-page-header-info"><h1 class="admin-page-title">Quản lý danh mục</h1></div></header>
     <p data-admin-status role="status" aria-live="polite">Đang tải danh mục…</p>
-    <section class="admin-panel"><h2 class="admin-panel-title">Thêm hoặc chỉnh sửa danh mục</h2>
+    <section class="admin-panel"><h2 class="admin-panel-title">Thông tin danh mục</h2>
         <form data-admin-form="categories" class="row g-3 mt-1"><input type="hidden" name="id">
             <div class="col-md-4"><label class="form-label" for="category-name">Tên danh mục</label><input class="form-control" id="category-name" name="name" maxlength="100" required></div>
-            <div class="col-md-2"><label class="form-label" for="category-sort">Thứ tự</label><input class="form-control" id="category-sort" name="sortOrder" type="number" min="0" value="0" required></div>
+            <div class="col-md-2"><label class="form-label" for="category-sort">Ưu tiên hiển thị</label><input class="form-control" id="category-sort" name="sortOrder" type="number" min="0" value="0" aria-describedby="category-sort-help" required><small id="category-sort-help" class="form-text text-muted">Số nhỏ hiển thị trước</small></div>
             <div class="col-md-4"><label class="form-label" for="category-description">Mô tả</label><input class="form-control" id="category-description" name="description" maxlength="500"></div>
             <div class="col-md-2 d-flex align-items-end"><div class="form-check mb-2"><input class="form-check-input" id="category-active" name="active" type="checkbox" checked><label class="form-check-label" for="category-active">Hoạt động</label></div></div>
             <div class="col-12 d-flex gap-2"><button class="btn-admin-primary" type="submit">Lưu danh mục</button><button class="btn-admin-secondary" type="reset" data-admin-reset>Nhập mới</button></div>
         </form>
     </section>
-    <section class="admin-panel"><div class="admin-table-container"><table class="admin-table"><thead><tr><th>Tên</th><th>Slug</th><th>Thứ tự</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead><tbody data-admin-rows></tbody></table></div><p data-admin-empty hidden>Chưa có danh mục. Hãy tạo danh mục đầu tiên ở biểu mẫu phía trên.</p></section>
+    <section class="admin-panel"><div class="admin-table-container"><table class="admin-table"><thead><tr><th class="admin-index-cell">STT</th><th>Tên</th><th>Slug</th><th>Ưu tiên</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead><tbody data-admin-rows></tbody></table></div><p data-admin-empty hidden>Chưa có danh mục. Hãy tạo danh mục đầu tiên ở biểu mẫu phía trên.</p></section>
 </main>
 </body>
 </html>

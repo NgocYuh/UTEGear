@@ -110,11 +110,11 @@
                                             <span>Bàn phím cơ</span>
                                         </div>
                                         <ul class="mega-menu-links">
-                                            <li><a href="/category/keyboard">Tất cả bàn phím</a></li>
-                                            <li><a href="/category/keyboard?sort=price_asc">Bàn phím phổ thông</a></li>
+                                            <li><a href="/category/ban-phim">Tất cả bàn phím</a></li>
+                                            <li><a href="/category/ban-phim?sort=effectivePrice,asc">Bàn phím phổ thông</a></li>
                                             <li><a href="/category/keycap" class="sub-item">Keycap custom</a></li>
                                             <li><a href="/category/switch" class="sub-item">Switch cơ học</a></li>
-                                            <li><a href="/category/keyboard?q=wireless">Bàn phím không dây</a></li>
+                                            <li><a href="/category/ban-phim?q=wireless">Bàn phím không dây</a></li>
                                         </ul>
                                     </div>
 
@@ -125,10 +125,10 @@
                                             <span>Chuột gaming</span>
                                         </div>
                                         <ul class="mega-menu-links">
-                                            <li><a href="/category/mouse">Tất cả chuột gaming</a></li>
-                                            <li><a href="/category/mouse?q=wireless">Chuột không dây eSports</a></li>
-                                            <li><a href="/category/mousepad">Lót chuột Speed / Control</a></li>
-                                            <li><a href="/category/mouse?q=ergonomic&amp;sort=price_asc">Chuột công thái học</a></li>
+                                            <li><a href="/category/chuot">Tất cả chuột gaming</a></li>
+                                            <li><a href="/category/chuot?q=wireless">Chuột không dây eSports</a></li>
+                                            <li><a href="/category/phu-kien?q=lót chuột">Lót chuột Speed / Control</a></li>
+                                            <li><a href="/category/chuot?q=ergonomic&amp;sort=effectivePrice,asc">Chuột công thái học</a></li>
                                         </ul>
                                     </div>
 
@@ -139,9 +139,9 @@
                                             <span>Âm thanh gaming</span>
                                         </div>
                                         <ul class="mega-menu-links">
-                                            <li><a href="/category/headset">Tai nghe gaming 7.1</a></li>
-                                            <li><a href="/category/headset?q=wireless">Tai nghe không dây</a></li>
-                                            <li><a href="/category/microphone">Microphone stream / podcast</a></li>
+                                            <li><a href="/category/tai-nghe">Tai nghe gaming 7.1</a></li>
+                                            <li><a href="/category/tai-nghe?q=wireless">Tai nghe không dây</a></li>
+                                            <li><a href="/category/tai-nghe?q=microphone">Microphone stream / podcast</a></li>
                                         </ul>
                                     </div>
 
@@ -152,12 +152,12 @@
                                             <span>Dây cáp &amp; Hub</span>
                                         </div>
                                         <ul class="mega-menu-links">
-                                            <li><a href="/category/connection-cables">Tất cả dây kết nối</a></li>
-                                            <li><a href="/category/connection-cables?q=hub" class="sub-item">Bộ chia USB Hub</a></li>
-                                            <li><a href="/category/connection-cables?q=HDMI" class="sub-item">Cáp HDMI 2.1 4K/8K</a></li>
-                                            <li><a href="/category/connection-cables?q=Type-C" class="sub-item">Cáp Type-C sạc &amp; data</a></li>
-                                            <li><a href="/category/connection-cables?q=DisplayPort" class="sub-item">Cáp DisplayPort 1.4/2.0</a></li>
-                                            <li><a href="/category/gamepad">Tay cầm chơi game</a></li>
+                                            <li><a href="/category/phu-kien">Tất cả phụ kiện</a></li>
+                                            <li><a href="/category/phu-kien?q=hub" class="sub-item">Bộ chia USB Hub</a></li>
+                                            <li><a href="/category/phu-kien?q=HDMI" class="sub-item">Cáp HDMI 2.1 4K/8K</a></li>
+                                            <li><a href="/category/phu-kien?q=Type-C" class="sub-item">Cáp Type-C sạc &amp; data</a></li>
+                                            <li><a href="/category/phu-kien?q=DisplayPort" class="sub-item">Cáp DisplayPort 1.4/2.0</a></li>
+                                            <li><a href="/category/phu-kien?q=tay cầm">Tay cầm chơi game</a></li>
                                         </ul>
                                     </div>
 
@@ -184,16 +184,16 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/category/keyboard}">Bàn phím</a>
+                        <a class="nav-link" th:href="@{/category/ban-phim}">Bàn phím</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/category/mouse}">Chuột</a>
+                        <a class="nav-link" th:href="@{/category/chuot}">Chuột</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/category/headset}">Tai nghe</a>
+                        <a class="nav-link" th:href="@{/category/tai-nghe}">Tai nghe</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/category/connection-cables}">Phụ kiện</a>
+                        <a class="nav-link" th:href="@{/category/phu-kien}">Phụ kiện</a>
                     </li>
 
 
@@ -270,11 +270,11 @@
             <div class="mobile-nav-group-title">Danh mục sản phẩm</div>
             <ul class="mobile-nav-list">
                 <li><a href="/products"><strong>Tất cả sản phẩm</strong> <i class="bi bi-chevron-right text-muted"></i></a></li>
-                <li><a href="/category/keyboard">Bàn phím cơ <i class="bi bi-chevron-right text-muted"></i></a></li>
-                <li><a href="/category/mouse">Chuột gaming <i class="bi bi-chevron-right text-muted"></i></a></li>
-                <li><a href="/category/headset">Tai nghe &amp; Âm thanh <i class="bi bi-chevron-right text-muted"></i></a></li>
-                <li><a href="/category/connection-cables">Dây kết nối &amp; Hub <i class="bi bi-chevron-right text-muted"></i></a></li>
-                <li><a href="/category/gamepad">Tay cầm chơi game <i class="bi bi-chevron-right text-muted"></i></a></li>
+                <li><a href="/category/ban-phim">Bàn phím cơ <i class="bi bi-chevron-right text-muted"></i></a></li>
+                <li><a href="/category/chuot">Chuột gaming <i class="bi bi-chevron-right text-muted"></i></a></li>
+                <li><a href="/category/tai-nghe">Tai nghe &amp; Âm thanh <i class="bi bi-chevron-right text-muted"></i></a></li>
+                <li><a href="/category/phu-kien">Phụ kiện <i class="bi bi-chevron-right text-muted"></i></a></li>
+                <li><a href="/category/phu-kien?q=tay cầm">Tay cầm chơi game <i class="bi bi-chevron-right text-muted"></i></a></li>
                 <li><a href="/products?onSale=true" class="text-danger"><strong>Khuyến mãi đặc biệt</strong> <i class="bi bi-percent"></i></a></li>
             </ul>
 

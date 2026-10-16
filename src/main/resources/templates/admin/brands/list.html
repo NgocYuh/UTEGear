@@ -3,9 +3,9 @@
 <head><title>Quản lý thương hiệu - UTEGear</title></head>
 <body>
 <main layout:fragment="content" class="admin-content-wrapper" data-admin-page="brands">
-    <header class="admin-page-header"><div class="admin-page-header-info"><h1 class="admin-page-title">Thương hiệu</h1><p class="admin-page-subtitle">Quản lý nhà sản xuất gắn với catalog.</p></div></header>
+    <header class="admin-page-header"><div class="admin-page-header-info"><h1 class="admin-page-title">Quản lý thương hiệu</h1></div></header>
     <p data-admin-status role="status" aria-live="polite">Đang tải thương hiệu…</p>
-    <section class="admin-panel"><h2 class="admin-panel-title">Thêm hoặc chỉnh sửa thương hiệu</h2>
+    <section class="admin-panel"><h2 class="admin-panel-title">Thông tin thương hiệu</h2>
         <form data-admin-form="brands" class="row g-3 mt-1"><input type="hidden" name="id">
             <div class="col-md-5"><label class="form-label" for="brand-name">Tên thương hiệu</label><input class="form-control" id="brand-name" name="name" maxlength="100" required></div>
             <div class="col-md-5"><label class="form-label" for="brand-description">Mô tả</label><input class="form-control" id="brand-description" name="description" maxlength="500"></div>
@@ -13,7 +13,7 @@
             <div class="col-12 d-flex gap-2"><button class="btn-admin-primary" type="submit">Lưu thương hiệu</button><button class="btn-admin-secondary" type="reset" data-admin-reset>Nhập mới</button></div>
         </form>
     </section>
-    <section class="admin-panel"><div class="admin-table-container"><table class="admin-table"><thead><tr><th>Tên</th><th>Slug</th><th>Mô tả</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead><tbody data-admin-rows></tbody></table></div><p data-admin-empty hidden>Chưa có thương hiệu. Hãy tạo thương hiệu đầu tiên ở biểu mẫu phía trên.</p></section>
+    <section class="admin-panel"><div class="admin-table-container"><table class="admin-table"><thead><tr><th class="admin-index-cell">STT</th><th>Tên</th><th>Slug</th><th>Mô tả</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead><tbody data-admin-rows></tbody></table></div><p data-admin-empty hidden>Chưa có thương hiệu. Hãy tạo thương hiệu đầu tiên ở biểu mẫu phía trên.</p></section>
 </main>
 </body>
 </html>

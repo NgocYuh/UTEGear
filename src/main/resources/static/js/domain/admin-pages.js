@@ -2,6 +2,15 @@ window.UTEGear = window.UTEGear || {};
 
 UTEGear.AdminPages = {
     state: { categories: [], brands: [], products: [], stores: [] },
+    productStatusLabels: {
+        ACTIVE: 'Hoạt động',
+        INACTIVE: 'Tạm ẩn',
+        DELETED: 'Ngừng kinh doanh'
+    },
+    roleLabels: {
+        CUSTOMER: 'Khách hàng',
+        ADMIN: 'Quản trị viên'
+    },
 
     node(tag, text, className) {
         const element = document.createElement(tag);
@@ -25,7 +34,13 @@ UTEGear.AdminPages = {
     cell(row, content, className) {
         const cell = this.node('td', null, className);
         if (content instanceof Node) cell.append(content);
-        else cell.textContent = content == null || content === '' ? 'Chưa có' : String(content);
+        else cell.textContent = content == null || content === '' ? 'Chưa cập nhật' : String(content);
+        row.append(cell);
+        return cell;
+    },
+
+    emptyCell(row, className) {
+        const cell = this.node('td', null, className);
         row.append(cell);
         return cell;
     },
@@ -109,19 +124,20 @@ UTEGear.AdminPages = {
             const items = await UTEGear.API.get(`/api/admin/${kind}`);
             this.state[kind] = items;
             rows.replaceChildren();
-            for (const item of items) {
+            for (const [index, item] of items.entries()) {
                 const row = this.node('tr');
+                this.cell(row, index + 1, 'admin-index-cell');
                 this.cell(row, item.name);
                 this.cell(row, item.slug);
                 if (kind === 'categories') this.cell(row, item.sortOrder);
                 else this.cell(row, item.description);
                 this.cell(row, this.badge(item.active));
-                const actions = this.cell(row, null, 'text-end');
+                const actions = this.emptyCell(row, 'text-end admin-actions-cell');
                 actions.append(this.button('Sửa', () => this.fillForm(form, item)));
                 rows.append(row);
             }
             this.setEmpty(root, !items.length);
-            this.status(root, items.length ? `Đã tải ${items.length} ${kind === 'categories' ? 'danh mục' : 'thương hiệu'}.` : 'Chưa có dữ liệu.');
+            this.status(root, items.length ? `Hiển thị ${items.length} ${kind === 'categories' ? 'danh mục' : 'thương hiệu'}.` : 'Chưa có dữ liệu.');
         };
         form.addEventListener('submit', event => {
             event.preventDefault();
@@ -149,7 +165,7 @@ UTEGear.AdminPages = {
             if (!parsed || Array.isArray(parsed) || typeof parsed !== 'object') throw new Error();
             return parsed;
         } catch {
-            throw new Error(`${label} phải là JSON object hợp lệ.`);
+            throw new Error(`${label} chưa đúng định dạng tên và giá trị.`);
         }
     },
 
@@ -191,8 +207,9 @@ UTEGear.AdminPages = {
             const page = await UTEGear.API.get('/api/admin/products?' + new URLSearchParams({ q: query, page: 0, size: 100 }));
             this.state.products = page.content;
             rows.replaceChildren();
-            for (const item of page.content) {
+            for (const [index, item] of page.content.entries()) {
                 const row = this.node('tr');
+                this.cell(row, page.page * page.size + index + 1, 'admin-index-cell');
                 const product = this.node('div', null, 'admin-product-cell');
                 const info = this.node('div');
                 const link = this.node('a', item.name, 'admin-product-title');
@@ -203,19 +220,21 @@ UTEGear.AdminPages = {
                 this.cell(row, item.defaultSku);
                 this.cell(row, UTEGear.Utils.formatPrice(item.salePrice ?? item.basePrice));
                 this.cell(row, item.totalStock);
-                this.cell(row, this.badge(item.status === 'ACTIVE', item.status, item.status));
-                const actions = this.cell(row, null, 'text-end');
+                const statusLabel = this.productStatusLabels[item.status] || 'Không xác định';
+                this.cell(row, this.badge(item.status === 'ACTIVE', statusLabel, statusLabel));
+                const actions = this.emptyCell(row, 'text-end admin-actions-cell');
                 actions.append(this.button('Sửa', () => edit(item)));
                 const nextStatus = item.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
-                actions.append(this.button(nextStatus === 'ACTIVE' ? 'Hiện' : 'Ẩn', async () => {
+                actions.append(this.button(nextStatus === 'ACTIVE' ? 'Kích hoạt' : 'Tạm ẩn', async () => {
                     await UTEGear.API.patch(`/api/admin/products/${item.id}/status`, { status: nextStatus });
                     await load(search.elements.q.value);
                     this.status(root, 'Đã cập nhật trạng thái sản phẩm.');
                 }, 'btn-admin-secondary ms-2'));
                 rows.append(row);
             }
+            rows.closest('.admin-table-container').scrollLeft = 0;
             this.setEmpty(root, page.empty);
-            this.status(root, page.empty ? 'Không tìm thấy sản phẩm phù hợp.' : `Đã tải ${page.content.length}/${page.totalElements} sản phẩm.`);
+            this.status(root, page.empty ? 'Không tìm thấy sản phẩm phù hợp.' : `Hiển thị ${page.content.length} trên tổng số ${page.totalElements} sản phẩm.`);
         };
         form.addEventListener('submit', event => {
             event.preventDefault();
@@ -267,7 +286,7 @@ UTEGear.AdminPages = {
                 const row = this.node('tr');
                 this.cell(row, item.name); this.cell(row, `${item.address}, ${item.province}`);
                 this.cell(row, `${item.openingTime}–${item.closingTime}`); this.cell(row, this.badge(item.active));
-                const actions = this.cell(row, null, 'text-end');
+                const actions = this.emptyCell(row, 'text-end admin-actions-cell');
                 actions.append(this.button('Sửa', () => this.fillForm(form, item)));
                 actions.append(this.button('Xem kho', async () => { inventoryStore.value = item.id; await loadInventory(); root.querySelector('[data-inventory-panel]').scrollIntoView({ behavior: 'smooth' }); }, 'btn-admin-secondary ms-2'));
                 rows.append(row);
@@ -361,11 +380,11 @@ UTEGear.AdminPages = {
                 this.cell(row, `Từ ${UTEGear.Utils.formatPrice(item.minimumOrderValue)}${item.maximumDiscount == null ? '' : ', tối đa ' + UTEGear.Utils.formatPrice(item.maximumDiscount)}`);
                 this.cell(row, `${new Date(item.validFrom).toLocaleString('vi-VN')} đến ${new Date(item.validUntil).toLocaleString('vi-VN')}`);
                 this.cell(row, `${item.usedCount}/${item.maxUses || '∞'}`); this.cell(row, this.badge(item.active));
-                const actions = this.cell(row, null, 'text-end');
+                const actions = this.emptyCell(row, 'text-end admin-actions-cell');
                 actions.append(this.button('Sửa', () => this.fillForm(form, { ...item, validFrom: this.dateInput(item.validFrom), validUntil: this.dateInput(item.validUntil) })));
                 rows.append(row);
             }
-            this.setEmpty(root, !items.length); this.status(root, items.length ? `Đã tải ${items.length} mã giảm giá.` : 'Chưa có mã giảm giá.');
+            this.setEmpty(root, !items.length); this.status(root, items.length ? `Hiển thị ${items.length} mã giảm giá.` : 'Chưa có mã giảm giá.');
         };
         form.addEventListener('submit', event => {
             event.preventDefault(); const id = form.elements.id.value; let payload;
@@ -394,20 +413,20 @@ UTEGear.AdminPages = {
                     if (item.email.toLowerCase() === currentEmail && role === 'ADMIN') {
                         input.checked = true;
                         input.disabled = true;
-                        input.title = 'Không thể tự gỡ vai trò ADMIN của phiên đang dùng';
+                        input.title = 'Không thể tự gỡ vai trò Quản trị viên của phiên đang dùng';
                     }
-                    label.append(input, document.createTextNode(' ' + role)); roles.append(label);
+                    label.append(input, document.createTextNode(' ' + this.roleLabels[role])); roles.append(label);
                 }
                 this.cell(row, roles); this.cell(row, this.badge(item.enabled, 'Đang dùng', 'Đã khóa'));
                 this.cell(row, new Date(item.createdAt).toLocaleDateString('vi-VN'));
-                const actions = this.cell(row, null, 'text-end');
+                const actions = this.emptyCell(row, 'text-end admin-actions-cell');
                 const ownAccount = item.email.toLowerCase() === currentEmail;
                 const saveRoles = this.button('Lưu quyền', async () => {
                     const selected = [...roles.querySelectorAll('input:checked')].map(input => input.value);
                     await UTEGear.API.put(`/api/admin/users/${item.id}/roles`, { roles: selected }); await load();
-                    this.status(root, 'Đã cập nhật vai trò. Người dùng cần đăng nhập lại để nhận JWT mới.');
+                    this.status(root, 'Đã cập nhật vai trò. Người dùng cần đăng nhập lại để áp dụng quyền mới.');
                 });
-                saveRoles.title = ownAccount ? 'Có thể bỏ CUSTOMER nhưng phải giữ ADMIN cho phiên đang dùng' : '';
+                saveRoles.title = ownAccount ? 'Có thể bỏ vai trò Khách hàng nhưng phải giữ vai trò Quản trị viên cho phiên đang dùng' : '';
                 const toggle = this.button(item.enabled ? 'Khóa' : 'Mở khóa', async () => {
                     await UTEGear.API.patch(`/api/admin/users/${item.id}/enabled`, { enabled: !item.enabled }); await load();
                     this.status(root, 'Đã cập nhật trạng thái tài khoản.');
@@ -415,7 +434,7 @@ UTEGear.AdminPages = {
                 toggle.disabled = ownAccount; toggle.title = ownAccount ? 'Không tự khóa phiên đang dùng' : '';
                 actions.append(saveRoles, toggle); rows.append(row);
             }
-            this.setEmpty(root, !items.length); this.status(root, items.length ? `Đã tải ${items.length} tài khoản.` : 'Chưa có tài khoản.');
+            this.setEmpty(root, !items.length); this.status(root, items.length ? `Hiển thị ${items.length} tài khoản.` : 'Chưa có tài khoản.');
         };
         await load();
     },

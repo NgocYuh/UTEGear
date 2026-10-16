@@ -9,6 +9,7 @@ import com.utegear.service.ProductCatalogService;
 import com.utegear.service.StoreService;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class StorefrontViewController {
+
+    private static final Map<String, String> CATEGORY_SLUG_ALIASES = Map.of(
+            "keyboard", "ban-phim",
+            "mouse", "chuot",
+            "headset", "tai-nghe",
+            "connection-cables", "phu-kien");
 
     private final CategoryService categoryService;
     private final BrandService brandService;
@@ -97,6 +104,7 @@ public class StorefrontViewController {
             @RequestParam(defaultValue = "createdAt,desc") String sort,
             Model model) {
         sort = normalizeSort(sort);
+        slug = CATEGORY_SLUG_ALIASES.getOrDefault(slug, slug);
         com.utegear.dto.catalog.CategorySummary category;
         try {
             category = categoryService.activeBySlug(slug);
