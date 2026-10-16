@@ -38,6 +38,7 @@
 
     <!-- Global Toast Container -->
     <th:block th:insert="~{fragments/header :: toastArea}"></th:block>
+    <th:block th:insert="~{fragments/support-chat :: widget}"></th:block>
 
     <!-- Quick View Modal Container -->
     <div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
@@ -68,6 +69,7 @@
     <script th:src="@{/js/domain/realtime-ui.js}"></script>
     <script th:src="@{/js/domain/admin.js}"></script>
     <script th:src="@{/js/domain/orders.js}"></script>
+    <script th:src="@{/js/domain/support-chat.js}"></script>
 
     <!-- Additional Inline Page Scripts -->
     <th:block layout:fragment="scripts"></th:block>

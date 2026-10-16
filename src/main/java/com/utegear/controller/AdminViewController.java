@@ -18,6 +18,11 @@ public class AdminViewController {
         return view(model, "orders", "Quản lý đơn hàng", "admin/orders/list");
     }
 
+    @GetMapping("/admin/support")
+    public String support(Model model) {
+        return view(model, "support", "Hỗ trợ khách hàng", "admin/support/list");
+    }
+
     @GetMapping("/admin/orders/{orderId}")
     public String orderDetail(@PathVariable Long orderId) {
         return "redirect:/admin/orders?focus=" + orderId;

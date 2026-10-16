@@ -49,6 +49,9 @@ public class SupportChatService {
 
     @Transactional(readOnly = true)
     public List<SupportChatDtos.ConversationView> listForEmployee(User employee) {
+        if (has(employee, Role.ADMIN)) {
+            return conversations.findAllByOrderByUpdatedAtDesc().stream().map(SupportChatDtos.ConversationView::from).toList();
+        }
         requireRole(employee, Role.EMPLOYEE, "Yêu cầu vai trò nhân viên");
         List<SupportConversation> result = new ArrayList<>(conversations.findAllByEmployeeIdOrderByUpdatedAtDesc(employee.getId()));
         if (employee.getAssignedStore() != null) result.addAll(conversations.findAllByStoreIdAndEmployeeIsNullAndStatusOrderByUpdatedAtDesc(employee.getAssignedStore().getId(), SupportConversationStatus.OPEN));

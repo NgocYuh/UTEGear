@@ -18,6 +18,8 @@ public interface SupportConversationRepository extends JpaRepository<SupportConv
 
     List<SupportConversation> findAllByEmployeeIdOrderByUpdatedAtDesc(Long employeeId);
 
+    List<SupportConversation> findAllByOrderByUpdatedAtDesc();
+
     List<SupportConversation> findAllByStoreIdAndEmployeeIsNullAndStatusOrderByUpdatedAtDesc(
             Long storeId, SupportConversationStatus status);
 
