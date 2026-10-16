@@ -1300,6 +1300,7 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Kiểm thử: DemoBranchInventoryTest PASS 3/3 gồm nhập đúng chi nhánh/biến thể active, giữ kho cũ và rerun không reset hàng đã bán/hết hàng; từ chối store không đúng demo. Query PostgreSQL xác nhận CN-1 218 sản phẩm/2.179 chiếc không đổi; CN-2/CN-3 mỗi nơi 218 sản phẩm/2.180 chiếc. Rerun thực tế thêm 0 dòng/chi nhánh.
 - API và Edge thật: đặt một đơn CN-2 và một đơn CN-3 bằng tài khoản QA riêng, xác nhận fulfillmentStore của từng đơn và kho chỉ giảm tại chi nhánh được chọn; hủy đơn hoàn đúng kho, đối soát cả ba chi nhánh trở lại snapshot ban đầu. Đổi chi nhánh với quote cũ bị QUOTE_CHANGED; vượt kho bị INSUFFICIENT_STOCK. Không dùng cart/đơn của người dùng.
 - Cập nhật xác minh: 2026-10-17. Server QA đã dừng sau kiểm thử; giới hạn session pool được xử lý bằng pool 2 trên riêng server QA, không đổi cấu hình ứng dụng người dùng.
-- Vướng mắc: Chưa mở PR/push; đang chờ full verify bản đóng gói cuối của frontend phụ thuộc. Không đánh dấu DONE trước merge.
+- Full verify bản tích hợp backend + frontend ngày 2026-10-17: `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` BUILD SUCCESS, 211 test, 0 failure/error, 4 PostgreSQL Testcontainers skip do thiếu Docker. PostgreSQL demo đã được kiểm tra bằng query/API và đặt-hủy đơn thật.
+- Vướng mắc: Chưa mở PR/push; không đánh dấu DONE trước merge.
 - Bước tiếp theo: review backend riêng, liên kết CHECKOUT-BRANCH-FE-03.
 - Ngày hoàn tất: Chưa hoàn tất.
