@@ -839,6 +839,19 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Bước tiếp theo: Review trong INT-LOCAL-DEMO và chỉ đánh dấu DONE sau khi merge.
 - Ngày hoàn tất: `Chưa hoàn tất`.
 
+## CHAT-FE-01: Chatbox hỗ trợ khách hàng
+
+- Phụ trách: `@trongsonho` (frontend).
+- Trạng thái: `IN REVIEW`.
+- Branch: `feat/employee-support-chat-ui`.
+- Pull Request: `Chưa mở`.
+- Ngày cập nhật: 2026-10-16.
+- Đã làm: Thêm nút chat tròn nhận diện UTEGear (headset và tín hiệu đỏ), hộp chat có chọn cửa hàng, trạng thái đăng nhập, gửi tin nhắn, Escape/focus, mobile layout và kết nối REST theo contract `CHAT-BE-01`.
+- Kết quả kiểm thử: `node --check src/main/resources/static/js/domain/support-chat.js`: PASS; stylesheet/layout đã lint whitespace bằng `git diff --check` trước commit.
+- Vướng mắc hoặc phần còn thiếu: Chưa kiểm thử trình duyệt thật hoặc phát STOMP end-to-end; widget phụ thuộc backend migration V3 và tài khoản EMPLOYEE đã được gán cửa hàng.
+- Bước tiếp theo: Review UI trên browser sau khi backend branch được tích hợp; bổ sung inbox nhân viên trong task UI riêng nếu nhóm cần màn hình vận hành chuyên biệt.
+- Ngày hoàn tất: `Chưa hoàn tất`.
+
 
 ## INT-LOCAL-DEMO: Tích hợp đúng bản đang chạy local
 
