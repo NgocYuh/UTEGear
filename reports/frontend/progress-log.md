@@ -882,3 +882,19 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc: Chưa PR/push; không đánh dấu DONE trước merge.
 - Bước tiếp theo: review riêng frontend sau backend; mật khẩu chỉ ở file local bị ignore, không trong report Git.
 - Ngày hoàn tất: Chưa hoàn tất.
+
+## CHECKOUT-BRANCH-FE-03: Khách chọn chi nhánh khi đặt hàng
+
+- Phụ trách: `@trongsonho` (Frontend).
+- Trạng thái: `IN PROGRESS` (triển khai và QA local hoàn tất, chưa PR).
+- Branch: `codex/checkout-branch-choice`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-17.
+- Task liên kết: `DEMO-STOCK-BE-03`; contract endpoint/model và JSON mẫu `docs/api/mock/checkout-branch-selection.json` đã bàn giao trước frontend. Backend giữ riêng nhánh `codex/demo-branch-inventory`.
+- Đã làm: Checkout hiển thị ba chi nhánh bằng mã CN-ID, tên/địa chỉ, nhãn chọn chi nhánh xuất hàng và giải thích giao hàng. Hiển thị chi nhánh trong tổng kết báo giá và sau khi đặt đơn. Đổi input/change xóa quote/tổng tiền, khóa xác nhận đến khi tính lại; bỏ response báo giá muộn, từ chối quote trả nhầm chi nhánh, kiểm tra lại ID chi nhánh trước submit.
+- Kiểm thử: node --test tests/frontend/*.test.mjs PASS 52/52, thêm 5 ca chọn ba chi nhánh, chặn submit chưa quote, đổi chi nhánh xóa quote, response muộn, mismatched quote và payload quote/place cùng chi nhánh. Full clean verify BUILD SUCCESS: 211 test, 0 failure/error, 4 PostgreSQL Testcontainers skip do thiếu Docker.
+- Edge thật + PostgreSQL development tại localhost:18086: PASS đặt COD tại CN-2 và CN-3, order detail đúng fulfillmentStore, chỉ kho chi nhánh được chọn giảm 1, hủy đơn hoàn đúng lượng; đổi store với quote cũ bị QUOTE_CHANGED, vượt kho bị INSUFFICIENT_STOCK. Không dùng tài khoản/cart/đơn người dùng. Tài khoản QA riêng; đơn thử đã hủy, giỏ QA đã dọn, snapshot kho ba chi nhánh khớp trước test.
+- Đã xem ảnh desktop 1365px/mobile 390px, không tràn ngang; ảnh nằm trong crawler/data/output/checkout-branch-browser bị ignore. Đã dừng riêng server QA, không khởi động nền thêm vào cổng 8080; người dùng restart ứng dụng để nạp template mới.
+- Vướng mắc: Chưa PR/push; task giữ IN PROGRESS trước review/merge. Không thay đổi API/schema trong task frontend.
+- Bước tiếp theo: review frontend riêng sau backend.
+- Ngày hoàn tất: Chưa hoàn tất.

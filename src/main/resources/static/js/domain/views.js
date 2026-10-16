@@ -147,7 +147,7 @@ UTEGear.Views = {
             select.replaceChildren(new Option('Vui lòng chọn', ''));
             data.forEach(item => select.add(new Option(label(item), UTEGear.Cart.id(item.id))));
         };
-        fill(store, stores.filter(item => item.active), item => item.name + ' — ' + item.address);
+        fill(store, stores.filter(item => item.active), item => `CN-${item.id} · ${item.name} — ${item.address}`);
         let addresses;
         try { addresses = await UTEGear.API.get('/api/addresses'); }
         catch (error) {
@@ -156,40 +156,59 @@ UTEGear.Views = {
         }
         fill(address, addresses, item => `${item.fullName} — ${item.street}, ${item.province}`);
         if (!addresses.length || !store.options.length || store.options.length === 1) {
-            this.status(root, 'Cần địa chỉ giao hàng và cửa hàng đang hoạt động trước khi thanh toán.', true); return;
+            this.status(root, 'Cần địa chỉ giao hàng và chi nhánh đang hoạt động trước khi thanh toán.', true); return;
         }
         let quote = null, quotedRequest = null, busy = false, revision = 0;
         const quoteButton = form.querySelector('[data-quote]'), placeButton = form.querySelector('[data-place]');
             quoteButton.disabled = false;
         const request = () => ({ ...Object.fromEntries(new FormData(form)), items: cart.items.map(item => ({ variantId: item.variantId, quantity: item.quantity })) });
-        form.addEventListener('input', () => { revision++; quote = null; placeButton.disabled = true; });
+        const branchSummary = root.querySelector('[data-checkout-store-summary]');
+        const branchLabel = () => {
+            const selected = stores.find(item => Number(item.id) === Number(store.value));
+            return selected ? `CN-${selected.id} · ${selected.name}` : null;
+        };
+        const invalidateQuote = () => {
+            revision++; quote = null; quotedRequest = null; placeButton.disabled = true;
+            root.querySelector('[data-view-total]').textContent = '—';
+            if (branchSummary) branchSummary.textContent = branchLabel()
+                ? 'Chi nhánh đã chọn: ' + branchLabel() : 'Chưa chọn chi nhánh xuất hàng.';
+            this.status(root, 'Vui lòng tính lại tổng tiền sau khi thay đổi thông tin đặt hàng.');
+        };
+        form.addEventListener('input', invalidateQuote);
+        form.addEventListener('change', invalidateQuote);
         quoteButton.addEventListener('click', () => this.action(quoteButton, async () => {
             if (!form.reportValidity() || busy) return;
+            invalidateQuote();
             busy = true; const current = revision;
             try {
                 const payload = request(); const result = await UTEGear.Transactions.quote(payload);
                 if (current !== revision) { this.status(root, 'Thông tin đã thay đổi; vui lòng tính lại tổng tiền.'); return; }
+                if (Number(result.fulfillmentStore?.id) !== Number(payload.fulfillmentStoreId)) {
+                    throw new Error('Chi nhánh báo giá không khớp lựa chọn. Vui lòng tính lại tổng tiền.');
+                }
                 quote = result; quotedRequest = payload;
                 root.querySelector('[data-view-total]').textContent = this.money(result.total);
-                placeButton.disabled = false; this.status(root, 'Đã tính tổng tiền. Vui lòng kiểm tra trước khi đặt hàng.');
+                if (branchSummary) branchSummary.textContent = `Chi nhánh xuất hàng: CN-${result.fulfillmentStore.id} · ${result.fulfillmentStore.name}`;
+                placeButton.disabled = false; this.status(root, 'Chi nhánh đã xác nhận đủ hàng. Vui lòng kiểm tra tổng tiền trước khi đặt hàng.');
             } finally { busy = false; }
         }, root));
         form.addEventListener('submit', event => {
             event.preventDefault();
             this.action(placeButton, async () => {
-                if (busy || !form.reportValidity()) return;
+                if (busy || !quote || !quotedRequest || !form.reportValidity()) return;
+                if (Number(store.value) !== Number(quotedRequest.fulfillmentStoreId)) { invalidateQuote(); return; }
                 busy = true;
                 try {
                     const order = await UTEGear.Transactions.place(quotedRequest, quote);
                     form.hidden = true; UTEGear.Cart.badges({ itemCount: 0 });
-                    this.status(root, 'Đã đặt đơn ' + order.orderCode + '.');
+                    this.status(root, 'Đã đặt đơn ' + order.orderCode + ' · ' + branchLabel() + '.');
                     const link = this.node('a', 'Xem đơn hàng', 'btn btn-outline-primary mt-3');
                     link.href = '/orders?focus=' + UTEGear.Cart.id(order.id); root.append(link);
                 } catch (error) { quote = null; placeButton.disabled = true; throw error; }
                 finally { busy = false; }
             }, root).finally(() => { if (!quote) placeButton.disabled = true; });
         });
-        this.status(root, 'Chọn địa chỉ và cửa hàng, sau đó tính tổng tiền.');
+        this.status(root, 'Chọn địa chỉ và chi nhánh xuất hàng, sau đó tính tổng tiền.');
     },
     visible(element, visible) {
         element.hidden = !visible;
