@@ -104,4 +104,15 @@ class StorefrontViewControllerTest {
         assertThat(controller.contact()).isEqualTo("contact");
         assertThat(controller.profile()).isEqualTo("profile/profile");
     }
+
+    @Test
+    void showroomLoadsProductsFromTheRequestedStoresInventory() {
+        var product = org.mockito.Mockito.mock(ProductDtos.Summary.class);
+        when(productCatalogService.inStockAtStore(2L)).thenReturn(List.of(product));
+        ConcurrentModel model = new ConcurrentModel();
+        assertThat(controller.store(2L, model)).isEqualTo("stores/store-detail");
+        assertThat(model.getAttribute("products")).isEqualTo(List.of(product));
+        verify(storeService).findPublicDetail(2L);
+        verify(productCatalogService).inStockAtStore(2L);
+    }
 }

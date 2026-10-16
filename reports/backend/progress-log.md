@@ -1304,3 +1304,20 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc: Chưa mở PR/push; không đánh dấu DONE trước merge.
 - Bước tiếp theo: review backend riêng, liên kết CHECKOUT-BRANCH-FE-03.
 - Ngày hoàn tất: Chưa hoàn tất.
+
+## FIX-SHOWROOM-BE-04: Hiển thị sản phẩm từ kho thật tại trang showroom
+
+- Phụ trách: `@NgocYuh` (Backend).
+- Trạng thái: `IN PROGRESS`.
+- Branch: `codex/fix-showroom-stock-list`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-17.
+- Nguyên nhân: StorefrontViewController.store luôn gán products=List.of(), nên trang chi nhánh hiện 0 sản phẩm dù kho đã có hàng. Lượt QA trước chỉ kiểm tra kho và checkout, bỏ sót route showroom.
+- Đã làm: Lấy sản phẩm ACTIVE có biến thể active còn hàng tại đúng cửa hàng active; gộp biến thể về một thẻ sản phẩm, DTO Summary dùng số kho của riêng chi nhánh. Tải variants và images bằng hai query riêng để tránh multiple-bag fetch và truy vấn từng sản phẩm. Không sửa dữ liệu kho, schema/migration hoặc giao diện; tiếp tục view model ProductDtos.Summary hiện có.
+- Kiểm thử: thêm regression controller cho route showroom, unit service cho stock theo store và empty store, repository H2 PostgreSQL mode cho scope store/trạng thái/số lượng 0/nhiều biến thể/ảnh. Lượt đầu test repository thiếu PostgreSQL mode (H2 không tạo bảng JSONB), đã cấu hình H2 riêng cho test và chạy lại full verify.
+- Kết quả: `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` BUILD SUCCESS, 215 test, 0 failure/error, 4 PostgreSQL Testcontainers skip do thiếu Docker. Regression controller/service và repository H2 đã qua.
+- Edge thật với JAR đóng gói và database development: cả /stores/1, /stores/2, /stores/3 trả đúng 218 thẻ sản phẩm, không còn empty state, nút mua có variant ID và được bật; ảnh đầu trang tải đúng, không lỗi JavaScript, desktop 1365px/mobile 390px không tràn ngang. Đã xem ảnh QA trong crawler/data/output/showroom-stock-*.png (ignored). Kiểm tra chỉ đọc, không sửa kho/đơn/tài khoản.
+- Môi trường QA: session pool đủ 15 client nên dùng transaction pool của cùng project, prepareThreshold=0, pool 1; bỏ riêng Flyway trên server QA sau khi schema V3 đã validate, Hibernate vẫn validate. Không lưu các override này vào cấu hình ứng dụng. Server QA được dừng sau kiểm tra; giữ ứng dụng người dùng trên 8080.
+- Vướng mắc: Chưa PR/push; không đánh dấu DONE trước merge.
+- Bước tiếp theo: người dùng restart backend để nạp controller/service mới; review backend riêng.
+- Ngày hoàn tất: Chưa hoàn tất.

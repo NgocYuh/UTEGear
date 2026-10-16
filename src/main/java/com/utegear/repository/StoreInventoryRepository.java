@@ -69,4 +69,14 @@ public interface StoreInventoryRepository extends JpaRepository<StoreInventory, 
         Long getVariantId();
         Long getQuantity();
     }
+
+    @Query("""
+            select inventory.variant.id as variantId, sum(inventory.quantity) as quantity
+            from StoreInventory inventory
+            where inventory.store.id = :storeId and inventory.store.active = true
+              and inventory.variant.active = true and inventory.variant.id in :variantIds
+            group by inventory.variant.id
+            """)
+    List<VariantStock> sumStoreStockByVariantIds(@Param("storeId") Long storeId,
+            @Param("variantIds") Collection<Long> variantIds);
 }

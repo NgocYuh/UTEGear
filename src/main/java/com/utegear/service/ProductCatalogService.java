@@ -63,6 +63,19 @@ public class ProductCatalogService {
         return ProductDtos.Detail.from(product, stockFor(List.of(product)));
     }
 
+    @Transactional(readOnly = true)
+    public List<ProductDtos.Summary> inStockAtStore(Long storeId) {
+        List<Product> products = productRepository.findInStockAtStore(storeId, ProductStatus.ACTIVE);
+        if (products.isEmpty()) return List.of();
+        productRepository.findWithImagesByIds(products.stream().map(Product::getId).toList());
+        List<Long> variantIds = products.stream().flatMap(product -> product.getVariants().stream())
+                .filter(ProductVariant::isActive).map(ProductVariant::getId).toList();
+        Map<Long, Long> stock = inventoryRepository.sumStoreStockByVariantIds(storeId, variantIds).stream()
+                .collect(Collectors.toMap(StoreInventoryRepository.VariantStock::getVariantId,
+                        StoreInventoryRepository.VariantStock::getQuantity));
+        return products.stream().map(product -> ProductDtos.Summary.from(product, stock)).toList();
+    }
+
     private Specification<Product> specification(
             String query, Long categoryId, Long brandId, BigDecimal minPrice, BigDecimal maxPrice,
             Boolean onSale, String[] sortParts) {

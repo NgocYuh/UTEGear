@@ -81,4 +81,28 @@ class ProductCatalogServiceTest {
         ReflectionTestUtils.setField(variant, "id", 31L);
         return product;
     }
+
+    @Test
+    void showroomUsesOnlyStockFromItsSelectedStore() {
+        Product product = product();
+        when(productRepository.findInStockAtStore(2L, ProductStatus.ACTIVE)).thenReturn(java.util.List.of(product));
+        var stock = mock(StoreInventoryRepository.VariantStock.class);
+        when(stock.getVariantId()).thenReturn(31L);
+        when(stock.getQuantity()).thenReturn(10L);
+        when(inventoryRepository.sumStoreStockByVariantIds(2L, java.util.List.of(31L)))
+                .thenReturn(java.util.List.of(stock));
+        var result = service.inStockAtStore(2L);
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().totalStock()).isEqualTo(10);
+        verify(inventoryRepository, never()).sumStockByVariantIds(any());
+        verify(productRepository).findWithImagesByIds(java.util.List.of(21L));
+    }
+
+    @Test
+    void showroomWithNoStockReturnsAnEmptyListWithoutImageOrStockQueries() {
+        when(productRepository.findInStockAtStore(3L, ProductStatus.ACTIVE)).thenReturn(java.util.List.of());
+        assertThat(service.inStockAtStore(3L)).isEmpty();
+        verify(productRepository, never()).findWithImagesByIds(any());
+        verify(inventoryRepository, never()).sumStoreStockByVariantIds(any(), any());
+    }
 }
