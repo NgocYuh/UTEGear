@@ -234,7 +234,8 @@ UTEGear.Views = {
             location.replace('/login?redirect=' + encodeURIComponent(target));
             return false;
         }
-        if (!session.user?.roles?.includes('ADMIN')) {
+        const employeeSupport = location.pathname === '/admin/support';
+        if (!session.user?.roles?.includes('ADMIN') && !(employeeSupport && session.user?.roles?.includes('EMPLOYEE'))) {
             location.replace('/?adminAccess=denied');
             return false;
         }
