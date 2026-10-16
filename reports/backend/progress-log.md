@@ -1297,7 +1297,9 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Task liên kết: `CHECKOUT-BRANCH-FE-03` (@trongsonho). Bàn giao trước frontend: endpoint/model contract và `docs/api/mock/checkout-branch-selection.json`.
 - Đã làm: Runner local opt-in xác nhận development; nhập 10 chiếc mỗi biến thể đang bán có kho ở CN-1 vào CN-2/CN-3. Chỉ thêm cặp Store + ProductVariant chưa có; transaction khóa ghi bảng kho, giữ nguyên kho đã bán và CN-1; không sửa schema/migration.
 - Database demo: CN-2 thêm 218 dòng, 2.180 chiếc; CN-3 thêm 218 dòng, 2.180 chiếc. Lệnh bật seeder không lưu trong cấu hình mặc định. CN-1 trước thao tác: 218 dòng, 2.179 chiếc.
-- Kiểm thử: DemoBranchInventoryTest PASS 3/3 gồm nhập đúng chi nhánh/biến thể active, giữ kho cũ và rerun không reset hàng đã bán/hết hàng; từ chối store không đúng demo. Đang kiểm tra quote/place/cancel trên API thật. Checkout hiện có đã gắn fulfillmentStoreId và từ chối đổi store của quote.
-- Vướng mắc: giới hạn session pool development khi hai ứng dụng cùng chạy; server QA được giảm pool xuống 2, giữ nguyên ứng dụng người dùng.
-- Bước tiếp theo: xác minh tồn kho và đặt/hủy đơn đúng chi nhánh; full verify bản cuối, review backend riêng.
+- Kiểm thử: DemoBranchInventoryTest PASS 3/3 gồm nhập đúng chi nhánh/biến thể active, giữ kho cũ và rerun không reset hàng đã bán/hết hàng; từ chối store không đúng demo. Query PostgreSQL xác nhận CN-1 218 sản phẩm/2.179 chiếc không đổi; CN-2/CN-3 mỗi nơi 218 sản phẩm/2.180 chiếc. Rerun thực tế thêm 0 dòng/chi nhánh.
+- API và Edge thật: đặt một đơn CN-2 và một đơn CN-3 bằng tài khoản QA riêng, xác nhận fulfillmentStore của từng đơn và kho chỉ giảm tại chi nhánh được chọn; hủy đơn hoàn đúng kho, đối soát cả ba chi nhánh trở lại snapshot ban đầu. Đổi chi nhánh với quote cũ bị QUOTE_CHANGED; vượt kho bị INSUFFICIENT_STOCK. Không dùng cart/đơn của người dùng.
+- Cập nhật xác minh: 2026-10-17. Server QA đã dừng sau kiểm thử; giới hạn session pool được xử lý bằng pool 2 trên riêng server QA, không đổi cấu hình ứng dụng người dùng.
+- Vướng mắc: Chưa mở PR/push; đang chờ full verify bản đóng gói cuối của frontend phụ thuộc. Không đánh dấu DONE trước merge.
+- Bước tiếp theo: review backend riêng, liên kết CHECKOUT-BRANCH-FE-03.
 - Ngày hoàn tất: Chưa hoàn tất.
