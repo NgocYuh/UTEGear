@@ -94,6 +94,19 @@ class StompJwtChannelInterceptorTest {
         assertThat(interceptor.preSend(message, mock(MessageChannel.class))).isSameAs(message);
     }
 
+    @Test
+    void authenticatedEmployeeCanSubscribeSupportQueue() {
+        StompJwtChannelInterceptor interceptor = new StompJwtChannelInterceptor(
+                mock(JwtService.class), mock(CustomUserDetailsService.class));
+        StompHeaderAccessor accessor = StompHeaderAccessor.create(StompCommand.SUBSCRIBE);
+        CustomUserDetails employee = details(Role.EMPLOYEE);
+        accessor.setUser(new UsernamePasswordAuthenticationToken(employee, null, employee.getAuthorities()));
+        accessor.setDestination("/user/queue/support");
+        Message<byte[]> message = MessageBuilder.createMessage(new byte[0], accessor.getMessageHeaders());
+
+        assertThat(interceptor.preSend(message, mock(MessageChannel.class))).isSameAs(message);
+    }
+
     private CustomUserDetails details() {
         return details(Role.CUSTOMER);
     }

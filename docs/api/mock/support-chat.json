@@ -1,0 +1,23 @@
+{
+  "conversation": {
+    "id": 41,
+    "status": "OPEN",
+    "storeId": 1,
+    "storeName": "UTEGear Thủ Đức",
+    "customerId": 17,
+    "customerName": "Nguyễn An",
+    "employeeId": 9,
+    "employeeName": "Nhân viên UTEGear",
+    "createdAt": "2026-10-16T11:00:00Z",
+    "updatedAt": "2026-10-16T11:02:00Z",
+    "closedAt": null
+  },
+  "message": {
+    "id": 99,
+    "conversationId": 41,
+    "senderId": 17,
+    "senderName": "Nguyễn An",
+    "content": "Mẫu chuột này còn ở cửa hàng không?",
+    "sentAt": "2026-10-16T11:02:00Z"
+  }
+}

@@ -176,11 +176,15 @@ public final class AdminDtos {
             String phone,
             boolean enabled,
             Set<String> roles,
+            Long assignedStoreId,
+            String assignedStoreName,
             OffsetDateTime createdAt,
             OffsetDateTime updatedAt) {
         public static UserView from(User user) {
             return new UserView(user.getId(), user.getFullName(), user.getEmail(), user.getPhone(),
                     user.isEnabled(), user.getRoles().stream().map(role -> role.getName()).collect(java.util.stream.Collectors.toUnmodifiableSet()),
+                    user.getAssignedStore() == null ? null : user.getAssignedStore().getId(),
+                    user.getAssignedStore() == null ? null : user.getAssignedStore().getName(),
                     user.getCreatedAt(), user.getUpdatedAt());
         }
     }
@@ -189,6 +193,9 @@ public final class AdminDtos {
     }
 
     public record UserRolesRequest(@NotEmpty Set<String> roles) {
+    }
+
+    public record UserStoreAssignmentRequest(@Positive Long storeId) {
     }
 
     public record InventoryQuantityRequest(@NotNull @PositiveOrZero Integer quantity) {

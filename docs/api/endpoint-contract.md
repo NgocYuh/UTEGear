@@ -161,6 +161,7 @@ và `availableStores: []`, không trả HTTP 500 (`FIX-STOCK-API`, phụ thuộc
 | SUBSCRIBE | `/topic/admin/orders` | ADMIN | `ORDER_CREATED` |
 | SUBSCRIBE | `/user/queue/orders` | AUTHENTICATED | `ORDER_STATUS_CHANGED` |
 | SUBSCRIBE | `/user/queue/notifications` | AUTHENTICATED | `NOTIFICATION_CREATED` |
+| SUBSCRIBE | `/user/queue/support` | AUTHENTICATED | `SUPPORT_MESSAGE_CREATED`, `SUPPORT_CONVERSATION_ASSIGNED` |
 
 Event dùng envelope `eventId`, `type`, `occurredAt`, `data` và chỉ được publish sau commit. Destination
 khác ba destination trên bị interceptor từ chối.
@@ -186,6 +187,8 @@ chưa có contract/API khôi phục mật khẩu.
   [`mock/api-02.json`](mock/api-02.json).
 - Transaction/realtime: [`customer-transaction-realtime-contract.md`](customer-transaction-realtime-contract.md),
   [`mock/api-03.json`](mock/api-03.json).
+- Support chat: [`support-chat-contract.md`](support-chat-contract.md),
+  [`mock/support-chat.json`](mock/support-chat.json).
 
 Mock chỉ phục vụ phát triển UI; không phải dữ liệu production và không được import vào database.
 
