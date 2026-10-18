@@ -178,5 +178,55 @@ class GearConsultantServiceTest {
         assertThat(response.products()).isEmpty();
         assertThat(response.reply()).contains("chưa có sẵn sản phẩm");
     }
+
+    @Test
+    void consult_recommendsWirelessMouseUnderOneMillionAtStoreHcm() throws Exception {
+        Category realMouseCategory = new Category("Chuột", "chuot", "Chuột gaming & văn phòng", 2);
+        ReflectionTestUtils.setField(realMouseCategory, "id", 2L);
+
+        Product mouseAkkoWireless = new Product("Chuột không dây AKKO Dash V9 Max White", "chuot-khong-day-akko-dash-v9-max-white",
+                realMouseCategory, null, new BigDecimal("990000"), null);
+        ReflectionTestUtils.setField(mouseAkkoWireless, "id", 40L);
+        mouseAkkoWireless.update("Chuột không dây AKKO Dash V9 Max White", "chuot-khong-day-akko-dash-v9-max-white", realMouseCategory, null,
+                "Chuột không dây siêu nhẹ kết nối 2.4G và Bluetooth pin trâu độ nhạy cao",
+                new BigDecimal("990000"), null, ProductStatus.ACTIVE,
+                new ObjectMapper().readTree("{}"));
+
+        Product mouseWired = new Product("Chuột có dây Logitech G102 Black", "chuot-co-day-logitech-g102-black",
+                realMouseCategory, null, new BigDecimal("340000"), null);
+        ReflectionTestUtils.setField(mouseWired, "id", 44L);
+        mouseWired.update("Chuột có dây Logitech G102 Black", "chuot-co-day-logitech-g102-black", realMouseCategory, null,
+                "Chuột gaming có dây độ nhạy cao",
+                new BigDecimal("340000"), null, ProductStatus.ACTIVE,
+                new ObjectMapper().readTree("{}"));
+
+        Product mouseExpensiveWireless = new Product("Chuột gaming không dây Predator Cestus 353", "chuot-predator-cestus-353",
+                realMouseCategory, null, new BigDecimal("2500000"), null);
+        ReflectionTestUtils.setField(mouseExpensiveWireless, "id", 41L);
+        mouseExpensiveWireless.update("Chuột gaming không dây Predator Cestus 353", "chuot-predator-cestus-353", realMouseCategory, null,
+                "Chuột không dây cao cấp",
+                new BigDecimal("2500000"), null, ProductStatus.ACTIVE,
+                new ObjectMapper().readTree("{}"));
+
+        when(productRepository.findInStockAtStore(eq(1L), eq(ProductStatus.ACTIVE)))
+                .thenReturn(List.of(mouseAkkoWireless, mouseWired, mouseExpensiveWireless));
+
+        ProductVariant vAkko = new ProductVariant("SKU-AKKO", Map.of(), true, BigDecimal.ZERO);
+        ReflectionTestUtils.setField(vAkko, "product", mouseAkkoWireless);
+        StoreInventory invAkko = new StoreInventory(storeHcm, vAkko);
+        invAkko.setQuantity(10);
+
+        when(storeInventoryRepository.findByStoreIdOrderByVariantProductNameAscVariantSkuAsc(1L))
+                .thenReturn(List.of(invAkko));
+
+        ChatRequest request = new ChatRequest("chuột không dây dưới 1 triệu", 1L);
+        ChatResponse response = service.consult(request);
+
+        assertThat(response.products()).isNotEmpty();
+        assertThat(response.products().getFirst().name()).contains("AKKO Dash V9 Max White");
+        assertThat(response.products().getFirst().effectivePrice()).isEqualTo(new BigDecimal("990000"));
+        assertThat(response.detectedIntent()).contains("Không dây");
+        assertThat(response.detectedIntent()).contains("1.000.000");
+    }
 }
 

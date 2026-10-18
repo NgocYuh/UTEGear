@@ -183,21 +183,42 @@ public class GearConsultantService {
                 || normalized.contains("phim + chuot") || (normalized.contains("chuot") && normalized.contains("phim"))) {
             intent.isCombo = true;
         } else if (normalized.contains("chuot") || normalized.contains("mouse")) {
-            intent.categoryFocus = "mouse";
-        } else if (normalized.contains("ban phim") || normalized.contains("phim") || normalized.contains("keyboard") || normalized.contains("switch")) {
-            intent.categoryFocus = "keyboard";
+            intent.categoryFocus = "chuot";
+        } else if (normalized.contains("ban phim") || normalized.contains("phim") || normalized.contains("keyboard") || normalized.contains("switch") || normalized.contains("keycap")) {
+            intent.categoryFocus = "ban-phim";
         } else if (normalized.contains("tai nghe") || normalized.contains("headset") || normalized.contains("headphone") || normalized.contains("mic")) {
-            intent.categoryFocus = "headset";
+            intent.categoryFocus = "tai-nghe";
+        } else if (normalized.contains("lot chuot") || normalized.contains("pad") || normalized.contains("phu kien")) {
+            intent.categoryFocus = "phu-kien";
+        }
+
+        // Connection type
+        if (normalized.contains("khong day") || normalized.contains("wireless") || normalized.contains("bluetooth")
+                || normalized.contains("2.4g") || normalized.contains("2.4ghz") || normalized.contains("tri mode") || normalized.contains("trimode")) {
+            intent.isWireless = true;
+        }
+        if (normalized.contains("co day") || normalized.contains("wired") || normalized.contains("cam day") || normalized.contains("type c")) {
+            intent.isWired = true;
+        }
+
+        // Brand preference
+        String[] brands = {"akko", "logitech", "razer", "hyperwork", "corsair", "dareu", "pulsar", "acer", "asus", "steelseries", "msi"};
+        for (String b : brands) {
+            if (normalized.contains(b)) {
+                intent.brandFocus = b;
+                break;
+            }
         }
 
         // Game type
         if (normalized.contains("fps") || normalized.contains("cs2") || normalized.contains("csgo")
                 || normalized.contains("valorant") || normalized.contains("pubg") || normalized.contains("apex")
-                || normalized.contains("ban sung") || normalized.contains("overwatch") || normalized.contains("cod")) {
+                || normalized.contains("ban sung") || normalized.contains("overwatch") || normalized.contains("cod")
+                || normalized.contains("crossfire") || normalized.contains("dot kich")) {
             intent.isFps = true;
         }
         if (normalized.contains("moba") || normalized.contains("lol") || normalized.contains("lien minh")
-                || normalized.contains("dota") || normalized.contains("lien quan")) {
+                || normalized.contains("dota") || normalized.contains("lien quan") || normalized.contains("toc chien")) {
             intent.isMoba = true;
         }
         if (normalized.contains("van phong") || normalized.contains("go van ban") || normalized.contains("lam viec")
@@ -209,7 +230,7 @@ public class GearConsultantService {
         // Hand size / form
         if (normalized.contains("tay nho") || normalized.contains("tay be") || normalized.contains("nho gon")
                 || normalized.contains("sieu nhe") || normalized.contains("lightweight") || normalized.contains("nhe")
-                || normalized.contains("form nho")) {
+                || normalized.contains("form nho") || normalized.contains("form be")) {
             intent.isSmallHand = true;
         }
         if (normalized.contains("tay to") || normalized.contains("tay lon") || normalized.contains("dam tay")
@@ -264,6 +285,20 @@ public class GearConsultantService {
         return null;
     }
 
+    private boolean isCategoryMatching(String catSlug, String focus) {
+        if (catSlug == null || focus == null) return false;
+        String c = catSlug.toLowerCase(Locale.ROOT);
+        String f = focus.toLowerCase(Locale.ROOT);
+        if (c.equals(f)) return true;
+        return switch (f) {
+            case "chuot", "mouse" -> c.contains("chuot") || c.contains("mouse");
+            case "ban-phim", "keyboard", "phim" -> c.contains("phim") || c.contains("keyboard");
+            case "tai-nghe", "headset", "headphone" -> c.contains("tai") || c.contains("head");
+            case "phu-kien" -> c.contains("phu-kien") || c.contains("pad");
+            default -> c.contains(f);
+        };
+    }
+
     private ScoredProduct scoreProduct(Product product, Intent intent, int stock) {
         int score = 0;
         StringBuilder reason = new StringBuilder();
@@ -276,42 +311,71 @@ public class GearConsultantService {
 
         BigDecimal price = product.getEffectivePrice();
 
-        // Category filter / scoring
+        // 1. Category check
         if (intent.isCombo) {
-            if ("mouse".equals(catSlug)) {
-                score += 50;
-            } else if ("keyboard".equals(catSlug)) {
+            if (isCategoryMatching(catSlug, "chuot") || isCategoryMatching(catSlug, "ban-phim")) {
                 score += 50;
             } else {
                 return new ScoredProduct(product, 0, "");
             }
         } else if (intent.categoryFocus != null) {
-            if (intent.categoryFocus.equals(catSlug)) {
+            if (isCategoryMatching(catSlug, intent.categoryFocus)) {
                 score += 60;
             } else {
                 return new ScoredProduct(product, 0, "");
             }
         } else {
             // General query: give slight preference to core gear
-            if ("mouse".equals(catSlug) || "keyboard".equals(catSlug) || "headset".equals(catSlug)) {
+            if (isCategoryMatching(catSlug, "chuot") || isCategoryMatching(catSlug, "ban-phim") || isCategoryMatching(catSlug, "tai-nghe")) {
                 score += 30;
             }
         }
 
-        // Game type match
+        // 2. Wireless vs Wired check
+        boolean hasWireless = fullText.contains("khong day") || fullText.contains("wireless")
+                || fullText.contains("bluetooth") || fullText.contains("2.4ghz") || fullText.contains("2.4g")
+                || fullText.contains("tri-mode") || fullText.contains("trimode") || fullText.contains("lightspeed");
+        boolean hasWired = fullText.contains("co day") || fullText.contains("wired") || fullText.contains("type-c");
+
+        if (intent.isWireless) {
+            if (hasWireless) {
+                score += 50;
+                appendReason(reason, "Kết nối không dây tự do, độ trễ cực thấp");
+            } else {
+                return new ScoredProduct(product, 0, "");
+            }
+        } else if (intent.isWired) {
+            if (hasWired && !hasWireless) {
+                score += 40;
+                appendReason(reason, "Kết nối có dây ổn định, không lo sạc pin");
+            } else if (hasWireless) {
+                score -= 30;
+            }
+        }
+
+        // 3. Brand match
+        if (intent.brandFocus != null) {
+            String brandName = product.getBrand() == null ? "" : removeAccents(product.getBrand().getName().toLowerCase(Locale.ROOT));
+            if (brandName.contains(intent.brandFocus) || fullText.contains(intent.brandFocus)) {
+                score += 40;
+                appendReason(reason, "Thương hiệu " + (product.getBrand() != null ? product.getBrand().getName() : intent.brandFocus.toUpperCase(Locale.ROOT)) + " uy tín");
+            }
+        }
+
+        // 4. Game type match
         if (intent.isFps) {
-            if ("mouse".equals(catSlug)) {
+            if (isCategoryMatching(catSlug, "chuot")) {
                 if (fullText.contains("dpi") || fullText.contains("sensor") || fullText.contains("mat doc")
-                        || fullText.contains("ips") || fullText.contains("nhe") || fullText.contains("fps")) {
+                        || fullText.contains("ips") || fullText.contains("nhe") || fullText.contains("fps") || fullText.contains("dash")) {
                     score += 30;
                     appendReason(reason, "Cảm biến độ chính xác cao chuẩn FPS");
                 }
-            } else if ("keyboard".equals(catSlug)) {
+            } else if (isCategoryMatching(catSlug, "ban-phim")) {
                 if (fullText.contains("red") || fullText.contains("linear") || fullText.contains("silver") || fullText.contains("tkl") || fullText.contains("75%")) {
                     score += 30;
                     appendReason(reason, "Switch phản hồi nhanh, layout gọn tối ưu không gian vẩy chuột");
                 }
-            } else if ("headset".equals(catSlug)) {
+            } else if (isCategoryMatching(catSlug, "tai-nghe")) {
                 if (fullText.contains("7.1") || fullText.contains("spatial") || fullText.contains("am vom") || fullText.contains("tieng dong")) {
                     score += 30;
                     appendReason(reason, "Tái tạo âm thanh đa hướng nhận diện rõ tiếng bước chân");
@@ -320,7 +384,7 @@ public class GearConsultantService {
         }
 
         if (intent.isMoba) {
-            if ("mouse".equals(catSlug)) {
+            if (isCategoryMatching(catSlug, "chuot")) {
                 score += 25;
                 appendReason(reason, "Nút bấm nảy, độ bền switch cao cho tần suất click liên tục");
             }
@@ -328,42 +392,54 @@ public class GearConsultantService {
 
         if (intent.isOffice) {
             if (fullText.contains("silent") || fullText.contains("khong on") || fullText.contains("em")
-                    || fullText.contains("brown") || fullText.contains("bluetooth") || fullText.contains("wireless")) {
+                    || fullText.contains("brown") || fullText.contains("bluetooth") || fullText.contains("wireless") || fullText.contains("m840") || fullText.contains("silentium")) {
                 score += 35;
                 appendReason(reason, "Gõ êm ái, cách âm tốt không gây ồn văn phòng");
             }
         }
 
-        // Hand size / form match
-        if (intent.isSmallHand && "mouse".equals(catSlug)) {
+        // 5. Hand size / form match
+        if (intent.isSmallHand && isCategoryMatching(catSlug, "chuot")) {
             if (fullText.contains("sieu nhe") || fullText.contains("lightweight") || fullText.contains("mini")
-                    || fullText.contains("nho") || fullText.contains("g102") || fullText.contains("viper mini")) {
+                    || fullText.contains("nho") || fullText.contains("dash") || fullText.contains("v9") || fullText.contains("g102") || fullText.contains("viper mini")) {
                 score += 30;
                 appendReason(reason, "Form nhỏ gọn siêu nhẹ, kiểm soát chuột linh hoạt không mỏi tay");
             }
-        } else if (intent.isLargeHand && "mouse".equals(catSlug)) {
-            if (fullText.contains("dam tay") || fullText.contains("to") || fullText.contains("lon") || fullText.contains("deathadder")) {
+        } else if (intent.isLargeHand && isCategoryMatching(catSlug, "chuot")) {
+            if (fullText.contains("dam tay") || fullText.contains("to") || fullText.contains("lon") || fullText.contains("deathadder") || fullText.contains("comfort") || fullText.contains("m840")) {
                 score += 25;
                 appendReason(reason, "Form ôm tay đầm chắc, hỗ trợ bàn tay cỡ lớn");
             }
         }
 
-        if (intent.isErgonomic && fullText.contains("cong thai hoc")) {
+        if (intent.isErgonomic && (fullText.contains("cong thai hoc") || fullText.contains("ergo") || fullText.contains("comfort"))) {
             score += 25;
             appendReason(reason, "Thiết kế công thái học nâng đỡ cổ tay tự nhiên");
         }
 
-        // Budget check
+        // 6. Budget check
         if (intent.budget != null) {
             BigDecimal maxForSingle = intent.isCombo ? intent.budget.multiply(new BigDecimal("0.7")) : intent.budget;
             if (price.compareTo(maxForSingle) <= 0) {
-                score += 20;
-            } else if (price.compareTo(intent.budget) > 0) {
-                score -= 60;
+                score += 40;
+                if (intent.budget.compareTo(BigDecimal.ZERO) > 0) {
+                    double ratio = price.doubleValue() / intent.budget.doubleValue();
+                    if (ratio >= 0.55 && ratio <= 1.0) {
+                        score += 20;
+                    }
+                }
+                appendReason(reason, "Đúng ngân sách dưới " + formatMoney(intent.budget));
+            } else {
+                BigDecimal overAmount = price.subtract(intent.budget);
+                if (overAmount.compareTo(new BigDecimal("150000")) <= 0) {
+                    score -= 35;
+                } else {
+                    score -= 100;
+                }
             }
         }
 
-        // Stock & discount bonus
+        // 7. Stock & discount bonus
         if (stock >= 5) {
             score += 5;
         }
@@ -380,8 +456,8 @@ public class GearConsultantService {
     }
 
     private List<ScoredProduct> pickOptimalCombo(List<ScoredProduct> scored, BigDecimal budget) {
-        List<ScoredProduct> mice = scored.stream().filter(sp -> "mouse".equals(sp.product.getCategory().getSlug())).toList();
-        List<ScoredProduct> keyboards = scored.stream().filter(sp -> "keyboard".equals(sp.product.getCategory().getSlug())).toList();
+        List<ScoredProduct> mice = scored.stream().filter(sp -> isCategoryMatching(sp.product.getCategory().getSlug(), "chuot")).toList();
+        List<ScoredProduct> keyboards = scored.stream().filter(sp -> isCategoryMatching(sp.product.getCategory().getSlug(), "ban-phim")).toList();
 
         if (mice.isEmpty() && keyboards.isEmpty()) {
             return Collections.emptyList();
@@ -503,10 +579,10 @@ public class GearConsultantService {
         if (intent.isCombo) {
             list.add("Nâng ngân sách lên 2 triệu xem combo cao cấp hơn");
             list.add("Tư vấn riêng chuột không dây chơi FPS");
-        } else if ("mouse".equals(intent.categoryFocus)) {
+        } else if (isCategoryMatching(intent.categoryFocus, "chuot")) {
             list.add("Gợi ý thêm bàn phím cơ phù hợp để thành combo");
             list.add("Tìm chuột không dây cùng tầm giá");
-        } else if ("keyboard".equals(intent.categoryFocus)) {
+        } else if (isCategoryMatching(intent.categoryFocus, "ban-phim")) {
             list.add("Gợi ý thêm chuột gaming đồng bộ");
             list.add("Xem bàn phím layout 75% gọn gàng");
         } else {
@@ -545,6 +621,9 @@ public class GearConsultantService {
     private static class Intent {
         boolean isCombo;
         String categoryFocus;
+        boolean isWireless;
+        boolean isWired;
+        String brandFocus;
         boolean isFps;
         boolean isMoba;
         boolean isOffice;
@@ -555,10 +634,18 @@ public class GearConsultantService {
 
         String toDisplaySummary() {
             List<String> parts = new ArrayList<>();
-            if (isCombo) parts.add("Combo Chuột + Phím");
-            else if ("mouse".equals(categoryFocus)) parts.add("Chuột Gaming");
-            else if ("keyboard".equals(categoryFocus)) parts.add("Bàn phím cơ");
-            else if ("headset".equals(categoryFocus)) parts.add("Tai nghe Gaming");
+            if (isCombo) {
+                parts.add("Combo Chuột + Phím");
+            } else if (categoryFocus != null) {
+                String c = categoryFocus.toLowerCase(Locale.ROOT);
+                if (c.contains("chuot") || c.contains("mouse")) parts.add("Chuột Gaming");
+                else if (c.contains("phim") || c.contains("keyboard")) parts.add("Bàn phím cơ");
+                else if (c.contains("tai") || c.contains("head")) parts.add("Tai nghe Gaming");
+            }
+
+            if (isWireless) parts.add("Không dây");
+            if (isWired) parts.add("Có dây");
+            if (brandFocus != null) parts.add(brandFocus.toUpperCase(Locale.ROOT));
 
             if (isFps) parts.add("FPS (CS2/Valorant)");
             if (isMoba) parts.add("MOBA (LMHT)");

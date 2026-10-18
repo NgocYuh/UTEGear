@@ -1329,23 +1329,27 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Trạng thái: `IN PROGRESS`.
 - Branch: `feat/smart-gear-consultant-backend`.
 - Pull Request: Chưa mở.
-- Ngày cập nhật: 2026-10-18.
+- Ngày cập nhật: 2026-10-19.
 - Đã làm:
   - Xây dựng DTOs: `ConsultantDtos` (`ChatRequest`, `ChatResponse`, `RecommendedProduct`, `QuickPrompt`, `StoreInfo`).
   - Triển khai `GearConsultantService`:
-    - Phân tích ý định tự nhiên (Intent & Entity Parsing) cho tiếng Việt (Game FPS, MOBA, Office; Form tay nhỏ, tay to, công thái học; Ngân sách; Chi nhánh Đà Nẵng, Hà Nội, TP.HCM).
+    - Phân tích ý định tự nhiên (Intent & Entity Parsing) cho tiếng Việt (Game FPS, MOBA, Office; Form tay nhỏ, tay to, công thái học; Chuột không dây/có dây; Thương hiệu; Ngân sách; Chi nhánh Đà Nẵng, Hà Nội, TP.HCM).
+    - Khắc phục triệt để lỗi so khớp category slug (`chuot` / `ban-phim` / `tai-nghe` theo schema Supabase thực tế thay vì chỉ map tên tiếng Anh).
+    - Thêm bộ lọc và tính điểm chuyên sâu cho kết nối không dây (`isWireless`), lọc sạch các sản phẩm có dây khi người dùng yêu cầu không dây; tối ưu điểm cho sản phẩm vừa vặn ngân sách (sweet spot).
     - Thuật toán chấm điểm Heuristic Matching & lọc tồn kho chính xác 100% theo chi nhánh (`ProductRepository.findInStockAtStore` và `StoreInventoryRepository`).
     - Giải thuật tối ưu Combo chuột + bàn phím thỏa mãn ngân sách và tồn kho thực tế.
     - Sinh câu trả lời tư vấn chuyên môn tự nhiên kèm thẻ sản phẩm và gợi ý câu hỏi tiếp theo.
   - Triển khai `GearConsultantController`: Cung cấp public endpoints `GET /api/consultant/quick-prompts` và `POST /api/consultant/chat`.
   - Cập nhật `SecurityConfig`: Cho phép truy cập công khai `/api/consultant/**` để khách vãng lai và thành viên đều được tư vấn tức thì.
-  - Xây dựng Frontend Widget: `gear-consultant.html` (fragment), `gear-consultant.css` và `gear-consultant.js` (DOM, API client, auto store sync, responsive mobile/desktop).
+  - Xây dựng Frontend Widget: `gear-consultant.html` (fragment), `gear-consultant.css` và `gear-consultant.js`:
+    - Đặt nút kích hoạt AI nằm trên ô chatbox hỗ trợ (`right: 24px; bottom: 96px;`).
+    - Khung hội thoại AI (`.gear-consultant__panel`) neo tại `right: 96px; bottom: 24px;` mở sang bên trái hai nút nổi, hoàn toàn không đè lên chatbox hỗ trợ khách hàng.
+    - Tự động đóng chatbox hỗ trợ và ẩn trigger trên mobile khi panel AI mở để không gây xung đột hiển thị.
   - Tích hợp widget vào `main.html`.
   - Viết tài liệu contract `docs/api/gear-consultant-contract.md` và mock `docs/api/mock/gear-consultant.json`.
 - Kết quả kiểm thử:
-  - Unit & Integration Test Backend: `GearConsultantServiceTest` (4/4 PASS), `GearConsultantControllerTest` (3/3 PASS).
+  - Unit & Integration Test Backend: `GearConsultantServiceTest` (5/5 PASS, bao gồm test case tư vấn chuột không dây dưới 1 triệu tại TP.HCM), `GearConsultantControllerTest` (3/3 PASS).
   - Unit Test Frontend: `tests/frontend/gear-consultant.test.mjs` (2/2 PASS).
-  - `mvnw.cmd -B clean verify`: BUILD SUCCESS với 255 tests run, 0 failures, 0 errors, 4 skipped (Docker).
   - Toàn bộ bộ test frontend `tests/frontend/*.test.mjs`: 100% PASS.
 - Vướng mắc: Không có blocker.
 - Bước tiếp theo: Review và commit/push lên remote branch.

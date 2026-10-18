@@ -35,7 +35,15 @@
       const shouldOpen = open !== undefined ? open : !isVisible;
       panel.hidden = !shouldOpen;
       trigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+      if (document.body && document.body.classList) {
+        document.body.classList.toggle('gear-ai-open', shouldOpen);
+      }
       if (shouldOpen) {
+        const supportPanel = document.getElementById('support-chat-panel');
+        if (supportPanel && !supportPanel.hidden) {
+          const supportClose = document.querySelector('.support-chat__close');
+          supportClose?.click();
+        }
         input.focus();
         scrollToBottom();
       }
