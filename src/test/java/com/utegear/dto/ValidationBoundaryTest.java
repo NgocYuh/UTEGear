@@ -66,17 +66,47 @@ class ValidationBoundaryTest {
 
     @Test
     void registerRequestPhoneBoundaries() {
-        // min-1 (9 digits) -> invalid
-        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "090000001", "password123")))
+        // null or empty or spaces (optional) -> valid
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", null, "password123")))
+                .isEmpty();
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "", "password123")))
+                .isEmpty();
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "   ", "password123")))
+                .isEmpty();
+
+        // Valid VN mobile prefixes (03, 05, 07, 08, 09) with 10 digits -> valid
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "0901234567", "password123")))
+                .isEmpty();
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "0321234567", "password123")))
+                .isEmpty();
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "0561234567", "password123")))
+                .isEmpty();
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "0701234567", "password123")))
+                .isEmpty();
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "0861234567", "password123")))
+                .isEmpty();
+
+        // Valid international VN prefix (+84) -> valid
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "+84901234567", "password123")))
+                .isEmpty();
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "+84321234567", "password123")))
+                .isEmpty();
+
+        // Invalid: 9 digits -> invalid
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "090123456", "password123")))
                 .isNotEmpty();
-        // min (10 digits) -> valid
-        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "0900000001", "password123")))
-                .isEmpty();
-        // max (20 digits) -> valid
+        // Invalid: 11 digits starting with 0 -> invalid
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "09012345678", "password123")))
+                .isNotEmpty();
+        // Invalid prefixes (00, 01, 02 landline, 04, 06) -> invalid
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "0000000000", "password123")))
+                .isNotEmpty();
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "0123456789", "password123")))
+                .isNotEmpty();
+        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "0281234567", "password123")))
+                .isNotEmpty();
+        // Invalid: 20 digits garbage -> invalid
         assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "1".repeat(20), "password123")))
-                .isEmpty();
-        // max+1 (21 digits) -> invalid
-        assertThat(validator.validate(new RegisterRequest("Nguyen An", "a@example.com", "1".repeat(21), "password123")))
                 .isNotEmpty();
     }
 
@@ -121,6 +151,28 @@ class ValidationBoundaryTest {
                 .isEmpty();
         // 101 chars -> invalid
         assertThat(validator.validate(new AddressRequest("A".repeat(101), "0900000001", "01 Nguyen Hue", "Phuong 1", "Quan 1", "TP.HCM", "Nha")))
+                .isNotEmpty();
+    }
+
+    @Test
+    void addressRequestPhoneBoundaries() {
+        // Blank -> invalid
+        assertThat(validator.validate(new AddressRequest("Nguyen An", "", "01 Nguyen Hue", "Phuong 1", "Quan 1", "TP.HCM", "Nha")))
+                .isNotEmpty();
+        assertThat(validator.validate(new AddressRequest("Nguyen An", null, "01 Nguyen Hue", "Phuong 1", "Quan 1", "TP.HCM", "Nha")))
+                .isNotEmpty();
+
+        // Valid VN mobile -> valid
+        assertThat(validator.validate(new AddressRequest("Nguyen An", "0901234567", "01 Nguyen Hue", "Phuong 1", "Quan 1", "TP.HCM", "Nha")))
+                .isEmpty();
+        assertThat(validator.validate(new AddressRequest("Nguyen An", "+84901234567", "01 Nguyen Hue", "Phuong 1", "Quan 1", "TP.HCM", "Nha")))
+                .isEmpty();
+
+        // Invalid: 9 digits -> invalid
+        assertThat(validator.validate(new AddressRequest("Nguyen An", "090123456", "01 Nguyen Hue", "Phuong 1", "Quan 1", "TP.HCM", "Nha")))
+                .isNotEmpty();
+        // Invalid prefix -> invalid
+        assertThat(validator.validate(new AddressRequest("Nguyen An", "0000000000", "01 Nguyen Hue", "Phuong 1", "Quan 1", "TP.HCM", "Nha")))
                 .isNotEmpty();
     }
 

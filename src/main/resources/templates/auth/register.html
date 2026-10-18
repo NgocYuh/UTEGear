@@ -42,8 +42,9 @@
                     <label for="phone" class="form-label">Số điện thoại</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="0901234567" autocomplete="tel">
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="0901234567" autocomplete="tel" pattern="^(0|\+84)[35789][0-9]{8}$" maxlength="12" title="Số điện thoại di động Việt Nam gồm 10 số (ví dụ: 0901234567 hoặc +84901234567)">
                     </div>
+                    <div class="form-text text-muted fs-8">Định dạng di động 10 số (VD: 0901234567 hoặc +84901234567)</div>
                 </div>
 
                 <div class="mb-3">
