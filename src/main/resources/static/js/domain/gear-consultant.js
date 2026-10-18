@@ -138,11 +138,13 @@
           const hasDiscount = p.salePrice && p.basePrice && p.salePrice < p.basePrice;
           const baseFormatted = hasDiscount ? formatMoney(p.basePrice) : '';
 
+          const productHref = `/products/${encodeURIComponent(p.id != null ? p.id : p.slug)}`;
+
           html += `
             <div class="gear-consultant__product-card">
               <img class="gear-consultant__product-img" src="${escapeHtml(imgUrl)}" alt="${escapeHtml(p.name)}" loading="lazy">
               <div class="gear-consultant__product-info">
-                <a href="/products/${escapeHtml(p.slug)}" class="text-decoration-none">
+                <a href="${productHref}" class="text-decoration-none">
                   <h4 class="gear-consultant__product-title">${escapeHtml(p.name)}</h4>
                 </a>
                 <div class="gear-consultant__product-price">
@@ -151,7 +153,7 @@
                 </div>
                 <div class="d-flex align-items-center justify-content-between mt-1">
                   <span class="gear-consultant__product-stock"><i class="bi bi-check-circle-fill me-1"></i>Còn ${p.availableQuantity} chiếc</span>
-                  <a href="/products/${escapeHtml(p.slug)}" class="btn btn-sm btn-outline-danger gear-consultant__product-link">Xem chi tiết</a>
+                  <a href="${productHref}" class="btn btn-sm btn-outline-danger gear-consultant__product-link">Xem chi tiết</a>
                 </div>
               </div>
             </div>

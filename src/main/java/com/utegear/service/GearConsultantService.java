@@ -564,12 +564,7 @@ public class GearConsultantService {
             sb.append("   - *Ưu điểm:* ").append(p.matchReason()).append("\n");
         }
 
-        sb.append("\n**Tổng chi phí dự kiến:** **").append(formatMoney(totalEstimate)).append("**");
-        if (intent.budget != null && intent.budget.compareTo(totalEstimate) > 0) {
-            BigDecimal saved = intent.budget.subtract(totalEstimate);
-            sb.append(" *(tiết kiệm ").append(formatMoney(saved)).append(" so với ngân sách của bạn!)*");
-        }
-        sb.append("\n\nTất cả sản phẩm đều **đang sẵn hàng tại quầy trải nghiệm ").append(store.getName()).append("**. Bạn có thể đến showroom dùng thử hoặc đặt giao hỏa tốc ngay!");
+        sb.append("\nTất cả sản phẩm trên đều **đang sẵn hàng tại quầy trải nghiệm ").append(store.getName()).append("**. Bạn có thể bấm Xem chi tiết bên dưới để xem thông số và đặt mua nhé!");
 
         return sb.toString();
     }

@@ -1345,6 +1345,8 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
     - Đặt nút kích hoạt AI nằm trên ô chatbox hỗ trợ (`right: 24px; bottom: 96px;`).
     - Khung hội thoại AI (`.gear-consultant__panel`) neo tại `right: 96px; bottom: 24px;` mở sang bên trái hai nút nổi, hoàn toàn không đè lên chatbox hỗ trợ khách hàng.
     - Tự động đóng chatbox hỗ trợ và ẩn trigger trên mobile khi panel AI mở để không gây xung đột hiển thị.
+    - Sửa đường link chi tiết sản phẩm trong widget chatbot từ slug sang ID (`/products/{id}`) đồng bộ với endpoint `@GetMapping("/products/{id}")`.
+    - Bỏ dòng "Tổng chi phí dự kiến" trong văn bản sinh câu trả lời tư vấn để tránh gây hiểu nhầm khi người dùng hỏi mua một sản phẩm đơn lẻ nhưng bot gợi ý nhiều lựa chọn thay thế.
   - Tích hợp widget vào `main.html`.
   - Viết tài liệu contract `docs/api/gear-consultant-contract.md` và mock `docs/api/mock/gear-consultant.json`.
 - Kết quả kiểm thử:
