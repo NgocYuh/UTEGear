@@ -47,7 +47,7 @@ public class ProductCatalogService {
     public ProductDtos.ProductPage search(
             String query, Long categoryId, Long brandId, BigDecimal minPrice, BigDecimal maxPrice,
             Boolean onSale, int page, int size, String sort) {
-        validateFilters(minPrice, maxPrice, page, size);
+        validateFilters(query, minPrice, maxPrice, page, size);
         String[] sortParts = parseSort(sort);
         Specification<Product> specification = specification(
                 query, categoryId, brandId, minPrice, maxPrice, onSale, sortParts);
@@ -125,10 +125,12 @@ public class ProductCatalogService {
                         StoreInventoryRepository.VariantStock::getQuantity));
     }
 
-    private void validateFilters(BigDecimal minPrice, BigDecimal maxPrice, int page, int size) {
-        if (page < 0 || size < 1 || size > 100 || minPrice != null && minPrice.signum() < 0
-                || maxPrice != null && (maxPrice.signum() < 0
-                || minPrice != null && maxPrice.compareTo(minPrice) < 0)) {
+    private void validateFilters(String query, BigDecimal minPrice, BigDecimal maxPrice, int page, int size) {
+        if (page < 0 || size < 1 || size > 100
+                || (query != null && query.trim().length() > 200)
+                || (minPrice != null && minPrice.signum() < 0)
+                || (maxPrice != null && (maxPrice.signum() < 0
+                || (minPrice != null && maxPrice.compareTo(minPrice) < 0)))) {
             throw invalidFilter();
         }
     }

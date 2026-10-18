@@ -36,4 +36,22 @@ class AdminUserServiceTest {
                 .extracting("code")
                 .isEqualTo("VALIDATION_FAILED");
     }
+
+    @Test
+    void findAllValidatesPaginationBounds() {
+        assertThatThrownBy(() -> service.findAll(-1, 20))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.findAll(0, 0))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.findAll(0, 101))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+    }
 }

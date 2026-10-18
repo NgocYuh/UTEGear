@@ -140,6 +140,39 @@ class InventoryServiceTest {
     }
 
     @Test
+    void rejectsInventoryQuantityOutOfBounds() {
+        assertThatThrownBy(() -> service.setQuantity(1L, 10L, -1))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.setQuantity(1L, 10L, 1000001))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.receive(1L, 10L, 0))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.receive(1L, 10L, 1000001))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+    }
+
+    @Test
+    void setsQuantityWithinValidRange() {
+        when(inventoryRepository.findLocked(1L, 10L)).thenReturn(Optional.empty());
+
+        InventoryResult result = service.setQuantity(1L, 10L, 50);
+
+        assertThat(result.quantity()).isEqualTo(50);
+        verify(inventoryRepository).save(any(StoreInventory.class));
+    }
+
+    @Test
     void rejectsOperationForInactiveStore() {
         when(storeRepository.findLockedById(1L)).thenReturn(Optional.of(store("Tạm đóng", false)));
 

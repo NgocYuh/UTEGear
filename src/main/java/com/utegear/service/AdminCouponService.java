@@ -61,6 +61,9 @@ public class AdminCouponService {
         if (!request.validUntil().isAfter(request.validFrom())) {
             throw invalid("Thời điểm kết thúc phải sau thời điểm bắt đầu");
         }
+        if (request.discountValue().compareTo(BigDecimal.ZERO) <= 0) {
+            throw invalid("Giá trị giảm giá phải lớn hơn 0");
+        }
         if (request.discountType() == com.utegear.entity.DiscountType.PERCENTAGE
                 && request.discountValue().compareTo(BigDecimal.valueOf(100)) > 0) {
             throw invalid("Phần trăm giảm giá không được vượt quá 100");

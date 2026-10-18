@@ -122,6 +122,9 @@ public class CheckoutService {
         Set<Long> ids = new HashSet<>();
         List<Line> lines = new ArrayList<>();
         for (CheckoutItemRequest item : requested) {
+            if (item.quantity() <= 0 || item.quantity() > 99) {
+                throw validation("Số lượng biến thể phải từ 1 đến 99");
+            }
             if (!ids.add(item.variantId())) {
                 throw validation("Mỗi biến thể chỉ được xuất hiện một lần");
             }

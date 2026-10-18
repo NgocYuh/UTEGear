@@ -51,6 +51,24 @@ class AdminCatalogServiceTest {
                 .isEqualTo("VALIDATION_FAILED");
     }
 
+    @Test
+    void productsValidatesPaginationBounds() {
+        assertThatThrownBy(() -> service.products(null, null, -1, 20))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.products(null, null, 0, 0))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.products(null, null, 0, 101))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+    }
+
     private AdminDtos.ProductRequest request(
             BigDecimal basePrice, BigDecimal salePrice, com.fasterxml.jackson.databind.JsonNode specifications) {
         return new AdminDtos.ProductRequest(

@@ -94,6 +94,21 @@ class AdminOrderServiceTest {
     }
 
     @Test
+    void listValidatesPaginationBounds() {
+        assertThatThrownBy(() -> service.list(null, null, null, -1, 20))
+                .isInstanceOf(ApiException.class)
+                .extracting("code").isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.list(null, null, null, 0, 0))
+                .isInstanceOf(ApiException.class)
+                .extracting("code").isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.list(null, null, null, 0, 101))
+                .isInstanceOf(ApiException.class)
+                .extracting("code").isEqualTo("VALIDATION_FAILED");
+    }
+
+    @Test
     void completingCodOrderMarksPaymentPaid() {
         order.transitionTo(OrderStatus.CONFIRMED);
         order.transitionTo(OrderStatus.PROCESSING);

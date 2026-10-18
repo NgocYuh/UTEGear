@@ -51,6 +51,21 @@ class NotificationServiceTest {
     }
 
     @Test
+    void listValidatesPaginationBounds() {
+        assertThatThrownBy(() -> service.list(owner, false, -1, 20))
+                .isInstanceOf(ApiException.class)
+                .extracting("code").isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.list(owner, false, 0, 0))
+                .isInstanceOf(ApiException.class)
+                .extracting("code").isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.list(owner, false, 0, 101))
+                .isInstanceOf(ApiException.class)
+                .extracting("code").isEqualTo("VALIDATION_FAILED");
+    }
+
+    @Test
     void marksOwnedNotificationAsRead() {
         when(repository.findByIdAndUserId(30L, 7L)).thenReturn(Optional.of(notification));
 

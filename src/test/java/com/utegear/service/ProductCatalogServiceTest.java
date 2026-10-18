@@ -67,6 +67,36 @@ class ProductCatalogServiceTest {
     }
 
     @Test
+    void rejectsNegativePrices() {
+        assertThatThrownBy(() -> service.search(null, null, null,
+                new BigDecimal("-1"), null, 0, 20, "createdAt,desc"))
+                .isInstanceOf(ApiException.class).extracting("code").isEqualTo("INVALID_FILTER");
+
+        assertThatThrownBy(() -> service.search(null, null, null,
+                null, new BigDecimal("-1"), 0, 20, "createdAt,desc"))
+                .isInstanceOf(ApiException.class).extracting("code").isEqualTo("INVALID_FILTER");
+    }
+
+    @Test
+    void rejectsPaginationAndSizeOutOfBounds() {
+        assertThatThrownBy(() -> service.search(null, null, null, null, null, -1, 20, "createdAt,desc"))
+                .isInstanceOf(ApiException.class).extracting("code").isEqualTo("INVALID_FILTER");
+
+        assertThatThrownBy(() -> service.search(null, null, null, null, null, 0, 0, "createdAt,desc"))
+                .isInstanceOf(ApiException.class).extracting("code").isEqualTo("INVALID_FILTER");
+
+        assertThatThrownBy(() -> service.search(null, null, null, null, null, 0, 101, "createdAt,desc"))
+                .isInstanceOf(ApiException.class).extracting("code").isEqualTo("INVALID_FILTER");
+    }
+
+    @Test
+    void rejectsOverlyLongSearchQuery() {
+        String longQuery = "a".repeat(201);
+        assertThatThrownBy(() -> service.search(longQuery, null, null, null, null, 0, 20, "createdAt,desc"))
+                .isInstanceOf(ApiException.class).extracting("code").isEqualTo("INVALID_FILTER");
+    }
+
+    @Test
     void rejectsUnsupportedSort() {
         assertThatThrownBy(() -> service.search(null, null, null, null, null, 0, 20, "soldCount,desc"))
                 .isInstanceOf(ApiException.class).extracting("code").isEqualTo("INVALID_FILTER");
