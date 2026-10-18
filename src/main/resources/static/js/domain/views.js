@@ -70,8 +70,8 @@ UTEGear.Views = {
         image.onerror = () => { image.onerror = null; image.src = '/images/placeholder.svg'; };
         return image;
     },
-    async cart(root) {
-        const cart = await UTEGear.Cart.get();
+    async cart(root, currentCart = null) {
+        const cart = currentCart || await UTEGear.Cart.get();
         if (!UTEGear.Session.get()) return;
         const list = root.querySelector('[data-view-items]');
         list.replaceChildren();
@@ -84,17 +84,55 @@ UTEGear.Views = {
             const label = this.node('label', 'Số lượng', 'form-label');
             const quantity = this.node('input');
             quantity.type = 'number'; quantity.min = '1'; quantity.step = '1'; quantity.value = item.quantity;
+            if (item.available) quantity.max = String(item.availableStock);
             quantity.id = 'cart-quantity-' + UTEGear.Cart.id(item.id); quantity.className = 'form-control';
             label.htmlFor = quantity.id;
-            info.append(label, quantity);
+            const quantityStatus = this.node('span', '', 'small text-muted d-block mt-1');
+            quantityStatus.setAttribute('aria-live', 'polite');
+            info.append(label, quantity, quantityStatus);
             if (!item.available) info.append(this.node('p', 'Không đủ hàng; vui lòng giảm số lượng hoặc xóa sản phẩm.', 'text-danger'));
             row.append(info, this.node('strong', this.money(item.lineTotal)));
-            row.append(this.button('Cập nhật', async () => {
+            let updateTimer = null;
+            let updating = false;
+            const updateQuantity = async () => {
+                if (updating || !quantity.reportValidity()) return;
+                const nextQuantity = Number(quantity.value);
+                if (nextQuantity === item.quantity) return;
+                updating = true;
+                quantity.disabled = true;
+                row.setAttribute('aria-busy', 'true');
+                quantityStatus.textContent = 'Đang cập nhật số lượng…';
+                this.status(root, 'Đang cập nhật số lượng…');
+                try {
+                    const updatedCart = await UTEGear.Cart.update(item.id, nextQuantity);
+                    await this.cart(root, updatedCart);
+                } catch (error) {
+                    quantity.value = item.quantity;
+                    quantityStatus.textContent = 'Không thể cập nhật số lượng.';
+                    this.status(root, error.message, true);
+                } finally {
+                    updating = false;
+                    quantity.disabled = false;
+                    row.removeAttribute('aria-busy');
+                }
+            };
+            const scheduleQuantityUpdate = () => {
+                clearTimeout(updateTimer);
                 if (!quantity.reportValidity()) return;
-                try { await UTEGear.Cart.update(item.id, Number(quantity.value)); }
-                catch (error) { quantity.value = item.quantity; throw error; }
-                await this.cart(root);
-            }, root));
+                updateTimer = setTimeout(updateQuantity, 350);
+            };
+            quantity.addEventListener('input', scheduleQuantityUpdate);
+            quantity.addEventListener('change', () => {
+                clearTimeout(updateTimer);
+                updateQuantity();
+            });
+            quantity.addEventListener('keydown', event => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    clearTimeout(updateTimer);
+                    updateQuantity();
+                }
+            });
             row.append(this.button('Xóa', async () => { await UTEGear.Cart.remove(item.id); await this.cart(root); }, root));
             list.append(row);
         }
@@ -208,7 +246,7 @@ UTEGear.Views = {
                 finally { busy = false; }
             }, root).finally(() => { if (!quote) placeButton.disabled = true; });
         });
-        this.status(root, 'Chọn địa chỉ và chi nhánh xuất hàng, sau đó tính tổng tiền.');
+        this.status(root, '');
     },
     visible(element, visible) {
         element.hidden = !visible;
