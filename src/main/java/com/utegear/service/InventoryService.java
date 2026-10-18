@@ -69,8 +69,8 @@ public class InventoryService {
     @Transactional
     public InventoryResult setQuantity(Long storeId, Long variantId, int quantity) {
         requireIds(storeId, variantId);
-        if (quantity < 0) {
-            throw validation("Tồn kho phải là số nguyên không âm");
+        if (quantity < 0 || quantity > 1000000) {
+            throw validation("Tồn kho phải từ 0 đến 1.000.000");
         }
         Store store = requireActiveStore(storeId);
         ProductVariant variant = requireActiveVariant(variantId);
@@ -171,6 +171,9 @@ public class InventoryService {
     private void requirePositive(int quantity) {
         if (quantity <= 0) {
             throw validation("Số lượng phải lớn hơn 0");
+        }
+        if (quantity > 1000000) {
+            throw validation("Số lượng không được vượt quá 1.000.000");
         }
     }
 

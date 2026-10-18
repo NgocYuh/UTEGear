@@ -131,6 +131,21 @@ class CheckoutServiceTest {
     }
 
     @Test
+    void rejectsInvalidItemQuantity() {
+        CheckoutRequest invalidZero = new CheckoutRequest(3L, 2L, null, PaymentMethod.COD, null,
+                List.of(new CheckoutItemRequest(10L, 0)));
+        assertThatThrownBy(() -> service.quote(user, invalidZero))
+                .isInstanceOf(ApiException.class)
+                .extracting("code").isEqualTo("VALIDATION_FAILED");
+
+        CheckoutRequest invalidTooLarge = new CheckoutRequest(3L, 2L, null, PaymentMethod.COD, null,
+                List.of(new CheckoutItemRequest(10L, 100)));
+        assertThatThrownBy(() -> service.quote(user, invalidTooLarge))
+                .isInstanceOf(ApiException.class)
+                .extracting("code").isEqualTo("VALIDATION_FAILED");
+    }
+
+    @Test
     void rejectsInvalidCouponDuringQuote() {
         CheckoutRequest request = new CheckoutRequest(3L, 2L, "BAD", PaymentMethod.COD, null,
                 quoteRequest.items());

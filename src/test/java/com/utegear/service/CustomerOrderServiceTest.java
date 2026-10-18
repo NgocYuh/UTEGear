@@ -50,6 +50,21 @@ class CustomerOrderServiceTest {
     }
 
     @Test
+    void listValidatesPaginationBounds() {
+        assertThatThrownBy(() -> service.list(user, null, -1, 20))
+                .isInstanceOf(ApiException.class)
+                .extracting("code").isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.list(user, null, 0, 0))
+                .isInstanceOf(ApiException.class)
+                .extracting("code").isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.list(user, null, 0, 101))
+                .isInstanceOf(ApiException.class)
+                .extracting("code").isEqualTo("VALIDATION_FAILED");
+    }
+
+    @Test
     void rejectsOrderOwnedByAnotherUserWithoutLeakingIt() {
         when(orders.findDetailedByIdAndUserId(99L, 7L)).thenReturn(Optional.empty());
 

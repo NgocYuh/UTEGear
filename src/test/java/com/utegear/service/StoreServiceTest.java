@@ -98,6 +98,24 @@ class StoreServiceTest {
                 .isEqualTo("VALIDATION_FAILED");
     }
 
+    @Test
+    void findAllValidatesPaginationBounds() {
+        assertThatThrownBy(() -> service.findAll(null, -1, 10))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.findAll(null, 0, 0))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.findAll(null, 0, 101))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+    }
+
     private StoreUpsertRequest request(String phone, boolean active) {
         return new StoreUpsertRequest(
                 "UTEGear Quận 1", "01 Võ Văn Ngân", "TP.HCM", "Thủ Đức", phone,

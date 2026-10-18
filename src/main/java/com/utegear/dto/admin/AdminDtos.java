@@ -11,6 +11,9 @@ import com.utegear.entity.ProductStatus;
 import com.utegear.entity.ProductVariant;
 import com.utegear.entity.StoreInventory;
 import com.utegear.entity.User;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -62,8 +65,8 @@ public final class AdminDtos {
             @NotNull @Positive Long categoryId,
             @Positive Long brandId,
             @Size(max = 10000) String description,
-            @NotNull @PositiveOrZero BigDecimal basePrice,
-            @PositiveOrZero BigDecimal salePrice,
+            @NotNull @DecimalMin("1000.00") @DecimalMax("999999999.99") BigDecimal basePrice,
+            @DecimalMin("0.00") @DecimalMax("999999999.99") BigDecimal salePrice,
             @NotNull ProductStatus status,
             @NotBlank @Size(max = 50) String defaultSku,
             Map<String, String> optionValues,
@@ -140,12 +143,12 @@ public final class AdminDtos {
     public record CouponRequest(
             @NotBlank @Size(max = 50) String code,
             @NotNull DiscountType discountType,
-            @NotNull @PositiveOrZero BigDecimal discountValue,
-            @PositiveOrZero BigDecimal minimumOrderValue,
-            @PositiveOrZero BigDecimal maximumDiscount,
+            @NotNull @DecimalMin("0.01") @DecimalMax("999999999.99") BigDecimal discountValue,
+            @DecimalMin("0.00") @DecimalMax("999999999.99") BigDecimal minimumOrderValue,
+            @DecimalMin("0.00") @DecimalMax("999999999.99") BigDecimal maximumDiscount,
             @NotNull OffsetDateTime validFrom,
             @NotNull OffsetDateTime validUntil,
-            @PositiveOrZero int maxUses,
+            @PositiveOrZero @Max(1000000) int maxUses,
             boolean active) {
     }
 
@@ -198,14 +201,14 @@ public final class AdminDtos {
     public record UserStoreAssignmentRequest(@Positive Long storeId) {
     }
 
-    public record InventoryQuantityRequest(@NotNull @PositiveOrZero Integer quantity) {
+    public record InventoryQuantityRequest(@NotNull @PositiveOrZero @Max(1000000) Integer quantity) {
     }
 
     public record InventoryTransferRequest(
             @NotNull @Positive Long sourceStoreId,
             @NotNull @Positive Long destinationStoreId,
             @NotNull @Positive Long variantId,
-            @Min(1) int quantity) {
+            @Min(1) @Max(1000000) int quantity) {
     }
 
     public record InventoryView(

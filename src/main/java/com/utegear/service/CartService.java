@@ -113,6 +113,9 @@ public class CartService {
         if (quantity <= 0) {
             throw validation("Số lượng phải lớn hơn 0");
         }
+        if (quantity > 99) {
+            throw validation("Số lượng không được vượt quá 99");
+        }
     }
 
     private ApiException validation(String message) {

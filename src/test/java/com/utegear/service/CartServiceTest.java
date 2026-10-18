@@ -61,6 +61,19 @@ class CartServiceTest {
                 .isInstanceOf(ApiException.class)
                 .extracting("code")
                 .isEqualTo("VALIDATION_FAILED");
+
+        assertThatThrownBy(() -> service.addItem(user, 10L, -1))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+    }
+
+    @Test
+    void rejectsQuantityGreaterThanNinetyNine() {
+        assertThatThrownBy(() -> service.addItem(user, 10L, 100))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
     }
 
     @Test

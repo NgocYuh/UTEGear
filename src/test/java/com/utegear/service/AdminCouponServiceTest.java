@@ -25,11 +25,34 @@ class AdminCouponServiceTest {
     }
 
     @Test
-    void rejectsEndTimeBeforeStartAsClientError() {
-        AdminDtos.CouponRequest request = request(
+    void rejectsEndTimeBeforeOrEqualStartAsClientError() {
+        AdminDtos.CouponRequest before = request(
                 DiscountType.FIXED_AMOUNT, new BigDecimal("50000"), start.minusMinutes(1));
+        assertThatThrownBy(() -> service.create(before))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
 
-        assertThatThrownBy(() -> service.create(request))
+        AdminDtos.CouponRequest equal = request(
+                DiscountType.FIXED_AMOUNT, new BigDecimal("50000"), start);
+        assertThatThrownBy(() -> service.create(equal))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+    }
+
+    @Test
+    void rejectsNonPositiveDiscountValue() {
+        AdminDtos.CouponRequest zero = request(
+                DiscountType.FIXED_AMOUNT, BigDecimal.ZERO, start.plusDays(1));
+        assertThatThrownBy(() -> service.create(zero))
+                .isInstanceOf(ApiException.class)
+                .extracting("code")
+                .isEqualTo("VALIDATION_FAILED");
+
+        AdminDtos.CouponRequest negative = request(
+                DiscountType.FIXED_AMOUNT, new BigDecimal("-1000"), start.plusDays(1));
+        assertThatThrownBy(() -> service.create(negative))
                 .isInstanceOf(ApiException.class)
                 .extracting("code")
                 .isEqualTo("VALIDATION_FAILED");

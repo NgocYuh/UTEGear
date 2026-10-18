@@ -79,6 +79,9 @@ public class SupportChatService {
 
     @Transactional
     public SupportChatDtos.MessageView send(User actor, Long id, String content) {
+        if (content == null || content.isBlank() || content.trim().length() > 2000) {
+            throw invalid("Nội dung tin nhắn không được để trống và tối đa 2000 ký tự");
+        }
         SupportConversation conversation = conversations.findLockedById(id).orElseThrow(() -> missing("SUPPORT_CONVERSATION_NOT_FOUND", "Không tìm thấy cuộc hội thoại"));
         canSend(actor, conversation);
         if (conversation.getStatus() != SupportConversationStatus.OPEN) throw invalid("Không thể gửi tin nhắn cho cuộc hội thoại đã đóng");

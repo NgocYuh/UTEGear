@@ -61,7 +61,11 @@ public class CartItem {
 
     void increase(int quantity) {
         requirePositive(quantity);
-        this.quantity = Math.addExact(this.quantity, quantity);
+        int next = Math.addExact(this.quantity, quantity);
+        if (next > 99) {
+            throw new IllegalArgumentException("Số lượng không được vượt quá 99");
+        }
+        this.quantity = next;
         touch();
     }
 
@@ -76,6 +80,9 @@ public class CartItem {
     private void requirePositive(int value) {
         if (value <= 0) {
             throw new IllegalArgumentException("Số lượng phải lớn hơn 0");
+        }
+        if (value > 99) {
+            throw new IllegalArgumentException("Số lượng không được vượt quá 99");
         }
     }
 
