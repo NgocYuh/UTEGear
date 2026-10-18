@@ -135,17 +135,22 @@ public class GearConsultantService {
         }
         if (normalized.contains("ho chi minh") || normalized.contains("tp.hcm") || normalized.contains("tphcm")
                 || normalized.contains("sai gon") || normalized.contains("quan 1") || normalized.contains("thu duc")) {
-            return findStoreByProvinceKeywords("TP.HCM", "ho chi minh");
+            return findStoreByProvinceKeywords("TP.HCM", "ho chi minh", "tp.hcm", "tphcm", "sai gon", "thu duc");
         }
         return getDefaultStore();
     }
 
-    private Store findStoreByProvinceKeywords(String province, String alt) {
+    private Store findStoreByProvinceKeywords(String province, String... keywords) {
         List<Store> stores = storeRepository.findByActiveOrderByNameAsc(true);
         for (Store s : stores) {
             String p = s.getProvince() == null ? "" : removeAccents(s.getProvince().toLowerCase(Locale.ROOT));
-            if (p.contains(alt) || (s.getName() != null && removeAccents(s.getName().toLowerCase(Locale.ROOT)).contains(alt))) {
-                return s;
+            String d = s.getDistrict() == null ? "" : removeAccents(s.getDistrict().toLowerCase(Locale.ROOT));
+            String name = s.getName() == null ? "" : removeAccents(s.getName().toLowerCase(Locale.ROOT));
+            for (String kw : keywords) {
+                String normKw = removeAccents(kw.toLowerCase(Locale.ROOT));
+                if (p.contains(normKw) || d.contains(normKw) || name.contains(normKw)) {
+                    return s;
+                }
             }
         }
         return stores.stream().findFirst().orElseThrow(() -> new IllegalStateException("Hệ thống chưa có chi nhánh hoạt động"));
