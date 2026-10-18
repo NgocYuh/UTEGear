@@ -246,7 +246,7 @@ UTEGear.Views = {
                 finally { busy = false; }
             }, root).finally(() => { if (!quote) placeButton.disabled = true; });
         });
-        this.status(root, 'Chọn địa chỉ và chi nhánh xuất hàng, sau đó tính tổng tiền.');
+        this.status(root, '');
     },
     visible(element, visible) {
         element.hidden = !visible;

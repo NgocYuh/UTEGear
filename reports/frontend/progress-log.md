@@ -890,10 +890,10 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Branch: `fix/cart-auto-quantity`.
 - Pull Request: Chưa mở.
 - Ngày cập nhật: 2026-10-18.
-- Đã làm: Bỏ thao tác bấm nút Cập nhật riêng. Khi khách đổi số lượng hợp lệ, giao diện đợi 350 ms rồi gọi `PUT /api/cart/items/{id}`; Enter hoặc đổi focus sẽ gửi ngay. Sau phản hồi, giỏ hàng và tạm tính render lại từ `CartResponse` của server. Đơn giá không bị tính hoặc ghi đè ở trình duyệt.
+- Đã làm: Bỏ thao tác bấm nút Cập nhật riêng. Khi khách đổi số lượng hợp lệ, giao diện đợi 350 ms rồi gọi `PUT /api/cart/items/{id}`; Enter hoặc đổi focus sẽ gửi ngay. Sau phản hồi, giỏ hàng và tạm tính render lại từ `CartResponse` của server. Đơn giá không bị tính hoặc ghi đè ở trình duyệt. Checkout không còn mô tả mặc định dưới tiêu đề hoặc dưới ô chọn chi nhánh; thông báo lỗi/xác nhận động vẫn giữ bằng `aria-live`.
 - Kiểm thử: `node --check src/main/resources/static/js/domain/views.js`, `node --check tests/frontend/qa05-browser.mjs` và `node --test tests/frontend/integration.test.mjs tests/frontend/checkout-branch.test.mjs` PASS 26/26. `mvnw.cmd -B --no-transfer-progress -Dnet.bytebuddy.experimental=true clean verify` PASS 215 test, 0 failure/error.
 - Vướng mắc: Chưa có.
-- Bước tiếp theo: Chạy kiểm thử JavaScript/browser rồi commit trên nhánh task; chưa push khi chưa có yêu cầu.
+- Bước tiếp theo: Chạy kiểm thử JavaScript/browser rồi commit trên nhánh task; chưa push khi chưa có yêu cầu. Địa chỉ `UTEGear Demo` là dữ liệu database, cần cập nhật qua quản trị cửa hàng; không chỉnh `store_inventory`.
 - Ngày hoàn tất: Chưa hoàn tất.
 
 ## CHECKOUT-BRANCH-FE-03: Khách chọn chi nhánh khi đặt hàng

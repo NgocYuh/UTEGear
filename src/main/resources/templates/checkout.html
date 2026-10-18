@@ -4,15 +4,14 @@
 <main layout:fragment="content" class="section">
  <section class="container" data-customer-view="checkout" aria-labelledby="checkout-title">
   <h1 id="checkout-title">Thanh toán</h1>
-  <p data-view-status role="status" aria-live="polite">Đang tải thông tin…</p>
+  <p data-view-status role="status" aria-live="polite"></p>
   <noscript>Cần bật JavaScript để thanh toán.</noscript>
   <p data-view-items></p>
   <form id="checkoutForm" class="surface-card p-4" onsubmit="return false">
    <label for="checkout-address" class="form-label">Địa chỉ giao hàng</label>
    <select id="checkout-address" name="addressId" class="form-select mb-3" required><option value="">Vui lòng chọn</option></select>
    <label for="checkout-store" class="form-label">Chọn chi nhánh xuất hàng</label>
-   <select id="checkout-store" name="fulfillmentStoreId" class="form-select mb-2" aria-describedby="checkout-store-help" required><option value="">Chọn chi nhánh</option></select>
-   <p id="checkout-store-help" class="text-muted small">Hàng được xuất từ chi nhánh bạn chọn và giao tới địa chỉ ở trên. Tồn kho được kiểm tra khi tính tổng tiền.</p>
+   <select id="checkout-store" name="fulfillmentStoreId" class="form-select mb-3" required><option value="">Chọn chi nhánh</option></select>
    <label for="checkout-payment" class="form-label">Phương thức thanh toán</label>
    <select id="checkout-payment" name="paymentMethod" class="form-select mb-3"><option value="COD">Thanh toán khi nhận hàng</option><option value="BANK_TRANSFER">Chuyển khoản</option></select>
    <label for="checkout-coupon" class="form-label">Mã giảm giá</label>
