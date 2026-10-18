@@ -1322,3 +1322,31 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc: Chưa PR/push; không đánh dấu DONE trước merge.
 - Bước tiếp theo: người dùng restart backend để nạp controller/service mới; review backend riêng.
 - Ngày hoàn tất: Chưa hoàn tất.
+
+## GEAR-AI-01: Hệ chuyên gia tư vấn Gaming Gear và Combo theo chi nhánh (Smart Gear Consultant)
+
+- Phụ trách: `@NgocYuh` & `@trongsonho`.
+- Trạng thái: `IN PROGRESS`.
+- Branch: `feat/smart-gear-consultant-backend`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-18.
+- Đã làm:
+  - Xây dựng DTOs: `ConsultantDtos` (`ChatRequest`, `ChatResponse`, `RecommendedProduct`, `QuickPrompt`, `StoreInfo`).
+  - Triển khai `GearConsultantService`:
+    - Phân tích ý định tự nhiên (Intent & Entity Parsing) cho tiếng Việt (Game FPS, MOBA, Office; Form tay nhỏ, tay to, công thái học; Ngân sách; Chi nhánh Đà Nẵng, Hà Nội, TP.HCM).
+    - Thuật toán chấm điểm Heuristic Matching & lọc tồn kho chính xác 100% theo chi nhánh (`ProductRepository.findInStockAtStore` và `StoreInventoryRepository`).
+    - Giải thuật tối ưu Combo chuột + bàn phím thỏa mãn ngân sách và tồn kho thực tế.
+    - Sinh câu trả lời tư vấn chuyên môn tự nhiên kèm thẻ sản phẩm và gợi ý câu hỏi tiếp theo.
+  - Triển khai `GearConsultantController`: Cung cấp public endpoints `GET /api/consultant/quick-prompts` và `POST /api/consultant/chat`.
+  - Cập nhật `SecurityConfig`: Cho phép truy cập công khai `/api/consultant/**` để khách vãng lai và thành viên đều được tư vấn tức thì.
+  - Xây dựng Frontend Widget: `gear-consultant.html` (fragment), `gear-consultant.css` và `gear-consultant.js` (DOM, API client, auto store sync, responsive mobile/desktop).
+  - Tích hợp widget vào `main.html`.
+  - Viết tài liệu contract `docs/api/gear-consultant-contract.md` và mock `docs/api/mock/gear-consultant.json`.
+- Kết quả kiểm thử:
+  - Unit & Integration Test Backend: `GearConsultantServiceTest` (4/4 PASS), `GearConsultantControllerTest` (3/3 PASS).
+  - Unit Test Frontend: `tests/frontend/gear-consultant.test.mjs` (2/2 PASS).
+  - `mvnw.cmd -B clean verify`: BUILD SUCCESS với 255 tests run, 0 failures, 0 errors, 4 skipped (Docker).
+  - Toàn bộ bộ test frontend `tests/frontend/*.test.mjs`: 100% PASS.
+- Vướng mắc: Không có blocker.
+- Bước tiếp theo: Review và commit/push lên remote branch.
+- Ngày hoàn tất: Chưa hoàn tất.
