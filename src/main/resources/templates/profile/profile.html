@@ -11,13 +11,13 @@
    <h2 class="h4">Cập nhật thông tin</h2>
    <form data-profile-form class="surface-card p-3 mb-4" onsubmit="return false">
     <label for="profile-name" class="form-label">Họ tên</label><input id="profile-name" name="fullName" minlength="2" maxlength="100" required class="form-control mb-3">
-    <label for="profile-phone" class="form-label">Điện thoại</label><input id="profile-phone" name="phone" type="tel" pattern="\+?[0-9]{10,20}" maxlength="20" class="form-control mb-3">
+    <label for="profile-phone" class="form-label">Điện thoại</label><input id="profile-phone" name="phone" type="tel" pattern="^(0|\+84)[35789][0-9]{8}$" maxlength="12" placeholder="0901234567" title="Số điện thoại di động Việt Nam gồm 10 số (ví dụ: 0901234567 hoặc +84901234567)" class="form-control mb-3">
     <button type="submit" class="btn btn-utama">Lưu thông tin</button>
    </form>
    <h2 id="addresses" class="h4">Địa chỉ giao hàng</h2><div data-address-items></div>
    <form data-address-form class="surface-card p-3 mb-4" onsubmit="return false">
     <label for="address-name" class="form-label">Người nhận</label><input id="address-name" name="fullName" maxlength="100" required class="form-control mb-3">
-    <label for="address-phone" class="form-label">Điện thoại người nhận</label><input id="address-phone" name="phone" type="tel" pattern="\+?[0-9]{10,20}" maxlength="20" required class="form-control mb-3">
+    <label for="address-phone" class="form-label">Điện thoại người nhận</label><input id="address-phone" name="phone" type="tel" pattern="^(0|\+84)[35789][0-9]{8}$" maxlength="12" placeholder="0901234567" title="Số điện thoại di động Việt Nam gồm 10 số (ví dụ: 0901234567 hoặc +84901234567)" required class="form-control mb-3">
     <label for="address-street" class="form-label">Số nhà, tên đường</label><input id="address-street" name="street" maxlength="255" required class="form-control mb-3">
     <label for="address-ward" class="form-label">Phường/xã</label><input id="address-ward" name="ward" maxlength="100" class="form-control mb-3">
     <label for="address-district" class="form-label">Quận/huyện</label><input id="address-district" name="district" maxlength="100" class="form-control mb-3">

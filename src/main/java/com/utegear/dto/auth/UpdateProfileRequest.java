@@ -9,6 +9,6 @@ public record UpdateProfileRequest(
         @Size(min = 2, max = 100, message = "Họ tên phải có từ 2 đến 100 ký tự")
         String fullName,
 
-        @Pattern(regexp = "^$|^\\+?[0-9]{10,20}$", message = "Số điện thoại phải có từ 10 đến 20 chữ số")
+        @Pattern(regexp = "^$|^\\s*$|^(0|\\+84)[35789][0-9]{8}$", message = "Số điện thoại không hợp lệ (phải là số di động 10 chữ số của Việt Nam)")
         String phone) {
 }

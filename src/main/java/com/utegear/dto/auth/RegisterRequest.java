@@ -15,7 +15,7 @@ public record RegisterRequest(
         @Size(max = 100, message = "Email không được vượt quá 100 ký tự")
         String email,
 
-        @Pattern(regexp = "^\\+?[0-9]{10,20}$", message = "Số điện thoại phải có từ 10 đến 20 chữ số")
+        @Pattern(regexp = "^$|^\\s*$|^(0|\\+84)[35789][0-9]{8}$", message = "Số điện thoại không hợp lệ (phải là số di động 10 chữ số của Việt Nam)")
         String phone,
 
         @NotBlank(message = "Mật khẩu là bắt buộc")
