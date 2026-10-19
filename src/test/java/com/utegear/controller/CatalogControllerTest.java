@@ -15,6 +15,7 @@ import com.utegear.repository.StoreInventoryRepository;
 import com.utegear.service.BrandService;
 import com.utegear.service.CategoryService;
 import com.utegear.service.ProductCatalogService;
+import com.utegear.service.SwitchSoundService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -33,7 +34,8 @@ class CatalogControllerTest {
         CatalogController controller = new CatalogController(
                 new CategoryService(mock(CategoryRepository.class)),
                 new BrandService(mock(BrandRepository.class)),
-                new ProductCatalogService(products, mock(StoreInventoryRepository.class)));
+                new ProductCatalogService(products, mock(StoreInventoryRepository.class)),
+                new SwitchSoundService(products));
         mvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();

@@ -137,6 +137,7 @@ trước khi xác nhận nhận tại cửa hàng hoặc trừ tồn kho cho gia
    wishlist, address, checkout, order, notification, review contract và WebSocket payload.
 4. [`support-chat-contract.md`](support-chat-contract.md): nhân viên theo cửa hàng, hội thoại hỗ trợ,
    tin nhắn và realtime support queue.
+5. [`switch-sound-contract.md`](switch-sound-contract.md): profile âm thanh switch, mẫu âm thanh Cloudinary và cấu hình thử nghiệm switch theo sản phẩm bàn phím.
 
 JSON trong `docs/api/mock/` là fixture phát triển Frontend, không chứng minh endpoint đã được triển khai.
 Khi contract có phạm vi dự kiến chưa có controller, `endpoint-contract.md` phải ghi rõ để demo và test
