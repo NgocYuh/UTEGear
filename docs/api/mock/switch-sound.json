@@ -1,0 +1,194 @@
+{
+  "allSwitches": [
+    {
+      "code": "RED_LINEAR",
+      "name": "Red Switch (Linear)",
+      "switchType": "Linear",
+      "actuationForceG": 45,
+      "actuationPointMm": 2.0,
+      "totalTravelMm": 4.0,
+      "noiseLevel": "Êm",
+      "soundCharacter": "Trơn mượt, không khấc, âm trầm nhẹ (thocky), phù hợp chơi game tốc độ và văn phòng.",
+      "recordingCondition": "Case nhôm CNC, plate PC, keycap PBT Cherry Profile, mic condenser cách 25cm.",
+      "audioSecureUrl": "https://res.cloudinary.com/demo/video/upload/v1/utegear/switches/red-linear.mp3",
+      "audioPublicId": "utegear/switches/red-linear",
+      "colorHex": "#E53E3E",
+      "synthProfile": {
+        "baseFrequency": 180,
+        "clickFrequency": 0,
+        "clickGain": 0.0,
+        "decayMs": 95,
+        "thockFactor": 1.2
+      }
+    },
+    {
+      "code": "BLUE_CLICKY",
+      "name": "Blue Switch (Clicky)",
+      "switchType": "Clicky",
+      "actuationForceG": 50,
+      "actuationPointMm": 2.2,
+      "totalTravelMm": 4.0,
+      "noiseLevel": "Đanh / Tiếng Click rõ",
+      "soundCharacter": "Khấc bấm rõ rệt và tiếng click đanh đặc trưng, gõ nảy tay.",
+      "recordingCondition": "Case nhôm CNC, plate PC, keycap PBT Cherry Profile, mic condenser cách 25cm.",
+      "audioSecureUrl": "https://res.cloudinary.com/demo/video/upload/v1/utegear/switches/blue-clicky.mp3",
+      "audioPublicId": "utegear/switches/blue-clicky",
+      "colorHex": "#3182CE",
+      "synthProfile": {
+        "baseFrequency": 220,
+        "clickFrequency": 3200,
+        "clickGain": 0.7,
+        "decayMs": 110,
+        "thockFactor": 0.8
+      }
+    },
+    {
+      "code": "BROWN_TACTILE",
+      "name": "Brown Switch (Tactile)",
+      "switchType": "Tactile",
+      "actuationForceG": 45,
+      "actuationPointMm": 2.0,
+      "totalTravelMm": 4.0,
+      "noiseLevel": "Vừa phải",
+      "soundCharacter": "Có khấc phản hồi nhẹ khi chạm điểm kích hoạt, âm đầm ấm cân bằng giữa làm việc và chơi game.",
+      "recordingCondition": "Case nhôm CNC, plate PC, keycap PBT Cherry Profile, mic condenser cách 25cm.",
+      "audioSecureUrl": "https://res.cloudinary.com/demo/video/upload/v1/utegear/switches/brown-tactile.mp3",
+      "audioPublicId": "utegear/switches/brown-tactile",
+      "colorHex": "#975A16",
+      "synthProfile": {
+        "baseFrequency": 195,
+        "clickFrequency": 1800,
+        "clickGain": 0.25,
+        "decayMs": 100,
+        "thockFactor": 1.0
+      }
+    },
+    {
+      "code": "SILVER_SPEED",
+      "name": "Silver Switch (Speed Linear)",
+      "switchType": "Linear",
+      "actuationForceG": 40,
+      "actuationPointMm": 1.2,
+      "totalTravelMm": 3.4,
+      "noiseLevel": "Êm / Tốc độ",
+      "soundCharacter": "Hành trình kích hoạt cực ngắn 1.2mm, phản hồi siêu nhạy, âm thanh gõ thanh thoát dồn dập.",
+      "recordingCondition": "Case nhôm CNC, plate PC, keycap PBT Cherry Profile, mic condenser cách 25cm.",
+      "audioSecureUrl": "https://res.cloudinary.com/demo/video/upload/v1/utegear/switches/silver-speed.mp3",
+      "audioPublicId": "utegear/switches/silver-speed",
+      "colorHex": "#CBD5E0",
+      "synthProfile": {
+        "baseFrequency": 230,
+        "clickFrequency": 0,
+        "clickGain": 0.0,
+        "decayMs": 75,
+        "thockFactor": 0.9
+      }
+    },
+    {
+      "code": "SILENT_RED",
+      "name": "Silent Red Switch (Silent Linear)",
+      "switchType": "Silent Linear",
+      "actuationForceG": 45,
+      "actuationPointMm": 1.9,
+      "totalTravelMm": 3.7,
+      "noiseLevel": "Rất êm / Giảm chấn",
+      "soundCharacter": "Tích hợp đệm cao su giảm chấn ở cả 2 chiều lên xuống, âm thanh cực kỳ yên tĩnh cho đêm khuya và văn phòng.",
+      "recordingCondition": "Case nhôm CNC, plate PC, keycap PBT Cherry Profile, mic condenser cách 25cm.",
+      "audioSecureUrl": "https://res.cloudinary.com/demo/video/upload/v1/utegear/switches/silent-red.mp3",
+      "audioPublicId": "utegear/switches/silent-red",
+      "colorHex": "#FEB2B2",
+      "synthProfile": {
+        "baseFrequency": 140,
+        "clickFrequency": 0,
+        "clickGain": 0.0,
+        "decayMs": 60,
+        "thockFactor": 0.4
+      }
+    }
+  ],
+  "productSupportedKeyboard": {
+    "productId": 145,
+    "productName": "Bàn phím cơ Akko 3087 DS Midnight",
+    "categorySlug": "ban-phim",
+    "supported": true,
+    "defaultSwitchCode": "RED_LINEAR",
+    "disclaimer": "Âm thanh thực tế phụ thuộc vào chất liệu vỏ phím, tấm plate, keycap và thiết bị nghe của bạn.",
+    "profiles": [
+      {
+        "code": "RED_LINEAR",
+        "name": "Red Switch (Linear)",
+        "switchType": "Linear",
+        "actuationForceG": 45,
+        "actuationPointMm": 2.0,
+        "totalTravelMm": 4.0,
+        "noiseLevel": "Êm",
+        "soundCharacter": "Trơn mượt, không khấc, âm trầm nhẹ (thocky), phù hợp chơi game tốc độ và văn phòng.",
+        "recordingCondition": "Case nhôm CNC, plate PC, keycap PBT Cherry Profile, mic condenser cách 25cm.",
+        "audioSecureUrl": "https://res.cloudinary.com/demo/video/upload/v1/utegear/switches/red-linear.mp3",
+        "audioPublicId": "utegear/switches/red-linear",
+        "colorHex": "#E53E3E",
+        "synthProfile": {
+          "baseFrequency": 180,
+          "clickFrequency": 0,
+          "clickGain": 0.0,
+          "decayMs": 95,
+          "thockFactor": 1.2
+        },
+        "matchedVariantIds": [201]
+      },
+      {
+        "code": "BLUE_CLICKY",
+        "name": "Blue Switch (Clicky)",
+        "switchType": "Clicky",
+        "actuationForceG": 50,
+        "actuationPointMm": 2.2,
+        "totalTravelMm": 4.0,
+        "noiseLevel": "Đanh / Tiếng Click rõ",
+        "soundCharacter": "Khấc bấm rõ rệt và tiếng click đanh đặc trưng, gõ nảy tay.",
+        "recordingCondition": "Case nhôm CNC, plate PC, keycap PBT Cherry Profile, mic condenser cách 25cm.",
+        "audioSecureUrl": "https://res.cloudinary.com/demo/video/upload/v1/utegear/switches/blue-clicky.mp3",
+        "audioPublicId": "utegear/switches/blue-clicky",
+        "colorHex": "#3182CE",
+        "synthProfile": {
+          "baseFrequency": 220,
+          "clickFrequency": 3200,
+          "clickGain": 0.7,
+          "decayMs": 110,
+          "thockFactor": 0.8
+        },
+        "matchedVariantIds": [202]
+      },
+      {
+        "code": "BROWN_TACTILE",
+        "name": "Brown Switch (Tactile)",
+        "switchType": "Tactile",
+        "actuationForceG": 45,
+        "actuationPointMm": 2.0,
+        "totalTravelMm": 4.0,
+        "noiseLevel": "Vừa phải",
+        "soundCharacter": "Có khấc phản hồi nhẹ khi chạm điểm kích hoạt, âm đầm ấm cân bằng giữa làm việc và chơi game.",
+        "recordingCondition": "Case nhôm CNC, plate PC, keycap PBT Cherry Profile, mic condenser cách 25cm.",
+        "audioSecureUrl": "https://res.cloudinary.com/demo/video/upload/v1/utegear/switches/brown-tactile.mp3",
+        "audioPublicId": "utegear/switches/brown-tactile",
+        "colorHex": "#975A16",
+        "synthProfile": {
+          "baseFrequency": 195,
+          "clickFrequency": 1800,
+          "clickGain": 0.25,
+          "decayMs": 100,
+          "thockFactor": 1.0
+        },
+        "matchedVariantIds": []
+      }
+    ]
+  },
+  "productUnsupportedMouse": {
+    "productId": 102,
+    "productName": "Chuột Gaming Logitech G102 Lightsync",
+    "categorySlug": "chuot",
+    "supported": false,
+    "defaultSwitchCode": null,
+    "disclaimer": "Sản phẩm này không hỗ trợ tính năng thử nghiệm switch bàn phím.",
+    "profiles": []
+  }
+}

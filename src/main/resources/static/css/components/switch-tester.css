@@ -1,0 +1,1186 @@
+/* =========================================================
+   UTEGear Virtual Switch Tester & Interactive 3D Keyboard CSS
+   - True 3D Sculpted Keycaps (5-Face Frustum Skirts & Stem)
+   - True 3D Solid Case Enclosure (Walls, Slices & Bottom Plate)
+   - High-Contrast Dynamic RGB Backlight Modes
+   - Switch Selection Modal for Purchase / Cart / Wishlist
+   ========================================================= */
+
+.switch-tester-container {
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-top: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.switch-selector-card {
+  background: var(--bg-surface-alt, #f8fafc);
+  border: 1px solid var(--border-color, #e2e8f0);
+}
+
+/* Switch Selection Buttons */
+.switch-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  border: 1.5px solid var(--border-color, #cbd5e1);
+  background: #ffffff;
+  color: var(--text-primary, #1e293b);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.switch-pill-btn:hover {
+  transform: translateY(-1px);
+}
+
+.switch-pill-btn.active {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.switch-pill-color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+/* =========================================================
+   Virtual Keyboard Viewport & 3D Perspective Stage
+   ========================================================= */
+.virtual-keyboard-wrapper {
+  background: radial-gradient(circle at 50% 40%, #162032 0%, #090d16 100%);
+  border: 2px solid #1e293b;
+  box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.8), 0 8px 24px rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  outline: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 16px 20px 38px 20px;
+  perspective: 1400px;
+  perspective-origin: 50% 45%;
+  transition: padding 0.3s ease, background 0.3s ease;
+  position: relative;
+  text-align: center;
+}
+
+.virtual-keyboard-status {
+  position: relative;
+  z-index: 30;
+  pointer-events: auto;
+  text-align: left;
+}
+
+.virtual-keyboard-status button {
+  position: relative;
+  z-index: 31;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.virtual-keyboard-wrapper.mode-3d-active {
+  cursor: grab;
+  user-select: none;
+  padding-top: 34px;
+  padding-bottom: 60px;
+}
+
+.virtual-keyboard-wrapper.mode-3d-active:active {
+  cursor: grabbing;
+}
+
+.virtual-keyboard-wrapper:focus-visible {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35);
+}
+
+/* =========================================================
+   The True 3D Mechanical Keyboard Chassis (Exact Fit)
+   ========================================================= */
+.virtual-keyboard-chassis {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 5px;
+  width: max-content !important;
+  min-width: max-content !important;
+  max-width: max-content !important;
+  margin: 0 auto;
+  padding: 16px 18px 20px 18px;
+  background: var(--kb-case-color, #18181b);
+  border: 2.5px solid rgba(128, 128, 128, 0.32);
+  border-radius: 14px;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.65),
+    0 6px 0 rgba(0, 0, 0, 0.35),
+    inset 0 2px 5px rgba(255, 255, 255, 0.45),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.25);
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.3s ease;
+  will-change: transform;
+}
+
+/* =========================================================
+   Per-Key & Underglow RGB Diffuser Plate (Visible Between Keys)
+   ========================================================= */
+.chassis-rgb-backplate {
+  position: absolute;
+  inset: 10px 12px 12px 12px;
+  border-radius: 8px;
+  pointer-events: none;
+  transform: translateZ(1px);
+  z-index: 1;
+  transition: opacity 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+@keyframes rgbWaveFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes cyberCyanBreath {
+  0%, 100% {
+    opacity: 0.65;
+    box-shadow: 0 0 15px #06b6d4, inset 0 0 15px #00f2fe;
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 32px #00f2fe, 0 0 14px #38bdf8, inset 0 0 25px #00f2fe;
+  }
+}
+
+/* MODE 0: PER-KEY LEGEND GLOW (Realistic Subtle RGB - Authentic to Real Hardware) */
+.per-key .chassis-rgb-backplate {
+  background: transparent;
+  opacity: 0; /* Solid opaque case & plate, zero light bleed through plastic case */
+}
+
+.per-key .vkey {
+  color: var(--kb-alpha-text, #ffffff);
+  box-shadow:
+    0 3px 0 rgba(0, 0, 0, 0.45),
+    0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.per-key .vkey[data-keycap-type="mod"],
+.per-key .vkey.vkey-fn,
+.per-key .vkey-nav-key {
+  color: var(--kb-mod-text, var(--kb-alpha-text, #ffffff));
+}
+
+.per-key .vkey[data-keycap-type="esc"] {
+  color: var(--kb-esc-text, var(--kb-accent-text, #18181b));
+}
+
+.per-key .vkey[data-keycap-type="enter"] {
+  color: var(--kb-enter-text, var(--kb-accent-text, #18181b));
+}
+
+.per-key .vkey[data-keycap-type="space"] {
+  color: var(--kb-space-text, var(--kb-accent-text, #18181b));
+}
+
+.per-key .vkey[data-keycap-type="arrow"] {
+  color: var(--kb-arrow-text, var(--kb-accent-text, #18181b));
+}
+
+.per-key .vkey[data-key="Escape"],
+.per-key .vkey[data-key^="F1"],
+.per-key .vkey[data-key^="F2"],
+.per-key .vkey[data-key^="F3"],
+.per-key .vkey[data-key^="F4"],
+.per-key .vkey[data-key="Backquote"],
+.per-key .vkey[data-key="Digit1"],
+.per-key .vkey[data-key="Digit2"],
+.per-key .vkey[data-key="Tab"],
+.per-key .vkey[data-key="KeyQ"],
+.per-key .vkey[data-key="KeyW"],
+.per-key .vkey[data-key="CapsLock"],
+.per-key .vkey[data-key="KeyA"],
+.per-key .vkey[data-key="ShiftLeft"],
+.per-key .vkey[data-key="KeyZ"],
+.per-key .vkey[data-key="ControlLeft"] {
+  text-shadow: 0 0 3px #ffffff, 0 0 8px #00f2fe;
+}
+
+.per-key .vkey[data-key^="F5"],
+.per-key .vkey[data-key^="F6"],
+.per-key .vkey[data-key^="F7"],
+.per-key .vkey[data-key^="F8"],
+.per-key .vkey[data-key="Digit5"],
+.per-key .vkey[data-key="Digit6"],
+.per-key .vkey[data-key="Digit7"],
+.per-key .vkey[data-key="KeyT"],
+.per-key .vkey[data-key="KeyY"],
+.per-key .vkey[data-key="KeyU"],
+.per-key .vkey[data-key="KeyG"],
+.per-key .vkey[data-key="KeyH"],
+.per-key .vkey[data-key="KeyJ"],
+.per-key .vkey[data-key="KeyB"],
+.per-key .vkey[data-key="KeyN"],
+.per-key .vkey[data-key="KeyM"],
+.per-key .vkey[data-key="Space"] {
+  text-shadow: 0 0 3px #ffffff, 0 0 8px #a855f7;
+}
+
+.per-key .vkey[data-key^="F9"],
+.per-key .vkey[data-key^="F10"],
+.per-key .vkey[data-key^="F11"],
+.per-key .vkey[data-key^="F12"],
+.per-key .vkey[data-key="Digit8"],
+.per-key .vkey[data-key="Digit9"],
+.per-key .vkey[data-key="Digit0"],
+.per-key .vkey[data-key="KeyI"],
+.per-key .vkey[data-key="KeyO"],
+.per-key .vkey[data-key="KeyP"],
+.per-key .vkey[data-key="KeyK"],
+.per-key .vkey[data-key="KeyL"],
+.per-key .vkey[data-key="Enter"],
+.per-key .vkey[data-key="Backspace"],
+.per-key .vkey[data-key^="Arrow"] {
+  text-shadow: 0 0 3px #ffffff, 0 0 8px #ec4899;
+}
+
+.per-key .vkey.active,
+.per-key .vkey:active {
+  box-shadow:
+    0 0 16px rgba(0, 242, 254, 0.8),
+    0 0 6px #ffffff !important;
+  filter: brightness(1.25);
+}
+
+/* MODE 1: RGB WAVE (Animated Flowing Rainbow Spectrum - Balanced & Non-Distracting) */
+.rgb-wave .chassis-rgb-backplate {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 0, 85, 0.4),
+    rgba(255, 119, 0, 0.4),
+    rgba(255, 221, 0, 0.4),
+    rgba(0, 255, 102, 0.4),
+    rgba(0, 212, 255, 0.4),
+    rgba(119, 0, 255, 0.4),
+    rgba(255, 0, 170, 0.4),
+    rgba(255, 0, 85, 0.4)
+  );
+  background-size: 300% 300%;
+  animation: rgbWaveFlow 4s linear infinite;
+  opacity: 0.16;
+}
+
+.rgb-wave .vkey {
+  color: #ffffff;
+  text-shadow:
+    0 0 4px rgba(255, 255, 255, 0.9),
+    0 0 8px rgba(0, 212, 255, 0.75);
+  box-shadow:
+    0 3px 0 rgba(0, 0, 0, 0.38),
+    0 0 6px rgba(255, 255, 255, 0.2);
+}
+
+.rgb-wave .chassis-3d-wall.wall-front,
+.rgb-wave .chassis-3d-wall.wall-left,
+.rgb-wave .chassis-3d-wall.wall-right {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* MODE 2: REACTIVE GLOW (Dark Plate at Rest -> Explosive Neon Flash on Keystroke) */
+.reactive-glow .chassis-rgb-backplate {
+  background: radial-gradient(
+    circle at var(--reactive-x, 50%) var(--reactive-y, 50%),
+    var(--active-glow-color, #e11d48) 0%,
+    transparent 35%
+  ), #0b0f19;
+  opacity: var(--reactive-plate-opacity, 0.25);
+  transition: opacity 0.15s ease-out;
+}
+
+.reactive-glow .vkey {
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.45);
+  transition: transform 0.06s ease-out, box-shadow 0.08s ease-out, filter 0.08s ease-out;
+}
+
+.reactive-glow .vkey.active,
+.reactive-glow .vkey:active,
+.reactive-glow .vkey.reactive-trail {
+  box-shadow:
+    0 0 28px 6px var(--active-glow-color, #e11d48),
+    0 0 12px 2px #ffffff,
+    inset 0 0 10px var(--active-glow-color, #e11d48) !important;
+  border-color: #ffffff !important;
+  filter: brightness(1.22);
+  z-index: 15;
+}
+
+.reactive-glow .vkey.reactive-neighbor {
+  box-shadow: 0 0 18px 3px var(--active-glow-color, #e11d48) !important;
+  filter: brightness(1.1);
+}
+
+/* MODE 3: CYBER CYAN (Breathing Ice-Blue Neon + Cyberpunk Magenta Hit) */
+.cyber-cyan .chassis-rgb-backplate {
+  background: linear-gradient(135deg, #00f2fe 0%, #06b6d4 50%, #0284c7 100%);
+  animation: cyberCyanBreath 2.2s ease-in-out infinite;
+}
+
+.cyber-cyan .vkey {
+  box-shadow:
+    0 3px 0 rgba(0, 0, 0, 0.35),
+    0 0 12px rgba(0, 242, 254, 0.75);
+  border-bottom-color: rgba(6, 182, 212, 0.8);
+}
+
+.cyber-cyan .vkey.active,
+.cyber-cyan .vkey:active {
+  box-shadow:
+    0 0 26px 6px #ff007f,
+    0 0 10px #ffffff !important;
+  border-color: #ff007f !important;
+}
+
+.cyber-cyan .chassis-3d-wall.wall-front,
+.cyber-cyan .chassis-3d-wall.wall-left,
+.cyber-cyan .chassis-3d-wall.wall-right {
+  box-shadow: inset 0 -5px 14px #00f2fe, 0 4px 18px rgba(0, 242, 254, 0.65);
+}
+
+/* MODE 4: RGB OFF (Stealth Non-Backlit Mechanical) */
+.rgb-off .chassis-rgb-backplate {
+  background: #111827;
+  opacity: 0.45;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+.rgb-off .vkey {
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.38), 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.rgb-off .vkey.active,
+.rgb-off .vkey:active {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+.rgb-off .chassis-3d-wall.wall-front,
+.rgb-off .chassis-3d-wall.wall-left,
+.rgb-off .chassis-3d-wall.wall-right {
+  box-shadow: none !important;
+}
+
+/* =========================================================
+   True 3D Solid Case Enclosure (Walls, Slices & Bottom Plate)
+   ========================================================= */
+.chassis-3d-enclosure {
+  position: absolute;
+  inset: -2px;
+  border-radius: 14px;
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
+
+.chassis-3d-slice {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: var(--kb-case-color, #18181b);
+  border: 2px solid rgba(0, 0, 0, 0.22);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.chassis-3d-slice.slice-1 { transform: translateZ(-4px); filter: brightness(0.94); }
+.chassis-3d-slice.slice-2 { transform: translateZ(-9px); filter: brightness(0.90); }
+.chassis-3d-slice.slice-3 { transform: translateZ(-14px); filter: brightness(0.86); }
+.chassis-3d-slice.slice-4 { transform: translateZ(-19px); filter: brightness(0.82); }
+.chassis-3d-slice.slice-5 { transform: translateZ(-24px); filter: brightness(0.78); }
+.chassis-3d-slice.slice-6 { transform: translateZ(-28px); filter: brightness(0.74); }
+
+.chassis-3d-wall {
+  position: absolute;
+  background: var(--kb-case-color, #18181b);
+  border: 1.5px solid rgba(0, 0, 0, 0.28);
+  pointer-events: none;
+  backface-visibility: visible;
+}
+
+.chassis-3d-wall.wall-front {
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  height: 28px;
+  transform-origin: bottom center;
+  transform: rotateX(-90deg);
+  filter: brightness(0.82);
+  border-radius: 4px;
+}
+
+.chassis-3d-wall.wall-back {
+  left: 8px;
+  right: 8px;
+  top: 0;
+  height: 28px;
+  transform-origin: top center;
+  transform: rotateX(90deg);
+  filter: brightness(0.76);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 36px;
+}
+
+.chassis-port-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  transform: scaleY(-1);
+}
+
+.chassis-usb-port {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 10px;
+  background: #090d16;
+  border: 2px solid #94a3b8;
+  border-radius: 6px;
+  font-size: 5px;
+  color: #cbd5e1;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.chassis-mode-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 6px;
+  height: 10px;
+  background: #1e293b;
+  border: 1px solid #64748b;
+  border-radius: 3px;
+  font-size: 5px;
+  color: #f8fafc;
+  font-weight: 700;
+}
+
+.chassis-3d-wall.wall-left {
+  top: 8px;
+  bottom: 8px;
+  left: 0;
+  width: 28px;
+  transform-origin: left center;
+  transform: rotateY(-90deg);
+  filter: brightness(0.78);
+  border-radius: 4px;
+}
+
+.chassis-3d-wall.wall-right {
+  top: 8px;
+  bottom: 8px;
+  right: 0;
+  width: 28px;
+  transform-origin: right center;
+  transform: rotateY(90deg);
+  filter: brightness(0.78);
+  border-radius: 4px;
+}
+
+.chassis-3d-bottom {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: var(--kb-case-color, #18181b);
+  filter: brightness(0.72);
+  border: 3px solid rgba(0, 0, 0, 0.4);
+  transform: translateZ(-28px) rotateY(180deg);
+  box-shadow:
+    0 26px 50px rgba(0, 0, 0, 0.85),
+    inset 0 0 30px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.chassis-foot {
+  position: absolute;
+  width: 36px;
+  height: 12px;
+  background: #1e293b;
+  border: 1.5px solid #0f172a;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+.chassis-foot.foot-tl { top: 14px; left: 22px; }
+.chassis-foot.foot-tr { top: 14px; right: 22px; }
+.chassis-foot.foot-bl { bottom: 14px; left: 22px; }
+.chassis-foot.foot-br { bottom: 14px; right: 22px; }
+
+.chassis-kickstand {
+  position: absolute;
+  top: 32px;
+  width: 18px;
+  height: 42px;
+  background: linear-gradient(to bottom, #334155, #1e293b);
+  border: 1.5px solid #0f172a;
+  border-radius: 4px;
+}
+.chassis-kickstand.kick-l { left: 28px; }
+.chassis-kickstand.kick-r { right: 28px; }
+
+.chassis-serial-plate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 28px;
+  background: linear-gradient(135deg, #334155 0%, #0f172a 100%);
+  border: 1.5px solid #94a3b8;
+  border-radius: 6px;
+  color: #f8fafc;
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.25), 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.serial-brand {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #38bdf8;
+}
+
+.serial-sub {
+  font-size: 0.55rem;
+  color: #cbd5e1;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+
+/* =========================================================
+   True 3D Sculpted Keycaps (5-Face Frustum Skirts & Stem)
+   ========================================================= */
+.vkey-row {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  align-items: center;
+  width: max-content;
+  transform-style: preserve-3d;
+  z-index: 5;
+}
+
+.vkey {
+  position: relative;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  min-width: 38px;
+  height: 36px;
+  padding: 0 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.73rem;
+  font-weight: 800;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  transform-style: preserve-3d;
+  transform: translateZ(11px);
+  transition: transform 0.06s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.1s, box-shadow 0.1s;
+
+  /* Sculpted Top Dish (Cherry / OEM Cylindrical Dish Effect) */
+  background: var(--kb-alpha-color, #1c3252);
+  color: var(--kb-alpha-text, #f1f5f9);
+  border-top: 2px solid rgba(255, 255, 255, 0.55);
+  border-left: 2.5px solid rgba(128, 128, 128, 0.22);
+  border-right: 2.5px solid rgba(0, 0, 0, 0.22);
+  border-bottom: 3.5px solid rgba(0, 0, 0, 0.35);
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.45),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.18),
+    0 4px 0 rgba(0, 0, 0, 0.32);
+}
+
+/* 3D Keycap Multi-Face Body (4 Slanted Side Walls + Switch Stem Underneath) */
+.vkey-3d-body {
+  position: absolute;
+  inset: -1px;
+  border-radius: 6px;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  background: inherit;
+  z-index: -1;
+}
+
+.vkey-skirt {
+  position: absolute;
+  background: inherit;
+  pointer-events: none;
+  backface-visibility: visible;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+/* South / Front Skirt of each keycap (slanted 3D bevel facing user) */
+.vkey-skirt.skirt-front {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 11px;
+  transform-origin: bottom center;
+  transform: rotateX(-76deg);
+  filter: brightness(0.78);
+  border-radius: 0 0 4px 4px;
+}
+
+/* North / Back Skirt of each keycap */
+.vkey-skirt.skirt-back {
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 11px;
+  transform-origin: top center;
+  transform: rotateX(76deg);
+  filter: brightness(0.68);
+  border-radius: 4px 4px 0 0;
+}
+
+/* West / Left Skirt of each keycap */
+.vkey-skirt.skirt-left {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 11px;
+  transform-origin: left center;
+  transform: rotateY(-76deg);
+  filter: brightness(0.86);
+  border-radius: 4px 0 0 4px;
+}
+
+/* East / Right Skirt of each keycap */
+.vkey-skirt.skirt-right {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 11px;
+  transform-origin: right center;
+  transform: rotateY(76deg);
+  filter: brightness(0.74);
+  border-radius: 0 4px 4px 0;
+}
+
+/* Mechanical Switch Stem & Housing visible underneath each keycap in 3D */
+.vkey-stem {
+  position: absolute;
+  inset: 2px;
+  border-radius: 5px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 2px solid var(--active-glow-color, #e11d48);
+  transform: translateZ(-10px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.65);
+  pointer-events: none;
+}
+
+/* Extra 3D elevation in 3D Orbit Mode */
+.mode-3d-active .vkey {
+  transform: translateZ(14px);
+}
+
+.mode-3d-active .vkey-skirt.skirt-front,
+.mode-3d-active .vkey-skirt.skirt-back {
+  height: 14px;
+}
+
+.mode-3d-active .vkey-skirt.skirt-left,
+.mode-3d-active .vkey-skirt.skirt-right {
+  width: 14px;
+}
+
+.mode-3d-active .vkey-stem {
+  transform: translateZ(-13px);
+}
+
+/* Modifiers & Function Keys */
+.vkey[data-keycap-type="mod"],
+.vkey.vkey-fn,
+.vkey-nav-key,
+.vkey-numpad {
+  background: var(--kb-mod-color, #18181c);
+  color: var(--kb-mod-text, #f1f5f9);
+}
+
+/* Distinct Keycap Types */
+.vkey[data-keycap-type="esc"] {
+  background: var(--kb-esc-color, var(--kb-accent-color, #f59e0b));
+  color: var(--kb-esc-text, var(--kb-accent-text, #18181b));
+}
+
+.vkey[data-keycap-type="enter"] {
+  background: var(--kb-enter-color, var(--kb-accent-color, #f59e0b));
+  color: var(--kb-enter-text, var(--kb-accent-text, #18181b));
+}
+
+.vkey[data-keycap-type="space"] {
+  background: var(--kb-space-color, var(--kb-accent-color, #f59e0b));
+  color: var(--kb-space-text, var(--kb-accent-text, #18181b));
+}
+
+.vkey[data-keycap-type="arrow"] {
+  background: var(--kb-arrow-color, var(--kb-accent-color, #f59e0b));
+  color: var(--kb-arrow-text, var(--kb-accent-text, #18181b));
+  font-weight: 800;
+}
+
+/* Signature Accent Keycaps */
+.vkey[data-accent="true"] {
+  background: var(--kb-accent-color, #f59e0b) !important;
+  color: var(--kb-accent-text, #18181b) !important;
+  font-weight: 800;
+}
+
+.vkey:hover {
+  filter: brightness(1.06);
+}
+
+/* Physical 4mm Key Travel Depression on Press */
+.vkey:active,
+.vkey.active {
+  transform: translateZ(3px) translateY(2px) !important;
+}
+
+.vkey:active .vkey-stem,
+.vkey.active .vkey-stem {
+  transform: translateZ(-2px) !important;
+}
+
+/* =========================================================
+   Exact Mathematical Keycap Unit Widths (Main Cluster = 626px)
+   1u = 38px, gap = 4px -> 15u = 15*38 + 14*4 = 626px
+   ========================================================= */
+.vkey-fn { width: 38px; min-width: 38px; height: 34px; font-size: 0.7rem; }
+.vkey-backspace { width: 80px; min-width: 80px; font-size: 0.72rem; }
+.vkey-tab { width: 59px; min-width: 59px; font-size: 0.72rem; }
+.vkey-slash { width: 59px; min-width: 59px; }
+.vkey-caps { width: 70px; min-width: 70px; font-size: 0.72rem; }
+.vkey-enter { width: 90px; min-width: 90px; font-size: 0.74rem; }
+.vkey-shift-l { width: 90px; min-width: 90px; font-size: 0.72rem; }
+.vkey-shift-r { width: 112px; min-width: 112px; font-size: 0.72rem; }
+.vkey-mod { width: 50px; min-width: 50px; font-size: 0.72rem; }
+.vkey-space { width: 302px; min-width: 302px; flex-grow: 0; font-size: 0.7rem; letter-spacing: 0.04em; }
+.vkey-nav-key { width: 38px; min-width: 38px; font-size: 0.7rem; }
+.vkey-arrow { width: 38px; min-width: 38px; font-size: 0.72rem; }
+.vkey-numpad { width: 38px; min-width: 38px; font-size: 0.74rem; }
+.vkey-numpad-zero { width: 80px; min-width: 80px; }
+
+.vkey-separator-sm {
+  display: inline-block;
+  width: 24px;
+  min-width: 24px;
+  flex-shrink: 0;
+}
+
+.vkey-separator {
+  display: inline-block;
+  width: 10px;
+  min-width: 10px;
+  flex-shrink: 0;
+}
+
+.vkey-placeholder {
+  display: inline-block;
+  width: 38px;
+  min-width: 38px;
+  height: 36px;
+  flex-shrink: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.vkey-placeholder-group {
+  display: inline-block;
+  width: 122px;
+  min-width: 122px;
+  height: 36px;
+  flex-shrink: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* 75% & 65% Layout Specific Width Overrides (16u = 668px) */
+.layout-75 .vkey-row {
+  width: 668px;
+}
+
+.layout-75 [data-row="function"] .vkey-knob-wrapper[data-cluster="knob"] {
+  margin-left: auto;
+}
+
+.layout-75 .vkey-shift-r,
+.layout-compact_65 .vkey-shift-r {
+  width: 70px;
+  min-width: 70px;
+}
+
+.layout-75 .vkey-mod,
+.layout-compact_65 .vkey-mod {
+  width: 44px;
+  min-width: 44px;
+}
+
+.layout-75 .vkey-space,
+.layout-compact_65 .vkey-space {
+  width: 254px;
+  min-width: 254px;
+}
+
+.layout-75 .vkey-separator[data-cluster="knob"] {
+  display: none !important;
+}
+
+/* =========================================================
+   Rotary Metallic Volume Knob (3D Cylinder)
+   ========================================================= */
+.vkey-knob-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  min-width: 38px;
+  height: 34px;
+  flex-shrink: 0;
+  transform-style: preserve-3d;
+}
+
+.vkey-knob {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 45% 45%, #3f3f46 0%, #18181b 80%);
+  border: 3.5px solid #e2e8f0;
+  box-shadow:
+    0 1px 0 #94a3b8,
+    0 3px 6px rgba(0, 0, 0, 0.65),
+    inset 0 1px 2px rgba(255, 255, 255, 0.7);
+  position: relative;
+  cursor: pointer;
+  transform: translateZ(16px);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.vkey-knob::after {
+  content: '';
+  width: 3px;
+  height: 8px;
+  background: var(--kb-accent-color, #f59e0b);
+  border-radius: 2px;
+  position: absolute;
+  top: 3px;
+  left: calc(50% - 1.5px);
+  box-shadow: 0 0 4px var(--kb-accent-color, #f59e0b);
+}
+
+.vkey-knob:hover {
+  transform: translateZ(18px) rotate(25deg) scale(1.05);
+}
+
+/* =========================================================
+   Form Factor Cluster Visibility Control
+   ========================================================= */
+/* Hide Numpad Function Keys (Calc, Mute, Vol-, Vol+) by default on all non-fullsize layouts */
+[data-cluster="numpad-fn"] {
+  display: none !important;
+}
+
+/* 75% Compact Exploded Layout Rules */
+.layout-75 [data-cluster="knob"],
+.layout-75 [data-cluster="nav-75"],
+.layout-75 [data-cluster="arrows-75"] {
+  display: inline-flex !important;
+}
+.layout-75 [data-cluster="tkl-nav"],
+.layout-75 [data-cluster="numpad"],
+.layout-75 [data-cluster="numpad-fn"],
+.layout-75 [data-cluster="knob-dual"],
+.layout-75 [data-cluster="nav-96"] {
+  display: none !important;
+}
+
+.vkey-f75-led-bar {
+  display: none;
+}
+.layout-75 .vkey-f75-led-bar {
+  display: inline-block;
+  width: 4px;
+  height: 28px;
+  margin: 0 4px;
+  background: linear-gradient(180deg, #38bdf8 0%, #818cf8 50%, #38bdf8 100%);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.85);
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.layout-tkl [data-cluster="tkl-nav"] {
+  display: inline-flex !important;
+}
+.layout-tkl [data-cluster="knob"],
+.layout-tkl [data-cluster="nav-75"],
+.layout-tkl [data-cluster="arrows-75"],
+.layout-tkl [data-cluster="numpad"],
+.layout-tkl [data-cluster="numpad-fn"],
+.layout-tkl [data-cluster="knob-dual"],
+.layout-tkl [data-cluster="nav-96"] {
+  display: none !important;
+}
+
+.layout-fullsize [data-cluster="tkl-nav"],
+.layout-fullsize [data-cluster="numpad"],
+.layout-fullsize [data-cluster="numpad-fn"] {
+  display: inline-flex !important;
+}
+.layout-fullsize [data-cluster="knob"],
+.layout-fullsize [data-cluster="nav-75"],
+.layout-fullsize [data-cluster="arrows-75"],
+.layout-fullsize [data-cluster="knob-dual"],
+.layout-fullsize [data-cluster="nav-96"] {
+  display: none !important;
+}
+
+.layout-compact_65 [data-row="function"] {
+  display: none !important;
+}
+.layout-compact_65 [data-cluster="nav-75"],
+.layout-compact_65 [data-cluster="arrows-75"] {
+  display: inline-flex !important;
+}
+.layout-compact_65 [data-cluster="knob"],
+.layout-compact_65 [data-cluster="tkl-nav"],
+.layout-compact_65 [data-cluster="numpad"],
+.layout-compact_65 [data-cluster="numpad-fn"],
+.layout-compact_65 [data-cluster="knob-dual"],
+.layout-compact_65 [data-cluster="nav-96"] {
+  display: none !important;
+}
+
+/* 96% Compact Form Factor (Full Numpad + Tucked Arrows + Dual Knobs, NO separate TKL nav cluster) */
+[data-cluster="knob-dual"],
+[data-cluster="nav-96"] {
+  display: none;
+}
+
+.layout-96 [data-cluster="numpad"],
+.layout-96 [data-cluster="arrows-75"],
+.layout-96 [data-cluster="knob"],
+.layout-96 [data-cluster="knob-dual"],
+.layout-96 [data-cluster="nav-96"] {
+  display: inline-flex !important;
+}
+
+.layout-96 [data-cluster="tkl-nav"],
+.layout-96 [data-cluster="nav-75"],
+.layout-96 [data-cluster="numpad-fn"] {
+  display: none !important;
+}
+
+.layout-96 .vkey-space {
+  width: 254px;
+  min-width: 254px;
+}
+
+.layout-96 .vkey-mod {
+  width: 44px;
+  min-width: 44px;
+}
+
+.layout-96 .vkey-shift-r {
+  width: 64px;
+  min-width: 64px;
+}
+
+/* Secondary knob styling */
+.vkey-knob-wrapper.vkey-knob-secondary {
+  width: 32px;
+  min-width: 32px;
+}
+.vkey-knob-wrapper.vkey-knob-secondary .vkey-knob {
+  width: 28px;
+  height: 28px;
+}
+
+/* Spacebar subtle line marker */
+.vkey-space-dash {
+  opacity: 0.6;
+  font-weight: 300;
+  letter-spacing: -2px;
+}
+
+/* Logitech Brand Specific Aesthetics (G Logo on Esc, Purple Knobs) */
+.brand-logitech .vkey[data-keycap-type="esc"] .vkey-esc-text {
+  display: none !important;
+}
+.brand-logitech .vkey[data-keycap-type="esc"] .vkey-g-logo {
+  display: inline-block !important;
+  font-weight: 900;
+  font-size: 1rem;
+}
+.brand-logitech .vkey[data-keycap-type="esc"] {
+  background: var(--kb-arrow-color, #8b5cf6) !important;
+  color: #ffffff !important;
+}
+.brand-logitech .vkey-knob {
+  background: radial-gradient(circle at 35% 35%, #a78bfa 0%, #7c3aed 60%, #5b21b6 100%) !important;
+  border-color: #c4b5fd !important;
+}
+.brand-logitech .vkey-knob::after {
+  background: #ffffff !important;
+  box-shadow: 0 0 4px #ffffff !important;
+}
+
+/* Compare Mode Styling */
+.switch-compare-panel {
+  background: var(--bg-surface-alt, #f8fafc);
+  border: 1.5px solid var(--border-color, #cbd5e1);
+}
+.compare-card {
+  background: #ffffff;
+  height: 100%;
+}
+.compare-card-a { border-left: 4px solid #3b82f6 !important; }
+.compare-card-b { border-left: 4px solid #06b6d4 !important; }
+
+/* =========================================================
+   Fullscreen Theater Mode (Blur backdrop & Focused Center)
+   ========================================================= */
+body.switch-tester-theater-open {
+  overflow: hidden !important;
+}
+
+.theater-backdrop {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1040;
+  background: rgba(8, 12, 22, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.theater-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.virtual-keyboard-wrapper.theater-mode {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  z-index: 1050 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 2rem 1.5rem !important;
+  overflow: auto !important;
+  perspective: 1600px;
+}
+
+.virtual-keyboard-wrapper.theater-mode .theater-header-bar {
+  display: flex !important;
+  max-width: 1020px;
+  width: 100%;
+}
+
+.theater-controls-strip {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.virtual-keyboard-wrapper.theater-mode .virtual-keyboard-status {
+  max-width: 1020px;
+  width: 100%;
+  background: rgba(15, 23, 42, 0.75);
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 24px !important;
+}
+
+.virtual-keyboard-wrapper.theater-mode .virtual-keyboard-chassis {
+  width: max-content !important;
+  min-width: max-content !important;
+  max-width: max-content !important;
+  margin: 0 auto !important;
+  transform-origin: center center;
+}
+
+/* =========================================================
+   Purchase Switch Selector (Direct Selection on Product Page)
+   ========================================================= */
+.purchase-switch-selector {
+  transition: all 0.2s ease;
+}
+
+.purchase-switch-selector.shake-highlight {
+  animation: switchSelectorShake 0.4s ease-in-out;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+}
+
+@keyframes switchSelectorShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.purchase-switch-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 999px;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.purchase-switch-pill:hover {
+  border-color: #64748b;
+}
+
+.purchase-switch-pill.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
+}

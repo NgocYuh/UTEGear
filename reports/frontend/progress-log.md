@@ -1,5 +1,18 @@
 # Nhật ký tiến độ Frontend
 
+## FE-SWITCH-FLOW: Gỡ bỏ hoàn toàn modal chọn Switch, chọn trực tiếp trên trang
+
+- Trạng thái: IN PROGRESS.
+- Phụ trách: @trongsonho (Frontend).
+- Ngày cập nhật: 2026-10-19.
+- Phạm vi: product-detail.html, switch-tester.js, switch-tester.css, switch-tester.test.mjs.
+- Đã làm:
+  - Gỡ bỏ hoàn toàn popup modal chọn Switch (data-switch-picker-modal) và backdrop/dialog liên quan.
+  - Tối ưu luồng chọn Switch: Người dùng click chọn loại Switch trực tiếp trên khung data-purchase-switch-box ngay trên trang chi tiết sản phẩm.
+  - Kiểm soát hành vi Mua ngay / Thêm vào giỏ / Yêu thích: Khi chưa chọn Switch (!purchaseSwitchConfirmed), các thao tác này bị chặn với phản hồi trực quan (rung nhẹ khung switch, badge chuyển màu đỏ yêu cầu chọn switch) mà KHÔNG mở bất kỳ popup nào.
+  - Khi đã chọn Switch: Badge chuyển màu xanh Đã chọn: [Tên Switch] ([Lực nhấn]g), mở khóa hoàn toàn để Mua ngay, Thêm vào giỏ và Yêu thích bình thường.
+  - Kiểm thử frontend: Toàn bộ 67/67 bài test node --test tests/frontend/*.test.mjs PASS 100%. Maven test-compile BUILD SUCCESS.
+
 ## FE-HOME-COMPACT-01: Triển khai giao diện trang chủ đã duyệt
 
 - Trạng thái: `IN REVIEW` (bàn giao trong FE-LOCAL-PUBLISH; chưa merge).
@@ -910,4 +923,33 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Đã xem ảnh desktop 1365px/mobile 390px, không tràn ngang; ảnh nằm trong crawler/data/output/checkout-branch-browser bị ignore. Đã dừng riêng server QA, không khởi động nền thêm vào cổng 8080; người dùng restart ứng dụng để nạp template mới.
 - Vướng mắc: Chưa PR/push; task giữ IN PROGRESS trước review/merge. Không thay đổi API/schema trong task frontend.
 - Bước tiếp theo: review frontend riêng sau backend.
+- Ngày hoàn tất: Chưa hoàn tất.
+
+## SWITCH-SOUND-FE-01: Widget Virtual Switch Tester & Web Audio API
+
+- Phụ trách: `@trongsonho` (Frontend).
+- Trạng thái: `IN REVIEW`.
+- Branch: `feat/switch-sound-tester`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-19.
+- Task liên kết: `SWITCH-SOUND-BE-01` (@NgocYuh); contract endpoint/model tại `docs/api/switch-sound-contract.md`.
+- Đã làm:
+  - Thiết kế widget Thymeleaf `fragments/product/switch-tester.html` và tích hợp vào `product-detail.html` với tab điều hướng nhanh khi sản phẩm là bàn phím.
+  - Xây dựng giao diện CSS `switch-tester.css` mô phỏng bàn phím 3D keycap, hiệu ứng LED RGB chân thực:
+    - Chế độ mặc định `LED Xuyên Phím Tinh Tế (Per-Key Legend Glow)`: Giữ màu vỏ nhựa đục nguyên bản của case bàn phím, ánh sáng chỉ phát ra từ chính ký tự in trên keycap (`text-shadow`), triệt tiêu hoàn toàn hiện tượng LED rò rỉ xuyên qua thành vỏ case nhựa.
+    - Gỡ bỏ hoàn toàn dải LED đè lên viền case (`.chassis-front-lightbar`), đảm bảo vỏ case nhựa hiển thị nguyên khối đặc trưng.
+    - Hỗ trợ chuẩn layout `96% Compact (LAYOUT_96)`: Tái hiện chuẩn xác bàn phím có cụm phím số Numpad bên phải, 2 núm xoay chức năng (Dual Knobs) góc trên bên phải, phím Esc mang logo `G` tím đặc trưng của Logitech và cụm 4 phím mũi tên màu Tím Lilac (`#8b5cf6`) nằm gọn gàng bên cạnh Numpad.
+    - Dọn dẹp keycap Spacebar gọn gàng, loại bỏ các chuỗi text debug rườm rà.
+  - Viết module `src/main/resources/static/js/domain/switch-tester.js`:
+    - Bắt sự kiện phím thật trên máy tính (`keydown`/`keyup`) và click/chạm phím ảo trực quan.
+    - Bộ tổng hợp âm thanh cơ học bằng HTML5 Web Audio API (`AudioContext`) kết hợp mẫu âm thanh thu âm phòng thu thật với độ trễ 0ms.
+    - Chế độ Xoay 3D 360° tự do và tự động đặt lại góc nhìn khi gõ thử.
+    - Chế độ Toàn màn hình Theater Mode xem cận cảnh bàn phím không bị vướng thanh cuộn.
+    - Quy trình chọn Switch trước khi bấm Mua ngay / Thêm vào giỏ / Yêu thích.
+- Kiểm thử:
+  - `node --test tests/frontend/switch-tester.test.mjs`: PASS 14/14 tests (bao gồm test layout 96%, phím Esc logo G và màu sắc tím mũi tên).
+  - Toàn bộ `node --test tests/frontend/*.test.mjs`: PASS 66/66 tests.
+  - Toàn bộ backend test `SwitchSound*Test`: PASS 6/6 tests.
+- Vướng mắc: Chưa mở PR/push; giữ `IN REVIEW` trước khi merge theo quy định repository.
+- Bước tiếp theo: Review trọn bộ tính năng và bàn giao kịch bản demo.
 - Ngày hoàn tất: Chưa hoàn tất.

@@ -1322,3 +1322,25 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc: Chưa PR/push; không đánh dấu DONE trước merge.
 - Bước tiếp theo: người dùng restart backend để nạp controller/service mới; review backend riêng.
 - Ngày hoàn tất: Chưa hoàn tất.
+
+## SWITCH-SOUND-BE-01: API hồ sơ âm thanh Switch bàn phím
+
+- Phụ trách: `@NgocYuh` (Backend).
+- Trạng thái: `IN REVIEW`.
+- Branch: `feat/switch-sound-tester`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-18.
+- Task liên kết: `SWITCH-SOUND-FE-01` (@trongsonho); contract endpoint/model và JSON mẫu đã bàn giao trước tại `docs/api/switch-sound-contract.md`, `docs/api/mock/switch-sound.json`.
+- Đã làm:
+  - Thiết kế DTO `SwitchSoundDtos` (gồm `SwitchProfile`, `SynthProfile` và `ProductSwitchSoundResponse`).
+  - Xây dựng `SwitchSoundService` cung cấp 5 profile switch tiêu chuẩn (Red Linear, Blue Clicky, Brown Tactile, Silver Speed, Silent Red), lưu metadata âm thanh Cloudinary (`secureUrl` và `publicId` theo Rule 9) và thông số tổng hợp âm học.
+  - Tự động nhận diện sản phẩm bàn phím cơ và đối soát khớp biến thể `ProductVariant` active với mã switch tương ứng theo `optionValues` và `sku`.
+  - Mở 2 REST API public: `GET /api/products/switch-sounds` và `GET /api/products/{id}/switch-sounds` trong `CatalogController`.
+- Kiểm thử:
+  - `SwitchSoundServiceTest`: PASS 4/4 (danh mục 5 profile, nhận diện bàn phím & khớp biến thể, sản phẩm không hỗ trợ, và mã lỗi 404 `PRODUCT_NOT_FOUND`).
+  - `SwitchSoundControllerTest`: PASS 2/2 ủy quyền service.
+  - `CatalogControllerTest`: PASS 3/3.
+  - Toàn bộ `./mvnw clean verify`: BUILD SUCCESS (254 tests, 0 failures, 0 errors, 4 skipped do thiếu Docker).
+- Vướng mắc: Chưa mở PR/push; không đánh dấu DONE trước merge.
+- Bước tiếp theo: Frontend hoàn tất widget giao diện trong `SWITCH-SOUND-FE-01`.
+- Ngày hoàn tất: Chưa hoàn tất.

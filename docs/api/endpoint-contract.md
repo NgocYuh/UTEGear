@@ -50,8 +50,10 @@ cho tài khoản đã xác thực nhưng thiếu role hoặc không có quyền 
 | GET | `/api/brands` | PUBLIC | `200 BrandSummary[]` |
 | GET | `/api/products` | PUBLIC | `200 ProductPage` |
 | GET | `/api/products/{productId}` | PUBLIC | `200 ProductDetail` |
+| GET | `/api/products/switch-sounds` | PUBLIC | `200 SwitchProfile[]` |
+| GET | `/api/products/{productId}/switch-sounds` | PUBLIC | `200 ProductSwitchSoundResponse` |
 
-Chi tiết filter, DTO và lỗi: [`auth-catalog-contract.md`](auth-catalog-contract.md).
+Chi tiết filter, DTO và lỗi: [`auth-catalog-contract.md`](auth-catalog-contract.md), [`switch-sound-contract.md`](switch-sound-contract.md).
 
 ### Store và quản trị cửa hàng
 

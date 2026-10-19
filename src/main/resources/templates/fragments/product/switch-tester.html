@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="switchTester(product)"
+         id="product-switch-tester-section"
+         class="product-content-section switch-tester-container"
+         aria-labelledby="product-switch-tester-title"
+         data-switch-tester
+         th:data-product-id="${product.id}"
+         th:data-product-name="${product.name}"
+         th:data-category-slug="${product.category != null ? product.category.slug : ''}">
+
+  <div class="switch-tester-header mb-3">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">Đặc trưng Gaming Gear</span>
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">HTML5 Web Audio Studio</span>
+        </div>
+        <h2 id="product-switch-tester-title" class="h4 mt-2 mb-1">
+          🎧 Trải nghiệm Gõ phím & Nghe âm thanh Switch (Virtual Switch Tester)
+        </h2>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-tester-mute aria-pressed="false" title="Bật/Tắt âm thanh">
+          <i class="bi bi-volume-up-fill me-1" data-tester-mute-icon></i><span data-tester-mute-text>Âm thanh: Bật</span>
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-primary" data-tester-auto-demo>
+          <i class="bi bi-play-circle-fill me-1"></i>Gõ mẫu tự động
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-dark" data-tester-fullscreen aria-pressed="false" title="Mở bàn phím toàn màn hình (Theater Mode)">
+          <i class="bi bi-arrows-fullscreen me-1" data-fullscreen-icon></i><span data-fullscreen-text>Toàn màn hình</span>
+        </button>
+        <button type="button" class="btn btn-sm btn-primary" data-tester-toggle-compare aria-pressed="false">
+          <i class="bi bi-arrow-left-right me-1"></i>Đối chiếu A/B
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Switch Selector & Layout Config Bar -->
+  <div class="switch-selector-card p-3 rounded mb-3">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+      <div>
+        <span class="form-label d-block text-muted small mb-1">Loại Switch đang thử:</span>
+        <div class="switch-pills d-flex flex-wrap gap-2" data-switch-pills role="radiogroup" aria-label="Chọn loại Switch để nghe thử">
+          <!-- Switch pills rendered via JS / API -->
+        </div>
+      </div>
+      <div class="d-flex flex-wrap align-items-center gap-3">
+        <div>
+          <span class="form-label text-muted small d-block mb-1">Dạng bàn phím mô phỏng:</span>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary text-white px-3 py-2 fw-bold" data-layout-badge>Đang tải dạng bàn phím…</span>
+          </div>
+        </div>
+        <div>
+          <label for="rgbModeSelect" class="form-label text-muted small mb-1">Hiệu ứng LED RGB:</label>
+          <select id="rgbModeSelect" class="form-select form-select-sm" data-rgb-mode>
+            <option value="per-key" selected>LED Xuyên Phím Tinh Tế (Per-Key Legend)</option>
+            <option value="rgb-wave">RGB Wave (Cầu vồng chuyển động)</option>
+            <option value="reactive-glow">Reactive Glow (Sáng khi gõ)</option>
+            <option value="cyber-cyan">Cyber Cyan (Xanh Neon)</option>
+            <option value="rgb-off">Tắt đèn LED (Nguyên bản)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="switch-active-info mt-2 pt-2 border-top border-secondary-subtle small d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <div data-active-switch-desc class="text-secondary">Đang tải cấu hình switch…</div>
+    </div>
+  </div>
+
+  <!-- Theater Backdrop Overlay -->
+  <div class="theater-backdrop d-none" data-theater-backdrop aria-hidden="true"></div>
+
+  <!-- Virtual Keyboard Canvas / Visual Keypad -->
+  <div class="virtual-keyboard-wrapper p-3 rounded mb-3" data-keyboard-interactive tabindex="0" role="region" aria-label="Bàn phím cơ ảo tương tác">
+    
+    <!-- Theater Mode Top Toolbar (Visible only in Fullscreen) -->
+    <div class="theater-header-bar d-none flex-column gap-2 mb-3 w-100" data-theater-bar>
+      <!-- Top Row: Title, Action Buttons & Close -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center w-100 gap-2">
+        <div class="d-flex align-items-center gap-2 text-white">
+          <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1">Theater Mode</span>
+          <span class="small text-light-50">Nhấn phím <strong>ESC</strong> hoặc nhấp chuột ra ngoài vùng mờ để thoát</span>
+        </div>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <button type="button" class="btn btn-sm btn-outline-light" data-theater-mute title="Bật/Tắt âm thanh">
+            <i class="bi bi-volume-up-fill me-1" data-theater-mute-icon></i><span data-theater-mute-text>Âm thanh: Bật</span>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-info" data-theater-auto-demo title="Chạy gõ mẫu thử âm thanh">
+            <i class="bi bi-play-circle-fill me-1"></i>Gõ mẫu tự động
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-primary text-white" data-theater-toggle-compare title="So sánh trực quan hai mẫu Switch">
+            <i class="bi bi-arrow-left-right me-1"></i>Đối chiếu A/B
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-light rounded-pill px-3" data-theater-close title="Thoát toàn màn hình (Esc)">
+            <i class="bi bi-fullscreen-exit me-1"></i>Thoát toàn màn hình
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Switch Selection Pills & RGB Mode Dropdown in Fullscreen -->
+      <div class="theater-controls-strip d-flex flex-wrap align-items-center justify-content-between gap-3 p-2 rounded-3 w-100">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <span class="small text-light fw-semibold"><i class="bi bi-cpu me-1 text-info"></i>Loại Switch:</span>
+          <div class="switch-pills d-flex flex-wrap gap-2" data-theater-switch-pills role="radiogroup" aria-label="Chọn loại Switch trong chế độ toàn màn hình"></div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <label for="theaterRgbSelect" class="small text-light text-nowrap mb-0"><i class="bi bi-palette me-1 text-warning"></i>LED RGB:</label>
+          <select id="theaterRgbSelect" class="form-select form-select-sm bg-dark text-white border-secondary" data-theater-rgb-mode style="min-width: 200px;">
+            <option value="per-key" selected>LED Xuyên Phím Tinh Tế</option>
+            <option value="rgb-wave">RGB Wave (Cầu vồng)</option>
+            <option value="reactive-glow">Reactive Glow (Sáng khi gõ)</option>
+            <option value="cyber-cyan">Cyber Cyan (Xanh Neon)</option>
+            <option value="rgb-off">Tắt đèn LED</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="virtual-keyboard-status small text-muted mb-2 d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <span><i class="bi bi-keyboard me-1"></i>Nhấp chuột hoặc gõ phím thật trên máy tính:</span>
+        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 rounded-pill fw-semibold" data-3d-toggle aria-pressed="false" title="Bật/Tắt chế độ Xoay 3D">
+          <i class="bi bi-box me-1" data-3d-icon></i><span data-3d-text>Chế độ: 2.5D Chuẩn</span>
+        </button>
+        <button type="button" class="btn btn-xs btn-outline-warning py-0 px-2 rounded-pill fw-semibold" data-3d-reset style="display: none;" title="Đặt lại góc nhìn để test nút">
+          <i class="bi bi-arrow-counterclockwise me-1"></i>Đặt lại góc nhìn
+        </button>
+        <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2 rounded-pill fw-semibold" data-theater-trigger-inline title="Phóng to toàn màn hình">
+          <i class="bi bi-arrows-fullscreen me-1"></i>Toàn màn hình
+        </button>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-dark text-info border border-info-subtle" data-rgb-status-badge>🌈 LED: Sóng Cầu Vồng Chuyển Động</span>
+        <span class="badge bg-success-subtle text-success" data-key-hit-display>Phím vừa gõ: —</span>
+      </div>
+    </div>
+
+    <!-- The Adaptive Virtual Keyboard Chassis -->
+    <div class="virtual-keyboard-chassis layout-96 per-key" data-keyboard-chassis>
+
+      <!-- Per-Key & Underglow RGB Diffuser Plate -->
+      <div class="chassis-rgb-backplate" data-rgb-backplate aria-hidden="true"></div>
+
+      <!-- 3D Solid Mechanical Case Enclosure (Side Walls, Solid Core Slices & Bottom Plate) -->
+      <div class="chassis-3d-enclosure" aria-hidden="true">
+        <div class="chassis-3d-slice slice-1"></div>
+        <div class="chassis-3d-slice slice-2"></div>
+        <div class="chassis-3d-slice slice-3"></div>
+        <div class="chassis-3d-slice slice-4"></div>
+        <div class="chassis-3d-slice slice-5"></div>
+        <div class="chassis-3d-slice slice-6"></div>
+        <div class="chassis-3d-wall wall-front"></div>
+        <div class="chassis-3d-wall wall-back">
+          <div class="chassis-port-cluster">
+            <span class="chassis-usb-port">TYPE-C</span>
+            <span class="chassis-mode-switch">2.4G | USB | BT</span>
+          </div>
+        </div>
+        <div class="chassis-3d-wall wall-left"></div>
+        <div class="chassis-3d-wall wall-right"></div>
+        <div class="chassis-3d-bottom">
+          <div class="chassis-foot foot-tl"></div>
+          <div class="chassis-foot foot-tr"></div>
+          <div class="chassis-foot foot-bl"></div>
+          <div class="chassis-foot foot-br"></div>
+          <div class="chassis-kickstand kick-l"></div>
+          <div class="chassis-kickstand kick-r"></div>
+          <div class="chassis-serial-plate">
+            <span class="serial-brand">UTEGEAR MECHANICAL STUDIO</span>
+            <span class="serial-sub">GASKET MOUNT • HOT-SWAPPABLE • PBT DOUBLE-SHOT</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 0: Function Row (Esc, F1-F12, Knobs / Nav) -->
+      <div class="vkey-row" data-row="function">
+        <button type="button" class="vkey vkey-fn" data-keycap-type="esc" data-key="Escape" aria-label="Escape">
+          <span class="vkey-esc-text">Esc</span>
+          <span class="vkey-g-logo d-none" aria-hidden="true">G</span>
+        </button>
+        <span class="vkey-f75-led-bar" data-cluster="f75-led" title="Dải LED RGB báo trạng thái kết nối & pin"></span>
+        <span class="vkey-separator-sm"></span>
+        <button type="button" class="vkey vkey-fn" data-key="F1">F1</button>
+        <button type="button" class="vkey vkey-fn" data-key="F2">F2</button>
+        <button type="button" class="vkey vkey-fn" data-key="F3">F3</button>
+        <button type="button" class="vkey vkey-fn" data-key="F4">F4</button>
+        <span class="vkey-separator-sm"></span>
+        <button type="button" class="vkey vkey-fn" data-key="F5">F5</button>
+        <button type="button" class="vkey vkey-fn" data-key="F6">F6</button>
+        <button type="button" class="vkey vkey-fn" data-key="F7">F7</button>
+        <button type="button" class="vkey vkey-fn" data-key="F8">F8</button>
+        <span class="vkey-separator-sm"></span>
+        <button type="button" class="vkey vkey-fn" data-key="F9">F9</button>
+        <button type="button" class="vkey vkey-fn" data-key="F10">F10</button>
+        <button type="button" class="vkey vkey-fn" data-key="F11">F11</button>
+        <button type="button" class="vkey vkey-fn" data-key="F12">F12</button>
+
+        <!-- 96% Side Nav (Del, Prnt) in function row -->
+        <button type="button" class="vkey vkey-nav-key" data-cluster="nav-96" data-key="Delete" aria-label="Delete">Del</button>
+        <button type="button" class="vkey vkey-nav-key" data-cluster="nav-96" data-key="PrintScreen" aria-label="Print Screen">Prnt</button>
+
+        <!-- Knob Cluster (Two Knobs for 96% / G series) -->
+        <span class="vkey-separator" data-cluster="knob"></span>
+        <div class="vkey-knob-wrapper" data-cluster="knob" title="Núm xoay Volume đa năng kim loại">
+          <div class="vkey-knob" data-knob></div>
+        </div>
+        <div class="vkey-knob-wrapper vkey-knob-secondary" data-cluster="knob-dual" title="Núm xoay chức năng phụ">
+          <div class="vkey-knob vkey-knob-sub" data-knob-2></div>
+        </div>
+
+        <!-- TKL & Fullsize Nav (Prt, Scr, Pau) -->
+        <span class="vkey-separator" data-cluster="tkl-nav"></span>
+        <button type="button" class="vkey vkey-nav-key" data-cluster="tkl-nav" data-key="PrintScreen" aria-label="Print Screen">Prt</button>
+        <button type="button" class="vkey vkey-nav-key" data-cluster="tkl-nav" data-key="ScrollLock" aria-label="Scroll Lock">Scr</button>
+        <button type="button" class="vkey vkey-nav-key" data-cluster="tkl-nav" data-key="Pause" aria-label="Pause">Pau</button>
+
+        <!-- Fullsize Numpad Function Row -->
+        <span class="vkey-separator" data-cluster="numpad-fn"></span>
+        <button type="button" class="vkey vkey-fn" data-cluster="numpad-fn" data-key="LaunchApp2">Calc</button>
+        <button type="button" class="vkey vkey-fn" data-cluster="numpad-fn" data-key="AudioVolumeMute">Mute</button>
+        <button type="button" class="vkey vkey-fn" data-cluster="numpad-fn" data-key="AudioVolumeDown">Vol-</button>
+        <button type="button" class="vkey vkey-fn" data-cluster="numpad-fn" data-key="AudioVolumeUp">Vol+</button>
+      </div>
+
+      <!-- Row 1: Numbers (~, 1-0, -, =, Backspace) + Side Nav/Numpad -->
+      <div class="vkey-row">
+        <button type="button" class="vkey vkey-fn" data-key="Backquote">~</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Digit1">1</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Digit2">2</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Digit3">3</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Digit4">4</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Digit5">5</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Digit6">6</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Digit7">7</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Digit8">8</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Digit9">9</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Digit0">0</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Minus">-</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Equal">=</button>
+        <button type="button" class="vkey vkey-backspace" data-keycap-type="mod" data-key="Backspace" data-stab="true" aria-label="Backspace">Backspace</button>
+
+        <!-- 75% Side Nav (Delete) -->
+        <button type="button" class="vkey vkey-nav-key" data-cluster="nav-75" data-key="Delete" aria-label="Delete">Delete</button>
+
+        <!-- TKL & Fullsize Nav (Ins, Hom, PgU) -->
+        <span class="vkey-separator" data-cluster="tkl-nav"></span>
+        <button type="button" class="vkey vkey-nav-key" data-cluster="tkl-nav" data-key="Insert" aria-label="Insert">Ins</button>
+        <button type="button" class="vkey vkey-nav-key" data-cluster="tkl-nav" data-key="Home" aria-label="Home">Hom</button>
+        <button type="button" class="vkey vkey-nav-key" data-cluster="tkl-nav" data-key="PageUp" aria-label="Page Up">PgUp</button>
+
+        <!-- Fullsize Numpad Row 1 -->
+        <span class="vkey-separator" data-cluster="numpad"></span>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="NumLock">Num</button>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="NumpadDivide">/</button>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="NumpadMultiply">*</button>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="NumpadSubtract">-</button>
+      </div>
+
+      <!-- Row 2: QWERTY + Side Nav/Numpad -->
+      <div class="vkey-row">
+        <button type="button" class="vkey vkey-tab" data-keycap-type="mod" data-key="Tab" aria-label="Tab">Tab</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyQ">Q</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyW">W</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyE">E</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyR">R</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyT">T</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyY">Y</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyU">U</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyI">I</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyO">O</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyP">P</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="BracketLeft">[</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="BracketRight">]</button>
+        <button type="button" class="vkey vkey-slash" data-keycap-type="mod" data-key="Backslash">\</button>
+
+        <!-- 75% Side Nav (PageUp) -->
+        <button type="button" class="vkey vkey-nav-key" data-cluster="nav-75" data-key="PageUp" aria-label="Page Up">PgUp</button>
+
+        <!-- TKL & Fullsize Nav (Del, End, PgD) -->
+        <span class="vkey-separator" data-cluster="tkl-nav"></span>
+        <button type="button" class="vkey vkey-nav-key" data-cluster="tkl-nav" data-key="Delete" aria-label="Delete">Del</button>
+        <button type="button" class="vkey vkey-nav-key" data-cluster="tkl-nav" data-key="End" aria-label="End">End</button>
+        <button type="button" class="vkey vkey-nav-key" data-cluster="tkl-nav" data-key="PageDown" aria-label="Page Down">PgD</button>
+
+        <!-- Fullsize Numpad Row 2 -->
+        <span class="vkey-separator" data-cluster="numpad"></span>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="Numpad7">7</button>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="Numpad8">8</button>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="Numpad9">9</button>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="NumpadAdd">+</button>
+      </div>
+
+      <!-- Row 3: ASDFGH + Enter + Side Nav/Numpad -->
+      <div class="vkey-row">
+        <button type="button" class="vkey vkey-caps" data-keycap-type="mod" data-key="CapsLock" aria-label="Caps Lock">Caps</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyA">A</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyS">S</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyD">D</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyF">F</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyG">G</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyH">H</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyJ">J</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyK">K</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyL">L</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Semicolon">;</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Quote">'</button>
+        <button type="button" class="vkey vkey-enter" data-keycap-type="enter" data-key="Enter" data-stab="true" aria-label="Enter">↵ Enter</button>
+
+        <!-- 75% Side Nav (PageDown) -->
+        <button type="button" class="vkey vkey-nav-key" data-cluster="nav-75" data-key="PageDown" aria-label="Page Down">PgDn</button>
+
+        <!-- TKL & Fullsize Placeholder (Row 3 has no nav) -->
+        <span class="vkey-separator" data-cluster="tkl-nav"></span>
+        <span class="vkey-placeholder-group" data-cluster="tkl-nav"></span>
+
+        <!-- Fullsize Numpad Row 3 -->
+        <span class="vkey-separator" data-cluster="numpad"></span>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="Numpad4">4</button>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="Numpad5">5</button>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="Numpad6">6</button>
+        <span class="vkey-placeholder" data-cluster="numpad"></span>
+      </div>
+
+      <!-- Row 4: ZXCVBN + Arrows & End -->
+      <div class="vkey-row">
+        <button type="button" class="vkey vkey-shift-l" data-keycap-type="mod" data-key="ShiftLeft" data-stab="true" aria-label="Shift Trái">⇧ Shift</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyZ">Z</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyX">X</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyC">C</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyV">V</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyB">B</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyN">N</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="KeyM">M</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Comma">,</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Period">.</button>
+        <button type="button" class="vkey" data-keycap-type="alpha" data-key="Slash">/</button>
+        <button type="button" class="vkey vkey-shift-r" data-keycap-type="mod" data-key="ShiftRight" data-stab="true" aria-label="Shift Phải">⇧ Shift</button>
+
+        <!-- 75% Arrow Up & End -->
+        <button type="button" class="vkey vkey-arrow" data-keycap-type="arrow" data-cluster="arrows-75" data-key="ArrowUp" aria-label="Mũi tên lên">▲</button>
+        <button type="button" class="vkey vkey-nav-key" data-cluster="nav-75" data-key="End" aria-label="End">End</button>
+
+        <!-- TKL & Fullsize Arrow Up Cluster -->
+        <span class="vkey-separator" data-cluster="tkl-nav"></span>
+        <span class="vkey-placeholder" data-cluster="tkl-nav"></span>
+        <button type="button" class="vkey vkey-arrow" data-keycap-type="arrow" data-cluster="tkl-nav" data-key="ArrowUp" aria-label="Mũi tên lên">▲</button>
+        <span class="vkey-placeholder" data-cluster="tkl-nav"></span>
+
+        <!-- Fullsize Numpad Row 4 -->
+        <span class="vkey-separator" data-cluster="numpad"></span>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="Numpad1">1</button>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="Numpad2">2</button>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="Numpad3">3</button>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="NumpadEnter" aria-label="Numpad Enter">↵</button>
+      </div>
+
+      <!-- Row 5: Modifiers, Spacebar, Arrows -->
+      <div class="vkey-row">
+        <button type="button" class="vkey vkey-mod" data-keycap-type="mod" data-key="ControlLeft">Ctrl</button>
+        <button type="button" class="vkey vkey-mod" data-keycap-type="mod" data-key="MetaLeft" aria-label="Windows">⊞</button>
+        <button type="button" class="vkey vkey-mod" data-keycap-type="mod" data-key="AltLeft">Alt</button>
+        <button type="button" class="vkey vkey-space" data-keycap-type="space" data-key="Space" data-stab="true" aria-label="Phím cách Spacebar"><span class="vkey-space-dash">──</span></button>
+        <button type="button" class="vkey vkey-mod" data-keycap-type="mod" data-key="AltRight">Alt</button>
+        <button type="button" class="vkey vkey-mod" data-keycap-type="mod" data-key="Fn" aria-label="Function">Fn</button>
+        <button type="button" class="vkey vkey-mod" data-keycap-type="mod" data-key="ControlRight">Ctrl</button>
+
+        <!-- 75% Arrows (Left, Down, Right) -->
+        <button type="button" class="vkey vkey-arrow" data-keycap-type="arrow" data-cluster="arrows-75" data-key="ArrowLeft" aria-label="Mũi tên trái">◀</button>
+        <button type="button" class="vkey vkey-arrow" data-keycap-type="arrow" data-cluster="arrows-75" data-key="ArrowDown" aria-label="Mũi tên xuống">▼</button>
+        <button type="button" class="vkey vkey-arrow" data-keycap-type="arrow" data-cluster="arrows-75" data-key="ArrowRight" aria-label="Mũi tên phải">▶</button>
+
+        <!-- TKL & Fullsize Arrows (Left, Down, Right) -->
+        <span class="vkey-separator" data-cluster="tkl-nav"></span>
+        <button type="button" class="vkey vkey-arrow" data-keycap-type="arrow" data-cluster="tkl-nav" data-key="ArrowLeft" aria-label="Mũi tên trái">◀</button>
+        <button type="button" class="vkey vkey-arrow" data-keycap-type="arrow" data-cluster="tkl-nav" data-key="ArrowDown" aria-label="Mũi tên xuống">▼</button>
+        <button type="button" class="vkey vkey-arrow" data-keycap-type="arrow" data-cluster="tkl-nav" data-key="ArrowRight" aria-label="Mũi tên phải">▶</button>
+
+        <!-- Fullsize Numpad Row 5 -->
+        <span class="vkey-separator" data-cluster="numpad"></span>
+        <button type="button" class="vkey vkey-numpad vkey-numpad-zero" data-cluster="numpad" data-key="Numpad0">0</button>
+        <button type="button" class="vkey vkey-numpad" data-cluster="numpad" data-key="NumpadDecimal">.</button>
+        <span class="vkey-placeholder" data-cluster="numpad"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- A/B Comparison Panel (Toggled via button) -->
+  <div class="switch-compare-panel surface-card p-3 rounded mb-3" data-compare-panel hidden>
+    <div class="d-flex align-items-center justify-content-between pb-2 mb-3 border-bottom">
+      <h3 class="h6 mb-0 text-primary">
+        <i class="bi bi-columns-gap me-2"></i>Chế độ Đối chiếu trực diện 2 mẫu Switch (A/B Compare)
+      </h3>
+      <button type="button" class="btn-close" data-close-compare aria-label="Đóng đối chiếu"></button>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="compare-card compare-card-a p-3 rounded border">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="badge bg-primary">MẪU A</span>
+            <button type="button" class="btn btn-sm btn-outline-primary" data-play-compare="A">
+              <i class="bi bi-volume-up-fill me-1"></i>Nghe thử A
+            </button>
+          </div>
+          <label for="selectSwitchA" class="form-label small text-muted">Chọn Switch A:</label>
+          <select id="selectSwitchA" class="form-select form-select-sm mb-3" data-compare-select="A"></select>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="compare-card compare-card-b p-3 rounded border">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="badge bg-info text-dark">MẪU B</span>
+            <button type="button" class="btn btn-sm btn-outline-info text-dark" data-play-compare="B">
+              <i class="bi bi-volume-up-fill me-1"></i>Nghe thử B
+            </button>
+          </div>
+          <label for="selectSwitchB" class="form-label small text-muted">Chọn Switch B:</label>
+          <select id="selectSwitchB" class="form-select form-select-sm mb-3" data-compare-select="B"></select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparative Table -->
+    <div class="table-responsive mt-3">
+      <table class="table table-sm table-bordered text-center align-middle mb-0" data-compare-table>
+        <thead class="table-light">
+          <tr>
+            <th class="text-start" style="width: 34%;">Đặc tính kỹ thuật</th>
+            <th data-table-switch-title="A" class="text-primary" style="width: 33%;">Mẫu A</th>
+            <th data-table-switch-title="B" class="text-info" style="width: 33%;">Mẫu B</th>
+          </tr>
+        </thead>
+        <tbody data-compare-table-body>
+          <!-- Dynamic compare rows via JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="small text-muted fst-italic" data-switch-disclaimer>
+    * Âm thanh thực tế phụ thuộc vào chất liệu vỏ phím, tấm plate, keycap và thiết bị nghe của bạn.
+  </div>
+</section>
+</body>
+</html>
