@@ -925,6 +925,33 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Bước tiếp theo: review frontend riêng sau backend.
 - Ngày hoàn tất: Chưa hoàn tất.
 
+## GEAR-AI-FE-01: Giao diện Widget Trợ lý tư vấn Gear thông minh (Smart Gear Consultant)
+
+- Phụ trách: `@trongsonho` (Frontend) phối hợp `@NgocYuh` (Backend).
+- Trạng thái: `IN PROGRESS` (hoàn tất triển khai và kiểm thử, gộp chung branch backend theo thống nhất).
+- Branch: `feat/smart-gear-consultant-backend`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-19.
+- Task liên kết: `GEAR-AI-01`; contract và mock tại `docs/api/gear-consultant-contract.md` và `docs/api/mock/gear-consultant.json`.
+- Đã làm:
+  - Tạo fragment giao diện `templates/fragments/gear-consultant.html`: tích hợp vào layout chung `main.html`.
+  - Thiết kế CSS `gear-consultant.css`:
+    - Nút AI Gear tròn nổi nằm thẳng hàng phía trên chatbox hỗ trợ (`right: 24px; bottom: 96px;`).
+    - Cửa sổ chat AI (`.gear-consultant__panel`) neo tại `right: 96px; bottom: 24px;`, mở sang bên trái các nút nổi, tuyệt đối không đè lên hoặc che khuất chatbox hỗ trợ khách hàng.
+    - Tiêu đề gọn gàng: chỉ giữ avatar và "Tư Vấn Gear Thông Minh".
+  - Triển khai JavaScript `gear-consultant.js`:
+    - Quản lý đóng/mở panel, tự động focus input và cuộn mượt.
+    - Tự động đóng chatbox hỗ trợ và ẩn trigger trên mobile khi panel AI mở để tránh xung đột giao diện.
+    - Tải động danh sách chi nhánh `/api/stores` vào dropdown và nạp gợi ý nhanh từ `/api/consultant/quick-prompts`.
+    - Gọi API `POST /api/consultant/chat`, hiển thị tin nhắn, bong bóng ý định và danh sách thẻ sản phẩm gợi ý.
+    - Đồng bộ đường link xem chi tiết sản phẩm chuẩn ID `/products/{id}`.
+- Kiểm thử:
+  - `node tests/frontend/gear-consultant.test.mjs`: PASS 2/2.
+  - Toàn bộ suite frontend `tests/frontend/*.test.mjs`: PASS 100%.
+- Vướng mắc: Không có.
+- Bước tiếp theo: Mở Pull Request chung vào `main`.
+- Ngày hoàn tất: Chưa hoàn tất.
+
 ## SWITCH-SOUND-FE-01: Widget Virtual Switch Tester & Web Audio API
 
 - Phụ trách: `@trongsonho` (Frontend).

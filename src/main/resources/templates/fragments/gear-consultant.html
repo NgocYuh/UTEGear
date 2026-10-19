@@ -1,0 +1,39 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="widget">
+  <section class="gear-consultant" aria-label="Trợ lý tư vấn Gear thông minh">
+    <button class="gear-consultant__trigger" type="button" aria-expanded="false" aria-controls="gear-consultant-panel" aria-label="Mở Trợ lý tư vấn Gear UTEGear" title="Trợ lý tư vấn Gear thông minh">
+      <i class="bi bi-robot" aria-hidden="true"></i>
+      <span class="gear-consultant__badge">AI Gear</span>
+    </button>
+    <div id="gear-consultant-panel" class="gear-consultant__panel" hidden role="dialog" aria-modal="false" aria-labelledby="gear-consultant-title">
+      <header class="gear-consultant__header">
+        <div class="d-flex align-items-center gap-2">
+          <div class="gear-consultant__avatar"><i class="bi bi-robot"></i></div>
+          <h2 id="gear-consultant-title" class="m-0">Tư Vấn Gear Thông Minh</h2>
+        </div>
+        <button type="button" class="gear-consultant__close" aria-label="Đóng tư vấn"><i class="bi bi-x-lg"></i></button>
+      </header>
+      <div class="gear-consultant__body">
+        <div class="gear-consultant__store-bar">
+          <label for="consultant-store-select"><i class="bi bi-geo-alt-fill text-danger me-1"></i>Chi nhánh ưu tiên:</label>
+          <select id="consultant-store-select" class="form-select form-select-sm">
+            <option value="">Tự động theo câu hỏi</option>
+          </select>
+        </div>
+        <div id="gear-consultant-messages" class="gear-consultant__messages" aria-live="polite">
+          <div class="gear-consultant__message gear-consultant__message--bot">
+            <p class="mb-2"><strong>Chào bạn! 👋 Tôi là Trợ Lý Tư Vấn Gear UTEGear.</strong></p>
+            <p class="mb-2">Tôi phân tích nhu cầu game (FPS, MOBA, văn phòng), form tay, ngân sách và đối soát trực tiếp với <strong>tồn kho thực tế tại từng chi nhánh</strong> để gợi ý cấu hình tối ưu nhất.</p>
+            <p class="mb-2 fs-8 text-muted">Bạn có thể chọn nhanh gợi ý mẫu hoặc gõ trực tiếp câu hỏi nhé:</p>
+            <div id="gear-consultant-quick-prompts" class="gear-consultant__prompts"></div>
+          </div>
+        </div>
+      </div>
+      <form id="gear-consultant-form" class="gear-consultant__composer">
+        <label class="visually-hidden" for="gear-consultant-input">Nội dung câu hỏi</label>
+        <textarea id="gear-consultant-input" maxlength="1000" rows="2" placeholder="Ví dụ: Tìm combo chuột + phím FPS tay nhỏ dưới 1.5 triệu ở Đà Nẵng..."></textarea>
+        <button type="submit" class="btn btn-danger" aria-label="Gửi câu hỏi"><i class="bi bi-send-fill"></i></button>
+      </form>
+    </div>
+  </section>
+</th:block>
+
