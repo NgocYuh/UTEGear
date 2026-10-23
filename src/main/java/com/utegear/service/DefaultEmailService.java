@@ -67,7 +67,9 @@ public class DefaultEmailService implements EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setFrom(mailFrom);
+            String fromAddress = (mailFrom != null && !mailFrom.isBlank() && !mailFrom.contains("no-reply@utegear.vn"))
+                    ? mailFrom : mailUsername;
+            helper.setFrom(fromAddress, "UTEGear Support");
             helper.setTo(toEmail);
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
@@ -138,3 +140,4 @@ public class DefaultEmailService implements EmailService {
                 """.formatted(title, greeting, lead, otpCode, note);
     }
 }
+

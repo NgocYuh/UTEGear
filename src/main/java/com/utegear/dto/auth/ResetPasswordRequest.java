@@ -1,5 +1,6 @@
 package com.utegear.dto.auth;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -12,6 +13,7 @@ public record ResetPasswordRequest(
 
         @NotBlank(message = "Mã OTP là bắt buộc")
         @Pattern(regexp = "^[0-9]{6}$", message = "Mã OTP phải gồm 6 chữ số")
+        @JsonAlias({"otpCode", "otp_code"})
         String otp,
 
         @NotBlank(message = "Mật khẩu mới là bắt buộc")

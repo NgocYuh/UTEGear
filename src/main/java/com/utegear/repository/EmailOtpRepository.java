@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EmailOtpRepository extends JpaRepository<EmailOtp, Long> {
 
+    Optional<EmailOtp> findTopByEmailIgnoreCaseAndOtpTypeAndUsedFalseOrderByCreatedAtDesc(
+            String email, OtpType otpType);
+
     Optional<EmailOtp> findTopByEmailIgnoreCaseAndOtpTypeAndUsedFalseAndExpiresAtAfterOrderByCreatedAtDesc(
             String email, OtpType otpType, OffsetDateTime now);
 

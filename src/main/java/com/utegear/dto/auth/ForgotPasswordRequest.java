@@ -8,3 +8,4 @@ public record ForgotPasswordRequest(
         @Email(message = "Email không đúng định dạng")
         String email) {
 }
+

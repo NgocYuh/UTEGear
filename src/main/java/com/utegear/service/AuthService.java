@@ -108,9 +108,13 @@ public class AuthService {
         }
 
         EmailOtp emailOtp = emailOtpRepository
-                .findTopByEmailIgnoreCaseAndOtpTypeAndUsedFalseAndExpiresAtAfterOrderByCreatedAtDesc(
-                        email, OtpType.REGISTRATION_ACTIVATION, OffsetDateTime.now(ZoneOffset.UTC))
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "OTP_EXPIRED_OR_INVALID", "Mã OTP không hợp lệ hoặc đã hết hạn"));
+                .findTopByEmailIgnoreCaseAndOtpTypeAndUsedFalseOrderByCreatedAtDesc(
+                        email, OtpType.REGISTRATION_ACTIVATION)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "OTP_NOT_FOUND", "Mã OTP không tồn tại hoặc đã được sử dụng"));
+
+        if (emailOtp.getExpiresAt().isBefore(OffsetDateTime.now(ZoneOffset.UTC))) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "OTP_EXPIRED", "Mã OTP đã hết hạn. Vui lòng bấm gửi lại mã mới");
+        }
 
         if (!emailOtp.getOtpCode().equals(otp)) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "INVALID_OTP", "Mã OTP không chính xác");
@@ -170,9 +174,13 @@ public class AuthService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "Không tìm thấy tài khoản với email này"));
 
         EmailOtp emailOtp = emailOtpRepository
-                .findTopByEmailIgnoreCaseAndOtpTypeAndUsedFalseAndExpiresAtAfterOrderByCreatedAtDesc(
-                        email, OtpType.PASSWORD_RESET, OffsetDateTime.now(ZoneOffset.UTC))
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "OTP_EXPIRED_OR_INVALID", "Mã OTP không hợp lệ hoặc đã hết hạn"));
+                .findTopByEmailIgnoreCaseAndOtpTypeAndUsedFalseOrderByCreatedAtDesc(
+                        email, OtpType.PASSWORD_RESET)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "OTP_NOT_FOUND", "Mã OTP không tồn tại hoặc đã được sử dụng"));
+
+        if (emailOtp.getExpiresAt().isBefore(OffsetDateTime.now(ZoneOffset.UTC))) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "OTP_EXPIRED", "Mã OTP đã hết hạn. Vui lòng gửi lại yêu cầu mới");
+        }
 
         if (!emailOtp.getOtpCode().equals(otp)) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "INVALID_OTP", "Mã OTP không chính xác");

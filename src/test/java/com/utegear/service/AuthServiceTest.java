@@ -125,8 +125,8 @@ class AuthServiceTest {
         EmailOtp otp = new EmailOtp("user@example.com", "123456", OtpType.REGISTRATION_ACTIVATION, OffsetDateTime.now().plusMinutes(10));
 
         when(userRepository.findByEmailIgnoreCase("user@example.com")).thenReturn(Optional.of(user));
-        when(emailOtpRepository.findTopByEmailIgnoreCaseAndOtpTypeAndUsedFalseAndExpiresAtAfterOrderByCreatedAtDesc(
-                eq("user@example.com"), eq(OtpType.REGISTRATION_ACTIVATION), any(OffsetDateTime.class)))
+        when(emailOtpRepository.findTopByEmailIgnoreCaseAndOtpTypeAndUsedFalseOrderByCreatedAtDesc(
+                eq("user@example.com"), eq(OtpType.REGISTRATION_ACTIVATION)))
                 .thenReturn(Optional.of(otp));
 
         AuthMessageResponse res = authService.verifyRegistrationOtp(new VerifyOtpRequest("user@example.com", "123456"));
@@ -144,13 +144,13 @@ class AuthServiceTest {
         user.setEnabled(false);
 
         when(userRepository.findByEmailIgnoreCase("user@example.com")).thenReturn(Optional.of(user));
-        when(emailOtpRepository.findTopByEmailIgnoreCaseAndOtpTypeAndUsedFalseAndExpiresAtAfterOrderByCreatedAtDesc(
-                eq("user@example.com"), eq(OtpType.REGISTRATION_ACTIVATION), any(OffsetDateTime.class)))
+        when(emailOtpRepository.findTopByEmailIgnoreCaseAndOtpTypeAndUsedFalseOrderByCreatedAtDesc(
+                eq("user@example.com"), eq(OtpType.REGISTRATION_ACTIVATION)))
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> authService.verifyRegistrationOtp(new VerifyOtpRequest("user@example.com", "123456")))
                 .isInstanceOf(ApiException.class)
-                .hasMessageContaining("không hợp lệ hoặc đã hết hạn");
+                .hasMessageContaining("không tồn tại hoặc đã được sử dụng");
     }
 
     @Test
@@ -187,8 +187,8 @@ class AuthServiceTest {
         EmailOtp otp = new EmailOtp("user@example.com", "654321", OtpType.PASSWORD_RESET, OffsetDateTime.now().plusMinutes(10));
 
         when(userRepository.findByEmailIgnoreCase("user@example.com")).thenReturn(Optional.of(user));
-        when(emailOtpRepository.findTopByEmailIgnoreCaseAndOtpTypeAndUsedFalseAndExpiresAtAfterOrderByCreatedAtDesc(
-                eq("user@example.com"), eq(OtpType.PASSWORD_RESET), any(OffsetDateTime.class)))
+        when(emailOtpRepository.findTopByEmailIgnoreCaseAndOtpTypeAndUsedFalseOrderByCreatedAtDesc(
+                eq("user@example.com"), eq(OtpType.PASSWORD_RESET)))
                 .thenReturn(Optional.of(otp));
         when(passwordEncoder.encode("newPassword123")).thenReturn("new-encoded-hash");
 

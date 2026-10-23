@@ -28,10 +28,13 @@ public class GlobalExceptionHandler {
         Map<String, String> fieldErrors = new LinkedHashMap<>();
         exception.getBindingResult().getFieldErrors().forEach(fieldError ->
                 fieldErrors.putIfAbsent(fieldError.getField(), fieldError.getDefaultMessage()));
+        String message = fieldErrors.isEmpty()
+                ? "Dữ liệu không hợp lệ"
+                : String.join("; ", fieldErrors.values());
         ApiError error = error(
                 HttpStatus.BAD_REQUEST,
                 "VALIDATION_FAILED",
-                "Dữ liệu không hợp lệ",
+                message,
                 request,
                 fieldErrors);
         return ResponseEntity.badRequest().body(error);

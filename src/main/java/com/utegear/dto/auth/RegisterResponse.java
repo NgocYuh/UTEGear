@@ -5,3 +5,4 @@ public record RegisterResponse(
         boolean requiresActivation,
         String message) {
 }
+

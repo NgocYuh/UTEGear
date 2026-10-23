@@ -4,3 +4,4 @@ public enum OtpType {
     REGISTRATION_ACTIVATION,
     PASSWORD_RESET
 }
+

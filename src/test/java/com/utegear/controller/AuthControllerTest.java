@@ -148,3 +148,4 @@ class AuthControllerTest {
                 .andExpect(status().isNoContent());
     }
 }
+

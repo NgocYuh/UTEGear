@@ -8,3 +8,4 @@ public record ResendOtpRequest(
         @Email(message = "Email không đúng định dạng")
         String email) {
 }
+

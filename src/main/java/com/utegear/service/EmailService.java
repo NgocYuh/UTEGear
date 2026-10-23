@@ -6,3 +6,4 @@ public interface EmailService {
 
     void sendPasswordResetOtp(String toEmail, String fullName, String otpCode);
 }
+

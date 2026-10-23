@@ -56,7 +56,7 @@ UTEGear.Auth = {
         return UTEGear.API.post('/api/auth/register', { fullName, email, phone: phone || null, password }, { public: true });
     },
     verifyRegistrationOtp(email, otpCode) {
-        return UTEGear.API.post('/api/auth/verify-registration-otp', { email, otpCode }, { public: true });
+        return UTEGear.API.post('/api/auth/verify-registration-otp', { email, otp: otpCode, otpCode }, { public: true });
     },
     resendRegistrationOtp(email) {
         return UTEGear.API.post('/api/auth/resend-registration-otp', { email }, { public: true });
@@ -65,7 +65,7 @@ UTEGear.Auth = {
         return UTEGear.API.post('/api/auth/forgot-password', { email }, { public: true });
     },
     resetPassword(email, otpCode, newPassword) {
-        return UTEGear.API.post('/api/auth/reset-password', { email, otpCode, newPassword }, { public: true });
+        return UTEGear.API.post('/api/auth/reset-password', { email, otp: otpCode, otpCode, newPassword }, { public: true });
     },
     profile() { return UTEGear.API.get('/api/profile'); },
     async logout() {

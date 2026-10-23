@@ -9,3 +9,4 @@ CREATE TABLE email_otps (
 );
 
 CREATE INDEX idx_email_otps_email_type ON email_otps(email, otp_type);
+

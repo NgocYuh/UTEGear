@@ -4,3 +4,4 @@ public record AuthMessageResponse(
         boolean success,
         String message) {
 }
+

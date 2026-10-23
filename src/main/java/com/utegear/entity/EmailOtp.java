@@ -89,3 +89,4 @@ public class EmailOtp {
         return createdAt;
     }
 }
+
