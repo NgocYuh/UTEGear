@@ -44,9 +44,9 @@ public class StorefrontViewController {
     @GetMapping("/")
     public String home(Model model) {
         ProductDtos.ProductPage products = productCatalogService.search(
-                null, null, null, null, null, 0, 8, "createdAt,desc");
+            null, null, null, null, null, 0, 8, "createdAt,desc");
         ProductDtos.ProductPage onSaleProducts = productCatalogService.search(
-                null, null, null, null, null, true, 0, 8, "createdAt,desc");
+            null, null, null, null, null, true, 0, 8, "createdAt,desc");
         model.addAttribute("categories", categoryService.active());
         model.addAttribute("featuredProducts", products.content());
         model.addAttribute("onSaleProducts", onSaleProducts == null ? List.of() : onSaleProducts.content());
@@ -159,6 +159,11 @@ public class StorefrontViewController {
     @GetMapping("/register")
     public String register() {
         return "auth/register";
+    }
+
+    @GetMapping("/verify-otp")
+    public String verifyOtp() {
+        return "auth/verify-otp";
     }
 
     @GetMapping("/forgot-password")

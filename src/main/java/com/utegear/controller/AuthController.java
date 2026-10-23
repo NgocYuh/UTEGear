@@ -1,9 +1,14 @@
 package com.utegear.controller;
 
+import com.utegear.dto.auth.AuthMessageResponse;
 import com.utegear.dto.auth.AuthSession;
+import com.utegear.dto.auth.ForgotPasswordRequest;
 import com.utegear.dto.auth.LoginRequest;
 import com.utegear.dto.auth.RegisterRequest;
-import com.utegear.dto.auth.UserProfile;
+import com.utegear.dto.auth.RegisterResponse;
+import com.utegear.dto.auth.ResendOtpRequest;
+import com.utegear.dto.auth.ResetPasswordRequest;
+import com.utegear.dto.auth.VerifyOtpRequest;
 import com.utegear.service.AuthService;
 import com.utegear.service.LoginService;
 import jakarta.validation.Valid;
@@ -28,8 +33,28 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserProfile register(@Valid @RequestBody RegisterRequest request) {
+    public RegisterResponse register(@Valid @RequestBody RegisterRequest request) {
         return authService.register(request);
+    }
+
+    @PostMapping("/verify-registration-otp")
+    public AuthMessageResponse verifyRegistrationOtp(@Valid @RequestBody VerifyOtpRequest request) {
+        return authService.verifyRegistrationOtp(request);
+    }
+
+    @PostMapping("/resend-registration-otp")
+    public AuthMessageResponse resendRegistrationOtp(@Valid @RequestBody ResendOtpRequest request) {
+        return authService.resendRegistrationOtp(request);
+    }
+
+    @PostMapping("/forgot-password")
+    public AuthMessageResponse forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        return authService.forgotPassword(request);
+    }
+
+    @PostMapping("/reset-password")
+    public AuthMessageResponse resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        return authService.resetPassword(request);
     }
 
     @PostMapping("/login")

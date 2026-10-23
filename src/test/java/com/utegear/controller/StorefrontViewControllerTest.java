@@ -99,6 +99,7 @@ class StorefrontViewControllerTest {
     void staticRoutesResolveExistingTemplates() {
         assertThat(controller.login()).isEqualTo("auth/login");
         assertThat(controller.register()).isEqualTo("auth/register");
+        assertThat(controller.verifyOtp()).isEqualTo("auth/verify-otp");
         assertThat(controller.forgotPassword()).isEqualTo("auth/forgot-password");
         assertThat(controller.about()).isEqualTo("about");
         assertThat(controller.contact()).isEqualTo("contact");

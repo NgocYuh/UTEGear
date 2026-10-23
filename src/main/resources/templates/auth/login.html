@@ -21,10 +21,16 @@
             <div class="alert alert-success" th:if="${param.logout}" role="alert">
                 <i class="bi bi-check-circle-fill me-1"></i> Bạn đã đăng xuất thành công.
             </div>
+            <div class="alert alert-success" th:if="${param.verified}" role="alert">
+                <i class="bi bi-check-circle-fill me-1"></i> Tài khoản của bạn đã được kích hoạt thành công! Vui lòng đăng nhập.
+            </div>
+            <div class="alert alert-success" th:if="${param.reset}" role="alert">
+                <i class="bi bi-check-circle-fill me-1"></i> Mật khẩu đã được đặt lại thành công! Vui lòng đăng nhập với mật khẩu mới.
+            </div>
 
             <!-- LOGIN FORM -->
             <form th:action="@{/api/auth/login}" method="post" class="auth-form" data-auth="login">
-                <p data-auth-status role="status" aria-live="polite"></p>
+                <div data-auth-status class="alert alert-danger d-none" role="alert"></div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email tài khoản <span class="required-star">*</span></label>
                     <div class="input-group">
