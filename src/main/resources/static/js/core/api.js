@@ -1,22 +1,25 @@
 window.UTEGear = window.UTEGear || {};
 
-// sessionStorage per tab was approved by BE on 2026-10-14 (PR #54).
-// Follow docs/frontend/auth-session-decision.md; no refresh or server token revocation.
-
+// Session management with JWT Access Token + Refresh Token and server revocation support.
 UTEGear.Session = {
     key: 'utegear.auth',
     get() {
         try {
             const value = JSON.parse(sessionStorage.getItem(this.key));
             if (!value) return null;
-            if (!value?.accessToken || !Number.isFinite(Date.parse(value.expiresAt))
-                || Date.parse(value.expiresAt) <= Date.now()) { this.clear(); return null; }
+            if (!value?.accessToken) { this.clear(); return null; }
+            if (Number.isFinite(Date.parse(value.expiresAt)) && Date.parse(value.expiresAt) <= Date.now()) {
+                if (!value.refreshToken) {
+                    this.clear();
+                    return null;
+                }
+            }
             return value;
         } catch { return null; }
     },
     save(value) {
         if (!value?.accessToken || value.tokenType !== 'Bearer'
-            || !Number.isFinite(Date.parse(value.expiresAt)) || Date.parse(value.expiresAt) <= Date.now()) {
+            || !Number.isFinite(Date.parse(value.expiresAt))) {
             throw new Error('Phiên đăng nhập không hợp lệ');
         }
         sessionStorage.setItem(this.key, JSON.stringify(value));
@@ -39,7 +42,7 @@ UTEGear.API = {
         if (target.origin !== location.origin || !target.pathname.startsWith('/api/')) {
             throw new Error('Chỉ được gọi API cùng máy chủ');
         }
-        const { public: isPublic = false, ...fetchOptions } = options;
+        const { public: isPublic = false, _retry = false, ...fetchOptions } = options;
         const headers = new Headers(fetchOptions.headers);
         headers.set('Accept', 'application/json');
         if (fetchOptions.body != null && !(fetchOptions.body instanceof FormData)) headers.set('Content-Type', 'application/json');
@@ -62,6 +65,17 @@ UTEGear.API = {
             error.code = data?.code;
             error.details = data?.fieldErrors || data?.details;
             if (response.status === 401 && !isPublic) {
+                if (session?.refreshToken && !_retry && !target.pathname.startsWith('/api/auth/')) {
+                    try {
+                        const newSession = await this.post('/api/auth/refresh', { refreshToken: session.refreshToken }, { public: true });
+                        if (newSession?.accessToken) {
+                            UTEGear.Session.save(newSession);
+                            return await this.request(url, { ...options, _retry: true });
+                        }
+                    } catch (refreshErr) {
+                        // refresh failed, proceed to clear session
+                    }
+                }
                 UTEGear.Session.clear();
                 window.dispatchEvent(new CustomEvent('utegear:unauthorized', { detail: error }));
             }

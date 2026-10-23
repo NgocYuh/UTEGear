@@ -4,6 +4,7 @@ import com.utegear.dto.auth.AuthMessageResponse;
 import com.utegear.dto.auth.AuthSession;
 import com.utegear.dto.auth.ForgotPasswordRequest;
 import com.utegear.dto.auth.LoginRequest;
+import com.utegear.dto.auth.RefreshTokenRequest;
 import com.utegear.dto.auth.RegisterRequest;
 import com.utegear.dto.auth.RegisterResponse;
 import com.utegear.dto.auth.ResendOtpRequest;
@@ -15,6 +16,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,9 +64,17 @@ public class AuthController {
         return loginService.login(request);
     }
 
+    @PostMapping("/refresh")
+    public AuthSession refresh(@Valid @RequestBody RefreshTokenRequest request) {
+        return loginService.refreshToken(request);
+    }
+
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout() {
-        // JWT is stateless; the client discards its token on logout.
+    public void logout(
+            @RequestHeader(value = "Authorization", required = false) String authorization,
+            @RequestBody(required = false) RefreshTokenRequest request) {
+        String refreshToken = request != null ? request.refreshToken() : null;
+        loginService.logout(authorization, refreshToken);
     }
 }

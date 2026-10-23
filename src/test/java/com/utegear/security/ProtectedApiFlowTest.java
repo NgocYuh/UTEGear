@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ class ProtectedApiFlowTest {
     @MockBean private ProfileService profileService;
     @MockBean private AddressService addressService;
     @MockBean private CustomerOrderService customerOrderService;
+    @MockBean private com.utegear.service.TokenBlacklistService tokenBlacklistService;
 
     private User customer;
     private User admin;
@@ -62,6 +64,7 @@ class ProtectedApiFlowTest {
 
     @BeforeEach
     void setUp() {
+        when(tokenBlacklistService.isBlacklisted(any())).thenReturn(false);
         customer = user(7L, "customer@example.test", Role.CUSTOMER);
         admin = user(8L, "admin@example.test", Role.ADMIN);
         customerToken = jwtService.generateToken(new CustomUserDetails(customer));
