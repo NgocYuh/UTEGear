@@ -69,8 +69,13 @@ UTEGear.Auth = {
     },
     profile() { return UTEGear.API.get('/api/profile'); },
     async logout() {
-        try { await UTEGear.API.post('/api/auth/logout'); }
-        finally { UTEGear.Session.clear(); }
+        const session = UTEGear.Session.get();
+        try {
+            await UTEGear.API.post('/api/auth/logout', session?.refreshToken ? { refreshToken: session.refreshToken } : {});
+        } catch (ignored) {
+        } finally {
+            UTEGear.Session.clear();
+        }
     },
     init() {
         document.querySelectorAll('form[data-auth]').forEach(form => {

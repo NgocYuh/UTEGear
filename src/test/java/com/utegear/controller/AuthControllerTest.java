@@ -1,6 +1,7 @@
 package com.utegear.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -12,6 +13,7 @@ import com.utegear.dto.auth.AuthMessageResponse;
 import com.utegear.dto.auth.AuthSession;
 import com.utegear.dto.auth.ForgotPasswordRequest;
 import com.utegear.dto.auth.LoginRequest;
+import com.utegear.dto.auth.RefreshTokenRequest;
 import com.utegear.dto.auth.RegisterRequest;
 import com.utegear.dto.auth.RegisterResponse;
 import com.utegear.dto.auth.ResendOtpRequest;
@@ -129,7 +131,7 @@ class AuthControllerTest {
     void loginReturnsAuthSession() throws Exception {
         LoginRequest req = new LoginRequest("test@utegear.vn", "password123");
         UserProfile profile = new UserProfile(1L, "Test User", "test@utegear.vn", "0901234567", null, true, List.of("CUSTOMER"), OffsetDateTime.now());
-        AuthSession session = new AuthSession("token123", "Bearer", Instant.now().plusSeconds(3600), profile);
+        AuthSession session = new AuthSession("token123", "Bearer", Instant.now().plusSeconds(3600), profile, "refresh123");
 
         when(loginService.login(any(LoginRequest.class))).thenReturn(session);
 
@@ -139,13 +141,36 @@ class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value("token123"))
                 .andExpect(jsonPath("$.tokenType").value("Bearer"))
+                .andExpect(jsonPath("$.refreshToken").value("refresh123"))
                 .andExpect(jsonPath("$.user.email").value("test@utegear.vn"));
     }
 
     @Test
-    void logoutReturnsNoContent() throws Exception {
-        mockMvc.perform(post("/api/auth/logout"))
+    void refreshReturnsNewAuthSession() throws Exception {
+        RefreshTokenRequest req = new RefreshTokenRequest("valid-refresh-token");
+        UserProfile profile = new UserProfile(1L, "Test User", "test@utegear.vn", "0901234567", null, true, List.of("CUSTOMER"), OffsetDateTime.now());
+        AuthSession session = new AuthSession("new-token-456", "Bearer", Instant.now().plusSeconds(3600), profile, "valid-refresh-token");
+
+        when(loginService.refreshToken(any(RefreshTokenRequest.class))).thenReturn(session);
+
+        mockMvc.perform(post("/api/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").value("new-token-456"))
+                .andExpect(jsonPath("$.refreshToken").value("valid-refresh-token"));
+    }
+
+    @Test
+    void logoutReturnsNoContentAndCallsService() throws Exception {
+        RefreshTokenRequest req = new RefreshTokenRequest("some-refresh-token");
+
+        mockMvc.perform(post("/api/auth/logout")
+                        .header("Authorization", "Bearer sample-access-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isNoContent());
+
+        verify(loginService).logout(eq("Bearer sample-access-token"), eq("some-refresh-token"));
     }
 }
-

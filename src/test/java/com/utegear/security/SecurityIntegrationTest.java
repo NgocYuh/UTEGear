@@ -46,6 +46,9 @@ class SecurityIntegrationTest {
     @MockBean
     private StoreRepository storeRepository;
 
+    @MockBean
+    private com.utegear.service.TokenBlacklistService tokenBlacklistService;
+
     @Test
     void permitsPublicAuthEndpointWithoutToken() throws Exception {
         mockMvc.perform(post("/api/auth/register")

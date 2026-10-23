@@ -1422,3 +1422,47 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc: Không có blocker.
 - Bước tiếp theo: Review và commit/push code lên remote repo.
 - Ngày hoàn tất: Chưa hoàn tất.
+
+
+## AUTH-REFRESH-01: Triển khai Refresh Token & Thu hồi Token phía máy chủ (Token Blacklist / Revocation)
+
+- Phụ trách: `@NgocYuh` (Backend) & phối hợp `@trongsonho` (Frontend).
+- Trạng thái: `IN REVIEW`.
+- Branch: `feat/auth-refresh-token-blacklist`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-24.
+- Đã làm:
+  - **Cơ sở dữ liệu (Flyway Migration V5):**
+    - Tạo migration mới `V5__add_refresh_tokens_and_token_blacklist.sql` quản lý 2 bảng:
+      - `refresh_tokens`: Lưu trữ refresh token ngẫu nhiên an toàn mã hóa cryptographic, liên kết với `user_id`, thời hạn hết hạn (`expires_at`), trạng thái thu hồi (`revoked`).
+      - `token_blacklists`: Lưu trữ các JWT access token đã bị thu hồi khi người dùng đăng xuất (chứa `token_hash`, thời hạn `expires_at`, lý do `reason`).
+    - Đánh index tối ưu cho việc tra cứu nhanh và dọn dẹp token hết hạn: `idx_refresh_tokens_token`, `idx_token_blacklists_hash`.
+  - **Entity & Repository:**
+    - Tạo entity `RefreshToken` và `RefreshTokenRepository`.
+    - Tạo entity `TokenBlacklist` và `TokenBlacklistRepository`.
+  - **DTOs:**
+    - Tạo `RefreshTokenRequest` (nhận `refreshToken` với alias `refresh_token`).
+    - Nâng cấp `AuthSession` trả về cả `accessToken` và `refreshToken`, hỗ trợ overload constructor đảm bảo tương thích ngược 100% cho các mock tests cũ.
+  - **Services:**
+    - Xây dựng `RefreshTokenService`: Quản lý sinh token với `SecureRandom`, lưu DB với thời hạn (mặc định 7 ngày), thu hồi token cũ khi cấp token mới (Refresh Token Rotation), thu hồi toàn bộ token của người dùng.
+    - Xây dựng `TokenBlacklistService`: Quản lý blacklist token với cơ chế cache in-memory concurrent map hai lớp (L1 in-memory ConcurrentHashMap, L2 DB persistence) giúp tối ưu hiệu năng lọc token tại filter xác thực; tích hợp fallback an toàn khi chạy môi trường test không có schema.
+    - Nâng cấp `LoginService`: Tích hợp cấp refresh token khi đăng nhập, thực hiện endpoint `refreshToken()` và `logout()` (blacklist access token hiện tại vào máy chủ và revoke refresh token).
+  - **Spring Security & Filter:**
+    - Nâng cấp `JwtAuthenticationFilter`: Kiểm tra token blacklist trước khi nạp thông tin authentication vào `SecurityContext`. Nếu token đã bị thu hồi (đăng xuất), request bị từ chối ngay lập tức.
+  - **REST API Controller:**
+    - `AuthController`: Thêm endpoint `POST /api/auth/refresh` và nâng cấp endpoint `POST /api/auth/logout` nhận `RefreshTokenRequest` để dọn dẹp sạch sẽ cả hai loại token ở phía server.
+  - **Frontend Interceptor & Silent Refresh:**
+    - Nâng cấp `src/main/resources/static/js/core/api.js`: Quản lý lưu trữ `refreshToken` trong `UTEGear.Session`. Khi API nhận phản hồi HTTP 401 Unauthorized, client tự động kích hoạt flow refresh token ngầm (silent refresh) và retry lại request ban đầu một cách liền mạch, tránh người dùng bị văng ra trang đăng nhập.
+    - Nâng cấp `src/main/resources/static/js/app.js`: Cập nhật hàm `UTEGear.Auth.logout()` gửi refresh token lên backend để thu hồi toàn diện.
+  - **Kiểm thử (Unit Tests & Integration Tests):**
+    - Tạo mới `RefreshTokenServiceTest`: Kiểm tra cấp phát, rotation và thu hồi refresh token (6/6 PASS).
+    - Tạo mới `TokenBlacklistServiceTest`: Kiểm tra blacklist token, cache in-memory và kiểm tra blacklist (3/3 PASS).
+    - Tạo mới `JwtAuthenticationFilterTest`: Kiểm tra chặn access token trong blacklist và cho phép token hợp lệ (3/3 PASS).
+    - Cập nhật `LoginServiceTest`: Kiểm tra login kèm refresh token, kiểm tra luồng refresh token thành công/thất bại, kiểm tra luồng logout thu hồi token (5/5 PASS).
+    - Cập nhật `AuthControllerTest`: Kiểm tra endpoint `/api/auth/refresh` và `/api/auth/logout` (7/7 PASS).
+    - Cập nhật `SecurityIntegrationTest`: Kiểm tra tích hợp bảo mật Spring Security (12/12 PASS).
+    - Toàn bộ backend test suite: 288 tests PASS, 0 failures, 0 errors, 4 skipped (Docker).
+    - Toàn bộ frontend test suite: 100% PASS.
+- Vướng mắc: Không có blocker.
+- Bước tiếp theo: Review và commit/push code lên remote repo.
+- Ngày hoàn tất: Chưa hoàn tất.

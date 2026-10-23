@@ -6,5 +6,10 @@ public record AuthSession(
         String accessToken,
         String tokenType,
         Instant expiresAt,
-        UserProfile user) {
+        UserProfile user,
+        String refreshToken) {
+
+    public AuthSession(String accessToken, String tokenType, Instant expiresAt, UserProfile user) {
+        this(accessToken, tokenType, expiresAt, user, null);
+    }
 }
