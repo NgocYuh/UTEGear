@@ -1466,3 +1466,53 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc: Không có blocker.
 - Bước tiếp theo: Review và commit/push code lên remote repo.
 - Ngày hoàn tất: Chưa hoàn tất.
+
+
+## PAYMENT-VNPAY-01: Tích hợp cổng thanh toán trực tuyến VNPay Sandbox (Quét QR / Thẻ ATM)
+
+- Phụ trách: `@NgocYuh` (Backend) & phối hợp `@trongsonho` (Frontend).
+- Trạng thái: `IN REVIEW`.
+- Branch: `feat/payment-vnpay-sandbox`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-24.
+- Đã làm:
+  - **Cơ sở dữ liệu (Flyway Migration V6):**
+    - Tạo migration mới `V6__add_vnpay_payment_method.sql` mở rộng check constraint `ck_payments_method` cho phép phương thức `VNPAY` bên cạnh `COD` và `BANK_TRANSFER`.
+    - Cập nhật enum `PaymentMethod`: thêm giá trị `VNPAY`.
+  - **Cấu hình VNPay Sandbox:**
+    - Cấu hình các tham số VNPay trong `application.properties`: `vnpay.pay-url`, `vnpay.tmn-code`, `vnpay.hash-secret`, `vnpay.return-url`.
+    - Tạo bean `VNPayConfig` nạp cấu hình linh hoạt từ biến môi trường.
+  - **Thuật toán mã hóa & Chữ ký số HMAC-SHA512 (`VNPayUtil`):**
+    - Phương thức `hmacSHA512`: Tính mã băm bảo mật SHA-512 chuẩn xác theo đặc tả của VNPay.
+    - Phương thức `hashAllFields`: Sắp xếp tham số theo bảng chữ cái US-ASCII và hash dữ liệu để tạo `vnp_SecureHash`.
+    - Phương thức `buildPaymentUrl`: Xây dựng URL chuyển hướng thanh toán chuẩn hóa và an toàn.
+    - Phương thức `getClientIpAddress`: Trích xuất IP client thực tế qua các proxy header.
+  - **Dịch vụ thanh toán (`VNPayService`):**
+    - `createPaymentUrl`: Tạo URL thanh toán VNPay Sandbox với thời hạn hiệu lực 15 phút, quy đổi số tiền VND (* 100).
+    - `validateSignature`: Kiểm tra tính toàn vẹn và hợp lệ của chữ ký trả về từ VNPay.
+    - `processReturn`: Xử lý Return URL sau khi khách hàng thanh toán trên cổng VNPay, đối soát chữ ký, cập nhật trạng thái `Payment` (`PAID` hoặc `FAILED`) và chuyển trạng thái đơn hàng sang `CONFIRMED`.
+    - `processIpn`: Xử lý Webhook IPN nhận thông báo ngầm từ máy chủ VNPay với định dạng response chuẩn (`{"RspCode": "00", "Message": "Confirm Success"}`).
+    - `getResponseMessage`: Từ điển thông báo lỗi chi tiết cho tất cả mã phản hồi VNPay (00, 07, 09, 10, 11, 12, 13, 24, 51, 65, 75, 79).
+  - **Tích hợp Đặt hàng (`CheckoutService` & `OrderResponse`):**
+    - Nâng cấp `OrderResponse` hỗ trợ trường `paymentUrl`.
+    - Cập nhật `CheckoutService.place`: Tự động sinh `paymentUrl` khi khách hàng đặt đơn với phương thức `VNPAY`.
+  - **Controllers & Spring Security:**
+    - `PaymentController`: Cung cấp `POST /api/payments/vnpay/create-url` (thanh toán lại đơn hàng PENDING) và `GET /api/payments/vnpay/ipn` (webhook).
+    - `PaymentViewController`: Cung cấp `GET /payment/vnpay-return` (trang kết quả thanh toán).
+    - `SecurityConfig`: Cấu hình mở quyền truy cập công khai cho endpoint IPN.
+  - **Giao diện & Trải nghiệm người dùng (Frontend):**
+    - `templates/checkout.html`: Thêm lựa chọn thanh toán "Cổng thanh toán VNPay Sandbox (Quét QR / ATM)".
+    - `src/main/resources/static/js/app.js`: Thêm `VNPAY` vào danh sách phương thức thanh toán hợp lệ.
+    - `src/main/resources/static/js/domain/views.js`: Tự động chuyển hướng sang cổng VNPay Sandbox sau khi đặt hàng thành công và tạo nút thanh toán nhanh.
+    - `src/main/resources/static/js/domain/orders.js`: Hiển thị nhãn VNPay Sandbox và nút "Thanh toán lại qua VNPay" cho các đơn hàng chưa thanh toán.
+    - `templates/payment/vnpay-return.html`: Giao diện kết quả giao dịch trực quan, chuyên nghiệp, hiển thị đầy đủ chi tiết giao dịch cùng **Hộp hướng dẫn thông tin thẻ demo test VNPay Sandbox (Ngân hàng NCB, số thẻ 9704198526191432198, OTP 123456, demo VNPAY-QR)** để người chấm và tester dễ dàng thử nghiệm.
+  - **Kiểm thử (Unit Tests & Integration Tests):**
+    - `VNPayUtilTest`: 4/4 PASS (kiểm tra HMAC-SHA512, sắp xếp alphabet & hash, build URL, trích xuất IP).
+    - `VNPayServiceTest`: 6/6 PASS (tạo URL, xử lý return thành công/thất bại, kiểm tra checksum giả mạo, xử lý IPN thành công/sai số tiền).
+    - `PaymentControllerTest`: 3/3 PASS (tạo payment URL, kiểm tra phân quyền chủ đơn hàng, xử lý IPN).
+    - `PaymentViewControllerTest`: 1/1 PASS (render view kết quả thanh toán).
+    - Toàn bộ backend test suite: 302 tests PASS, 0 failures, 0 errors, 4 skipped (Docker).
+    - Toàn bộ frontend test suite: 100% PASS.
+- Vướng mắc: Không có blocker.
+- Bước tiếp theo: Review và commit/push code lên remote repo.
+- Ngày hoàn tất: Chưa hoàn tất.
