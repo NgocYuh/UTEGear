@@ -1378,3 +1378,47 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc: Chưa mở PR/push; không đánh dấu DONE trước merge.
 - Bước tiếp theo: Frontend hoàn tất widget giao diện trong `SWITCH-SOUND-FE-01`.
 - Ngày hoàn tất: Chưa hoàn tất.
+
+
+## AUTH-OTP-01: Triển khai xác thực mã OTP qua Email khi đăng ký và quên mật khẩu
+
+- Phụ trách: `@NgocYuh` (Backend) & phối hợp `@trongsonho` (Frontend).
+- Trạng thái: `IN REVIEW`.
+- Branch: `feat/auth-email-otp`.
+- Pull Request: Chưa mở.
+- Ngày cập nhật: 2026-10-24.
+- Đã làm:
+  - **Cơ sở dữ liệu (Flyway Migration):**
+    - Tạo migration mới `V4__add_email_otp_verification.sql` quản lý bảng `email_otps` (id, email, otp_code, otp_type, expires_at, used, created_at) với index tối ưu trên `(email, otp_type, used)`.
+    - Tạo entity `EmailOtp` và enum `OtpType` (`REGISTRATION_ACTIVATION`, `PASSWORD_RESET`).
+    - Tạo `EmailOtpRepository` truy vấn OTP hợp lệ gần nhất chưa sử dụng và chưa hết hạn.
+  - **Dịch vụ Email (EmailService & DefaultEmailService):**
+    - Thêm dependency `spring-boot-starter-mail` vào `pom.xml`.
+    - Cấu hình SMTP Gmail trong `application.properties` với `spring.mail.*` và `app.mail.*`.
+    - Xây dựng template HTML email UTEGear chuyên nghiệp, hiển thị mã OTP 6 số to rõ, thời hạn sử dụng và cảnh báo bảo mật.
+    - Tích hợp cơ chế fallback console log an toàn (`📧 [UTEGEAR EMAIL OTP] ...`): không gây crash ứng dụng khi môi trường phát triển/chấm bài chưa cấu hình mật khẩu SMTP Gmail thật.
+  - **Nghiệp vụ xác thực (AuthService & DTOs):**
+    - Xây dựng các DTOs: `VerifyOtpRequest`, `ResendOtpRequest`, `ForgotPasswordRequest`, `ResetPasswordRequest`, `RegisterResponse`, `AuthMessageResponse`.
+    - Luồng Đăng ký (`/register`): Tạo tài khoản mới ở trạng thái `enabled = false`, sinh ngẫu nhiên mã OTP 6 chữ số (hiệu lực 15 phút), gửi email kích hoạt đến người dùng.
+    - Luồng Kích hoạt OTP (`/verify-registration-otp`): Xác thực OTP hợp lệ, chuyển `user.enabled = true`, đánh dấu OTP đã dùng (`used = true`).
+    - Luồng Gửi lại OTP (`/resend-registration-otp`): Sinh mã OTP kích hoạt mới và gửi lại vào email.
+    - Luồng Quên mật khẩu (`/forgot-password`): Sinh OTP reset mật khẩu (hiệu lực 10 phút) gửi qua email cho tài khoản đã tồn tại.
+    - Luồng Đặt lại mật khẩu (`/reset-password`): Xác thực OTP đặt lại mật khẩu, cập nhật mật khẩu mới được mã hóa bảo mật bằng `BCryptPasswordEncoder`, vô hiệu hóa OTP.
+  - **Controller & Security (REST & View):**
+    - `AuthController`: Cung cấp 5 endpoint `/api/auth/register`, `/api/auth/verify-registration-otp`, `/api/auth/resend-registration-otp`, `/api/auth/forgot-password`, `/api/auth/reset-password`.
+    - `SecurityConfig`: Cấu hình mở truy cập công khai cho `/api/auth/**`.
+    - `StorefrontViewController`: Cung cấp view `@GetMapping("/verify-otp")`.
+  - **Giao diện & Client Controller (Frontend):**
+    - Tạo trang nhập mã OTP kích hoạt tài khoản `templates/auth/verify-otp.html` kèm bộ đếm ngược 60 giây gửi lại mã và lấy email tự động từ URL query.
+    - Nâng cấp trang khôi phục mật khẩu `templates/auth/forgot-password.html` thành quy trình 2 bước trực quan (Bước 1: Gửi OTP đến email; Bước 2: Nhập OTP và đặt mật khẩu mới).
+    - Cập nhật trang đăng nhập `templates/auth/login.html` với các alert kích hoạt thành công, đặt lại mật khẩu thành công và thông báo kèm link xác thực OTP nếu tài khoản chưa kích hoạt.
+    - Cập nhật `static/js/app.js`: Tích hợp các hàm gọi API OTP, xử lý countdown và chuyển hướng linh hoạt.
+  - **Kiểm thử (Unit Tests & Integration Tests):**
+    - `AuthServiceTest`: 8/8 test cases PASS (đăng ký mã hóa BCrypt & gửi OTP, từ chối email/sđt trùng, kích hoạt OTP thành công, bắt lỗi OTP sai/hết hạn, gửi lại OTP, quên mật khẩu & đặt lại mật khẩu với OTP).
+    - `AuthControllerTest`: 7/7 test cases PASS cho toàn bộ các endpoint REST.
+    - `StorefrontViewControllerTest`: 6/6 test cases PASS.
+    - Toàn bộ backend test suite: 274 tests PASS, 0 failures, 0 errors.
+    - Toàn bộ frontend test suite: 100% PASS.
+- Vướng mắc: Không có blocker.
+- Bước tiếp theo: Review và commit/push code lên remote repo.
+- Ngày hoàn tất: Chưa hoàn tất.

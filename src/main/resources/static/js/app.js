@@ -55,6 +55,18 @@ UTEGear.Auth = {
         if (password !== confirmPassword) throw new Error('Mật khẩu xác nhận không khớp');
         return UTEGear.API.post('/api/auth/register', { fullName, email, phone: phone || null, password }, { public: true });
     },
+    verifyRegistrationOtp(email, otpCode) {
+        return UTEGear.API.post('/api/auth/verify-registration-otp', { email, otp: otpCode, otpCode }, { public: true });
+    },
+    resendRegistrationOtp(email) {
+        return UTEGear.API.post('/api/auth/resend-registration-otp', { email }, { public: true });
+    },
+    forgotPassword(email) {
+        return UTEGear.API.post('/api/auth/forgot-password', { email }, { public: true });
+    },
+    resetPassword(email, otpCode, newPassword) {
+        return UTEGear.API.post('/api/auth/reset-password', { email, otp: otpCode, otpCode, newPassword }, { public: true });
+    },
     profile() { return UTEGear.API.get('/api/profile'); },
     async logout() {
         try { await UTEGear.API.post('/api/auth/logout'); }
@@ -69,7 +81,11 @@ UTEGear.Auth = {
                 const button = form.querySelector('[type="submit"]');
                 if (button) button.disabled = true;
                 const status = form.querySelector('[data-auth-status]');
-                if (status) status.textContent = 'Đang xử lý…';
+                if (status) {
+                    status.classList.remove('d-none', 'alert-danger', 'alert-success');
+                    status.classList.add('alert-info');
+                    status.textContent = 'Đang xử lý…';
+                }
                 try {
                     const fields = Object.fromEntries(new FormData(form));
                     if (form.dataset.auth === 'login') {
@@ -79,20 +95,265 @@ UTEGear.Auth = {
                         location.href = UTEGear.Session.redirectTarget(requested || (roles.includes('EMPLOYEE') ? '/admin/support' : '/'));
                     } else {
                         await this.register(fields);
-                        location.href = '/login';
+                        location.href = '/verify-otp?email=' + encodeURIComponent(fields.email);
                     }
                 } catch (error) {
-                    if (status) status.textContent = error.message;
+                    if (status) {
+                        status.classList.remove('alert-info');
+                        status.classList.add('alert-danger');
+                        if (error.code === 'ACCOUNT_DISABLED' || (error.message && error.message.toLowerCase().includes('chưa được kích hoạt'))) {
+                            const emailParam = encodeURIComponent(form.querySelector('input[name="email"]')?.value || '');
+                            status.innerHTML = `<i class="bi bi-exclamation-circle-fill me-1"></i> ${error.message}. <a href="/verify-otp?email=${emailParam}" class="alert-link text-decoration-underline font-semibold">Bấm vào đây để xác thực OTP</a>`;
+                        } else {
+                            status.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i> ${error.message}`;
+                        }
+                    }
                 } finally {
                     delete form.dataset.busy;
                     if (button) button.disabled = false;
                 }
             });
         });
+
+        // Handler for Verify OTP Page
+        this.initVerifyOtpPage();
+
+        // Handler for Forgot Password Page
+        this.initForgotPasswordPage();
+
         window.addEventListener('utegear:unauthorized', () => {
             const redirect = encodeURIComponent(location.pathname + location.search);
             location.href = '/login?redirect=' + redirect;
         });
+    },
+
+    initVerifyOtpPage() {
+        const form = document.getElementById('verifyOtpForm');
+        if (!form) return;
+
+        const emailInput = document.getElementById('otpEmail');
+        const otpCodeInput = document.getElementById('otpCode');
+        const alertBox = document.getElementById('otpAlert');
+        const btnVerify = document.getElementById('btnVerifyOtp');
+        const btnResend = document.getElementById('btnResendOtp');
+        const countdownText = document.getElementById('countdownText');
+
+        // Pre-fill email from query param if available
+        const params = new URLSearchParams(location.search);
+        const emailFromQuery = params.get('email');
+        if (emailFromQuery && emailInput) {
+            emailInput.value = emailFromQuery;
+        }
+
+        const showAlert = (message, type = 'danger') => {
+            if (!alertBox) return;
+            alertBox.className = `alert alert-${type}`;
+            alertBox.innerHTML = (type === 'success' ? '<i class="bi bi-check-circle-fill me-1"></i> ' : '<i class="bi bi-exclamation-triangle-fill me-1"></i> ') + message;
+            alertBox.classList.remove('d-none');
+        };
+
+        const hideAlert = () => {
+            if (alertBox) alertBox.classList.add('d-none');
+        };
+
+        const startCountdown = (seconds) => {
+            if (!btnResend || !countdownText) return;
+            btnResend.disabled = true;
+            let remaining = seconds;
+            countdownText.textContent = `(${remaining}s)`;
+            const timer = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(timer);
+                    countdownText.textContent = '';
+                    btnResend.disabled = false;
+                } else {
+                    countdownText.textContent = `(${remaining}s)`;
+                }
+            }, 1000);
+        };
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+            const email = emailInput?.value.trim();
+            const otpCode = otpCodeInput?.value.trim();
+
+            if (!email || !otpCode || otpCode.length !== 6) {
+                showAlert('Vui lòng nhập đầy đủ email và mã OTP 6 số hợp lệ');
+                return;
+            }
+
+            btnVerify.disabled = true;
+            btnVerify.textContent = 'Đang xác thực…';
+            try {
+                const res = await this.verifyRegistrationOtp(email, otpCode);
+                showAlert(res.message || 'Kích hoạt tài khoản thành công! Đang chuyển hướng đến đăng nhập...', 'success');
+                setTimeout(() => {
+                    location.href = '/login?verified=true';
+                }, 1500);
+            } catch (err) {
+                showAlert(err.message || 'Xác thực OTP thất bại');
+                btnVerify.disabled = false;
+                btnVerify.innerHTML = 'KÍCH HOẠT TÀI KHOẢN <i class="bi bi-check-circle ms-1"></i>';
+            }
+        });
+
+        if (btnResend) {
+            btnResend.addEventListener('click', async () => {
+                hideAlert();
+                const email = emailInput?.value.trim();
+                if (!email) {
+                    showAlert('Vui lòng nhập email để gửi lại mã OTP');
+                    return;
+                }
+                btnResend.disabled = true;
+                try {
+                    const res = await this.resendRegistrationOtp(email);
+                    showAlert(res.message || 'Mã OTP mới đã được gửi đến email của bạn!', 'success');
+                    startCountdown(60);
+                } catch (err) {
+                    showAlert(err.message || 'Không thể gửi lại mã OTP');
+                    btnResend.disabled = false;
+                }
+            });
+        }
+    },
+
+    initForgotPasswordPage() {
+        const reqForm = document.getElementById('stepRequestOtpForm');
+        const resetForm = document.getElementById('stepResetPasswordForm');
+        if (!reqForm || !resetForm) return;
+
+        const forgotEmail = document.getElementById('forgotEmail');
+        const resetEmail = document.getElementById('resetEmail');
+        const resetOtpCode = document.getElementById('resetOtpCode');
+        const newPassword = document.getElementById('newPassword');
+        const confirmNewPassword = document.getElementById('confirmNewPassword');
+        const alertBox = document.getElementById('forgotAlert');
+        const btnSendOtp = document.getElementById('btnSendOtp');
+        const btnSubmitReset = document.getElementById('btnSubmitReset');
+        const btnBack = document.getElementById('btnBackToStep1');
+        const btnResend = document.getElementById('btnResendResetOtp');
+        const countdownText = document.getElementById('resetCountdownText');
+        const subtitle = document.getElementById('forgotSubtitle');
+
+        const showAlert = (message, type = 'danger') => {
+            if (!alertBox) return;
+            alertBox.className = `alert alert-${type}`;
+            alertBox.innerHTML = (type === 'success' ? '<i class="bi bi-check-circle-fill me-1"></i> ' : '<i class="bi bi-exclamation-triangle-fill me-1"></i> ') + message;
+            alertBox.classList.remove('d-none');
+        };
+
+        const hideAlert = () => {
+            if (alertBox) alertBox.classList.add('d-none');
+        };
+
+        const startCountdown = (seconds) => {
+            if (!btnResend || !countdownText) return;
+            btnResend.disabled = true;
+            let remaining = seconds;
+            countdownText.textContent = `(${remaining}s)`;
+            const timer = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(timer);
+                    countdownText.textContent = '';
+                    btnResend.disabled = false;
+                } else {
+                    countdownText.textContent = `(${remaining}s)`;
+                }
+            }, 1000);
+        };
+
+        reqForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+            const email = forgotEmail?.value.trim();
+            if (!email) {
+                showAlert('Vui lòng nhập địa chỉ email của bạn');
+                return;
+            }
+
+            btnSendOtp.disabled = true;
+            btnSendOtp.textContent = 'Đang gửi mã…';
+            try {
+                const res = await this.forgotPassword(email);
+                showAlert(res.message || 'Mã OTP đã được gửi đến email của bạn!', 'success');
+                resetEmail.value = email;
+                reqForm.classList.add('d-none');
+                resetForm.classList.remove('d-none');
+                if (subtitle) subtitle.textContent = 'Nhập mã OTP vừa nhận được và mật khẩu mới';
+                startCountdown(60);
+            } catch (err) {
+                showAlert(err.message || 'Không thể gửi yêu cầu đặt lại mật khẩu');
+            } finally {
+                btnSendOtp.disabled = false;
+                btnSendOtp.innerHTML = 'GỬI MÃ OTP <i class="bi bi-arrow-right ms-1"></i>';
+            }
+        });
+
+        resetForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+            const email = resetEmail?.value.trim();
+            const otpCode = resetOtpCode?.value.trim();
+            const pass = newPassword?.value;
+            const confirmPass = confirmNewPassword?.value;
+
+            if (!otpCode || otpCode.length !== 6) {
+                showAlert('Vui lòng nhập mã OTP 6 chữ số hợp lệ');
+                return;
+            }
+            if (pass !== confirmPass) {
+                showAlert('Mật khẩu xác nhận không khớp với mật khẩu mới');
+                return;
+            }
+            if (pass.length < 8) {
+                showAlert('Mật khẩu phải có độ dài tối thiểu 8 ký tự');
+                return;
+            }
+
+            btnSubmitReset.disabled = true;
+            btnSubmitReset.textContent = 'Đang đặt lại mật khẩu…';
+            try {
+                const res = await this.resetPassword(email, otpCode, pass);
+                showAlert(res.message || 'Đặt lại mật khẩu thành công! Đang chuyển hướng về trang đăng nhập...', 'success');
+                setTimeout(() => {
+                    location.href = '/login?reset=true';
+                }, 1500);
+            } catch (err) {
+                showAlert(err.message || 'Đặt lại mật khẩu thất bại');
+                btnSubmitReset.disabled = false;
+                btnSubmitReset.innerHTML = 'ĐẶT LẠI MẬT KHẨU <i class="bi bi-check-circle ms-1"></i>';
+            }
+        });
+
+        if (btnBack) {
+            btnBack.addEventListener('click', () => {
+                hideAlert();
+                resetForm.classList.add('d-none');
+                reqForm.classList.remove('d-none');
+                if (subtitle) subtitle.textContent = 'Nhập email đăng ký để nhận mã OTP đặt lại mật khẩu';
+            });
+        }
+
+        if (btnResend) {
+            btnResend.addEventListener('click', async () => {
+                hideAlert();
+                const email = resetEmail?.value.trim();
+                if (!email) return;
+                btnResend.disabled = true;
+                try {
+                    const res = await this.forgotPassword(email);
+                    showAlert(res.message || 'Mã OTP mới đã được gửi đến email của bạn!', 'success');
+                    startCountdown(60);
+                } catch (err) {
+                    showAlert(err.message || 'Không thể gửi lại mã OTP');
+                    btnResend.disabled = false;
+                }
+            });
+        }
     }
 };
 

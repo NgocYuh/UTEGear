@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Xác thực mã OTP - UTEGear</title>
+</head>
+<body>
+
+<main layout:fragment="content" class="auth-section">
+    <div class="container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <span class="brand-icon"><i class="bi bi-shield-check"></i></span>
+                <h1>Xác thực tài khoản</h1>
+                <p>Nhập mã OTP gồm 6 chữ số đã được gửi đến email của bạn</p>
+            </div>
+
+            <!-- STATUS ALERT -->
+            <div id="otpAlert" class="alert d-none" role="alert"></div>
+
+            <!-- OTP VERIFY FORM -->
+            <form id="verifyOtpForm" class="auth-form">
+                <div class="mb-3">
+                    <label for="otpEmail" class="form-label">Email tài khoản <span class="required-star">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="otpEmail" name="email" placeholder="name@domain.com" required autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="otpCode" class="form-label">Mã OTP (6 chữ số) <span class="required-star">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-key"></i></span>
+                        <input type="text" class="form-control text-center fs-4 letter-spacing-2" id="otpCode" name="otpCode"
+                               placeholder="123456" maxlength="6" pattern="[0-9]{6}" required inputmode="numeric" autocomplete="one-time-code">
+                    </div>
+                    <div class="form-text text-muted fs-8">Mã kích hoạt có hiệu lực trong vòng 5 phút.</div>
+                </div>
+
+                <button type="submit" id="btnVerifyOtp" class="btn btn-utama btn-lg w-100 mb-3">
+                    KÍCH HOẠT TÀI KHOẢN <i class="bi bi-check-circle ms-1"></i>
+                </button>
+
+                <div class="text-center">
+                    <button type="button" id="btnResendOtp" class="btn btn-link text-decoration-none p-0 fs-7">
+                        <i class="bi bi-arrow-repeat me-1"></i>Gửi lại mã OTP <span id="countdownText"></span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="auth-footer mt-4">
+                <p class="mb-0">Đã kích hoạt thành công? <a href="/login">Đăng nhập ngay</a></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
+

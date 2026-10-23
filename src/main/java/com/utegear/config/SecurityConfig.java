@@ -50,7 +50,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/auth/register", "/api/auth/login", "/api/consultant/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/consultant/**").permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/api/categories", "/api/brands", "/api/products/**", "/api/stores/**")
                         .permitAll()
