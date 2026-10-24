@@ -10,7 +10,9 @@
   - Bỏ trường Quận/huyện (District) trong form địa chỉ trang cá nhân và thanh toán theo thực tế hành chính mới.
   - Cho phép nhập trực tiếp địa chỉ giao hàng mới ngay tại trang thanh toán `/checkout` mà không bắt buộc nhảy sang trang Profile.
   - Tự động chọn sẵn địa chỉ mặc định và chi nhánh xuất hàng khả dụng đầu tiên (`activeStores[0]`) ngay khi tải trang thanh toán, tránh hiển thị lỗi đỏ chặn thanh toán gây khó chịu cho khách hàng.
-  - Hỗ trợ tự động lưu địa chỉ và tính tổng tiền khi người dùng điền thông tin và bấm "Tính tổng tiền & Đặt hàng".
+  - Tự động tính tổng tiền (auto-quote) ngay khi tải trang và khi người dùng thay đổi chi nhánh/mã giảm giá (debounced), kích hoạt sẵn nút "Xác nhận đặt hàng" mà không bắt khách hàng phải bấm nút "Tính tổng tiền" thủ công.
+  - Xóa bỏ nút link "Đăng nhập" thừa ở cuối trang checkout khi người dùng đã đăng nhập.
+  - Bỏ tùy chọn "Chuyển khoản thủ công" (trùng lặp với Quét mã QR của VNPay), chỉ giữ 2 phương thức rõ ràng: COD và VNPay (Quét QR / ATM).
 - Kiểm thử:
   - 100% tests frontend PASS (`checkout-address-direct.test.mjs`, `checkout-branch.test.mjs`, v.v.).
   - Maven verify / test: BUILD SUCCESS (302 backend tests PASS).
