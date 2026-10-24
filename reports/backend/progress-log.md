@@ -1487,6 +1487,9 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
     - Phương thức `hashAllFields`: Sắp xếp tham số theo bảng chữ cái US-ASCII và hash dữ liệu để tạo `vnp_SecureHash`.
     - Phương thức `buildPaymentUrl`: Xây dựng URL chuyển hướng thanh toán chuẩn hóa và an toàn.
     - Phương thức `getClientIpAddress`: Trích xuất IP client thực tế qua các proxy header.
+  - **Ràng buộc nghiệp vụ trạng thái đơn hàng (`AdminOrderService`):**
+    - Chặn Admin xác nhận (`CONFIRMED`) đơn hàng thanh toán trực tuyến (`VNPAY`) khi trạng thái thanh toán chưa hoàn tất (`payment.status != PAID`). Bắn lỗi 409 Conflict (`UNPAID_ONLINE_ORDER`).
+    - Đơn hàng COD vẫn cho phép xác nhận và xử lý bình thường.
   - **Dịch vụ thanh toán (`VNPayService`):**
     - `createPaymentUrl`: Tạo URL thanh toán VNPay Sandbox với thời hạn hiệu lực 15 phút, quy đổi số tiền VND (* 100).
     - `validateSignature`: Kiểm tra tính toàn vẹn và hợp lệ của chữ ký trả về từ VNPay.
