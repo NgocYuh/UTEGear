@@ -13,6 +13,7 @@
   - Tự động tính tổng tiền (auto-quote) ngay khi tải trang và khi người dùng thay đổi chi nhánh/mã giảm giá (debounced), kích hoạt sẵn nút "Xác nhận đặt hàng" mà không bắt khách hàng phải bấm nút "Tính tổng tiền" thủ công.
   - Xóa bỏ nút link "Đăng nhập" thừa ở cuối trang checkout khi người dùng đã đăng nhập.
   - Bỏ tùy chọn "Chuyển khoản thủ công" (trùng lặp với Quét mã QR của VNPay), chỉ giữ 2 phương thức rõ ràng: COD và VNPay (Quét QR / ATM).
+  - Khắc phục lỗi `ReferenceError: admin is not defined` trong `orders.js` khi xem chi tiết đơn hàng: Đã bổ sung đầy đủ tham số và kiểm tra phạm vi an toàn, hiển thị đầy đủ thông tin chi tiết đơn hàng (khách nhận, địa chỉ, phương thức thanh toán, nút thanh toán lại VNPay cho đơn chưa trả, bảng sản phẩm, giảm giá, phí ship và tổng tiền), đồng thời thêm hiệu ứng tự động cuộn (smooth scroll) trực tiếp đến khung chi tiết đơn khi người dùng bấm "Xem chi tiết".
 - Kiểm thử:
   - 100% tests frontend PASS (`checkout-address-direct.test.mjs`, `checkout-branch.test.mjs`, v.v.).
   - Maven verify / test: BUILD SUCCESS (302 backend tests PASS).

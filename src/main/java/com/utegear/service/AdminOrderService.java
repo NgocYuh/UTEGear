@@ -60,6 +60,12 @@ public class AdminOrderService {
             throw new ApiException(HttpStatus.CONFLICT, "INVALID_ORDER_TRANSITION",
                     "Không thể chuyển trạng thái đơn hàng từ " + order.getStatus() + " sang " + nextStatus);
         }
+        if (nextStatus == OrderStatus.CONFIRMED && order.getPayment() != null) {
+            if (order.getPayment().getMethod() != PaymentMethod.COD && order.getPayment().getStatus() != PaymentStatus.PAID) {
+                throw new ApiException(HttpStatus.CONFLICT, "UNPAID_ONLINE_ORDER",
+                        "Không thể xác nhận đơn hàng thanh toán trực tuyến khi khách chưa thanh toán");
+            }
+        }
         if (nextStatus == OrderStatus.CANCELLED && order.getPayment() != null) {
             if (order.getPayment().getStatus() == PaymentStatus.PAID) {
                 throw new ApiException(HttpStatus.CONFLICT, "PAID_ORDER_CANNOT_CANCEL",

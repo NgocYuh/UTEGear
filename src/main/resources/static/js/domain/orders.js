@@ -10,7 +10,7 @@ UTEGear.Orders = {
     badge(status) {
         return UTEGear.Views.node('span', this.labels[status] || 'Đang cập nhật', 'order-status-badge status-' + (Object.hasOwn(this.labels, status) ? status.toLowerCase() : 'unknown'));
     },
-    customerDetail(host, detail) {
+    customerDetail(host, detail, root = null, id = null) {
         const V = UTEGear.Views;
         host.hidden = false;
         const header = V.node('header', null, 'order-detail-heading');
@@ -28,13 +28,16 @@ UTEGear.Orders = {
         const payment = section('Giao hàng & thanh toán');
         const methods = { COD: 'Thanh toán khi nhận hàng (COD)', BANK_TRANSFER: 'Chuyển khoản ngân hàng', VNPAY: 'Cổng thanh toán VNPay Sandbox' };
         payment.append(V.node('p', methods[detail.payment?.method] || 'Phương thức chưa cập nhật'), V.node('p', this.paymentLabels[detail.payment?.status] || 'Trạng thái thanh toán chưa cập nhật'));
-        if (!admin && detail.payment?.method === 'VNPAY' && detail.payment?.status === 'PENDING') {
-            const payBtn = V.button('Thanh toán lại qua VNPay', async () => {
-                const res = await UTEGear.API.post('/api/payments/vnpay/create-url?orderId=' + id);
-                if (res?.paymentUrl) window.location.href = res.paymentUrl;
-            }, root);
-            payBtn.className = 'btn btn-primary btn-sm mt-2 me-2';
-            payment.append(payBtn);
+        if (root && detail.payment?.method === 'VNPAY' && detail.payment?.status === 'PENDING') {
+            const orderId = detail.id || id;
+            if (orderId && V.button) {
+                const payBtn = V.button('Thanh toán lại qua VNPay', async () => {
+                    const res = await UTEGear.API.post('/api/payments/vnpay/create-url?orderId=' + UTEGear.Cart.id(orderId));
+                    if (res?.paymentUrl) window.location.href = res.paymentUrl;
+                }, root);
+                payBtn.className = 'btn btn-primary btn-sm mt-2 me-2';
+                payment.append(payBtn);
+            }
         }
         if (detail.fulfillmentStore?.name) payment.append(V.node('p', 'Cửa hàng xử lý: ' + detail.fulfillmentStore.name));
         if (detail.shipping?.method) payment.append(V.node('p', detail.shipping.method === 'STANDARD' ? 'Giao hàng tiêu chuẩn' : 'Giao hàng đến địa chỉ đã chọn'));
@@ -69,7 +72,7 @@ UTEGear.Orders = {
         const detail = await UTEGear.API.get((admin ? '/api/admin/orders/' : '/api/orders/') + UTEGear.Cart.id(id));
         if (!UTEGear.Session.get() || Number(root.dataset.detailRevision) !== revision) return;
         const host = root.querySelector('[data-order-detail]'); host.replaceChildren();
-        if (!admin) this.customerDetail(host, detail);
+        if (!admin) this.customerDetail(host, detail, root, id);
         else {
             host.append(V.node('h2', 'Đơn hàng ' + detail.orderCode, 'h4'), V.node('p', 'Trạng thái: ' + (this.labels[detail.status] || 'Đang cập nhật')));
             if (detail.customer) host.append(V.node('p', `${detail.customer.name} · ${detail.customer.email}`));
@@ -78,12 +81,22 @@ UTEGear.Orders = {
         }
         const form = V.node('form', null, 'my-3'); form.onsubmit = () => false;
         if (admin && this.allowed[detail.status]?.length) {
-            const label = V.node('label', 'Trạng thái mới', 'form-label'); label.htmlFor = 'order-next-status';
-            const select = V.node('select'); select.id = 'order-next-status'; select.className = 'form-select';
-            for (const value of this.allowed[detail.status]) select.add(new Option(this.labels[value] || 'Đang cập nhật', value));
-            form.append(label, select, V.button('Cập nhật trạng thái', async () => {
-                await UTEGear.Admin.status(id, select.value); await this.load(root, Number(root.dataset.page || 0));
-            }, root)); host.append(form);
+            let nextStatuses = [...(this.allowed[detail.status] || [])];
+            const isUnpaidOnline = detail.payment?.method === 'VNPAY' && detail.payment?.status !== 'PAID';
+            if (isUnpaidOnline && detail.status === 'PENDING') {
+                nextStatuses = nextStatuses.filter(v => v !== 'CONFIRMED');
+                const alertBox = V.node('div', '⚠️ Đơn hàng thanh toán trực tuyến (VNPay) chưa được thanh toán. Không thể xác nhận đơn cho đến khi khách quét mã thanh toán thành công (hoặc chỉ có thể hủy đơn).', 'alert alert-warning small py-2 mb-2');
+                form.append(alertBox);
+            }
+            if (nextStatuses.length) {
+                const label = V.node('label', 'Trạng thái mới', 'form-label'); label.htmlFor = 'order-next-status';
+                const select = V.node('select'); select.id = 'order-next-status'; select.className = 'form-select';
+                for (const value of nextStatuses) select.add(new Option(this.labels[value] || 'Đang cập nhật', value));
+                form.append(label, select, V.button('Cập nhật trạng thái', async () => {
+                    await UTEGear.Admin.status(id, select.value); await this.load(root, Number(root.dataset.page || 0));
+                }, root));
+            }
+            host.append(form);
         } else if (!admin && ['PENDING','CONFIRMED','PROCESSING'].includes(detail.status) && detail.payment?.status !== 'PAID') {
             const label = V.node('label', 'Lý do hủy', 'form-label'); label.htmlFor = 'order-cancel-reason';
             const reason = V.node('textarea'); reason.id = 'order-cancel-reason'; reason.required = true; reason.maxLength = 500; reason.className = 'form-control';
@@ -98,6 +111,7 @@ UTEGear.Orders = {
         }
         root.dataset.focus = String(id);
         const url = new URL(location.href); url.searchParams.set('focus', id); history.replaceState(null, '', url);
+        host.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
         if (!admin) UTEGear.RealtimeUI?.customer(id, () => this.detail(root, id), root);
     },
     async load(root, page = 0) {

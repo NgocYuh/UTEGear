@@ -144,4 +144,15 @@ class AdminOrderServiceTest {
         assertThat(response.items()).hasSize(1);
         assertThat(response.payment().method()).isEqualTo("COD");
     }
+
+    @Test
+    void rejectsConfirmingUnpaidOnlineOrder() {
+        ReflectionTestUtils.setField(order.getPayment(), "method", PaymentMethod.VNPAY);
+
+        assertThatThrownBy(() -> service.updateStatus(20L, OrderStatus.CONFIRMED))
+                .isInstanceOf(ApiException.class)
+                .extracting("code").isEqualTo("UNPAID_ONLINE_ORDER");
+
+        verify(orders, never()).save(order);
+    }
 }
