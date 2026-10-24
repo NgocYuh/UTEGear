@@ -185,16 +185,81 @@ UTEGear.Views = {
             select.replaceChildren(new Option('Vui lòng chọn', ''));
             data.forEach(item => select.add(new Option(label(item), UTEGear.Cart.id(item.id))));
         };
-        fill(store, stores.filter(item => item.active), item => `CN-${item.id} · ${item.name} — ${item.address}`);
+        const activeStores = stores.filter(item => item.active);
+        fill(store, activeStores, item => `CN-${item.id} · ${item.name} — ${item.address}`);
+        if (activeStores.length > 0 && !store.value) {
+            store.value = String(activeStores[0].id);
+        }
         let addresses;
         try { addresses = await UTEGear.API.get('/api/addresses'); }
         catch (error) {
             this.status(root, error.status === 404 ? 'Chưa tải được địa chỉ giao hàng. Vui lòng thử lại sau.' : error.message, true);
             return;
         }
-        fill(address, addresses, item => `${item.fullName} — ${item.street}, ${item.province}`);
-        if (!addresses.length || !store.options.length || store.options.length === 1) {
+        fill(address, addresses, item => `${item.fullName} — ${[item.street, item.ward, item.province].filter(Boolean).join(', ')}`);
+        if (addresses.length > 0 && !address.value) {
+            const defaultAddress = addresses.find(item => item.isDefault) || addresses[0];
+            address.value = String(defaultAddress.id);
+        }
+        const newAddressBox = form.querySelector('#checkout-new-address-box') || root.querySelector('#checkout-new-address-box');
+        if (!addresses.length && !newAddressBox) {
             this.status(root, 'Cần địa chỉ giao hàng và chi nhánh đang hoạt động trước khi thanh toán.', true); return;
+        }
+        if (!store.options.length || store.options.length === 1) {
+            this.status(root, 'Cần chi nhánh đang hoạt động trước khi thanh toán.', true); return;
+        }
+        const toggleNewAddressBtn = form.querySelector('#btn-toggle-new-address') || root.querySelector('#btn-toggle-new-address');
+        const cancelNewAddressBtn = form.querySelector('#btn-cancel-new-address') || root.querySelector('#btn-cancel-new-address');
+        const saveNewAddressBtn = form.querySelector('#btn-save-new-address') || root.querySelector('#btn-save-new-address');
+
+        const showDirectAddress = (show) => {
+            if (!newAddressBox) return;
+            newAddressBox.hidden = !show;
+            if (toggleNewAddressBtn) toggleNewAddressBtn.hidden = show;
+            if (cancelNewAddressBtn) cancelNewAddressBtn.hidden = !show || !addresses.length;
+        };
+
+        const saveDirectAddress = async () => {
+            if (!newAddressBox) return null;
+            const fullName = newAddressBox.querySelector('#new-address-name')?.value?.trim();
+            const phone = newAddressBox.querySelector('#new-address-phone')?.value?.trim();
+            const street = newAddressBox.querySelector('#new-address-street')?.value?.trim();
+            const ward = newAddressBox.querySelector('#new-address-ward')?.value?.trim() || null;
+            const province = newAddressBox.querySelector('#new-address-province')?.value?.trim();
+            if (!fullName || !phone || !street || !province) {
+                this.status(root, 'Vui lòng điền đầy đủ họ tên, số điện thoại, số nhà/tên đường và tỉnh/thành phố.', true);
+                return null;
+            }
+            if (!/^(0|\+84)[35789][0-9]{8}$/.test(phone)) {
+                this.status(root, 'Số điện thoại không đúng định dạng di động Việt Nam (ví dụ 0901234567).', true);
+                return null;
+            }
+            const saved = await UTEGear.API.post('/api/addresses', { fullName, phone, street, ward, province, label: 'Địa chỉ nhận hàng' });
+            addresses.push(saved);
+            const addrLabel = `${saved.fullName} — ${[saved.street, saved.ward, saved.province].filter(Boolean).join(', ')}`;
+            address.add(new Option(addrLabel, UTEGear.Cart.id(saved.id)));
+            address.value = UTEGear.Cart.id(saved.id);
+            showDirectAddress(false);
+            invalidateQuote();
+            this.status(root, 'Đã lưu và chọn địa chỉ giao hàng: ' + addrLabel);
+            return saved;
+        };
+
+        if (newAddressBox) {
+            if (!addresses.length) {
+                showDirectAddress(true);
+            }
+            if (toggleNewAddressBtn) {
+                toggleNewAddressBtn.addEventListener('click', () => showDirectAddress(true));
+            }
+            if (cancelNewAddressBtn) {
+                cancelNewAddressBtn.addEventListener('click', () => showDirectAddress(false));
+            }
+            if (saveNewAddressBtn) {
+                saveNewAddressBtn.addEventListener('click', () => this.action(saveNewAddressBtn, async () => {
+                    await saveDirectAddress();
+                }, root));
+            }
         }
         let quote = null, quotedRequest = null, busy = false, revision = 0;
         const quoteButton = form.querySelector('[data-quote]'), placeButton = form.querySelector('[data-place]');
@@ -212,9 +277,19 @@ UTEGear.Views = {
                 ? 'Chi nhánh đã chọn: ' + branchLabel() : 'Chưa chọn chi nhánh xuất hàng.';
             this.status(root, 'Vui lòng tính lại tổng tiền sau khi thay đổi thông tin đặt hàng.');
         };
+        if (branchSummary && branchLabel()) {
+            branchSummary.textContent = 'Chi nhánh xuất hàng: ' + branchLabel();
+        }
         form.addEventListener('input', invalidateQuote);
         form.addEventListener('change', invalidateQuote);
         quoteButton.addEventListener('click', () => this.action(quoteButton, async () => {
+            if (newAddressBox && !newAddressBox.hidden && !address.value) {
+                const nameVal = newAddressBox.querySelector('#new-address-name')?.value?.trim();
+                if (nameVal) {
+                    const saved = await saveDirectAddress();
+                    if (!saved) return;
+                }
+            }
             if (!form.reportValidity() || busy) return;
             invalidateQuote();
             busy = true; const current = revision;
@@ -253,7 +328,11 @@ UTEGear.Views = {
                 finally { busy = false; }
             }, root).finally(() => { if (!quote) placeButton.disabled = true; });
         });
-        this.status(root, '');
+        if (newAddressBox && !addresses.length) {
+            this.status(root, 'Vui lòng nhập địa chỉ nhận hàng để tiếp tục.');
+        } else {
+            this.status(root, '');
+        }
     },
     visible(element, visible) {
         element.hidden = !visible;

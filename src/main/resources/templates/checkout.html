@@ -8,9 +8,56 @@
   <noscript>Cần bật JavaScript để thanh toán.</noscript>
   <p data-view-items></p>
   <form id="checkoutForm" class="surface-card p-4" onsubmit="return false">
-   <label for="checkout-address" class="form-label">Địa chỉ giao hàng</label>
-   <select id="checkout-address" name="addressId" class="form-select mb-3" required><option value="">Vui lòng chọn</option></select>
-   <label for="checkout-store" class="form-label">Chọn chi nhánh xuất hàng</label>
+   <!-- Khu vực địa chỉ giao hàng -->
+   <div class="mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+     <label for="checkout-address" class="form-label fw-bold mb-0">Địa chỉ giao hàng</label>
+     <button type="button" id="btn-toggle-new-address" class="btn btn-sm btn-link text-decoration-none p-0">+ Nhập địa chỉ mới</button>
+    </div>
+    <select id="checkout-address" name="addressId" class="form-select mb-2" required>
+     <option value="">Vui lòng chọn hoặc nhập mới</option>
+    </select>
+   </div>
+
+   <!-- Khung nhập địa chỉ trực tiếp ngay tại trang thanh toán -->
+   <div id="checkout-new-address-box" class="surface-card border rounded p-3 mb-3 bg-light" hidden>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+     <h3 class="h6 fw-bold mb-0 text-primary">Nhập địa chỉ nhận hàng</h3>
+     <button type="button" id="btn-cancel-new-address" class="btn btn-sm btn-outline-secondary py-0 px-2" hidden>Chọn từ sổ địa chỉ</button>
+    </div>
+    <div class="row g-2 mb-2">
+     <div class="col-md-6">
+      <label for="new-address-name" class="form-label small mb-1">Họ tên người nhận <span class="text-danger">*</span></label>
+      <input id="new-address-name" maxlength="100" class="form-control form-control-sm" placeholder="Ví dụ: Nguyễn Văn A">
+     </div>
+     <div class="col-md-6">
+      <label for="new-address-phone" class="form-label small mb-1">Số điện thoại <span class="text-danger">*</span></label>
+      <input id="new-address-phone" type="tel" pattern="^(0|\+84)[35789][0-9]{8}$" maxlength="12" class="form-control form-control-sm" placeholder="0901234567">
+     </div>
+    </div>
+    <div class="mb-2">
+     <label for="new-address-street" class="form-label small mb-1">Số nhà, tên đường <span class="text-danger">*</span></label>
+     <input id="new-address-street" maxlength="255" class="form-control form-control-sm" placeholder="Ví dụ: 123 Võ Văn Ngân">
+    </div>
+    <div class="row g-2 mb-2">
+     <div class="col-md-6">
+      <label for="new-address-ward" class="form-label small mb-1">Phường / Xã</label>
+      <input id="new-address-ward" maxlength="100" class="form-control form-control-sm" placeholder="Ví dụ: Linh Chiểu">
+     </div>
+     <div class="col-md-6">
+      <label for="new-address-province" class="form-label small mb-1">Tỉnh / Thành phố <span class="text-danger">*</span></label>
+      <input id="new-address-province" maxlength="100" class="form-control form-control-sm" placeholder="Ví dụ: TP. Hồ Chí Minh">
+     </div>
+    </div>
+    <div class="text-end">
+     <button type="button" id="btn-save-new-address" class="btn btn-sm btn-outline-success">Sử dụng địa chỉ này</button>
+    </div>
+   </div>
+
+   <div class="d-flex justify-content-between align-items-center mb-1">
+    <label for="checkout-store" class="form-label fw-bold mb-0">Chi nhánh xuất hàng</label>
+    <small class="text-muted">(Tự động đề xuất chi nhánh khả dụng)</small>
+   </div>
    <select id="checkout-store" name="fulfillmentStoreId" class="form-select mb-3" required><option value="">Chọn chi nhánh</option></select>
    <label for="checkout-payment" class="form-label">Phương thức thanh toán</label>
    <select id="checkout-payment" name="paymentMethod" class="form-select mb-3">

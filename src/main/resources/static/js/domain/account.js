@@ -8,7 +8,8 @@ UTEGear.Account = {
         const V = UTEGear.Views;
         for (const item of items) {
             const row = V.node('article', null, 'surface-card p-3 mb-3');
-            row.append(V.node('h3', item.fullName, 'h6'), V.node('p', `${item.street}, ${item.province} · ${item.phone}`));
+            const addressParts = [item.street, item.ward, item.province].filter(Boolean).join(', ');
+            row.append(V.node('h3', item.fullName, 'h6'), V.node('p', `${addressParts} · ${item.phone}`));
             if (item.isDefault) row.append(V.node('strong', 'Địa chỉ mặc định'));
             row.append(V.button('Sửa', async () => {
                 form.dataset.addressId = UTEGear.Cart.id(item.id);
