@@ -280,6 +280,17 @@ UTEGear.Views = {
         if (branchSummary && branchLabel()) {
             branchSummary.textContent = 'Chi nhánh xuất hàng: ' + branchLabel();
         }
+        const paymentSelect = form.elements?.namedItem?.('paymentMethod');
+        const vnpayHint = form.querySelector?.('#vnpay-sandbox-hint') || root.querySelector?.('#vnpay-sandbox-hint');
+        const updatePaymentHint = () => {
+            if (vnpayHint && paymentSelect) {
+                vnpayHint.hidden = paymentSelect.value !== 'VNPAY';
+            }
+        };
+        if (paymentSelect && vnpayHint) {
+            paymentSelect.addEventListener('change', updatePaymentHint);
+            updatePaymentHint();
+        }
         form.addEventListener('input', invalidateQuote);
         form.addEventListener('change', invalidateQuote);
         const calculateQuote = async (silent = false) => {
@@ -339,7 +350,7 @@ UTEGear.Views = {
                     const order = await UTEGear.Transactions.place(quotedRequest, quote);
                     form.hidden = true; UTEGear.Cart.badges({ itemCount: 0 });
                     if (order.paymentUrl) {
-                        this.status(root, 'Đã đặt đơn ' + order.orderCode + ' · Đang chuyển hướng tới cổng thanh toán VNPay Sandbox...');
+                        this.status(root, 'Đã đặt đơn ' + order.orderCode + ' · Đang chuyển hướng VNPay Sandbox... (Thẻ NCB: 9704198526191432198 · OTP: 123456)');
                         const vnpayBtn = this.node('a', 'Thanh toán VNPay ngay', 'btn btn-primary mt-3 me-2');
                         vnpayBtn.href = order.paymentUrl; root.append(vnpayBtn);
                         setTimeout(() => { window.location.href = order.paymentUrl; }, 1200);

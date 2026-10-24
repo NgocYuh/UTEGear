@@ -60,10 +60,20 @@
    </div>
    <select id="checkout-store" name="fulfillmentStoreId" class="form-select mb-3" required><option value="">Chọn chi nhánh</option></select>
    <label for="checkout-payment" class="form-label">Phương thức thanh toán</label>
-   <select id="checkout-payment" name="paymentMethod" class="form-select mb-3">
+   <select id="checkout-payment" name="paymentMethod" class="form-select mb-2">
     <option value="COD">Thanh toán khi nhận hàng (COD)</option>
     <option value="VNPAY">Cổng thanh toán VNPay Sandbox (Quét QR / ATM)</option>
    </select>
+   <div id="vnpay-sandbox-hint" class="surface-card border border-info rounded p-3 mb-3 bg-light" hidden>
+    <div class="fw-bold text-primary mb-1">💡 Thông tin thẻ thử nghiệm (VNPay Sandbox):</div>
+    <div class="small text-muted mb-2">Khi chuyển sang cổng VNPay, chọn tab <b>Thẻ nội địa &amp; tài khoản ngân hàng</b> &rarr; chọn <b>NCB</b>:</div>
+    <ul class="list-unstyled small mb-0 font-monospace">
+     <li>• Số thẻ: <strong class="text-dark user-select-all">9704198526191432198</strong></li>
+     <li>• Tên chủ thẻ: <strong class="text-dark">NGUYEN VAN A</strong></li>
+     <li>• Ngày phát hành: <strong class="text-dark">07/15</strong></li>
+     <li>• Mã OTP xác thực: <strong class="text-dark">123456</strong></li>
+    </ul>
+   </div>
    <label for="checkout-coupon" class="form-label">Mã giảm giá</label>
    <input id="checkout-coupon" name="couponCode" maxlength="50" class="form-control mb-3">
    <label for="checkout-note" class="form-label">Ghi chú</label>
