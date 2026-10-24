@@ -1,5 +1,20 @@
 # Nhật ký tiến độ Frontend
 
+## FE-CHECKOUT-SMART-FLOW: Tối ưu địa chỉ giao hàng và tự động đề xuất chi nhánh xuất hàng
+
+- Trạng thái: `IN PROGRESS`.
+- Phụ trách: `@trongsonho` (Frontend).
+- Ngày cập nhật: 2026-10-24.
+- Phạm vi: `checkout.html`, `profile.html`, `views.js`, `account.js`, `checkout-address-direct.test.mjs`, `checkout-branch.test.mjs`.
+- Đã làm:
+  - Bỏ trường Quận/huyện (District) trong form địa chỉ trang cá nhân và thanh toán theo thực tế hành chính mới.
+  - Cho phép nhập trực tiếp địa chỉ giao hàng mới ngay tại trang thanh toán `/checkout` mà không bắt buộc nhảy sang trang Profile.
+  - Tự động chọn sẵn địa chỉ mặc định và chi nhánh xuất hàng khả dụng đầu tiên (`activeStores[0]`) ngay khi tải trang thanh toán, tránh hiển thị lỗi đỏ chặn thanh toán gây khó chịu cho khách hàng.
+  - Hỗ trợ tự động lưu địa chỉ và tính tổng tiền khi người dùng điền thông tin và bấm "Tính tổng tiền & Đặt hàng".
+- Kiểm thử:
+  - 100% tests frontend PASS (`checkout-address-direct.test.mjs`, `checkout-branch.test.mjs`, v.v.).
+  - Maven verify / test: BUILD SUCCESS (302 backend tests PASS).
+
 ## FE-SWITCH-FLOW: Gỡ bỏ hoàn toàn modal chọn Switch, chọn trực tiếp trên trang
 
 - Trạng thái: IN PROGRESS.

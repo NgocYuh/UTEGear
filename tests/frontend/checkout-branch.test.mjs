@@ -33,8 +33,8 @@ async function setup(quoteHandler) {
         quote:()=>quoteButton.events.click(),submit:async()=>{form.events.submit({preventDefault(){}});await new Promise(resolve=>setImmediate(resolve));}};
 }
 
-test('all three branch codes are selectable without automatically choosing a branch',async()=>{
-    const ui=await setup();assert.equal(ui.fields.fulfillmentStoreId.value,'');
+test('all three branch codes are selectable with automatic default branch selection',async()=>{
+    const ui=await setup();assert.equal(ui.fields.fulfillmentStoreId.value,'1');
     assert.equal(ui.fields.fulfillmentStoreId.options.length,4);
     assert.ok(ui.fields.fulfillmentStoreId.options[2].text.includes('CN-2'));
     await ui.submit();assert.equal(ui.placed.length,0);
