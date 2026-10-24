@@ -54,12 +54,23 @@ public class CheckoutService {
     private final CheckoutQuoteStore quoteStore;
     private final TransactionCallbacks transactionCallbacks;
     private final OrderRealtimePublisher realtimePublisher;
+    private final VNPayService vnPayService;
 
     public CheckoutService(AddressRepository addresses, StoreRepository stores,
             ProductVariantRepository variants, StoreInventoryRepository inventories,
             CouponRepository coupons, CouponService couponService, CartRepository carts,
             OrderRepository orders, CheckoutQuoteStore quoteStore, TransactionCallbacks transactionCallbacks,
             OrderRealtimePublisher realtimePublisher) {
+        this(addresses, stores, variants, inventories, coupons, couponService, carts, orders, quoteStore, transactionCallbacks, realtimePublisher, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public CheckoutService(AddressRepository addresses, StoreRepository stores,
+            ProductVariantRepository variants, StoreInventoryRepository inventories,
+            CouponRepository coupons, CouponService couponService, CartRepository carts,
+            OrderRepository orders, CheckoutQuoteStore quoteStore, TransactionCallbacks transactionCallbacks,
+            OrderRealtimePublisher realtimePublisher,
+            VNPayService vnPayService) {
         this.addresses = addresses;
         this.stores = stores;
         this.variants = variants;
@@ -71,6 +82,7 @@ public class CheckoutService {
         this.quoteStore = quoteStore;
         this.transactionCallbacks = transactionCallbacks;
         this.realtimePublisher = realtimePublisher;
+        this.vnPayService = vnPayService;
     }
 
     @Transactional(readOnly = true)
@@ -115,7 +127,11 @@ public class CheckoutService {
         cart.clear();
         carts.save(cart);
         transactionCallbacks.afterCommit(() -> quoteStore.remove(request.quoteToken()));
-        return OrderResponse.from(saved);
+        String paymentUrl = null;
+        if (request.paymentMethod() == com.utegear.entity.PaymentMethod.VNPAY && vnPayService != null) {
+            paymentUrl = vnPayService.createPaymentUrl(saved, null);
+        }
+        return OrderResponse.from(saved, paymentUrl);
     }
 
     private List<Line> loadLines(Long storeId, List<CheckoutItemRequest> requested, boolean lock) {

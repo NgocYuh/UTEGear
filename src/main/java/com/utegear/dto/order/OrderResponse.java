@@ -16,16 +16,37 @@ public record OrderResponse(
         String paymentMethod,
         String paymentStatus,
         OffsetDateTime createdAt,
-        List<Item> items) {
+        List<Item> items,
+        String paymentUrl) {
+
+    public OrderResponse(
+            Long id,
+            String orderCode,
+            String status,
+            BigDecimal subtotal,
+            BigDecimal discount,
+            BigDecimal shippingFee,
+            BigDecimal total,
+            String paymentMethod,
+            String paymentStatus,
+            OffsetDateTime createdAt,
+            List<Item> items) {
+        this(id, orderCode, status, subtotal, discount, shippingFee, total, paymentMethod, paymentStatus, createdAt, items, null);
+    }
 
     public static OrderResponse from(Order order) {
+        return from(order, null);
+    }
+
+    public static OrderResponse from(Order order, String paymentUrl) {
         return new OrderResponse(
                 order.getId(), order.getOrderCode(), order.getStatus().name(), order.getSubtotal(),
                 order.getDiscount(), order.getShippingFee(), order.getTotal(),
                 order.getPayment().getMethod().name(), order.getPayment().getStatus().name(), order.getCreatedAt(),
                 order.getItems().stream().map(item -> new Item(
                         item.getVariant().getId(), item.getSku(), item.getProductName(), item.getUnitPrice(),
-                        item.getQuantity(), item.getSubtotal(), item.getImageUrl())).toList());
+                        item.getQuantity(), item.getSubtotal(), item.getImageUrl())).toList(),
+                paymentUrl);
     }
 
     public record Item(Long variantId, String sku, String productName, BigDecimal unitPrice, int quantity,

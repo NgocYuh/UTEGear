@@ -374,7 +374,7 @@ UTEGear.Transactions = {
         return UTEGear.API.post('/api/orders', { ...this.request(request), quoteToken: quote.quoteToken });
     },
     request(request) {
-        if (!['COD', 'BANK_TRANSFER'].includes(request.paymentMethod)) throw new Error('Phương thức thanh toán không hợp lệ');
+        if (!['COD', 'BANK_TRANSFER', 'VNPAY'].includes(request.paymentMethod)) throw new Error('Phương thức thanh toán không hợp lệ');
         if (!request.items?.length) throw new Error('Giỏ hàng đang trống');
         return {
             addressId: UTEGear.Cart.id(request.addressId),

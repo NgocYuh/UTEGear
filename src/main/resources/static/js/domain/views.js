@@ -239,7 +239,14 @@ UTEGear.Views = {
                 try {
                     const order = await UTEGear.Transactions.place(quotedRequest, quote);
                     form.hidden = true; UTEGear.Cart.badges({ itemCount: 0 });
-                    this.status(root, 'Đã đặt đơn ' + order.orderCode + ' · ' + branchLabel() + '.');
+                    if (order.paymentUrl) {
+                        this.status(root, 'Đã đặt đơn ' + order.orderCode + ' · Đang chuyển hướng tới cổng thanh toán VNPay Sandbox...');
+                        const vnpayBtn = this.node('a', 'Thanh toán VNPay ngay', 'btn btn-primary mt-3 me-2');
+                        vnpayBtn.href = order.paymentUrl; root.append(vnpayBtn);
+                        setTimeout(() => { window.location.href = order.paymentUrl; }, 1200);
+                    } else {
+                        this.status(root, 'Đã đặt đơn ' + order.orderCode + ' · ' + branchLabel() + '.');
+                    }
                     const link = this.node('a', 'Xem đơn hàng', 'btn btn-outline-primary mt-3');
                     link.href = '/orders?focus=' + UTEGear.Cart.id(order.id); root.append(link);
                 } catch (error) { quote = null; placeButton.disabled = true; throw error; }

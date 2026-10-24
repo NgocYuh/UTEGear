@@ -13,7 +13,11 @@
    <label for="checkout-store" class="form-label">Chọn chi nhánh xuất hàng</label>
    <select id="checkout-store" name="fulfillmentStoreId" class="form-select mb-3" required><option value="">Chọn chi nhánh</option></select>
    <label for="checkout-payment" class="form-label">Phương thức thanh toán</label>
-   <select id="checkout-payment" name="paymentMethod" class="form-select mb-3"><option value="COD">Thanh toán khi nhận hàng</option><option value="BANK_TRANSFER">Chuyển khoản</option></select>
+   <select id="checkout-payment" name="paymentMethod" class="form-select mb-3">
+    <option value="COD">Thanh toán khi nhận hàng</option>
+    <option value="BANK_TRANSFER">Chuyển khoản</option>
+    <option value="VNPAY">Cổng thanh toán VNPay Sandbox (Quét QR / ATM)</option>
+   </select>
    <label for="checkout-coupon" class="form-label">Mã giảm giá</label>
    <input id="checkout-coupon" name="couponCode" maxlength="50" class="form-control mb-3">
    <label for="checkout-note" class="form-label">Ghi chú</label>

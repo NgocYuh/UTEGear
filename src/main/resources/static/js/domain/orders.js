@@ -26,8 +26,16 @@ UTEGear.Orders = {
         const address = [detail.shipping?.street, detail.shipping?.ward, detail.shipping?.district, detail.shipping?.province].filter(Boolean).join(', ');
         recipient.append(V.node('p', address || 'Địa chỉ chưa cập nhật', 'order-shipping-address'));
         const payment = section('Giao hàng & thanh toán');
-        const methods = { COD: 'Thanh toán khi nhận hàng (COD)', BANK_TRANSFER: 'Chuyển khoản ngân hàng' };
+        const methods = { COD: 'Thanh toán khi nhận hàng (COD)', BANK_TRANSFER: 'Chuyển khoản ngân hàng', VNPAY: 'Cổng thanh toán VNPay Sandbox' };
         payment.append(V.node('p', methods[detail.payment?.method] || 'Phương thức chưa cập nhật'), V.node('p', this.paymentLabels[detail.payment?.status] || 'Trạng thái thanh toán chưa cập nhật'));
+        if (!admin && detail.payment?.method === 'VNPAY' && detail.payment?.status === 'PENDING') {
+            const payBtn = V.button('Thanh toán lại qua VNPay', async () => {
+                const res = await UTEGear.API.post('/api/payments/vnpay/create-url?orderId=' + id);
+                if (res?.paymentUrl) window.location.href = res.paymentUrl;
+            }, root);
+            payBtn.className = 'btn btn-primary btn-sm mt-2 me-2';
+            payment.append(payBtn);
+        }
         if (detail.fulfillmentStore?.name) payment.append(V.node('p', 'Cửa hàng xử lý: ' + detail.fulfillmentStore.name));
         if (detail.shipping?.method) payment.append(V.node('p', detail.shipping.method === 'STANDARD' ? 'Giao hàng tiêu chuẩn' : 'Giao hàng đến địa chỉ đã chọn'));
         grid.append(recipient, payment); host.append(grid);
