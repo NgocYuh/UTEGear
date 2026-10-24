@@ -61,8 +61,7 @@
    <select id="checkout-store" name="fulfillmentStoreId" class="form-select mb-3" required><option value="">Chọn chi nhánh</option></select>
    <label for="checkout-payment" class="form-label">Phương thức thanh toán</label>
    <select id="checkout-payment" name="paymentMethod" class="form-select mb-3">
-    <option value="COD">Thanh toán khi nhận hàng</option>
-    <option value="BANK_TRANSFER">Chuyển khoản</option>
+    <option value="COD">Thanh toán khi nhận hàng (COD)</option>
     <option value="VNPAY">Cổng thanh toán VNPay Sandbox (Quét QR / ATM)</option>
    </select>
    <label for="checkout-coupon" class="form-label">Mã giảm giá</label>
@@ -71,11 +70,10 @@
    <textarea id="checkout-note" name="note" maxlength="500" class="form-control mb-3"></textarea>
    <p data-checkout-store-summary role="status" aria-live="polite">Chưa chọn chi nhánh xuất hàng.</p>
    <p>Tổng thanh toán: <strong data-view-total>—</strong></p>
-   <button type="button" data-quote disabled class="btn btn-outline-primary">Tính tổng tiền</button>
+   <button type="button" data-quote disabled class="btn btn-outline-primary me-2">Tính tổng tiền</button>
    <button type="submit" data-place disabled class="btn btn-utama">Xác nhận đặt hàng</button>
   </form>
-  <a href="/cart" class="btn btn-outline-primary mt-3">Quay lại giỏ hàng</a>
+  <a href="/cart" class="btn btn-outline-primary mt-3 me-2">Quay lại giỏ hàng</a>
   <a href="/profile#addresses" class="btn btn-outline-primary mt-3">Quản lý địa chỉ giao hàng</a>
-  <a href="/login" class="btn btn-outline-primary mt-3">Đăng nhập</a>
  </section>
 </main></body></html>

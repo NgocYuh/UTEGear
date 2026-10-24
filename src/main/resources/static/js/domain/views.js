@@ -282,7 +282,7 @@ UTEGear.Views = {
         }
         form.addEventListener('input', invalidateQuote);
         form.addEventListener('change', invalidateQuote);
-        quoteButton.addEventListener('click', () => this.action(quoteButton, async () => {
+        const calculateQuote = async (silent = false) => {
             if (newAddressBox && !newAddressBox.hidden && !address.value) {
                 const nameVal = newAddressBox.querySelector('#new-address-name')?.value?.trim();
                 if (nameVal) {
@@ -303,8 +303,32 @@ UTEGear.Views = {
                 root.querySelector('[data-view-total]').textContent = this.money(result.total);
                 if (branchSummary) branchSummary.textContent = `Chi nhánh xuất hàng: CN-${result.fulfillmentStore.id} · ${result.fulfillmentStore.name}`;
                 placeButton.disabled = false; this.status(root, 'Chi nhánh đã xác nhận đủ hàng. Vui lòng kiểm tra tổng tiền trước khi đặt hàng.');
+            } catch (err) {
+                if (!silent) throw err;
             } finally { busy = false; }
-        }, root));
+        };
+        quoteButton.addEventListener('click', () => this.action(quoteButton, () => calculateQuote(false), root));
+
+        if (typeof window !== 'undefined' && typeof window.setTimeout === 'function') {
+            let autoTimer = null;
+            const scheduleQuote = () => {
+                if (typeof window.clearTimeout === 'function') window.clearTimeout(autoTimer);
+                autoTimer = window.setTimeout(() => {
+                    if (form.reportValidity?.() && !busy) {
+                        calculateQuote(true).catch(() => {});
+                    }
+                }, 350);
+            };
+            form.addEventListener('input', scheduleQuote);
+            form.addEventListener('change', scheduleQuote);
+            if (address.value && store.value && form.reportValidity?.()) {
+                window.setTimeout(() => {
+                    if (form.reportValidity?.() && !busy && !quote) {
+                        calculateQuote(true).catch(() => {});
+                    }
+                }, 100);
+            }
+        }
         form.addEventListener('submit', event => {
             event.preventDefault();
             this.action(placeButton, async () => {
