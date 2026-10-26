@@ -1,0 +1,13 @@
+target/
+.git/
+.github/
+.agents/
+.local-reference/
+crawler/
+docs/
+reports/
+tests/
+*.md
+*.zip
+.env*
+src/main/resources/application-local.properties
