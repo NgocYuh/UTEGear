@@ -51,6 +51,15 @@ Spring Boot không tự đọc file `.env`. Hãy nạp biến bằng IDE, termin
 `application-local.properties` đã được Git bỏ qua. Profile `prod` chỉ lấy credential từ biến
 môi trường; profile `test` luôn dùng H2 trong bộ nhớ.
 
+## Tài khoản demo / thử nghiệm hệ thống
+
+Dưới đây là thông tin tài khoản mẫu để đăng nhập và trải nghiệm các tính năng của UTEGear:
+
+| Vai trò | Email đăng nhập | Mật khẩu | Quyền hạn & Chức năng |
+|---|---|---|---|
+| **Quản trị viên (Admin)** | `admin@utegear.vn` | `admin123` | Quản trị hệ thống: Dashboard doanh thu & đơn hàng, top sản phẩm bán chạy, quản lý tồn kho chi nhánh, quản lý danh mục và duyệt đơn hàng |
+| **Khách hàng (Customer)** | `user@utegear.vn` | `user123` | Trải nghiệm mua sắm: chọn từng sản phẩm trong giỏ hàng để thanh toán, thanh toán COD / VNPay Sandbox, lưu địa chỉ giao hàng, viết đánh giá & nhận xét sản phẩm (chọn số sao, tối thiểu 50 ký tự, đính kèm ảnh) |
+
 ## Chạy ứng dụng và kiểm thử
 
 ```bash

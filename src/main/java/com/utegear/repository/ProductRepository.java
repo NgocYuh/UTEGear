@@ -37,4 +37,11 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             where product.id in :ids
             """)
     List<Product> findWithImagesByIds(@Param("ids") Collection<Long> ids);
+
+    @Query("""
+            select p from Product p
+            where p.status = :status
+            order by p.soldCount desc, p.id asc
+            """)
+    List<Product> findTopSelling(@Param("status") ProductStatus status, org.springframework.data.domain.Pageable pageable);
 }

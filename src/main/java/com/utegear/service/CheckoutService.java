@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -124,7 +125,10 @@ public class CheckoutService {
         Order saved = orders.save(order);
         realtimePublisher.publishCreatedAfterCommit(saved);
 
-        cart.clear();
+        Set<Long> purchasedVariantIds = request.items().stream()
+                .map(CheckoutItemRequest::variantId)
+                .collect(Collectors.toSet());
+        cart.removeItemsByVariantIds(purchasedVariantIds);
         carts.save(cart);
         transactionCallbacks.afterCommit(() -> quoteStore.remove(request.quoteToken()));
         String paymentUrl = null;
@@ -182,11 +186,11 @@ public class CheckoutService {
     }
 
     private void requireCartMatches(Cart cart, List<CheckoutItemRequest> requested) {
-        if (cart.getItems().size() != requested.size()) {
-            throw new ApiException(HttpStatus.CONFLICT, "CART_CHANGED", "Giỏ hàng đã thay đổi, vui lòng báo giá lại");
+        if (requested == null || requested.isEmpty()) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "EMPTY_CHECKOUT_ITEMS", "Danh sách sản phẩm thanh toán không được rỗng");
         }
         boolean matches = requested.stream().allMatch(item -> cart.getItems().stream().anyMatch(cartItem ->
-                cartItem.getVariant().getId().equals(item.variantId()) && cartItem.getQuantity() == item.quantity()));
+                cartItem.getVariant().getId().equals(item.variantId()) && cartItem.getQuantity() >= item.quantity()));
         if (!matches) {
             throw new ApiException(HttpStatus.CONFLICT, "CART_CHANGED", "Giỏ hàng đã thay đổi, vui lòng báo giá lại");
         }

@@ -39,6 +39,9 @@ UTEGear.Views = {
         button.disabled = true; add.disabled = true;
         try {
             await UTEGear.Cart.add({ productId: root.dataset.productId, variantId: option.value, quantity });
+            if (typeof sessionStorage !== 'undefined') {
+                sessionStorage.setItem('utegear_checkout_selected_variants', JSON.stringify([Number(option.value)]));
+            }
             location.href = '/checkout';
         } catch (error) { this.status(root, error.message, true); }
         finally {
@@ -75,8 +78,46 @@ UTEGear.Views = {
         if (!UTEGear.Session.get()) return;
         const list = root.querySelector('[data-view-items]');
         list.replaceChildren();
+
+        const hasStorage = typeof sessionStorage !== 'undefined';
+        let savedSelected = [];
+        if (hasStorage) {
+            try {
+                savedSelected = JSON.parse(sessionStorage.getItem('utegear_checkout_selected_variants') || '[]');
+            } catch (e) { savedSelected = []; }
+        }
+        const isSelected = (variantId) => {
+            if (!Array.isArray(savedSelected) || savedSelected.length === 0) return true;
+            return savedSelected.includes(Number(variantId));
+        };
+
+        const itemCheckboxes = [];
+        let selectAllCheck = null;
+        if (cart.items.length) {
+            const bar = this.node('div', null, 'surface-card p-3 mb-3 d-flex align-items-center justify-content-between rounded border');
+            const label = this.node('label', null, 'form-check-label d-flex align-items-center gap-2 fw-semibold cursor-pointer mb-0');
+            selectAllCheck = this.node('input', null, 'form-check-input');
+            selectAllCheck.type = 'checkbox';
+            selectAllCheck.id = 'cart-select-all';
+            label.append(selectAllCheck, this.node('span', `Chọn tất cả (${cart.items.length} sản phẩm)`));
+            bar.append(label);
+            list.append(bar);
+        }
+
         for (const item of cart.items) {
             const row = this.node('article', null, 'surface-card p-3 mb-3 d-flex flex-wrap align-items-center gap-3');
+
+            const checkWrapper = this.node('div', null, 'd-flex align-items-center');
+            const check = this.node('input', null, 'form-check-input cart-item-check');
+            check.type = 'checkbox';
+            check.dataset.variantId = String(item.variantId);
+            check.dataset.itemId = String(item.id);
+            check.dataset.lineTotal = String(item.lineTotal);
+            check.checked = isSelected(item.variantId);
+            checkWrapper.append(check);
+            itemCheckboxes.push(check);
+
+            row.append(checkWrapper);
             row.append(this.image(item.product.primaryImage?.secureUrl, item.product.name));
             const info = this.node('div', null, 'flex-grow-1');
             info.append(this.productLink(item.product), this.node('p', Object.entries(item.variant.optionValues || {}).map(([k, v]) => `${k}: ${v}`).join(', ')));
@@ -137,12 +178,62 @@ UTEGear.Views = {
             list.append(row);
         }
         UTEGear.Cart.badges(cart);
-        root.querySelector('[data-view-total]').textContent = this.money(cart.subtotal);
+
         const controls = root.querySelector('[data-view-actions]'); controls.replaceChildren();
+        let checkoutLink = null;
         if (cart.items.length) {
             controls.append(this.button('Xóa toàn bộ giỏ', async () => { await UTEGear.Cart.clear(); await this.cart(root); }, root));
-            const checkout = this.node('a', 'Thanh toán', 'btn btn-utama'); checkout.href = '/checkout'; controls.append(checkout);
+            checkoutLink = this.node('a', 'Thanh toán', 'btn btn-utama');
+            checkoutLink.href = '/checkout';
+            checkoutLink.addEventListener('click', (e) => {
+                const checked = itemCheckboxes.filter(cb => cb.checked);
+                if (checked.length === 0) {
+                    e.preventDefault();
+                    this.status(root, 'Vui lòng chọn ít nhất 1 sản phẩm để thanh toán.', true);
+                }
+            });
+            controls.append(checkoutLink);
         }
+
+        const syncSelection = () => {
+            const checked = itemCheckboxes.filter(cb => cb.checked);
+            if (selectAllCheck) {
+                selectAllCheck.checked = itemCheckboxes.length > 0 && checked.length === itemCheckboxes.length;
+                selectAllCheck.indeterminate = checked.length > 0 && checked.length < itemCheckboxes.length;
+            }
+            const selectedIds = checked.map(cb => Number(cb.dataset.variantId));
+            if (hasStorage) {
+                sessionStorage.setItem('utegear_checkout_selected_variants', JSON.stringify(selectedIds));
+            }
+            const sum = checked.reduce((acc, cb) => acc + Number(cb.dataset.lineTotal || 0), 0);
+            const totalEl = root.querySelector('[data-view-total]');
+            if (totalEl) totalEl.textContent = this.money(sum);
+
+            if (checkoutLink) {
+                checkoutLink.textContent = checked.length > 0 ? `Thanh toán (${checked.length})` : 'Thanh toán (0)';
+                if (checked.length === 0) {
+                    checkoutLink.classList.add('disabled');
+                    checkoutLink.style.pointerEvents = 'none';
+                    checkoutLink.style.opacity = '0.65';
+                } else {
+                    checkoutLink.classList.remove('disabled');
+                    checkoutLink.style.pointerEvents = '';
+                    checkoutLink.style.opacity = '';
+                }
+            }
+        };
+
+        if (selectAllCheck) {
+            selectAllCheck.addEventListener('change', () => {
+                itemCheckboxes.forEach(cb => { cb.checked = selectAllCheck.checked; });
+                syncSelection();
+            });
+        }
+        itemCheckboxes.forEach(cb => {
+            cb.addEventListener('change', syncSelection);
+        });
+        syncSelection();
+
         this.status(root, cart.items.length ? '' : 'Giỏ hàng của bạn đang trống.');
     },
     async wishlist(root) {
@@ -179,7 +270,30 @@ UTEGear.Views = {
         if (!UTEGear.Session.get()) return;
         const form = root.querySelector('form');
         if (!cart.items.length) { form.hidden = true; this.status(root, 'Giỏ hàng của bạn đang trống.'); return; }
-        root.querySelector('[data-view-items]').textContent = `${cart.itemCount} sản phẩm · Tạm tính ${this.money(cart.subtotal)}`;
+
+        const hasStorage = typeof sessionStorage !== 'undefined';
+        let selectedVariantIds = [];
+        if (hasStorage) {
+            try {
+                selectedVariantIds = JSON.parse(sessionStorage.getItem('utegear_checkout_selected_variants') || '[]');
+            } catch (e) { selectedVariantIds = []; }
+        }
+
+        const checkoutItems = (Array.isArray(selectedVariantIds) && selectedVariantIds.length > 0)
+            ? cart.items.filter(item => selectedVariantIds.includes(Number(item.variantId)))
+            : cart.items;
+
+        if (!checkoutItems.length) {
+            form.hidden = true;
+            this.status(root, 'Chưa có sản phẩm nào được chọn để thanh toán. Vui lòng quay lại giỏ hàng và chọn sản phẩm.', true);
+            const backBtn = this.node('a', 'Quay lại giỏ hàng', 'btn btn-outline-primary mt-3');
+            backBtn.href = '/cart';
+            root.append(backBtn);
+            return;
+        }
+
+        const checkoutSubtotal = checkoutItems.reduce((acc, item) => acc + Number(item.lineTotal || 0), 0);
+        root.querySelector('[data-view-items]').textContent = `${checkoutItems.length} sản phẩm đã chọn · Tạm tính ${this.money(checkoutSubtotal)}`;
         const address = form.elements.namedItem('addressId'), store = form.elements.namedItem('fulfillmentStoreId');
         const fill = (select, data, label) => {
             select.replaceChildren(new Option('Vui lòng chọn', ''));
@@ -264,7 +378,7 @@ UTEGear.Views = {
         let quote = null, quotedRequest = null, busy = false, revision = 0;
         const quoteButton = form.querySelector('[data-quote]'), placeButton = form.querySelector('[data-place]');
             quoteButton.disabled = false;
-        const request = () => ({ ...Object.fromEntries(new FormData(form)), items: cart.items.map(item => ({ variantId: item.variantId, quantity: item.quantity })) });
+        const request = () => ({ ...Object.fromEntries(new FormData(form)), items: checkoutItems.map(item => ({ variantId: item.variantId, quantity: item.quantity })) });
         const branchSummary = root.querySelector('[data-checkout-store-summary]');
         const branchLabel = () => {
             const selected = stores.find(item => Number(item.id) === Number(store.value));
@@ -348,7 +462,16 @@ UTEGear.Views = {
                 busy = true;
                 try {
                     const order = await UTEGear.Transactions.place(quotedRequest, quote);
-                    form.hidden = true; UTEGear.Cart.badges({ itemCount: 0 });
+                    if (hasStorage) {
+                        sessionStorage.removeItem('utegear_checkout_selected_variants');
+                    }
+                    form.hidden = true;
+                    try {
+                        const updatedCart = await UTEGear.Cart.get();
+                        UTEGear.Cart.badges(updatedCart);
+                    } catch (e) {
+                        UTEGear.Cart.badges({ itemCount: 0 });
+                    }
                     if (order.paymentUrl) {
                         this.status(root, 'Đã đặt đơn ' + order.orderCode + ' · Đang chuyển hướng VNPay Sandbox... (Thẻ NCB: 9704198526191432198 · OTP: 123456)');
                         const vnpayBtn = this.node('a', 'Thanh toán VNPay ngay', 'btn btn-primary mt-3 me-2');
@@ -480,7 +603,17 @@ UTEGear.Views = {
                 try {
                     const data = await UTEGear.API.get('/api/products/' + UTEGear.Cart.id(detail.dataset.productId) + '/availability', { public: true });
                     if (current !== generation) return;
-                    const variant = data.variants.find(item => Number(item.variantId) === Number(option.value));
+                    if (data.variants) {
+                        for (const opt of select.options) {
+                            const v = data.variants.find(item => Number(item.variantId) === Number(opt.value));
+                            if (v) {
+                                opt.dataset.stock = String(v.totalStock || 0);
+                                const baseLabel = opt.textContent.split(' — ')[0].trim();
+                                opt.textContent = `${baseLabel} — ${v.totalStock > 0 ? `Còn ${v.totalStock} sản phẩm` : 'Hết hàng'}`;
+                            }
+                        }
+                    }
+                    const variant = data.variants?.find(item => Number(item.variantId) === Number(option.value));
                     option.dataset.stock = String(variant?.totalStock || 0);
                     detail.dataset.stockReady = 'true';
                     detail.querySelector('[data-variant-stock]').textContent = Number(option.dataset.stock) > 0

@@ -549,8 +549,13 @@ UTEGear.SwitchTester = {
 
         const selectedBadge = document.querySelector('[data-selected-switch-badge]');
         if (selectedBadge && this.purchaseSwitchConfirmed) {
-            selectedBadge.textContent = `Đã chọn: ${profile.name} (${profile.actuationForceG}g)`;
-            selectedBadge.className = 'badge rounded-pill bg-success text-white px-2 py-1';
+            const variantOption = profile.matchedVariantIds && profile.matchedVariantIds.length > 0
+                ? document.querySelector(`[data-detail-variant] option[value="${profile.matchedVariantIds[0]}"]`)
+                : null;
+            const stockCount = variantOption ? parseInt(variantOption.dataset.stock || '0', 10) : null;
+            const stockText = stockCount !== null ? (stockCount > 0 ? ` • Còn ${stockCount} sp` : ' • ⚠️ Hết hàng') : '';
+            selectedBadge.textContent = `Đã chọn: ${profile.name} (${profile.actuationForceG}g)${stockText}`;
+            selectedBadge.className = 'badge rounded-pill text-white px-2 py-1 ' + (stockCount === null || stockCount > 0 ? 'bg-success' : 'bg-danger');
         }
     },
 
@@ -636,14 +641,26 @@ UTEGear.SwitchTester = {
                 const text = document.createElement('span');
                 text.textContent = `${profile.name} (${profile.actuationForceG}g)`;
 
-                pill.append(dot, text);
+                // Stock info for switch
+                const variantOption = profile.matchedVariantIds && profile.matchedVariantIds.length > 0
+                    ? document.querySelector(`[data-detail-variant] option[value="${profile.matchedVariantIds[0]}"]`)
+                    : null;
+                const stockCount = variantOption ? parseInt(variantOption.dataset.stock || '0', 10) : null;
+
+                const stockBadge = document.createElement('span');
+                stockBadge.className = 'badge ms-1 small ' + (stockCount > 0 ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger');
+                stockBadge.textContent = stockCount !== null ? (stockCount > 0 ? `Còn ${stockCount}` : 'Hết hàng') : '';
+                pill.dataset.stock = stockCount != null ? String(stockCount) : '0';
+
+                pill.append(dot, text, stockBadge);
                 pill.addEventListener('click', () => {
                     this.purchaseSwitchConfirmed = true;
                     this.selectSwitch(profile, container);
                     this.playMechanicalSound(profile, false, false, 'KeyA');
                     if (selectedBadge) {
-                        selectedBadge.textContent = `Đã chọn: ${profile.name} (${profile.actuationForceG}g)`;
-                        selectedBadge.className = 'badge rounded-pill bg-success text-white px-2 py-1';
+                        const stockText = stockCount !== null ? (stockCount > 0 ? ` • Còn ${stockCount} sp` : ' • ⚠️ Hết hàng') : '';
+                        selectedBadge.textContent = `Đã chọn: ${profile.name} (${profile.actuationForceG}g)${stockText}`;
+                        selectedBadge.className = 'badge rounded-pill text-white px-2 py-1 ' + (stockCount === null || stockCount > 0 ? 'bg-success' : 'bg-danger');
                     }
                     if (purchaseBox) {
                         purchaseBox.classList.remove('shake-highlight');

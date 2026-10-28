@@ -238,6 +238,19 @@ public final class AdminDtos {
             long totalUsers,
             long totalCategories,
             long totalBrands,
-            long totalCoupons) {
+            long totalCoupons,
+            BigDecimal totalRevenue,
+            long completedOrders,
+            long cancelledOrders,
+            List<TopProductSummary> topProducts) {
+    }
+
+    public record TopProductSummary(
+            Long id,
+            String name,
+            String categoryName,
+            BigDecimal price,
+            int soldCount,
+            String imageUrl) {
     }
 }

@@ -35,4 +35,20 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select order from Order order where order.id = :id and order.user.id = :userId")
     Optional<Order> findLockedByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
+
+    @Query("""
+            select count(o) > 0 from Order o
+            join o.items item
+            where o.user.id = :userId
+              and o.status = com.utegear.entity.OrderStatus.COMPLETED
+              and item.variant.product.id = :productId
+            """)
+    boolean hasCompletedOrderWithProduct(@Param("userId") Long userId, @Param("productId") Long productId);
+
+    @Query("""
+            select coalesce(sum(o.total), 0) from Order o
+            where o.status = com.utegear.entity.OrderStatus.COMPLETED
+               or (o.payment is not null and o.payment.status = com.utegear.entity.PaymentStatus.PAID)
+            """)
+    java.math.BigDecimal sumTotalRevenue();
 }

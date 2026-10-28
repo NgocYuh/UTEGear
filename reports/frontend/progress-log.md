@@ -998,3 +998,36 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc: Chưa mở PR/push; giữ `IN REVIEW` trước khi merge theo quy định repository.
 - Bước tiếp theo: Review trọn bộ tính năng và bàn giao kịch bản demo.
 - Ngày hoàn tất: Chưa hoàn tất.
+
+## FE-FEAT-STOREFRONT: Nâng cấp Giao diện Sản phẩm đã xem, Chọn sản phẩm giỏ hàng và Tồn kho Switch
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/cart-switch-reviews-enhancements`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-28
+- Đã làm:
+  - **Sản phẩm đã xem (Recently Viewed):**
+    - Tạo `recently-viewed.js`: lưu `localStorage` tối đa 8 sản phẩm gần nhất, loại trừ sản phẩm đang xem, nút xóa lịch sử.
+    - Tích hợp vào `product-detail.html` với carousel card sản phẩm và thanh điều hướng nhanh.
+  - **Đánh giá & Bình luận sản phẩm:**
+    - Tạo `reviews.js`: chọn rating 1-5 sao trực quan, live counter đếm ký tự (tối thiểu 50 ký tự), badge "✓ Đã mua tại UTEGear", thanh phân bổ sao và form gửi đánh giá.
+    - Tích hợp khối `#product-reviews-section` vào `product-detail.html`.
+  - **Tồn kho Switch bàn phím:**
+    - Dropdown `<select id="detail-variant">` hiển thị rõ số lượng tồn kho từng loại switch (`Còn X sp` / `Hết hàng`).
+    - Nút chọn Switch (`switch-tester.js`) hiển thị badge tồn kho trực quan và trạng thái đã chọn kèm số lượng có sẵn.
+    - Bổ sung khung "Tồn kho theo từng loại Switch" trên `product-detail.html`.
+  - **Giỏ hàng chọn lọc (Select Items to Checkout):**
+    - Thêm thanh "Chọn tất cả" và checkbox cho từng món trong giỏ hàng.
+    - Tự động tính lại tổng tiền tạm tính theo các món được tick chọn.
+    - Nút "Thanh toán (X)" cập nhật theo số lượng món chọn; chặn thanh toán khi chưa tick món nào.
+    - Kết nối với trang Checkout qua `sessionStorage` để chỉ thanh toán các món đã chọn.
+    - Nút "Mua ngay" chỉ thanh toán đúng sản phẩm được chọn mà không mua hết giỏ hàng.
+  - **Trang Đăng nhập & Tài liệu:**
+    - Xóa khối tài khoản mẫu demo trên giao diện `login.html`.
+    - Chuyển toàn bộ danh sách tài khoản demo và mô tả quyền hạn vào `README.md`.
+- Kết quả kiểm thử:
+  - `tests/frontend/cart-selection.test.mjs`: PASS.
+  - `tests/frontend/reviews-and-recent.test.mjs`: PASS.
+  - Toàn bộ frontend test suite: 100% PASS.
+- Vướng mắc: Không có blocker.
+- Bước tiếp theo: Tạo Pull Request và review.
