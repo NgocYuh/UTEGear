@@ -90,7 +90,18 @@ Dưới đây là thông tin tài khoản mẫu để đăng nhập và trải n
 | Vai trò | Email đăng nhập | Mật khẩu | Quyền hạn & Chức năng |
 |---|---|---|---|
 | **Quản trị viên (Admin)** | `admin@utegear.vn` | `admin123` | Quản trị hệ thống: Dashboard doanh thu & đơn hàng, top sản phẩm bán chạy, quản lý tồn kho chi nhánh, quản lý danh mục và duyệt đơn hàng |
-| **Khách hàng (Customer)** | `user@utegear.vn` | `user123` | Trải nghiệm mua sắm: chọn từng sản phẩm trong giỏ hàng để thanh toán, thanh toán COD / VNPay Sandbox, lưu địa chỉ giao hàng, viết đánh giá & nhận xét sản phẩm (chọn số sao, tối thiểu 50 ký tự, đính kèm ảnh) |
+| **Khách hàng (Customer)** | `user@utegear.vn` | `user1234` | Trải nghiệm mua sắm: chọn từng sản phẩm trong giỏ hàng để thanh toán, thanh toán COD / VNPay Sandbox, lưu địa chỉ giao hàng, viết đánh giá & nhận xét sản phẩm (chọn số sao, tối thiểu 50 ký tự, đính kèm ảnh) |
+| **Nhân viên (Employee) — NV-7** | `employee.cn1.1@demo.utegear.test` | `446rDQwwkkLkqRwpDHsl5aBf` | CN-1 — UTEGear Demo: hỗ trợ khách hàng tại `/admin/support`, chỉ truy cập hội thoại thuộc chi nhánh được phân công |
+| **Nhân viên (Employee) — NV-8** | `employee.cn1.2@demo.utegear.test` | `_DTlgp4LjuD6jnB9npjz4nR-` | CN-1 — UTEGear Demo: hỗ trợ khách hàng tại `/admin/support`, chỉ truy cập hội thoại thuộc chi nhánh được phân công |
+| **Nhân viên (Employee) — NV-9** | `employee.cn1.3@demo.utegear.test` | `vZHMoigQohurmUOzMOc-NOuu` | CN-1 — UTEGear Demo: hỗ trợ khách hàng tại `/admin/support`, chỉ truy cập hội thoại thuộc chi nhánh được phân công |
+| **Nhân viên (Employee) — NV-10** | `employee.cn2.1@demo.utegear.test` | `1ZRy5RqF85AQWyZJlct3zDTx` | CN-2 — UTEGear Demo Hà Nội: hỗ trợ khách hàng tại `/admin/support`, chỉ truy cập hội thoại thuộc chi nhánh được phân công |
+| **Nhân viên (Employee) — NV-11** | `employee.cn2.2@demo.utegear.test` | `oALq7lcUjSq8IJp6PoXhwFj9` | CN-2 — UTEGear Demo Hà Nội: hỗ trợ khách hàng tại `/admin/support`, chỉ truy cập hội thoại thuộc chi nhánh được phân công |
+| **Nhân viên (Employee) — NV-12** | `employee.cn2.3@demo.utegear.test` | `G-CGJgvNacVYMBgzsJoUOQOK` | CN-2 — UTEGear Demo Hà Nội: hỗ trợ khách hàng tại `/admin/support`, chỉ truy cập hội thoại thuộc chi nhánh được phân công |
+| **Nhân viên (Employee) — NV-13** | `employee.cn3.1@demo.utegear.test` | `icHjnsEX3w2OVOHaqQ4uNBrf` | CN-3 — UTEGear Demo Đà Nẵng: hỗ trợ khách hàng tại `/admin/support`, chỉ truy cập hội thoại thuộc chi nhánh được phân công |
+| **Nhân viên (Employee) — NV-14** | `employee.cn3.2@demo.utegear.test` | `yKQUBL3_YAnps7cUuHP3wmgQ` | CN-3 — UTEGear Demo Đà Nẵng: hỗ trợ khách hàng tại `/admin/support`, chỉ truy cập hội thoại thuộc chi nhánh được phân công |
+| **Nhân viên (Employee) — NV-15** | `employee.cn3.3@demo.utegear.test` | `wOlIIkLbxKRGaa8tYGi4fv-e` | CN-3 — UTEGear Demo Đà Nẵng: hỗ trợ khách hàng tại `/admin/support`, chỉ truy cập hội thoại thuộc chi nhánh được phân công |
+
+Các tài khoản trên chỉ dùng cho demo/development. Nhân viên có role `EMPLOYEE` và đăng nhập bằng email; `NV-…` là mã hiển thị. Danh sách email/mật khẩu nhân viên lấy từ report demo local, chưa xác minh lại đăng nhập trên database hiện tại. Mật khẩu có thể khác nếu môi trường đã đặt lại hoặc tạo tài khoản bằng report khác.
 
 ## Chạy ứng dụng và kiểm thử
 
