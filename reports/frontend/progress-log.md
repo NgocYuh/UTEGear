@@ -1036,7 +1036,8 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## DOC-DEMO-ACCOUNTS-01: Bổ sung đủ tài khoản nhân viên demo vào README
 
-- Trạng thái: `IN PROGRESS`.
+- Trạng thái: `IN REVIEW`.
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/86
 - Phụ trách: `@trongsonho` (Frontend/tài liệu sử dụng).
 - Branch: `codex/docs-demo-staff-accounts`.
 - Ngày cập nhật: 2026-10-28.
@@ -1044,4 +1045,4 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Kiểm tra: 11 dòng tài khoản, 9 email duy nhất; mật khẩu/chi nhánh nhân viên khớp report. `git diff --check` PASS. Đã chạy `.\mvnw.cmd -B clean verify` bằng JDK 21 trước khi push: BUILD SUCCESS, 309 tests, 0 failures/errors, 4 skipped (Docker).
 - Giới hạn: thông tin nhân viên theo report demo đã lưu; chưa xác minh đăng nhập trên database hiện tại.
 - Xác nhận: Sau khi được thông báo quy tắc AGENTS.md cấm commit mật khẩu và rủi ro công bố credential demo lên GitHub, người dùng xác nhận tiếp tục push. Ngoại lệ chỉ áp dụng bảng tài khoản demo trong README của task này.
-- Bước tiếp theo: Push branch tài liệu và mở PR.
+- Bước tiếp theo: Review PR #86; cập nhật DONE sau khi merge theo quy định repository.
