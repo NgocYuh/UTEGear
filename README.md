@@ -2,20 +2,52 @@
 
 [![Backend CI](https://github.com/NgocYuh/UTEGear/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/NgocYuh/UTEGear/actions/workflows/backend-ci.yml)
 
-> Đồ án cuối kỳ môn Lập trình Web — hiện đang khởi tạo.
+> Đồ án cuối kỳ môn Lập trình Web — Hệ thống thương mại điện tử chuyên biệt Gaming Gear & Chuỗi cửa hàng công nghệ.
 
 ## Đề tài
 
-Xây dựng website thương mại điện tử UTEGear theo mô hình chuỗi cửa hàng, phục vụ sinh viên, game thủ và người dùng công nghệ.
+Xây dựng website thương mại điện tử UTEGear theo mô hình chuỗi cửa hàng bán lẻ công nghệ chuyên biệt (B2C), phục vụ sinh viên, game thủ và người dùng đam mê công nghệ.
 
-## Công nghệ
+## Công nghệ sử dụng
 
-- Java 21, Spring Boot 3.3.x và Maven
-- Thymeleaf, Bootstrap và WebSocket
-- Spring Data JPA, PostgreSQL (Supabase) và Flyway
-- Spring Security và JWT cho API cần bảo vệ
-- Cloudinary cho ảnh sản phẩm
-- Python cho công cụ crawler nhập dữ liệu ban đầu
+- **Backend:** Java 21, Spring Boot 3.3.x, Spring Data JPA, Spring Security (JWT), WebSocket (STOMP), Flyway Migration.
+- **Frontend:** Thymeleaf Template Engine, HTML5/CSS3, JavaScript (ES6+), Bootstrap 5.3.3, Bootstrap Icons 1.11.3.
+- **Cơ sở dữ liệu & Đám mây:** PostgreSQL (Supabase), Cloudinary CDN (quản lý hình ảnh đa phương tiện).
+- **Cổng thanh toán:** Tích hợp cổng VNPay Sandbox (hỗ trợ QR-Code, thẻ ATM nội địa NCB).
+- **Hỗ trợ dữ liệu:** Python Crawler thu thập và làm sạch danh mục dữ liệu ban đầu.
+
+## Các tính năng chính của hệ thống (Demo Checklist)
+
+### 1. Dành cho Khách hàng & Người dùng (Storefront)
+- **Trang chủ & Danh mục sản phẩm:** Phân loại theo Bàn phím cơ, Chuột, Tai nghe, Phụ kiện; hỗ trợ tìm kiếm từ khóa, lọc theo thương hiệu, sắp xếp giá và phân trang.
+- **Chi tiết sản phẩm & Tồn kho biến thể:**
+  - Lựa chọn màu sắc, biến thể, hiển thị trực quan số lượng tồn kho từng loại Switch (`Còn X sp` / `Hết hàng`).
+  - Thử âm thanh switch bàn phím cơ bằng HTML5 Web Audio API, xoay mô hình 3D 360°, đổi chế độ đèn LED RGB.
+- **Giỏ hàng thông minh (Smart Cart):**
+  - Cho phép **tick chọn từng món hàng muốn mua** thay vì phải thanh toán toàn bộ giỏ.
+  - Tự động tính tổng tiền theo các món được chọn; nút "Mua ngay" hỗ trợ mua nhanh trực tiếp.
+  - Giữ lại các món chưa chọn trong giỏ hàng sau khi đặt hàng thành công.
+- **Thanh toán đa phương thức (Checkout):**
+  - Thanh toán khi nhận hàng (COD).
+  - Thanh toán trực tuyến qua **Cổng thanh toán VNPay Sandbox** (hỗ trợ quét mã QR, thẻ ATM demo NCB).
+  - Tích hợp chọn chi nhánh xuất hàng và thêm nhanh địa chỉ nhận hàng mới.
+- **Đánh giá & Nhận xét sản phẩm (Reviews & Rating):**
+  - Ràng buộc tài khoản đã mua đơn hoàn tất (`COMPLETED`) mới được đánh giá (chống đánh giá ảo).
+  - Chấm điểm 1–5 sao, tối thiểu 50 ký tự, đính kèm link ảnh thật.
+  - Tự động cập nhật điểm trung bình sao và số lượt đánh giá của sản phẩm.
+- **Sản phẩm đã xem gần đây (Recently Viewed):**
+  - Tự động ghi nhớ lịch sử các sản phẩm người dùng đã mở xem và hiển thị ở chân trang chi tiết.
+- **Trợ lý tư vấn cấu hình Gear AI (Gear Consultant):**
+  - Hộp thoại trò chuyện tư vấn chọn bàn phím, chuột theo tầm giá và nhu cầu sử dụng.
+
+### 2. Dành cho Quản trị viên (Admin)
+- **Dashboard quản trị:**
+  - Thống kê **Tổng doanh thu thực tế (VNĐ)** từ các đơn hàng giao thành công.
+  - Đếm số lượng đơn hoàn tất, đơn đang xử lý, đơn đã hủy.
+  - Bảng xếp hạng **Top 5 sản phẩm bán chạy nhất** hệ thống.
+- **Quản lý danh mục & Sản phẩm:** Thêm mới, chỉnh sửa thông tin, giá bán, upload ảnh Cloudinary.
+- **Quản lý tồn kho theo Chi nhánh:** Quản lý số lượng tồn theo từng cặp `Store + ProductVariant`, hỗ trợ luân chuyển hàng giữa các showroom.
+- **Quản lý & Duyệt đơn hàng:** Theo dõi trạng thái đơn (`PENDING` -> `CONFIRMED` -> `SHIPPING` -> `COMPLETED` / `CANCELLED`), kiểm soát trạng thái thanh toán online trước khi duyệt đơn.
 
 ## Cấu trúc dự án
 
