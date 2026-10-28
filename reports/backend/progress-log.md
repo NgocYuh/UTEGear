@@ -1423,6 +1423,34 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Bước tiếp theo: Review và commit/push code lên remote repo.
 - Ngày hoàn tất: Chưa hoàn tất.
 
+## BE-FEAT-STOREFRONT: Nâng cấp Đánh giá sản phẩm, Thống kê doanh thu Admin và Giỏ hàng chọn lọc
+
+- Trạng thái: `IN REVIEW`
+- Branch: `feat/cart-switch-reviews-enhancements`
+- Pull Request: `Chưa mở`
+- Ngày cập nhật: 2026-10-28
+- Đã làm:
+  - **Đánh giá & Bình luận sản phẩm đã mua:**
+    - Tạo Entity `Review` và `ReviewImage` (ánh xạ schema `reviews` & `review_images`).
+    - Thêm `ReviewRepository`: đếm phân bổ sao, tính điểm trung bình `ratingAverage`, load review kèm user và ảnh.
+    - Tạo `ReviewService`: ràng buộc chỉ tài khoản đã mua sản phẩm và đơn hàng `COMPLETED` mới được đánh giá, nội dung tối thiểu 50 ký tự, mỗi user đánh giá 1 lần, cập nhật trực tiếp `ratingAverage` và `reviewCount` của Product.
+    - Cung cấp API `ReviewController`: `GET /api/products/{id}/reviews` (public) và `POST /api/products/{id}/reviews` (authenticated).
+  - **Thống kê doanh thu cho Admin Dashboard:**
+    - Thêm `OrderRepository.sumTotalRevenue()` tính tổng doanh thu từ đơn hàng `COMPLETED`.
+    - Thêm `ProductRepository.findTopSelling()` thống kê top 5 sản phẩm bán chạy nhất.
+    - Nâng cấp `AdminDashboardService` và DTO `AdminDtos.DashboardSummary`.
+    - Giao diện Admin `dashboard.html`: Thẻ card tổng doanh thu nổi bật, thống kê đơn hoàn tất/đã hủy, bảng top 5 sản phẩm bán chạy nhất.
+  - **Giỏ hàng chọn lọc sản phẩm thanh toán:**
+    - Nâng cấp `Cart.java`: thêm `removeItemsByVariantIds` cho phép xóa các món đã mua và giữ lại các món chưa mua trong giỏ.
+    - Cập nhật `CheckoutService`: cho phép thanh toán tập con (subset) sản phẩm trong giỏ, chỉ xóa các món được mua sau khi đặt hàng thành công.
+- Kết quả kiểm thử:
+  - `CheckoutServiceTest`: 6/6 tests PASS (bao gồm test thanh toán một phần giữ lại các món còn lại).
+  - `ReviewServiceTest`: 4/4 tests PASS.
+  - `AdminDashboardServiceTest`: 1/1 test PASS.
+  - Toàn bộ backend test suite: 309 tests PASS, 0 failures, 0 errors, 4 skipped.
+- Vướng mắc: Không có blocker.
+- Bước tiếp theo: Tạo Pull Request và review.
+
 
 ## AUTH-REFRESH-01: Triển khai Refresh Token & Thu hồi Token phía máy chủ (Token Blacklist / Revocation)
 

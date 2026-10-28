@@ -510,3 +510,15 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+/* --- Cart Item Selection Checkboxes --- */
+.cart-item-check,
+#cart-select-all {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

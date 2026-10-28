@@ -112,8 +112,39 @@ UTEGear.AdminPages = {
     async dashboard(root) {
         const summary = await UTEGear.API.get('/api/admin/dashboard');
         root.querySelectorAll('[data-stat]').forEach(element => {
-            element.textContent = Number(summary[element.dataset.stat] || 0).toLocaleString('vi-VN');
+            const key = element.dataset.stat;
+            if (key === 'totalRevenue') {
+                element.textContent = Number(summary[key] || 0).toLocaleString('vi-VN') + ' ₫';
+            } else {
+                element.textContent = Number(summary[key] || 0).toLocaleString('vi-VN');
+            }
         });
+
+        const topBody = root.querySelector('[data-top-products-rows]');
+        if (topBody && summary.topProducts) {
+            topBody.replaceChildren();
+            if (summary.topProducts.length === 0) {
+                topBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">Chưa có dữ liệu bán hàng.</td></tr>';
+            } else {
+                summary.topProducts.forEach((p, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="text-center fw-bold text-muted">#${idx + 1}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="${p.imageUrl}" alt="${p.name}" class="rounded border" style="width: 40px; height: 40px; object-fit: contain;" onerror="this.onerror=null;this.src='/images/placeholder.svg'">
+                                <span class="fw-medium">${p.name}</span>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-light text-dark border">${p.categoryName}</span></td>
+                        <td class="text-end fw-semibold">${Number(p.price || 0).toLocaleString('vi-VN')} ₫</td>
+                        <td class="text-center"><span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">${p.soldCount} đã bán</span></td>
+                    `;
+                    topBody.appendChild(tr);
+                });
+            }
+        }
+
         root.querySelector('[data-admin-content]').hidden = false;
         this.status(root, 'Số liệu đã được đồng bộ.');
     },

@@ -19,6 +19,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "carts")
@@ -81,6 +82,16 @@ public class Cart {
     public void clear() {
         if (!items.isEmpty()) {
             items.clear();
+            touch();
+        }
+    }
+
+    public void removeItemsByVariantIds(Set<Long> variantIds) {
+        if (variantIds == null || variantIds.isEmpty()) {
+            return;
+        }
+        boolean removed = items.removeIf(item -> item.getVariant() != null && variantIds.contains(item.getVariant().getId()));
+        if (removed) {
             touch();
         }
     }

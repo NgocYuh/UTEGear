@@ -171,6 +171,32 @@ class CheckoutServiceTest {
         assertThat(cart.getItemCount()).isEqualTo(2);
     }
 
+    @Test
+    void placesOrderWithSelectedItemsAndKeepsRemainingItemsInCart() {
+        CheckoutQuoteResponse quote = service.quote(user, quoteRequest);
+        Cart cart = new Cart(user);
+        cart.add(variant, 2);
+        Product product = variant.getProduct();
+        ProductVariant otherVariant = new ProductVariant("K87-OTHER", Map.of(), false, BigDecimal.ZERO);
+        product.addVariant(otherVariant);
+        ReflectionTestUtils.setField(otherVariant, "id", 20L);
+        cart.add(otherVariant, 1);
+
+        when(carts.findWithItemsByUserId(7L)).thenReturn(Optional.of(cart));
+        when(orders.save(any())).thenAnswer(invocation -> {
+            Object order = invocation.getArgument(0);
+            ReflectionTestUtils.setField(order, "id", 51L);
+            return order;
+        });
+
+        var response = service.place(user, placeRequest(quote.quoteToken(), null));
+
+        assertThat(response.id()).isEqualTo(51L);
+        assertThat(cart.getItems()).hasSize(1);
+        assertThat(cart.getItems().get(0).getVariant().getId()).isEqualTo(20L);
+        verify(carts).save(cart);
+    }
+
     private PlaceOrderRequest placeRequest(String token, String couponCode) {
         return new PlaceOrderRequest(token, 3L, 2L, couponCode, PaymentMethod.COD, null,
                 quoteRequest.items());

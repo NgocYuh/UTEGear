@@ -27,3 +27,7 @@ crawler/data/processed/
 
 .DS_Store
 Thumbs.db
+*.zip
+.agents/
+.local-reference/
+skills-lock.json

@@ -2,6 +2,7 @@ package com.utegear.service;
 
 import com.utegear.dto.admin.AdminDtos;
 import com.utegear.entity.OrderStatus;
+import com.utegear.entity.Product;
 import com.utegear.entity.ProductStatus;
 import com.utegear.repository.BrandRepository;
 import com.utegear.repository.CategoryRepository;
@@ -10,6 +11,9 @@ import com.utegear.repository.OrderRepository;
 import com.utegear.repository.ProductRepository;
 import com.utegear.repository.StoreRepository;
 import com.utegear.repository.UserRepository;
+import java.math.BigDecimal;
+import java.util.List;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +42,26 @@ public class AdminDashboardService {
 
     @Transactional(readOnly = true)
     public AdminDtos.DashboardSummary summary() {
+        BigDecimal totalRevenue = orders.sumTotalRevenue();
+        long completedOrders = orders.countByStatus(OrderStatus.COMPLETED);
+        long cancelledOrders = orders.countByStatus(OrderStatus.CANCELLED);
+        List<Product> topProductList = products.findTopSelling(ProductStatus.ACTIVE, PageRequest.of(0, 5));
+        List<AdminDtos.TopProductSummary> topProducts = topProductList.stream().map(p -> new AdminDtos.TopProductSummary(
+                p.getId(),
+                p.getName(),
+                p.getCategory() != null ? p.getCategory().getName() : "Khác",
+                p.getEffectivePrice(),
+                p.getSoldCount(),
+                p.getImages() != null && !p.getImages().isEmpty() ? p.getImages().get(0).getSecureUrl() : "/images/placeholder.svg"
+        )).toList();
+
         return new AdminDtos.DashboardSummary(
                 orders.count(), orders.countByStatus(OrderStatus.PENDING), products.count(),
                 products.countByStatus(ProductStatus.ACTIVE), stores.count(), users.count(),
-                categories.count(), brands.count(), coupons.count());
+                categories.count(), brands.count(), coupons.count(),
+                totalRevenue != null ? totalRevenue : BigDecimal.ZERO,
+                completedOrders,
+                cancelledOrders,
+                topProducts);
     }
 }

@@ -3,18 +3,92 @@
 <head><title>Tổng quan quản trị - UTEGear</title></head>
 <body>
 <main layout:fragment="content" class="admin-content-wrapper" data-admin-page="dashboard">
-    <header class="admin-page-header"><div class="admin-page-header-info"><h1 class="admin-page-title">Tổng quan</h1></div></header>
+    <header class="admin-page-header">
+        <div class="admin-page-header-info">
+            <h1 class="admin-page-title">Tổng quan &amp; Báo cáo doanh thu</h1>
+            <p class="text-muted small mb-0">Theo dõi số liệu bán hàng, doanh thu thực tế và hiệu suất sản phẩm</p>
+        </div>
+    </header>
     <p data-admin-status role="status" aria-live="polite">Đang tải số liệu…</p>
-    <section class="admin-stat-grid" aria-label="Số liệu vận hành" hidden data-admin-content>
-        <article class="admin-stat-card"><div class="admin-stat-body"><strong class="admin-stat-value" data-stat="totalOrders">0</strong><span class="admin-stat-label">Tổng đơn hàng</span></div></article>
-        <article class="admin-stat-card"><div class="admin-stat-body"><strong class="admin-stat-value" data-stat="pendingOrders">0</strong><span class="admin-stat-label">Đơn chờ xử lý</span></div></article>
-        <article class="admin-stat-card"><div class="admin-stat-body"><strong class="admin-stat-value" data-stat="activeProducts">0</strong><span class="admin-stat-label">Sản phẩm hoạt động</span></div></article>
-        <article class="admin-stat-card"><div class="admin-stat-body"><strong class="admin-stat-value" data-stat="totalStores">0</strong><span class="admin-stat-label">Cửa hàng</span></div></article>
-        <article class="admin-stat-card"><div class="admin-stat-body"><strong class="admin-stat-value" data-stat="totalUsers">0</strong><span class="admin-stat-label">Tài khoản</span></div></article>
-        <article class="admin-stat-card"><div class="admin-stat-body"><strong class="admin-stat-value" data-stat="totalCategories">0</strong><span class="admin-stat-label">Danh mục</span></div></article>
-        <article class="admin-stat-card"><div class="admin-stat-body"><strong class="admin-stat-value" data-stat="totalBrands">0</strong><span class="admin-stat-label">Thương hiệu</span></div></article>
-        <article class="admin-stat-card"><div class="admin-stat-body"><strong class="admin-stat-value" data-stat="totalCoupons">0</strong><span class="admin-stat-label">Mã giảm giá</span></div></article>
-    </section>
+    <div data-admin-content hidden>
+        <!-- STATS GRID -->
+        <section class="admin-stat-grid" aria-label="Số liệu vận hành">
+            <article class="admin-stat-card border-success" style="border-left: 4px solid #198754;">
+                <div class="admin-stat-body">
+                    <strong class="admin-stat-value text-success" data-stat="totalRevenue">0 ₫</strong>
+                    <span class="admin-stat-label font-semibold">Tổng doanh thu thực tế</span>
+                </div>
+            </article>
+            <article class="admin-stat-card border-primary" style="border-left: 4px solid #0d6efd;">
+                <div class="admin-stat-body">
+                    <strong class="admin-stat-value text-primary" data-stat="totalOrders">0</strong>
+                    <span class="admin-stat-label">Tổng đơn hàng</span>
+                </div>
+            </article>
+            <article class="admin-stat-card border-warning" style="border-left: 4px solid #ffc107;">
+                <div class="admin-stat-body">
+                    <strong class="admin-stat-value text-warning-emphasis" data-stat="pendingOrders">0</strong>
+                    <span class="admin-stat-label">Đơn chờ xử lý</span>
+                </div>
+            </article>
+            <article class="admin-stat-card border-info" style="border-left: 4px solid #0dcaf0;">
+                <div class="admin-stat-body">
+                    <strong class="admin-stat-value text-info-emphasis" data-stat="completedOrders">0</strong>
+                    <span class="admin-stat-label">Đơn đã hoàn tất</span>
+                </div>
+            </article>
+            <article class="admin-stat-card">
+                <div class="admin-stat-body">
+                    <strong class="admin-stat-value" data-stat="activeProducts">0</strong>
+                    <span class="admin-stat-label">Sản phẩm hoạt động</span>
+                </div>
+            </article>
+            <article class="admin-stat-card">
+                <div class="admin-stat-body">
+                    <strong class="admin-stat-value" data-stat="totalStores">0</strong>
+                    <span class="admin-stat-label">Chi nhánh cửa hàng</span>
+                </div>
+            </article>
+            <article class="admin-stat-card">
+                <div class="admin-stat-body">
+                    <strong class="admin-stat-value" data-stat="totalUsers">0</strong>
+                    <span class="admin-stat-label">Khách hàng đăng ký</span>
+                </div>
+            </article>
+            <article class="admin-stat-card">
+                <div class="admin-stat-body">
+                    <strong class="admin-stat-value" data-stat="totalCoupons">0</strong>
+                    <span class="admin-stat-label">Mã giảm giá đang có</span>
+                </div>
+            </article>
+        </section>
+
+        <!-- TOP SELLING PRODUCTS SECTION -->
+        <section class="mt-4 p-4 surface-card border rounded-3 bg-white shadow-sm" aria-label="Top sản phẩm bán chạy">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h2 class="h5 fw-bold mb-0 text-dark"><i class="bi bi-trophy-fill text-warning me-2"></i>Top sản phẩm bán chạy nhất</h2>
+                <a href="/admin/products" class="btn btn-sm btn-outline-primary">Quản lý kho sản phẩm &rarr;</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 70px;" class="text-center">Hạng</th>
+                            <th>Sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th class="text-end">Giá bán</th>
+                            <th class="text-center">Lượt bán</th>
+                        </tr>
+                    </thead>
+                    <tbody data-top-products-rows>
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-3">Đang tải top sản phẩm…</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
 </main>
 </body>
 </html>
