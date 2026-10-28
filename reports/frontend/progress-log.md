@@ -1001,9 +1001,11 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 
 ## FE-FEAT-STOREFRONT: Nâng cấp Giao diện Sản phẩm đã xem, Chọn sản phẩm giỏ hàng và Tồn kho Switch
 
-- Trạng thái: `IN REVIEW`
+- Trạng thái: `DONE`
 - Branch: `feat/cart-switch-reviews-enhancements`
-- Pull Request: `Chưa mở`
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/85
+- Merge commit: `9d11a2ab830fad56d2a0d227f2de39a87d63fe46`.
+- Ngày hoàn tất: 2026-10-28; đã đối soát main trước DOC-DEMO-ACCOUNTS-01.
 - Ngày cập nhật: 2026-10-28
 - Đã làm:
   - **Sản phẩm đã xem (Recently Viewed):**
@@ -1030,4 +1032,17 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
   - `tests/frontend/reviews-and-recent.test.mjs`: PASS.
   - Toàn bộ frontend test suite: 100% PASS.
 - Vướng mắc: Không có blocker.
-- Bước tiếp theo: Tạo Pull Request và review.
+- Bước tiếp theo: Đã merge.
+
+## DOC-DEMO-ACCOUNTS-01: Bổ sung đủ tài khoản nhân viên demo vào README
+
+- Trạng thái: `IN REVIEW`.
+- Pull Request: https://github.com/NgocYuh/UTEGear/pull/86
+- Phụ trách: `@trongsonho` (Frontend/tài liệu sử dụng).
+- Branch: `codex/docs-demo-staff-accounts`.
+- Ngày cập nhật: 2026-10-28.
+- Theo yêu cầu người dùng: giữ bảng Admin/Customer, thêm đủ 9 nhân viên với email, mật khẩu demo, mã và chi nhánh từ report local; sửa mật khẩu Customer thành `user1234` theo thông tin đã cung cấp. Không thay đổi database hoặc chức năng.
+- Kiểm tra: 11 dòng tài khoản, 9 email duy nhất; mật khẩu/chi nhánh nhân viên khớp report. `git diff --check` PASS. Đã chạy `.\mvnw.cmd -B clean verify` bằng JDK 21 trước khi push: BUILD SUCCESS, 309 tests, 0 failures/errors, 4 skipped (Docker).
+- Giới hạn: thông tin nhân viên theo report demo đã lưu; chưa xác minh đăng nhập trên database hiện tại.
+- Xác nhận: Sau khi được thông báo quy tắc AGENTS.md cấm commit mật khẩu và rủi ro công bố credential demo lên GitHub, người dùng xác nhận tiếp tục push. Ngoại lệ chỉ áp dụng bảng tài khoản demo trong README của task này.
+- Bước tiếp theo: Review PR #86; cập nhật DONE sau khi merge theo quy định repository.
