@@ -1,6 +1,7 @@
 package com.utegear.service;
 
 import jakarta.mail.internet.MimeMessage;
+import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -41,7 +42,7 @@ public class DefaultEmailService implements EmailService {
                 "Mã OTP này có hiệu lực trong vòng <strong>5 phút</strong>. Vui lòng không chia sẻ mã này cho bất kỳ ai.");
 
         logOtpConsole(toEmail, "REGISTRATION_ACTIVATION", otpCode);
-        sendMimeEmail(toEmail, subject, htmlContent);
+        CompletableFuture.runAsync(() -> sendMimeEmail(toEmail, subject, htmlContent));
     }
 
     @Override
@@ -55,7 +56,7 @@ public class DefaultEmailService implements EmailService {
                 "Mã OTP này có hiệu lực trong vòng <strong>10 phút</strong>. Nếu bạn không yêu cầu đổi mật khẩu, vui lòng bỏ qua email này.");
 
         logOtpConsole(toEmail, "PASSWORD_RESET", otpCode);
-        sendMimeEmail(toEmail, subject, htmlContent);
+        CompletableFuture.runAsync(() -> sendMimeEmail(toEmail, subject, htmlContent));
     }
 
     private void sendMimeEmail(String toEmail, String subject, String htmlContent) {
@@ -76,7 +77,7 @@ public class DefaultEmailService implements EmailService {
 
             mailSender.send(message);
             log.info("[EMAIL SERVICE] Đã gửi email thành công tới {}", toEmail);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.warn("[EMAIL SERVICE] Không thể gửi email qua SMTP: {}. Mã OTP vẫn có hiệu lực và được in ở log console.", e.getMessage());
         }
     }
@@ -103,7 +104,7 @@ public class DefaultEmailService implements EmailService {
                                     <!-- HEADER -->
                                     <tr>
                                         <td style="background: linear-gradient(135deg, #082b63 0%%, #0d387a 100%%); padding: 25px 30px; text-align: center; border-bottom: 3px solid #ed1c24;">
-                                            <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 800; letter-spacing: 1px;">UTE<span style="color: #ed1c24;">Gear</span></h1>
+                                             <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 800; letter-spacing: 1px;">UTE<span style="color: #ed1c24;">Gear</span></h1>
                                             <p style="color: #cbd5e1; margin: 5px 0 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 2px;">%s</p>
                                         </td>
                                     </tr>
@@ -140,4 +141,3 @@ public class DefaultEmailService implements EmailService {
                 """.formatted(title, greeting, lead, otpCode, note);
     }
 }
-
