@@ -1547,3 +1547,24 @@ Cập nhật cùng một mục khi task đổi trạng thái. Task `BLOCKED` ph�
 - Vướng mắc: Không có blocker.
 - Bước tiếp theo: Review và commit/push code lên remote repo.
 - Ngày hoàn tất: Chưa hoàn tất.
+
+
+## FIX-AUTH-OTP: Khắc phục triệt để lỗi 500 khi gửi và xác thực mã OTP
+
+- Trạng thái: `IN REVIEW`
+- Branch: `fix/otp-verification-resend`
+- Phụ trách: `@NgocYuh`
+- Ngày cập nhật: 2026-10-29
+- Đã làm:
+  - Tối ưu `VerifyOtpRequest` và `ResetPasswordRequest` bằng `@JsonCreator` hỗ trợ linh hoạt cả `otp` và `otpCode` khi deserialization từ Jackson, triệt tiêu lỗi `InvalidDefinitionException: No fallback setter for creator property 'otp'`.
+  - Tách tác vụ gửi email SMTP trong `DefaultEmailService` sang xử lý bất đồng bộ (`CompletableFuture.runAsync`), đảm bảo Transaction lưu OTP và User hoàn tất trong 5ms, giải phóng kết nối Supabase ngay tức thì, không bị nghẽn connection pool.
+  - Tối ưu cấu hình HikariCP Connection Pool trong `application.properties`: bổ sung `keepalive-time=30000`, `max-lifetime=60000`, `maximum-pool-size=3` và `connection-timeout=10000` để kết nối tới Supabase không bị ngắt đột ngột (`unexpected EOF`).
+  - Nâng cấp `GlobalExceptionHandler`: xử lý `DataIntegrityViolationException`, `CannotCreateTransactionException` và fallback `Exception.class` trả về thông báo lỗi thân thiện, bảo vệ API.
+  - Tinh chỉnh `src/main/resources/static/js/app.js` gửi payload `{ email, otp: otpCode }` chuẩn hóa.
+- Kết quả kiểm thử:
+  - Backend tests: 309/309 PASS (0 Failure, 0 Error).
+  - Frontend JS tests: 78/78 PASS.
+  - E2E flow test: Đăng ký -> Nhận OTP -> Xác thực -> Đăng nhập & Quên mật khẩu thành công 100%.
+- Vướng mắc: Không có blocker.
+- Bước tiếp theo: Tạo Pull Request và merge vào `main`.
+- Ngày hoàn tất: Chưa hoàn tất.
